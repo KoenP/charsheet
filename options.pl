@@ -26,9 +26,3 @@ todo(unsolved_problems(Problem, Error)) :-
 valid_pick(Condition, Name, Selection) :-
     pick(Condition, Name, Selection),
     \+ problem(pick(Condition, Name), _).
-
-% A bit of a hack, perhaps.
-valid_pick_at_level(CharLevel, Condition, Name, Selection) :-
-    matched_at_level(CharLevel, Condition),
-    pick(Condition, Name, Selection),
-    problem(pick(Condition, Name), Reason) -> Reason = condition_unmatched.

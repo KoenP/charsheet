@@ -18,26 +18,23 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features.
-matched(Condition) :- level(CharLevel), matched_at_level(CharLevel, Condition).
-matched_at_level(CharLevel, class(Class)) :-
-    class_at_level(CharLevel, Class, _).
-matched_at_level(CharLevel, class(Class,ClassLevel1)) :-
-    class_at_level(CharLevel, Class, ClassLevel2),
+matched(class(Class)) :-
+    class(Class).
+matched(class(Class,ClassLevel1)) :-
+    class(Class, ClassLevel2),
     between(1, ClassLevel2, ClassLevel1).
-matched_at_level(_, race(Race)) :-
+matched(race(Race)) :-
     race(Race).
-matched_at_level(CharLevel, feat(Feat)) :-
-    pick_feat(Level, Feat),
-    between(1, CharLevel, Level).
+matched(feat(Feat)) :-
+    valid_pick_feat(_, Feat).
 
-feature(Feature) :- level(CharLevel), feature_at_level(CharLevel, Feature).
-feature_at_level(CharLevel, Feature) :-
+feature(Feature) :-
     feature(Condition, Feature),
-    matched_at_level(CharLevel, Condition).
-feature_at_level(CharLevel, Feature) :-
-    valid_pick_at_level(CharLevel, _, _, Feature).
-feature_at_level(CharLevel, add_ability(Abil,Val)) :-
-    valid_increase_ability_score_at_level(CharLevel, _, Abil, Val).
+    matched(Condition).
+feature(Feature) :-
+    valid_pick(_, _, Feature).
+feature(add_ability(Abil,Val)) :-
+    valid_increase_ability_score(_, Abil, Val).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,15 +48,13 @@ max_hp(HP) :-
 hp_term_for_level(1, Term) :-
     initial_class(Class),
     max_hp_initial(Class, Init),
-    ability_at_level(1, con, Con),
-    mf(Con, ConMod),
+    ability_mod(con, ConMod),
     Term is Init + ConMod.
 hp_term_for_level(CharLevel, Term) :-
     gain_level(CharLevel, Class, HPMode),
     max_hp_per_level(Class, HPDie),
     hp_die(HPMode, HPDie, ClassHP),
-    ability_at_level(1, con, Con),
-    mf(Con, ConMod),
+    ability_mod(con, ConMod),
     Term is ClassHP + ConMod.
 
 hp_die(hp_avg, Die, HP) :-
@@ -74,11 +69,8 @@ ability(wis).
 ability(int).
 ability(cha).
 ability(Abil,Val) :-
-    level(CharLevel),
-    ability_at_level(CharLevel, Abil, Val).
-ability_at_level(CharLevel, Abil, Val) :-
     base_ability(Abil, Base),
-    findall(Term, feature_at_level(CharLevel, add_ability(Abil,Term)), Terms),
+    findall(Term, feature(add_ability(Abil,Term)), Terms),
     sumlist([Base | Terms], Val).
 
 mf(Val, Mod) :-
@@ -143,8 +135,6 @@ class(Class) :-
     member(Class, ClassesSet).
 class(Class, ClassLevel) :-
     level(CharLevel),
-    class_at_level(CharLevel, Class, ClassLevel).
-class_at_level(CharLevel, Class, ClassLevel) :-
     class_option(Class),
     findall(L, (between(2,CharLevel,L),gain_level(L,Class,_)), Levels),
     (initial_class(Class) -> X = 1 ; X = 0),

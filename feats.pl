@@ -6,3 +6,7 @@ describe(feat(alert), "Always on the lookout for danger, you gain the following 
     - You gain a +5 bonus to initiative.
     - Other creatures don’t gain advantage on attack rolls against you as a result of being hidden from you.
 ").
+
+valid_pick_feat(Level, Feat) :-
+    pick_feat(Level, Feat),
+    \+ problem(pick_feat(Level, Feat), _).

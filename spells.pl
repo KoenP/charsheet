@@ -46,12 +46,12 @@ describe(spell(guidance), "You touch one willing creature. Once before the spell
 
 % TODO I'm not sure yet whether I like this.
 % It's a bit of metaprogramming that adds predicates like spell_school/2, spell_range/2, ...
-register_spell_property(SpellName, Prop, Value) :-
-    spell(SpellName, Prop, Value),
-    atomic_concat('spell_', Prop, PredName),
-    Fact =.. [PredName, SpellName, Value],
-    writeln(Fact),
-    assert(Fact).
-
-:- forall(register_spell_property(_, _, _), true).
+%register_spell_property(SpellName, Prop, Value) :-
+%    spell(SpellName, Prop, Value),
+%    atomic_concat('spell_', Prop, PredName),
+%    Fact =.. [PredName, SpellName, Value],
+%    %writeln(Fact),
+%    assert(Fact).
+%
+%:- forall(register_spell_property(_, _, _), true).
 

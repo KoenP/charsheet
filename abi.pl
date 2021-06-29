@@ -3,10 +3,8 @@ ability_score_increase_level(Level) :- member(Level, [4,8,12,16,19]).
 
 valid_increase_ability_score(PickLevel, Abil, Val) :-
     level(CharLevel),
-    valid_increase_ability_score_at_level(CharLevel, PickLevel, Abil, Val).
-valid_increase_ability_score_at_level(CharLevel, PickLevel, Abil, Val) :-
     increase_ability_score(PickLevel, Abil, Val),
-    PickLevel =< CharLevel,
+    between(1, CharLevel, PickLevel),
     \+ problem(increase_ability_score(PickLevel, Abil, Val), _).
 
 % Detect unspent ability score increases.
