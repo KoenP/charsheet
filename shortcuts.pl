@@ -1,10 +1,12 @@
 problems :-
     findall((P,E), problem(P,E), Problems),
-    maplist(writeln, Problems).
+    list_to_set(Problems, ProblemSet),
+    maplist(writeln, ProblemSet).
 
 todo :-
     findall(T, todo(T), Todos),
-    maplist(writeln, Todos).
+    list_to_set(Todos, TodoSet),
+    maplist(writeln, TodoSet).
 
 ac :- ac(AC), writeln(AC).
 

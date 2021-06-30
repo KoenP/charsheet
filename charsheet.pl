@@ -1,8 +1,12 @@
 :- multifile
+    trait/2,
+    trait_options/4,
+    trait_bad_options/5,
     describe/2,
-    feature/2,
     feature_options/4,
     problem/2,
+    initial_class_base_hp/1,
+    initial_class_base_hp/2,
     todo/1.
 
 :- [dice].
@@ -11,30 +15,35 @@
 :- [feats].
 :- [skills].
 :- [spells].
+:- [leveling].
 :- [abi].
 :- [options].
 :- [items].
 :- [shortcuts].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Features.
-matched(class(Class)) :-
-    class(Class).
-matched(class(Class,ClassLevel1)) :-
-    class(Class, ClassLevel2),
-    between(1, ClassLevel2, ClassLevel1).
-matched(race(Race)) :-
-    race(Race).
-matched(feat(Feat)) :-
-    valid_pick_feat(_, Feat).
+% Traits.
+trait(Trait) :- trait(_, Trait).
 
-feature(Feature) :-
-    feature(Condition, Feature),
-    matched(Condition).
-feature(Feature) :-
-    valid_pick(_, _, Feature).
-feature(add_ability(Abil,Val)) :-
-    valid_increase_ability_score(_, Abil, Val).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Features.
+% matched(class(Class)) :-
+%     class(Class).
+% matched(class(Class,ClassLevel1)) :-
+%     class(Class, ClassLevel2),
+%     between(1, ClassLevel2, ClassLevel1).
+% matched(race(Race)) :-
+%     race(Race).
+% matched(feat(Feat)) :-
+%     valid_pick_feat(_, Feat).
+% 
+% feature(Feature) :-
+%     feature(Condition, Feature),
+%     matched(Condition).
+% feature(Feature) :-
+%     valid_pick(_, _, Feature).
+% feature(add_ability(Abil,Val)) :-
+%     valid_increase_ability_score(_, Abil, Val).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -45,14 +54,17 @@ max_hp(HP) :-
     findall(Term, hp_term_for_level(_, Term), Terms),
     sumlist(Terms, HP).
 
-hp_term_for_level(1, Term) :-
+initial_class_base_hp(HP) :-
     initial_class(Class),
-    max_hp_initial(Class, Init),
+    initial_class_base_hp(Class, HP).
+
+hp_term_for_level(1, Term) :-
+    initial_class_base_hp(InitHP),
     ability_mod(con, ConMod),
-    Term is Init + ConMod.
+    Term is InitHP + ConMod.
 hp_term_for_level(CharLevel, Term) :-
-    gain_level(CharLevel, Class, HPMode),
-    max_hp_per_level(Class, HPDie),
+    gain_level(CharLevel, ClassName, HPMode),
+    max_hp_per_level(ClassName, HPDie),
     hp_die(HPMode, HPDie, ClassHP),
     ability_mod(con, ConMod),
     Term is ClassHP + ConMod.
@@ -68,10 +80,56 @@ ability(con).
 ability(wis).
 ability(int).
 ability(cha).
-ability(Abil,Val) :-
-    base_ability(Abil, Base),
-    findall(Term, feature(add_ability(Abil,Term)), Terms),
-    sumlist([Base | Terms], Val).
+
+ability_max(Ability, 20) :- ability(Ability).
+
+
+% Ability scores are calculated in layers.
+% The first layer is base ability + racial bonuses ("naked level 1 ability").
+% Then we add abis from level-up, in-order. The first abi that causes an ability score to exceed the maximum (normally 20) raises a problem (this is handled in leveling.pl).
+% After that we add abis from feats. If these increases make a score go over 20, it is simply ignored instead of raising an error. TODO: maybe add a "note" or something?
+% Item effects are TODO.
+naked_lvl1_ability(Ability, Score) :-
+    base_ability(Ability, Base),
+    findall(Term, racial_abi(abi(Ability,Term)), Racial),
+    sumlist([Base|Racial], Score).
+ability_after_levelup_abis(Ability, Score) :-
+    level(Level),
+    ability_after_levelup_abis(Level, Ability, Score).
+ability_after_levelup_abis(AbiLvl, Ability, Score) :-
+    naked_lvl1_ability(Ability, NakedLvl1),
+    findall(Term, (between(1,AbiLvl,Level), levelup_abi(Level, abi(Ability, Term))), Terms),
+    sumlist([NakedLvl1|Terms], Score).
+ability_after_feats(Ability, Score) :-
+    ability_after_levelup_abis(Ability, Base),
+    findall(Term, trait(feat(_), abi(Ability, Term)), Terms),
+    sumlist([Base|Terms], Score1),
+    ability_max(Ability, Max),
+    Score is min(Score1, Max).
+ability(Ability, Score) :-
+    ability_after_feats(Ability, Score).
+
+% Ability score from base ability, race, abis and feats.
+% Not allowed to exceed 20.
+natural_ability(Ability, Score) :-
+    base_ability(Ability, Base),
+    findall(Term, racial_abi(abi(Ability,Term)), Racial),
+    findall(Term, levelup_abi(_, abi(Ability,Term)), Levelup),
+    append([[Base], Racial, Levelup], All),
+    sumlist(All, Score).
+
+% The order in which the terms are computed matters! 
+% It's important for ability score increase error messages.
+%ability_score_term(Ability, Term) :-
+%    % First we take base ability.
+%    base_ability(Ability, Term).
+%ability_score_term(Ability, Term) :-
+%    % Then we add racial bonuses.
+%    racial_trait(_, abi(Ability, Term)).
+%ability_score_term(Ability, Term) :-
+%    % Then we add level-up abis.
+%    false.
+
 
 mf(Val, Mod) :-
     floor( (Val-10) / 2, Mod ).
@@ -80,8 +138,13 @@ ability_mod(Abil, Mod) :-
     ability(Abil, Val),
     mf(Val, Mod).
 
+% Size, speed, ...
+size(Size) :-
+    race(Race),
+    racial_size(Race, Size).
+
 % Armor class.
-ac(AC) :- feature(natural_armor(AC)), !.
+ac(AC) :- trait(natural_armor(AC)), !.
 ac(AC) :- equipped(Armor), body_armor(Armor, heavy, ac(AC), _), !.
 ac(AC) :- equipped(Armor), body_armor(Armor, medium, ac(ArmorAC), _), !,
           ability_mod(dex, Mod),
@@ -95,7 +158,7 @@ ac(AC) :- ability_mod(dex, Mod),
 % Initiative.
 initiative_mod(Init) :-
     ability_mod(dex, Mod),
-    findall(Term, feature(add_initiative(Term)), Terms),
+    findall(Term, trait(add_initiative(Term)), Terms),
     sumlist([Mod | Terms], Init).
 
 % Proficiency bonus.
@@ -104,43 +167,21 @@ proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).
 
 % Spellcasting.
 spell_save_dc(DC) :-
-    feature(spellcasting(Abil)),
+    trait(spellcasting(Abil)),
     ability_mod(Abil, Mod),
     proficiency_bonus(Bonus),
     DC is 8 + Bonus + Mod.
 
 spell_attack_modifier(Mod) :-
-    feature(spellcasting(Abil)),
+    trait(spellcasting(Abil)),
     ability_mod(Abil, AbilMod),
     proficiency_bonus(Bonus),
     Mod is Bonus + AbilMod.
 
-spell_slots(Class, SpellLevel, Slots) :-
-    gain_spell_slots(Class, SpellLevel, Gains),
-    class(Class, ClassLevel),
+spell_slots(ClassName, SpellLevel, Slots) :-
+    gain_spell_slots(ClassName, SpellLevel, Gains),
+    class(Class),
+    Class =.. [ClassName, ClassLevel],
     findall(X, (member(X,Gains),X=<ClassLevel), Xs),
     length(Xs, Slots),
     Slots > 0.
-
-% Levels.
-level(Level) :-
-    findall(L, gain_level(L,_,_), Levels),
-    max_member(Level, Levels).
-
-class(Class) :-
-    initial_class(Class).
-class(Class) :-
-    findall(C, gain_level(_,C,_), Classes),
-    list_to_set(Classes, ClassesSet),
-    member(Class, ClassesSet).
-class(Class, ClassLevel) :-
-    level(CharLevel),
-    class_option(Class),
-    findall(L, (between(2,CharLevel,L),gain_level(L,Class,_)), Levels),
-    (initial_class(Class) -> X = 1 ; X = 0),
-    length(Levels, Len),
-    ClassLevel is Len + X,
-    ClassLevel > 0.
-
-feat(Feat) :-
-    matched(feat(Feat)).

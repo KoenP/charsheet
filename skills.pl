@@ -17,7 +17,7 @@ skill_ability(intimidation    , cha).
 skill_ability(performance     , cha).
 skill_ability(persuasion      , cha).
 
-proficient(Skill) :- feature(proficient(Skill)).
+proficient(Skill) :- trait(skill(Skill)).
 
 skill_proficiency_bonus(Skill, Bonus) :-
     proficient(Skill), !,

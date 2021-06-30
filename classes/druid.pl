@@ -1,6 +1,6 @@
 class_option(druid).
 hd_per_level(druid, 1 d 8).
-max_hp_initial(druid, 8).
+initial_class_base_hp(druid, 8).
 max_hp_per_level(druid, 1 d 8).
 saving_throw(druid, int).
 saving_throw(druid, wis).
@@ -16,42 +16,55 @@ gain_spell_slots(druid, spell_level(8), [15]).
 gain_spell_slots(druid, spell_level(9), [17]).
 
 % Features and options available on druid level 1.
-feature(class(druid), proficient(light_armor  ) ).
-feature(class(druid), proficient(medium_armor ) ).
-feature(class(druid), proficient(shields      ) ).
-feature(class(druid), proficient(clubs        ) ).
-feature(class(druid), proficient(daggers      ) ).
-feature(class(druid), proficient(darts        ) ).
-feature(class(druid), proficient(javelins     ) ).
-feature(class(druid), proficient(maces        ) ).
-feature(class(druid), proficient(quarterstaffs) ).
-feature(class(druid), proficient(scimitars    ) ).
-feature(class(druid), proficient(sickles      ) ).
-feature(class(druid), proficient(slings       ) ).
-feature(class(druid), proficient(spears       ) ).
-feature(class(druid), proficient(herbalism_kit) ).
-feature(class(druid), language(druidic)).
-feature(class(druid), spellcasting(wis)).
-feature(class(druid), ritual_casting(druid)).
-feature(class(druid), spellcasting_focus(druid)).
+class_trait(druid:1, armor(light_armor  ) ).
+class_trait(druid:1, armor(medium_armor ) ).
+class_trait(druid:1, armor(shields      ) ).
+class_trait(druid:1, weapon(club        ) ).
+class_trait(druid:1, weapon(dagger      ) ).
+class_trait(druid:1, weapon(dart        ) ).
+class_trait(druid:1, weapon(javelin     ) ).
+class_trait(druid:1, weapon(mace        ) ).
+class_trait(druid:1, weapon(quarterstaff) ).
+class_trait(druid:1, weapon(scimitar    ) ).
+class_trait(druid:1, weapon(sickle      ) ).
+class_trait(druid:1, weapon(sling       ) ).
+class_trait(druid:1, weapon(spear       ) ).
+class_trait(druid:1, tool(herbalism_kit) ).
+class_trait(druid:1, language(druidic)).
+class_trait(druid:1, spellcasting(wis)).
+class_trait(druid:1, ritual_casting(druid)).
+class_trait(druid:1, spellcasting_focus(druid)).
 describe(language(druidic), "You know Druidic, the Secret language of druids. You can speak the language and use it to leave hidden messages. You and others who know this language automatically spot such a Message. Others spot the message's presence with a successful DC 15 Wisdom (Perception) check but can't decipher it without magic.").
 
-feature_options(class(druid), druid_skills, 2, [ proficient(arcana)
-                                               , proficient(animal_handling)
-                                               , proficient(insight)
-                                               , proficient(medicine)
-                                               , proficient(nature)
-                                               , proficient(perception)
-                                               , proficient(religion)
-                                               , proficient(survival)
-                                               ]).
+class_trait_options(druid:1, druid_skills, 2, Proficiency) :-
+    member(Proficiency, [ proficient(arcana)
+                        , proficient(animal_handling)
+                        , proficient(insight)
+                        , proficient(medicine)
+                        , proficient(nature)
+                        , proficient(perception)
+                        , proficient(religion)
+                        , proficient(survival)
+                        ]).
 
-feature_options(class(druid), druid_cantrips, 2, Cantrips) :-
-    class_cantrips(druid, Cantrips).
+% TODO hier zat ik.
+
+%feature_options(class(druid), druid_skills, 2, [ proficient(arcana)
+%                                               , proficient(animal_handling)
+%                                               , proficient(insight)
+%                                               , proficient(medicine)
+%                                               , proficient(nature)
+%                                               , proficient(perception)
+%                                               , proficient(religion)
+%                                               , proficient(survival)
+%                                               ]).
+
+class_trait_options(druid:1, druid_cantrips, 2, Cantrip) :-
+    class_cantrip(druid, Cantrip).
 
 % Features and options unlocked by leveling up the druid class.
 % TODO how to incorporate the wild shape rules.
-feature(class(druid,2), wild_shape).
+class_trait(druid:2, wild_shape).
 describe(wild_shape, "Starting at 2nd level, you can use your action to magically assume the shape of a beast that you have seen before. You can use this feature twice. You regain expended uses when you finish a short or long rest.
 Your druid level determines the beasts you can transform into, as shown in Table: Beast Shapes. At 2nd level, for example, you can transform into any beast that has a challenge rating of 1/4 or lower that doesn’t have a flying or swimming speed.
 You can stay in a beast shape for a number of hours equal to half your druid level (rounded down). You then revert to your normal form unless you expend another use of this feature. You can revert to your normal form earlier by using a bonus action on your turn. You automatically revert if you fall unconscious, drop to 0 hit points, or die.
@@ -64,5 +77,5 @@ describe(wild_shape, "You choose whether your equipment falls to the ground in y
 
 %feature_options(class(druid,4), ability_score_improvement, 2, Options) :-
 %    findall(add_ability(Ability,1), ability(Ability), Options).
-feature_options(class(druid,4), druid_cantrips, 1, Cantrips) :-
-    class_cantrips(druid, Cantrips).
+class_trait_options(druid:4, druid_cantrips, 1, Cantrip) :-
+    class_cantrip(druid, Cantrip).
