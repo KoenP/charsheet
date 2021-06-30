@@ -34,6 +34,10 @@ problem(pick_trait(Condition, Name), bad_choice(Selection, ErrMsg)) :-
 problem(pick_trait(Condition, Name), picked_more_than_once) :-
     trait_options(Condition, Name, _, _),
     findall(Pick, pick_trait(Condition, Name, Pick), [_,_|_]).
+
+
+trait_options(Condition, Name) :-
+    trait_options(Condition, Name, _, _).
     
 % TODO this generates a large number of duplicates, could become very very slow.
 todo(no_option_picked(Condition, Name)) :-

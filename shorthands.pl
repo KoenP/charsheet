@@ -1,12 +1,14 @@
 problems :-
-    findall((P,E), problem(P,E), Problems),
-    list_to_set(Problems, ProblemSet),
-    maplist(writeln, ProblemSet).
+    setof(P:E, problem(P,E), Problems),
+    maplist(writeln, Problems).
 
 todo :-
-    findall(T, todo(T), Todos),
-    list_to_set(Todos, TodoSet),
-    maplist(writeln, TodoSet).
+    setof(T, todo(T), Todos),
+    maplist(writeln, Todos).
+
+scores :-
+    findall(Ability:Score, ability(Ability, Score), Scores),
+    maplist(writeln, Scores).
 
 ac :- ac(AC), writeln(AC).
 

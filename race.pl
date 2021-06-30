@@ -9,5 +9,5 @@ trait(race(Race), Trait) :-
 trait(race(Race,1), Trait) :-
     trait(race(Race), Trait).
 
-racial_abi(abi(Ability, Increment)) :-
-    trait(race(_), abi(Ability, Increment)).
+racial_abi(Ability+Increment) :-
+    trait(race(_), Ability+Increment).

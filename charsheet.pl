@@ -10,41 +10,19 @@
     todo/1.
 
 :- [dice].
-:- [classes].
-:- [races].
+:- [class].
+:- [race].
 :- [feats].
 :- [skills].
 :- [spells].
 :- [leveling].
-:- [abi].
 :- [options].
 :- [items].
-:- [shortcuts].
+:- [shorthands].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Traits.
 trait(Trait) :- trait(_, Trait).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % Features.
-% matched(class(Class)) :-
-%     class(Class).
-% matched(class(Class,ClassLevel1)) :-
-%     class(Class, ClassLevel2),
-%     between(1, ClassLevel2, ClassLevel1).
-% matched(race(Race)) :-
-%     race(Race).
-% matched(feat(Feat)) :-
-%     valid_pick_feat(_, Feat).
-% 
-% feature(Feature) :-
-%     feature(Condition, Feature),
-%     matched(Condition).
-% feature(Feature) :-
-%     valid_pick(_, _, Feature).
-% feature(add_ability(Abil,Val)) :-
-%     valid_increase_ability_score(_, Abil, Val).
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Character sheet calculations.
@@ -91,18 +69,18 @@ ability_max(Ability, 20) :- ability(Ability).
 % Item effects are TODO.
 naked_lvl1_ability(Ability, Score) :-
     base_ability(Ability, Base),
-    findall(Term, racial_abi(abi(Ability,Term)), Racial),
+    findall(Term, racial_abi(Ability+Term), Racial),
     sumlist([Base|Racial], Score).
 ability_after_levelup_abis(Ability, Score) :-
     level(Level),
     ability_after_levelup_abis(Level, Ability, Score).
 ability_after_levelup_abis(AbiLvl, Ability, Score) :-
     naked_lvl1_ability(Ability, NakedLvl1),
-    findall(Term, (between(1,AbiLvl,Level), levelup_abi(Level, abi(Ability, Term))), Terms),
+    findall(Term, (between(1,AbiLvl,Level), levelup_abi(Level, Ability+Term)), Terms),
     sumlist([NakedLvl1|Terms], Score).
 ability_after_feats(Ability, Score) :-
     ability_after_levelup_abis(Ability, Base),
-    findall(Term, trait(feat(_), abi(Ability, Term)), Terms),
+    findall(Term, trait(feat(_), Ability+Term), Terms),
     sumlist([Base|Terms], Score1),
     ability_max(Ability, Max),
     Score is min(Score1, Max).
@@ -111,12 +89,12 @@ ability(Ability, Score) :-
 
 % Ability score from base ability, race, abis and feats.
 % Not allowed to exceed 20.
-natural_ability(Ability, Score) :-
-    base_ability(Ability, Base),
-    findall(Term, racial_abi(abi(Ability,Term)), Racial),
-    findall(Term, levelup_abi(_, abi(Ability,Term)), Levelup),
-    append([[Base], Racial, Levelup], All),
-    sumlist(All, Score).
+%natural_ability(Ability, Score) :-
+%    base_ability(Ability, Base),
+%    findall(Term, racial_abi(Ability+Term), Racial),
+%    findall(Term, levelup_abi(_, Ability+Term), Levelup),
+%    append([[Base], Racial, Levelup], All),
+%    sumlist(All, Score).
 
 % The order in which the terms are computed matters! 
 % It's important for ability score increase error messages.

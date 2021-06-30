@@ -1,7 +1,7 @@
 racial_size(tortle, medium).
 
-racial_trait(tortle, abi(str, 2)).
-racial_trait(tortle, abi(wis, 1)).
+racial_trait(tortle, str+2).
+racial_trait(tortle, wis+1).
 racial_trait(tortle, claws).
 racial_trait(tortle, hold_breath).
 racial_trait(tortle, natural_armor(17)).
