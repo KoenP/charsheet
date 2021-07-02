@@ -21,18 +21,26 @@ pick_trait(level(Level), abi_or_feat, [feat(Feat)]) :-
     pick_feat(Level, Feat).
 
 pick_trait(level(Level), abi_or_feat, Abis) :-
-    pick_abi(Level, _),
+    ability_score_increase_level(Level),
     findall(Abi, pick_abi(Level, Abi), Abis),
     Abis = [_|_].
 
 % Table for which levels the PC gets an abi.
 ability_score_increase_level(Level) :- member(Level, [4,8,12,16,19]).
 
+% Describe the valid options for an abi or feat.
 trait_options(level(Level), abi_or_feat, 1, Options) :-
     abi_or_feat_options(Level, Options),
     \+ (member(Abi, Options), bad_abi(Level, Abi)).
-trait_bad_options(_, abi_or_feat, [Ability+1], should_add_two_ability_points) :-
-    ability(Ability).
+
+% Describe bad options for which we have specific error messages:
+% - ability points don't add up to 2,
+% - ability increase brings score above 20 (or whatever the maximum is).
+trait_bad_options(_, abi_or_feat, Options, should_add_two_ability_points) :-
+    Options \= [feat(_)],
+    findall(Val, member(_+Val, Options), Vals),
+    \+ sumlist(Vals, 2).
+
 trait_bad_options(level(Level), abi_or_feat, Options, abi_exceeds_max_ability_score) :-
     abi_or_feat_options(Level, Options),
     member(Abi, Options),
