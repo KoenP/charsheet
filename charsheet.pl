@@ -1,13 +1,19 @@
 :- multifile
     trait/2,
-    trait_options/4,
+    trait_options/3,
     trait_bad_options/5,
-    describe/2,
     feature_options/4,
     problem/2,
     initial_class_base_hp/1,
     initial_class_base_hp/2,
+    spell_known/2,
     todo/1.
+
+:- op(650, xfx, from).
+:- op(1000, xfx, ?=).
+
+:- multifile
+       (?=)/2.
 
 :- [dice].
 :- [class].
@@ -71,15 +77,15 @@ naked_lvl1_ability(Ability, Score) :-
     base_ability(Ability, Base),
     findall(Term, racial_abi(Ability+Term), Racial),
     sumlist([Base|Racial], Score).
-ability_after_levelup_abis(Ability, Score) :-
+ability_after_levelup_asis(Ability, Score) :-
     level(Level),
-    ability_after_levelup_abis(Level, Ability, Score).
-ability_after_levelup_abis(AbiLvl, Ability, Score) :-
+    ability_after_levelup_asis(Level, Ability, Score).
+ability_after_levelup_asis(AsiLvl, Ability, Score) :-
     naked_lvl1_ability(Ability, NakedLvl1),
-    findall(Term, (between(1,AbiLvl,Level), levelup_abi(Level, Ability+Term)), Terms),
+    findall(Term, (between(1,AsiLvl,Level), levelup_asi(Level, Ability+Term)), Terms),
     sumlist([NakedLvl1|Terms], Score).
 ability_after_feats(Ability, Score) :-
-    ability_after_levelup_abis(Ability, Base),
+    ability_after_levelup_asis(Ability, Base),
     findall(Term, trait(feat(_), Ability+Term), Terms),
     sumlist([Base|Terms], Score1),
     ability_max(Ability, Max),
@@ -143,23 +149,3 @@ initiative_mod(Init) :-
 calc_bonus(Level, Bonus) :- Bonus is 2 + div(Level-1, 4).
 proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).
 
-% Spellcasting.
-spell_save_dc(DC) :-
-    trait(spellcasting(Abil)),
-    ability_mod(Abil, Mod),
-    proficiency_bonus(Bonus),
-    DC is 8 + Bonus + Mod.
-
-spell_attack_modifier(Mod) :-
-    trait(spellcasting(Abil)),
-    ability_mod(Abil, AbilMod),
-    proficiency_bonus(Bonus),
-    Mod is Bonus + AbilMod.
-
-spell_slots(ClassName, SpellLevel, Slots) :-
-    gain_spell_slots(ClassName, SpellLevel, Gains),
-    class(Class),
-    Class =.. [ClassName, ClassLevel],
-    findall(X, (member(X,Gains),X=<ClassLevel), Xs),
-    length(Xs, Slots),
-    Slots > 0.

@@ -1,9 +1,12 @@
 :- discontiguous
        gain_level/3,
+       choose_subclass/2,
        pick_feat/2,
        pick_abi/2.
 
 :- [charsheet].
+
+choose_traits(_,_,_) :- false.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -19,31 +22,40 @@ base_ability(int, 16).
 base_ability(wis, 18).
 base_ability(cha, 8).
 
-pick_trait(class(druid:1), druid_cantrips, shillelagh).
-pick_trait(class(druid:1), druid_cantrips, guidance).
+%pick_trait(class(druid:1), druid_cantrips, shillelagh).
+%pick_trait(class(druid:1), druid_cantrips, guidance).
 % TODO hier zat ik
 
 % pick_trait(_, _, _) :- false.
-pick_feat(_,_) :- false.
-%pick_abi(_,_) :- false.
+choose_subclass(_,_) :- false.
+choose_feat(_,_) :- false.
+increase_ability_score(_,_) :- false.
 equipped(_) :- false.
+
+choose_traits(class(druid:1), cantrip, [spell(shillelagh), spell(guidance)]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 2
 gain_level(2, druid, hp_avg).
+choose_subclass(druid, land).
+%choose_traits(subclass(druid:2,land), extra_cantrip, )
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 3
 gain_level(3, druid, hp_avg).
+choose_traits(subclass(druid:3,land), land_type, [druid_land_type(arctic)]).
+choose_traits(subclass(druid:3,land), circle_spell, [spell(hold_person)]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 4
 gain_level(4, druid, hp_avg).
-pick_feat(4, alert).
+choose_traits(level(4), asi_or_feat, [str+1, dex+1]).
+%pick_feat(4, alert).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 5
 gain_level(5, druid, hp_avg).
+choose_traits(subclass(druid:5,land), circle_spell, [spell(slow)]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 6

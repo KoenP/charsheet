@@ -12,16 +12,16 @@ scores :-
 
 ac :- ac(AC), writeln(AC).
 
-describe(X) :- describe(X,D), writeln(D).
+info(X) :- (X ?= D), writeln(D).
 
+match(X, X).
 match(X, Y) :-
-    term_string(X, XString),
-    string_to_list(XString, XList),
-    term_string(Y, YString),
-    string_to_list(YString, YList),
-    append([_, XList, _], YList).
+    Y =.. L,
+    L = [_,_|_],
+    member(Z, L),
+    match(X, Z).
 search(X) :-
-    describe(Y, D),
+    (Y ?= D),
     match(X, Y),
     write("Found: "),
     writeln(Y),

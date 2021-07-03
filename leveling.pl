@@ -1,6 +1,8 @@
 todo(unsolved_problems(Problem, Error)) :-
     problem(Problem, Error).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Gaining levels and level calculation.
 problem(gain_level, not_contiguous(Levels)) :-
     findall(L, gain_level(L,_,_), Levels),
     max_member(Highest, Levels),
@@ -13,56 +15,40 @@ level(Level) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Ability score increases and feats.
-levelup_abi(Level, Ability+Increment) :-
-    trait(pick_trait(level(Level), abi_or_feat), Abis),
-    member(Ability+Increment, Abis).
 
-pick_trait(level(Level), abi_or_feat, [feat(Feat)]) :-
-    pick_feat(Level, Feat).
-
-pick_trait(level(Level), abi_or_feat, Abis) :-
-    ability_score_increase_level(Level),
-    findall(Abi, pick_abi(Level, Abi), Abis),
-    Abis = [_|_].
-
-% Table for which levels the PC gets an abi.
+% Table for which levels the PC gets an asi.
 ability_score_increase_level(Level) :- member(Level, [4,8,12,16,19]).
 
-% Describe the valid options for an abi or feat.
-trait_options(level(Level), abi_or_feat, 1, Options) :-
-    abi_or_feat_options(Level, Options),
-    \+ (member(Abi, Options), bad_abi(Level, Abi)).
+% Identify ability score increases among accepted traits.
+levelup_asi(Level, Ability+Increment) :-
+    trait(choose_traits(level(Level), asi_or_feat), Ability+Increment).
 
-% Describe bad options for which we have specific error messages:
-% - ability points don't add up to 2,
-% - ability increase brings score above 20 (or whatever the maximum is).
-trait_bad_options(_, abi_or_feat, Options, should_add_two_ability_points) :-
-    Options \= [feat(_)],
-    findall(Val, member(_+Val, Options), Vals),
-    \+ sumlist(Vals, 2).
-
-trait_bad_options(level(Level), abi_or_feat, Options, abi_exceeds_max_ability_score) :-
-    abi_or_feat_options(Level, Options),
-    member(Abi, Options),
-    bad_abi(Level, Abi).
-
-abi_or_feat_options(Level, Options) :-
+% Describe the valid options for an asi or feat.
+trait_options(level(Level), asi_or_feat, 1 from [2 from PlusOne, 1 from PlusTwo, 1 from Feats]) :-
     level(CharLevel),
     ability_score_increase_level(Level),
     Level =< CharLevel,
-    abi_or_feat_options(Options).
-abi_or_feat_options([Ability+2]) :-
-    ability(Ability).
-abi_or_feat_options([feat(Feat)]) :-
-    feat_option(Feat).
-abi_or_feat_options([Ability1+1, Ability2+1]) :-
-    ability(Ability1),
-    ability(Ability2),
-    Ability1 \= Ability2.
-
-% True iff this abi brings the character above the maximum ability score threshold.
-bad_abi(Level, Ability+Inc) :-
-    Level1 is Level - 1,
-    ability_after_levelup_abis(Level1, Ability, Score),
+    findall(Ability+1, asi_option(Level, Ability+1), PlusOne),
+    findall(Ability+2, asi_option(Level, Ability+2), PlusTwo),
+    findall(feat(Feat), feat_option(Feat), Feats).
+asi_option(Level, Ability+Increment) :-
+    ability(Ability),
+    member(Increment, [1,2]),
+    Level1 is Level-1,
+    ability_after_levelup_asis(Level1, Ability, Score),
     ability_max(Ability, Max),
-    Score + Inc > Max.
+    Score + Increment =< Max.
+
+% Generate more specific error messages for some bad asi/feat choices.
+bad_trait_choice(level(Level), asi_or_feat, Choice, ability_score_exceeds_maximum(Ability)) :-
+    ability(Ability),
+    findall(Incr, member(Ability+Incr, Choice), Incrs),
+    Level1 is Level-1,
+    ability_after_levelup_asis(Level1, Ability, Score),
+    ability_max(Ability, Max),
+    sumlist([Score|Incrs], Sum),
+    Sum > Max.
+bad_trait_choice(level(_), asi_or_feat, Choice, asis_dont_add_to_two) :-
+    findall(Incr, member(_+Incr, Choice), Incrs),
+    \+ sumlist(Incrs, 2).
+

@@ -1,144 +1,108 @@
+% TODO: delete valid_pick_trait, pick_trait, ...
+%       replace trait_options everywhere
+
 :- multifile
-       pick_trait/3. % TODO needs a rename... It's fundamentally different from pick_feat, pick_abi, ...
+       choose_traits/3,
+       bad_trait_choice/4.
 
-trait(pick_trait(Condition, Name), Trait) :-
-    valid_pick_trait(Condition, Name, Trait).
+chosen_trait(Origin, Name, Trait) :-
+    trait(choose_traits(Origin, Name), Trait).
 
-valid_pick_trait(Condition, Name, Selection) :-
-    pick_trait(Condition, Name, Selection),
-    \+ problem(pick_trait(Condition, Name), _).
+trait(choose_traits(Origin, Name), Trait) :-
+    valid_trait_choice(Origin, Name, Choice),
+    member(Trait, Choice).
 
-% PC doesn't match the criteria to make a pick.
-problem(pick_trait(Condition, Name), not_eligible) :-
-    pick_trait(Condition, Name, _),
-    \+ trait_options(Condition, Name, _, _).
+valid_trait_choice(Origin, Name, Choice) :-
+    choose_traits(Origin, Name, Choice),
+    \+ problem(choose_traits(Origin, Name, Choice), _).
 
-% User didn't pick the correct number of options.
-problem(pick_trait(Condition, Name), (should_pick(NOptions), have_picked(NPicks))) :-
-    trait_options(Condition, Name, NOptions, _),
-    findall(Pick, pick_trait(Condition, Name, Pick), Picks),
-    length(Picks, NPicks),
-    NPicks \= NOptions.
+% spec_option(Spec, Option): Option is one of the options available in the Spec.
+spec_option(_ from List, Option) :-
+    member(X, List),
+    spec_option(X, Option).
+spec_option(Trait, Trait) :-
+    Trait \= _ from _.
 
-% User picked a nonexistant option, without specific error message.
-problem(pick_trait(Condition, Name), invalid_option(Selection)) :-
-    pick_trait(Condition, Name, Selection),
-    \+ trait_options(Condition, Name, _, Selection),
-    \+ trait_bad_options(Condition, Name, Selection, _),
-    trait_options(Condition, Name, _, _).
+% PC is not eligible to make the given choice.
+problem(choose_traits(Origin, Name, Choice), not_eligible(Origin, Name)) :-
+    choose_traits(Origin, Name, Choice),
+    \+ trait_options(Origin, Name, _).
 
-% User picked a nonexistant option, but for which we have a more specific error message.
-problem(pick_trait(Condition, Name), bad_choice(Selection, ErrMsg)) :-
-    pick_trait(Condition, Name, Selection),
-    trait_bad_options(Condition, Name, Selection, ErrMsg).
-
-% User picked multiple times for the same choice.
-problem(pick_trait(Condition, Name), picked_more_than_once) :-
-    trait_options(Condition, Name, _, _),
-    findall(Pick, pick_trait(Condition, Name, Pick), [_,_|_]).
-
-% Generate a todo when the user has not yet picked any options for a trait they are eligible for.
-todo(no_option_picked(Condition, Name)) :-
-    trait_options(Condition, Name, _, _),
-    \+ pick_trait(Condition, Name, _).
-
-
-
-
-
-
-% example pick_trait use cases
-:- op(650, xfx, from).
-
-known_spells_at(_, X) :-
-    member(X, [disguise_self, magic_missile, featherfall]).
-
-learnable_spells(X) :-
-    member(X, [fireball, lightning_bolt]).
-
-trait_options(class(sorcerer:Level), spell_replace, 2 from [1 from Forget, 1 from Learn]) :-
-    Level1 is Level - 1,
-    findall(Spell, known_spells_at(Level1, Spell), Forget),
-    findall(Spell, learnable_spells(Spell), Learn),
-    between(1, 20, Level).
-
-trait_options(level(4), test, 1 from [1 from [2 from AbiPlusOne, 1 from AbiPlusTwo], 1 from Feats]) :-
-    findall(Ability+1, ability(Ability), AbiPlusOne),
-    findall(Ability+2, ability(Ability), AbiPlusTwo),
-    findall(feat(Feat), feat_option(Feat), Feats).
-
-%fulfilled(Origin, Name) :-
-%    trait_options(Origin, Name, Options)
-
-
-%choice(class(sorcerer:Level), replace_spell, 2 from [forget, choose_new]) :-
-%    between(2, 20, Level).
-%option(class(sorcerer:Level), replace_spell:forget, 1, )
-
-
-option(level(4), levelup, 1 from [ability_score_increase, feat]).
-
-option(level(4), levelup/ability_score_increase, 1 from [2 from two_abilities, 1 from one_ability]).
-option(level(4), levelup/ability_score_increase/two_abilities, Ability+1) :-
-    ability(Ability).
-option(level(4), levelup/ability_score_increase/one_ability, Ability+2) :-
-    ability(Ability).
-
-option(level(4), levelup/feat, feat(Feat)) :-
-    feat_option(Feat).
-
-%pick(level(4), levelup/ability_score_increase/two_abilities, str+1).
-%pick(level(4), levelup/ability_score_increase/two_abilities, dex+1).
-
-pick(level(4), levelup/ability_score_increase/one_ability, dex+1).
-
-pick(level(4), levelup/feat, feat(alert)).
-
-
+% User's choice doesn't match the spec, and we don't have a more specific error message.
+% TODO: I think I can make more specific error messages than this.
+problem(choose_traits(Origin, Name, Choice), doesnt_match_spec(Choice, Spec)) :-
+    choose_traits(Origin, Name, Choice),
+    trait_options(Origin, Name, Spec),
+    \+ bad_trait_choice(Origin, Name, Choice, _),
+    \+ choice_matches_spec(Choice, Spec, match).
+choice_matches_spec(Choice, N from Spec, Result) :-
+    findall(X, (member(SubSpec,Spec), choice_matches_spec(Choice,SubSpec,X)), Results),
+    fold_matches(N, Results, Result).
+choice_matches_spec(Choice, Trait, match) :-
+    Trait \= _ from _,
+    member(Trait, Choice).
+choice_matches_spec(Choice, Trait, no_match) :-
+    Trait \= _ from _,
+    \+ member(Trait, Choice).
+fold_matches(_, Rs, bad) :-
+    member(bad, Rs).
+fold_matches(N, Rs, Result) :-
+    \+ member(bad, Rs),
+    count(match, Rs, M),
+    ( N = M           -> Result = match
+    ; M = 0           -> Result = no_match
+    ; (M > 0, M \= N) -> Result = bad).
 count(X, L, N) :-
     findall(_, member(X,L), Xs),
     length(Xs, N).
-
-status(N, Statuses, fulfilled) :-
-    count(fulfilled, Statuses, N),
-    \+ member(bad, Statuses),
-    !.
-status(_, Statuses, null) :-
-    \+ (member(X, Statuses), (X = bad; X = fulfilled)),
-    !.
-status(_, _, bad).
-
-option_status(Origin, Name, N from Options, Status) :-
-    is_list(Options),
-    !,
-    findall(Stat, (member(Option, Options), option_status(Origin, Name, Option, Stat)), Statuses),
-    status(N, Statuses, Status).
     
+% User's choice does not match the specification, and we have a
+% case-specific error message for this case.
+problem(choose_traits(Origin, Name, Choice), bad_choice(Msg)) :-
+    choose_traits(Origin, Name, Choice),
+    bad_trait_choice(Origin, Name, Choice, Msg).
 
-ok(Origin, Name) :-
-    option(Origin, Name, Options),
-    !,
-    ok(Origin, Name, Options).
-%ok(Origin, Name, N from Options) :-
-%    is_list(Options),
-%    !,
-%    findall(Option, (member(Option, Options), ok(Origin, Name, Option)), Validated),
-%    findall(Option, (member(Option, Options), \+ ok(Origin, Name, Option)), NotValidated),
-%    length(Validated, N),
-%    findall(_, (member(X,NotValidated), ))
-    
-ok(Origin, Name, Menu) :-
-    atom(Menu),
-    !,
-    ok(Origin, Name, 1 from Menu).
-ok(Origin, Name, N from Menu) :-
-    atom(Menu),
-    !,
-    findall(Option, (option(Origin, Name/Menu, Option), ok(Origin, Name/Menu, Option)), Validated),
-    length(Validated, N).
-ok(Origin, Name, X) :-
-    !,
-    pick(Origin, Name, X).
+% User has chosen an option that's not specified, and we don't have a more
+% specific error message.
+problem(choose_traits(Origin, Name, Choice), invalid_option(Trait)) :-
+    choose_traits(Origin, Name, Choice),
+    \+ bad_trait_choice(Origin, Name, Choice, _),
+    trait_options(Origin, Name, Spec),
+    findall(Option, spec_option(Spec,Option), Options),
+    member(Trait, Choice),
+    \+ member(Trait, Options).
 
+% User picked multiple times for the same choice.
+problem(choose_traits(Origin, Name, Choice), double_dip) :-
+    choose_traits(Origin, Name, Choice),
+    trait_options(Origin, Name, _),
+    findall(_, choose_traits(Origin, Name, _), [_,_|_]).
 
-% pick_trait()
+% User picked the same trait multiple times within a single given choice.
+% We're assuming for now that this should never happen.
+problem(choose_traits(Origin, Name, Choice), picked_more_than_once(Trait)) :-
+    choose_traits(Origin, Name, Choice),
+    append(_, [Trait|Tail], Choice),
+    append(_, [Trait|_], Tail).
+
+% Generate a todo when the user has not yet picked any options for a trait they are eligible for.
+todo(choose_traits(Origin, Name)) :-
+    trait_options(Origin, Name, _),
+    \+ choose_traits(Origin, Name, _).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% trait_options(level(4), test, 1 from [1 from Feats, 1 from [2 from AbiPlusOne, 1 from AbiPlusTwo]]) :-
+%     findall(Ability+1, ability(Ability), AbiPlusOne),
+%     findall(Ability+2, ability(Ability), AbiPlusTwo),
+%     findall(feat(Feat), feat_option(Feat), Feats).
+% bad_trait_choice(level(4), test, Asis, asis_sum_up_to(Sum)) :-
+%     forall(member(X,Asis), X = _+_),
+%     findall(X, member(_+X, Asis), Xs),
+%     sumlist(Xs, Sum),
+%     Sum \= 2.
+% 
+% choose_traits(level(4), test, [dex+3]).
+% choose_traits(level(4), test, [dex+1,str+1]).
+% choose_traits(level(4), test, [feat(alert)]).
+
