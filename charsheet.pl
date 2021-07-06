@@ -6,7 +6,7 @@
     problem/2,
     initial_class_base_hp/1,
     initial_class_base_hp/2,
-    spell_known/2,
+    spell_known/5,
     todo/1.
 
 :- op(650, xfx, from).
@@ -20,7 +20,7 @@
 :- [race].
 :- [feats].
 :- [skills].
-:- [spells].
+:- [spellcasting].
 :- [leveling].
 :- [options].
 :- [items].
@@ -75,7 +75,7 @@ ability_max(Ability, 20) :- ability(Ability).
 % Item effects are TODO.
 naked_lvl1_ability(Ability, Score) :-
     base_ability(Ability, Base),
-    findall(Term, racial_abi(Ability+Term), Racial),
+    findall(Term, racial_asi(Ability+Term), Racial),
     sumlist([Base|Racial], Score).
 ability_after_levelup_asis(Ability, Score) :-
     level(Level),
@@ -97,7 +97,7 @@ ability(Ability, Score) :-
 % Not allowed to exceed 20.
 %natural_ability(Ability, Score) :-
 %    base_ability(Ability, Base),
-%    findall(Term, racial_abi(Ability+Term), Racial),
+%    findall(Term, racial_asi(Ability+Term), Racial),
 %    findall(Term, levelup_abi(_, Ability+Term), Levelup),
 %    append([[Base], Racial, Levelup], All),
 %    sumlist(All, Score).
@@ -125,7 +125,7 @@ ability_mod(Abil, Mod) :-
 % Size, speed, ...
 size(Size) :-
     race(Race),
-    racial_size(Race, Size).
+    race_size(Race, Size).
 
 % Armor class.
 ac(AC) :- trait(natural_armor(AC)), !.

@@ -1,4 +1,5 @@
 :- discontiguous
+       race/1,
        gain_level/3,
        choose_subclass/2,
        pick_feat/2,
@@ -49,13 +50,13 @@ choose_traits(subclass(druid:3,land), circle_spell, [spell(hold_person)]).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 4
 gain_level(4, druid, hp_avg).
-choose_traits(level(4), asi_or_feat, [str+1, dex+1]).
+choose_traits(class(druid:4), asi_or_feat, [str+1, dex+1]).
 %pick_feat(4, alert).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 5
 gain_level(5, druid, hp_avg).
-choose_traits(subclass(druid:5,land), circle_spell, [spell(slow)]).
+%choose_traits(subclass(druid:5,land), circle_spell, [spell(slow)]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 6

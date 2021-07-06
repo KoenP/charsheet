@@ -1,0 +1,6 @@
+- spellcasting
+  - racial cantrips
+  - druid spell_known/5 logic veralgemenen
+  - gekende spells filteren uit learn_spell lijstjes
+  - html crawlen voor ruwe spell data
+- html genereren

@@ -1,4 +1,5 @@
-racial_size(tortle, medium).
+race_size(tortle, medium).
+race_base_speed(tortle, 30).
 
 racial_trait(tortle, str+2).
 racial_trait(tortle, wis+1).

@@ -1,0 +1,36 @@
+* Spells
+
+Spells can be known from multiple sources, which affects how they work.
+- Your class spell repository, ie wizard spells for a wizard, cleric spells for a cleric. You use the class' spellcasting modifier for these spells (int for wizard, wis for druid, etc).
+- From your race, for example:
+  - high elves can pick a wizard cantrip and cast it with int modifier
+  - frost elves learn produce flame cantrip (l1), goodberry once per day (l3), locate animals or plants once per day; all use wis as modifier
+  - highborn elves can cast some cantrips once per day
+- From your class, but not necessarily your class repository, and not necessarily consuming spell class spell slots.
+  - Eldritch knights learn wizard spells, but use their own spell slots.
+  - Pact of the tome warlock gets three cantrips from any class which can be cast at will, and they are treated as warlock spells. AFAIK for cantrips "being treated as warlock spells" simply means they use cha modifier.
+  - In general, warlocks can learn spells from eldritch invocations, which needn't be warlock spells.
+    - some of these can be cast at will
+    - some use warlock spell slots, but can only be cast once per long rest
+    - some can be cast once per long rest without using a warlock spell slot
+    - armor of lies invocation gives "cast mirror image" at wil, without expending a spell slot _and_ without material components (there are several of these invocations)
+      
+A known spell has
+- its unique name
+- an origin, or a "list" it's part of (for instance, wizard:lvl, wizard:transcribed, druid, eldritch_invocation(...))
+- a modifier (int, wis, cha, ...)
+- a "prepared" status: either it is always available, or it has to be prepared
+- optionally a resource it consumes
+- overrides: properties of the spell that we wish to set to a different value
+  
+** Cantrips
+Cantrip spells can be
+- 
+  
+** Level 1 and above
+Non-cantrip spells can be
+- learnable, which means you have spell slots for this spell level and class
+- known, which means they can be prepared
+  - some classes know all their learnable spells automatically
+- prepared, which means they can be casted if spell slots are available
+  

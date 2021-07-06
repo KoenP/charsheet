@@ -11,7 +11,7 @@ problem(gain_level, not_contiguous(Levels)) :-
 
 level(Level) :-
     findall(L, gain_level(L,_,_), Levels),
-    max_member(Level, Levels).
+    max_member(Level, [1|Levels]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Ability score increases and feats.
@@ -24,10 +24,9 @@ levelup_asi(Level, Ability+Increment) :-
     trait(choose_traits(level(Level), asi_or_feat), Ability+Increment).
 
 % Describe the valid options for an asi or feat.
-trait_options(level(Level), asi_or_feat, 1 from [2 from PlusOne, 1 from PlusTwo, 1 from Feats]) :-
-    level(CharLevel),
+class_trait_options(Class:Level, asi_or_feat, 1 from [2 from PlusOne, 1 from PlusTwo, 1 from Feats]) :-
     ability_score_increase_level(Level),
-    Level =< CharLevel,
+    matching_class_level(Class:Level),
     findall(Ability+1, asi_option(Level, Ability+1), PlusOne),
     findall(Ability+2, asi_option(Level, Ability+2), PlusTwo),
     findall(feat(Feat), feat_option(Feat), Feats).

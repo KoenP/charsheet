@@ -1,7 +1,7 @@
 :- multifile
+       spell_class/2,
        choose_subclass_level/2,
        spell_available/1,
-       spell_known/1,
        class_option/1,
        class_trait/2,
        class_trait_options/3,
@@ -13,6 +13,8 @@
        gain_spell_slots/3.
 
 :- [classes/druid].
+:- [classes/fighter].
+:- [classes/wizard].
 
 % Compute class level.
 class(Class) :-
@@ -67,13 +69,16 @@ trait_options(subclass(Class:Level, Subclass), Name, Spec) :-
     
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Some class-generic spellcasting stuffs.
+% Some class-generic spellcasting stuff.
 
 % Query your class spells.
 class_cantrip(Class, Cantrip) :- 
     spell(Cantrip, level, 0),
-    spell(Cantrip, class, Class).
+    spell_class(Cantrip, Class).
 
 % PC knows all cantrips that you explicitly selected.
-spell_known(Class, Cantrip) :-
-    chosen_trait(class(Class:_), cantrip, Cantrip).
+spell_known(Spell, Class, Ability, always_available, at_will) :-
+    class(Class),
+    trait(learn_spell(Class, Spell)),
+    spellcasting_ability(Class, Ability),
+    spell(Spell, level, 0).

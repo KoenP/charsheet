@@ -1,3 +1,5 @@
+:- [druid/spells].
+
 class_option(druid).
 hd_per_level(druid, 1 d 8).
 initial_class_base_hp(druid, 8).
@@ -28,14 +30,14 @@ class_trait(druid:1, spellcasting_focus(druid)).
 language(druidic) ?= "You know Druidic, the Secret language of druids. You can speak the language and use it to leave hidden messages. You and others who know this language automatically spot such a Message. Others spot the message's presence with a successful DC 15 Wisdom (Perception) check but can't decipher it without magic.".
 
 class_trait_options(druid:1, skills, 2 from Proficiencies) :-
-    Proficiencies = [ proficient(arcana)
-                    , proficient(animal_handling)
-                    , proficient(insight)
-                    , proficient(medicine)
-                    , proficient(nature)
-                    , proficient(perception)
-                    , proficient(religion)
-                    , proficient(survival)
+    Proficiencies = [ skill(arcana)
+                    , skill('animal handling')
+                    , skill(insight)
+                    , skill(medicine)
+                    , skill(nature)
+                    , skill(perception)
+                    , skill(religion)
+                    , skill(survival)
                     ].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -43,10 +45,10 @@ class_trait_options(druid:1, skills, 2 from Proficiencies) :-
 
 % Cantrips.
 class_trait_options(druid:1, cantrip, 2 from Cantrips) :-
-    findall(spell(Cantrip), class_cantrip(druid, Cantrip), Cantrips).
+    findall(learn_spell(druid, Cantrip), class_cantrip(druid, Cantrip), Cantrips).
 class_trait_options(druid:Level, cantrip, 1 from Cantrips) :-
     member(Level, [4, 10]),
-    findall(spell(Cantrip), class_cantrip(druid, Cantrip), Cantrips).
+    findall(learn_spell(druid, Cantrip), class_cantrip(druid, Cantrip), Cantrips).
 
 % Spell slot table.
 gain_spell_slots(druid, spell_level(1), [1,1,2,3]).
@@ -61,10 +63,10 @@ gain_spell_slots(druid, spell_level(9), [17]).
 
 % Druids "know" (= can prepare) all non-cantrip druid spells for which
 % they have slots.
-spell_known(druid, SpellName) :-
+spell_known(SpellName, druid, wis, when_prepared, spell_slot) :-
     spell_learnable(druid, SpellName),
-    spell(SpellName, level, SpellLevel),
-    SpellLevel > 0.
+    spell(SpellName, level, Level),
+    Level > 0.
 
 % Calculate how many spells a druid can prepare.
 max_prepared_spells(druid, N) :-
@@ -104,7 +106,7 @@ archdruid ?= "At 20th level, you can use your Wild Shape an unlimited number of 
 subclass_option(druid, land).
 
 subclass_trait_options(druid:2, land, extra_cantrip, 1 from Cantrips) :-
-    findall(spell(Cantrip), class_cantrip(druid, Cantrip), Cantrips).
+    findall(learn_spell(druid, Cantrip), class_cantrip(druid, Cantrip), Cantrips).
 
 % TODO add short rest effect.
 subclass_trait(druid:2, land, natural_recovery).
@@ -112,6 +114,7 @@ natural_recovery ?= "Starting at 2nd level, you can regain some of your magical 
 
 For example, when you are a 4th-level druid, you can recover up to two levels worth of spell slots. You can recover either a 2nd-level slot or two 1st-level slots.".
 
+% Learn circle spells.
 subclass_trait_options(druid:3, land, land_type, 1 from Types) :-
     findall(druid_land_type(Type), druid_land_type_option(Type), Types).
 
@@ -120,6 +123,10 @@ subclass_trait_options(druid:Level, land, circle_spell, 1 from Spells) :-
     druid_land_type(Type),
     druid_circle_spells_at_level(Type, Level, Spells).
 
+spell_known(Spell, druid, wis, always_available, spell_slot) :-
+    trait(learn_circle_spell(Spell)).
+
+% Land's stride.
 subclass_trait(druid:6, land, lands_stride).
 lands_stride ?= "Starting at 6th level, moving through nonmagical difficult terrain costs you no extra movement. You can also pass through nonmagical plants without being slowed by them and without taking damage from them if they have thorns, spines, or a similar hazard.
 
@@ -142,18 +149,11 @@ druid_land_type_option(grassland).
 druid_land_type_option(mountain).
 druid_land_type_option(swamp).
 
-druid_circle_spells_at_level(arctic, 3, [spell(hold_person), spell(spike_growth)]).
-druid_circle_spells_at_level(arctic, 5, [spell(sleet_storm), spell(slow)]).
-druid_circle_spells_at_level(arctic, 7, [spell(freedom_of_movement), spell(ice_storm)]).
-druid_circle_spells_at_level(arctic, 9, [spell(commune_with_nature), spell(cone_of_cold)]).
-
-%druid_circle_spell(arctic:3, hold_person).
-%druid_circle_spell(arctic:3, spike_growth).
-%druid_circle_spell(arctic:5, sleet_storm).
-%druid_circle_spell(arctic:5, slow).
-%druid_circle_spell(arctic:7, freedom_of_movement).
-%druid_circle_spell(arctic:7, ice_storm).
-%druid_circle_spell(arctic:9, commune_with_nature).
-%druid_circle_spell(arctic:9, cone_of_cold).
-
-%subclass_trait(druid)
+druid_circle_spells_at_level(arctic, 3, [learn_circle_spell('hold person'),
+                                         learn_circle_spell('spike growth')]).
+druid_circle_spells_at_level(arctic, 5, [learn_circle_spell('sleet storm'),
+                                         learn_circle_spell(slow)]).
+druid_circle_spells_at_level(arctic, 7, [learn_circle_spell('freedom of movement'),
+                                         learn_circle_spell('ice storm')]).
+druid_circle_spells_at_level(arctic, 9, [learn_circle_spell('commune with nature'),
+                                         learn_circle_spell('cone of cold')]).
