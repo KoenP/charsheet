@@ -33,7 +33,8 @@ choose_feat(_,_) :- false.
 increase_ability_score(_,_) :- false.
 equipped(_) :- false.
 
-choose_traits(class(druid:1), cantrip, [spell(shillelagh), spell(guidance)]).
+choose_traits(class(druid:1), cantrip, [learn_spell(druid, shillelagh), learn_spell(druid, guidance)]).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 2
@@ -45,7 +46,7 @@ choose_subclass(druid, land).
 % Level 3
 gain_level(3, druid, hp_avg).
 choose_traits(subclass(druid:3,land), land_type, [druid_land_type(arctic)]).
-choose_traits(subclass(druid:3,land), circle_spell, [spell(hold_person)]).
+choose_traits(subclass(druid:3,land), circle_spell, [learn_circle_spell('hold person')]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 4
@@ -61,3 +62,11 @@ gain_level(5, druid, hp_avg).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 6
 gain_level(6, druid, hp_avg).
+
+
+
+gain_level(7, wizard, hp_avg).
+gain_level(8, wizard, hp_avg).
+gain_level(9, druid, hp_avg).
+gain_level(10, druid, hp_avg).
+choose_traits(class(druid:8), asi_or_feat, [str+2]).

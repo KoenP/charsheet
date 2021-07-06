@@ -2,7 +2,7 @@ base_race_option(elf).
 
 race_size(elf, medium).
 race_base_speed(elf, 30).
-racial_spellcasting_ability(int).
+racial_spellcasting_ability(int). % Ability to use for the racial cantrip.
 
 racial_trait(elf, dex+2).
 racial_trait(elf, sense(darkvision(60))).

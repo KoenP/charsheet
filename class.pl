@@ -15,6 +15,10 @@
 :- [classes/druid].
 :- [classes/fighter].
 :- [classes/wizard].
+   
+:- table
+   class_level/1,
+   class_level/2.
 
 % Compute class level.
 class(Class) :-
@@ -22,6 +26,9 @@ class(Class) :-
 
 class_level(Class:ClassLevel) :-
     level(CharLevel),
+    class_level(CharLevel, Class:ClassLevel).
+:- table class_level/2.
+class_level(CharLevel, Class:ClassLevel) :-
     class_option(Class),
     findall(L, (initial_class(Class) ; (between(2,CharLevel,L), gain_level(L,Class,_))), Levels),
     length(Levels, ClassLevel),

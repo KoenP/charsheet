@@ -3,6 +3,7 @@
        race_base_speed/2,
        base_race/1,
        racial_trait/2,
+       racial_spellcasting_ability/1,
        subrace/2.
 
 :- [races/elf].

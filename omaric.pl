@@ -26,17 +26,6 @@ choose_traits(race(high_elf), cantrip, [learn_spell(high_elf, 'fire bolt')]).
 choose_traits(class(druid:1), cantrip, [learn_spell(druid, shillelagh), learn_spell(druid,guidance)]).
 choose_traits(class(druid:1), skills, [skill('animal handling'), skill(nature)]).
 
-%learn_spell(high_elf, 'Fire Bolt').
-%learn_spell(druid, 'Shillelagh').
-
-%spell_known('Fire Bolt', high_elf, int, always_available, at_will).
-%spell_known('Shillelagh', druid, wis, always_available, at_will).
-
-    
-
-
-%choose_traits(high_elf, cantrip, [learn_spell('Fire Bolt', wizard)])
-
 gain_level(2, druid, hp_avg).
 choose_subclass(druid, land).
 choose_traits(subclass(druid:2,land), extra_cantrip, [learn_spell(druid, 'druidcraft')]).

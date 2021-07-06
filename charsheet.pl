@@ -9,11 +9,14 @@
     spell_known/5,
     todo/1.
 
+
 :- op(650, xfx, from).
 :- op(1000, xfx, ?=).
 
 :- multifile
        (?=)/2.
+
+:- use_module(library(tabling)).
 
 :- [dice].
 :- [class].
@@ -70,8 +73,8 @@ ability_max(Ability, 20) :- ability(Ability).
 
 % Ability scores are calculated in layers.
 % The first layer is base ability + racial bonuses ("naked level 1 ability").
-% Then we add abis from level-up, in-order. The first abi that causes an ability score to exceed the maximum (normally 20) raises a problem (this is handled in leveling.pl).
-% After that we add abis from feats. If these increases make a score go over 20, it is simply ignored instead of raising an error. TODO: maybe add a "note" or something?
+% Then we add asis from level-up, in-order. The first asi that causes an ability score to exceed the maximum (normally 20) raises a problem (this is handled in leveling.pl).
+% After that we add asis from feats. If these increases make a score go over 20, it is simply ignored instead of raising an error. TODO: maybe add a "note" or something?
 % Item effects are TODO.
 naked_lvl1_ability(Ability, Score) :-
     base_ability(Ability, Base),
