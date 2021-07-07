@@ -52,6 +52,14 @@ weapon_ability_modifier(Weapon, dex, Mod) :-
     Range \= melee,
     ability_mod(dex, Mod).
 
+weapon_proficiency_bonus(Weapon, ProfBon) :-
+    plus_zero(Weapon, BaseWeapon+_),
+    trait(weapon(BaseWeapon)),
+    !,
+    proficiency_bonus(ProfBon).
+weapon_proficiency_bonus(_, 0).
+
+
 snd(_:Y, Y).
 max_member_by(_, X, [X]).
 max_member_by(Goal, X, [X|Ys]) :-
@@ -65,10 +73,10 @@ max_member_by(Goal, Y, [X|Ys]) :-
     call(Goal, Y, Y1),
     Y1 > X1.
 
-plus_zero(Weapon+Enchantment, Weapon+Enchantment) :-
-    Enchantment \= 0.
 plus_zero(Weapon, Weapon+0) :-
-    Weapon \= _ + _.
+    Weapon \= _ + _,
+    !.
+plus_zero(Weapon+Enchantment, Weapon+Enchantment).
 
 % Weapon stats.
 weapon(scimitar, melee, slashing, 1 d 6, [finesse, light]).

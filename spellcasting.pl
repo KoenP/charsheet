@@ -28,12 +28,21 @@ spell_slots(Class, SpellLevel, Slots) :-
 % This code will then make sure this shows up on the list of attacks.
 attack(Spell, Range, DamageType, ToHit, Damage, Notes) :-
     spell_at_will_attack(Spell, Range, DamageType, DamageDice, Notes),
-    spell_known(Spell, _, Ability, always_available, at_will),
+    (spell_known(Spell, _, Ability, always_available, at_will)
+    ; Spell = Spell1:_, spell_known(Spell1, _, Ability, always_available, at_will)),
     ability_mod(Ability, Mod),
     proficiency_bonus(ProfBon),
     ToHit is Mod + ProfBon,
     spell_attack_damage(Mod, DamageDice, Damage).
-spell_attack_damage(Mod, Dice + mod, Dice + Mod).
+spell_attack_damage(Mod, Base + mod, BaseDmg + ExtraAndMod) :-
+    spell_attack_damage(Mod, Base, Dmg),
+    plus_zero(Dmg, BaseDmg + ExtraDmg),
+    ExtraAndMod is ExtraDmg + Mod.
+spell_attack_damage(Mod, Base + Extra, BaseDmg + ExtraAndMod) :-
+    number(Extra),
+    spell_attack_damage(Mod, Base, Dmg),
+    plus_zero(Dmg, BaseDmg + ExtraDmg),
+    ExtraAndMod is ExtraDmg + Extra.
 spell_attack_damage(_, X d Y, X d Y).
     
 

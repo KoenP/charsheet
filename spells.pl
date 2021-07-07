@@ -39,8 +39,17 @@ spell('shillelagh',
           duration: minutes(1),
           info: "The wood of a club or quarterstaff you are holding is imbued with nature's power. For the duration, you can use your spellcasting ability instead of Strength for the attack and damage rolls of melee attacks using that weapon, and the weapon's damage die becomes a d8. The weapon also becomes magical, if it isn't already. The spell ends if you cast it again or if you let go of the weapon."
       )).
-spell_at_will_attack(shillelagh, melee, bludgeoning, 1 d 8 + mod, [magical]).
-
+attack(shillelagh:Weapon, melee, bludgeoning, ToHit , 1 d 8 + DamageBonus,
+       [magical, when_spell_active(shillelagh)]) :-
+    spell_known(shillelagh, _, Ability, always_available, at_will),
+    have(Weapon),
+    plus_zero(Weapon, BaseWeapon+Enchantment),
+    member(BaseWeapon, [quarterstaff, club]),
+    ability_mod(Ability, AbiMod),
+    weapon_proficiency_bonus(BaseWeapon, ProfBon),
+    ToHit is Enchantment + ProfBon + AbiMod,
+    DamageBonus is Enchantment + AbiMod.
+    
 spell('guidance',
       properties(
           school: divination,
