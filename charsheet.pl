@@ -1,4 +1,5 @@
 :- multifile
+    attack/6,
     trait/2,
     trait_options/3,
     trait_bad_options/5,
@@ -8,7 +9,6 @@
     initial_class_base_hp/2,
     spell_known/5,
     todo/1.
-
 
 :- op(650, xfx, from).
 :- op(1000, xfx, ?=).
@@ -121,6 +121,7 @@ ability(Ability, Score) :-
 mf(Val, Mod) :-
     floor( (Val-10) / 2, Mod ).
 
+:- table ability_mod/2.
 ability_mod(Abil, Mod) :-
     ability(Abil, Val),
     mf(Val, Mod).
@@ -152,3 +153,6 @@ initiative_mod(Init) :-
 calc_bonus(Level, Bonus) :- Bonus is 2 + div(Level-1, 4).
 proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).
 
+re :-
+    abolish_all_tables,
+    make.

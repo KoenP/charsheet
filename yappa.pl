@@ -65,8 +65,8 @@ gain_level(6, druid, hp_avg).
 
 
 
-gain_level(7, wizard, hp_avg).
-gain_level(8, wizard, hp_avg).
-gain_level(9, druid, hp_avg).
-gain_level(10, druid, hp_avg).
-choose_traits(class(druid:8), asi_or_feat, [str+2]).
+%gain_level(7, wizard, hp_avg).
+%gain_level(8, wizard, hp_avg).
+%gain_level(9, druid, hp_avg).
+%gain_level(10, druid, hp_avg).
+%choose_traits(class(druid:8), asi_or_feat, [str+2]).

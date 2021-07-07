@@ -1,4 +1,5 @@
 :- discontiguous
+       spell_at_will_attack/5,
        spell/2.
 
 % Cantrips.
@@ -10,6 +11,9 @@ spell('fire bolt',
           range: 120,
           components: [v, s],
           duration: instantaneous)).
+spell_at_will_attack('fire bolt', 120, fire, Scale d 10, []) :-
+    cantrip_scale(Scale).
+    
 
 spell('druidcraft',
       properties(
@@ -35,6 +39,7 @@ spell('shillelagh',
           duration: minutes(1),
           info: "The wood of a club or quarterstaff you are holding is imbued with nature's power. For the duration, you can use your spellcasting ability instead of Strength for the attack and damage rolls of melee attacks using that weapon, and the weapon's damage die becomes a d8. The weapon also becomes magical, if it isn't already. The spell ends if you cast it again or if you let go of the weapon."
       )).
+spell_at_will_attack(shillelagh, melee, bludgeoning, 1 d 8 + mod, [magical]).
 
 spell('guidance',
       properties(
