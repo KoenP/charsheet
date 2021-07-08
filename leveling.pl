@@ -61,6 +61,7 @@ bad_trait_choice(class(Class:ClassLevel), asi_or_feat, Choice, ability_score_exc
     sumlist([Score|Incrs], Sum),
     Sum > Max.
 bad_trait_choice(class(_), asi_or_feat, Choice, asis_dont_add_to_two) :-
+    \+ member(feat(_), Choice),
     findall(Incr, member(_+Incr, Choice), Incrs),
     \+ sumlist(Incrs, 2).
 

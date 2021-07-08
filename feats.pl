@@ -13,8 +13,8 @@ trait(feat(Feat), Trait) :-
 
 feat(Feat) :-
     feat(_, Feat).
-feat(Level, Feat) :-
-    valid_trait_choice(level(Level), abi_or_feat, [feat(Feat)]).
+feat(ClassLevel, Feat) :-
+    valid_trait_choice(class(ClassLevel), asi_or_feat, [feat(Feat)]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % List of feats.

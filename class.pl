@@ -38,6 +38,8 @@ matching_class_level(Class:ClassLevel) :-
     class_level(Class:CharClassLevel),
     between(1, CharClassLevel, ClassLevel).
 
+class_levels(Classes) :- findall(Class, class_level(Class), Classes).
+
 % Query the PC's current (sub)class(es).
 subclass(Class, Subclass) :-
     chosen_trait(class(Class:_), subclass, subclass(Class, Subclass)).

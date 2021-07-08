@@ -1,4 +1,5 @@
 :- multifile
+    have/1,
     attack/6,
     trait/2,
     trait_options/3,
@@ -28,6 +29,7 @@
 :- [options].
 :- [items].
 :- [shorthands].
+:- [html].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Traits.
@@ -59,6 +61,15 @@ hp_term_for_level(CharLevel, Term) :-
 hp_die(hp_avg, Die, HP) :-
     die_avg(Die, HP).
 hp_die(hp_rolled(HP), _, HP).
+
+hit_dice(HD) :-
+    findall(CHD, hit_dice(_, CHD), CHDs),
+    list_to_sum(CHDs, Sum),
+    simplify_dice_sum(Sum, HD).
+hit_dice(Class, M d X) :-
+    class_level(Class:Level),
+    hd_per_level(Class, N d X),
+    M is N * Level.
 
 % Abilities and modifiers.
 ability(str).
@@ -130,6 +141,17 @@ ability_mod(Abil, Mod) :-
 size(Size) :-
     race(Race),
     race_size(Race, Size).
+
+speed(Speed) :-
+    race(Race),
+    race_base_speed(Race, BaseSpeed),
+    findall(Term, trait(speed+Term), Terms),
+    sum_list([BaseSpeed|Terms], Speed).
+
+% Passive perception.
+passive_perception(PP) :-
+    skill(perception, P),
+    PP is 10 + P.
 
 % Armor class.
 ac(AC) :- trait(natural_armor(AC)), !.

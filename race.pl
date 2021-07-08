@@ -30,6 +30,10 @@ race(Race) :-
     subrace(Race, Subrace),
     race(Subrace).
 
+most_specific_race(Race) :-
+    race(Race),
+    \+ subrace(_, Race).
+
 % TODO for now assuming that subraces only go one level deep, perhaps
 % I should extend this to support arbitrarily deep nesting.
 problem(race([Race1,Race2]), multiple_races) :-

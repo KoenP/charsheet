@@ -2,12 +2,11 @@
   - racial cantrips
   - druid spell_known/5 logic veralgemenen
   - gekende spells filteren uit learn_spell lijstjes
-  - html crawlen voor ruwe spell data
+  - json parsen voor ruwe spell data
   - dice rolls
-- lijstje van aanvallen compileren
-  - van equipment
-  - van spells
-  - ...
 - html genereren
 
 - alternatief voor trait_options: een waarbij je niet rechtstreeks je traits kiest maar opties die expanded worden naar traits, om af te raken van "trait pollution", zoals het learn_spell trait
+
+- leesbare error messages
+- armor class  

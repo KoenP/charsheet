@@ -12,6 +12,8 @@ choose_traits(_,_,_) :- false.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1
+name('Yappa').
+
 initial_class(druid).
 
 race(tortle).
@@ -34,6 +36,7 @@ increase_ability_score(_,_) :- false.
 equipped(_) :- false.
 
 choose_traits(class(druid:1), cantrip, [learn_spell(druid, shillelagh), learn_spell(druid, guidance)]).
+choose_traits(class(druid:1), skills, [skill(perception), skill(nature)]).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,7 +54,7 @@ choose_traits(subclass(druid:3,land), circle_spell, [learn_circle_spell('hold pe
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 4
 gain_level(4, druid, hp_avg).
-choose_traits(class(druid:4), asi_or_feat, [str+1, dex+1]).
+choose_traits(class(druid:4), asi_or_feat, [feat(alert)]).
 %pick_feat(4, alert).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -65,7 +68,7 @@ gain_level(6, druid, hp_avg).
 
 
 
-%gain_level(7, wizard, hp_avg).
+gain_level(7, wizard, hp_avg).
 %gain_level(8, wizard, hp_avg).
 %gain_level(9, druid, hp_avg).
 %gain_level(10, druid, hp_avg).
