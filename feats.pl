@@ -12,6 +12,8 @@ trait(feat(Feat), Trait) :-
     feat_trait(Feat, Trait).
 
 feat(Feat) :-
+    trait(just_because, feat(Feat)).
+feat(Feat) :-
     feat(_, Feat).
 feat(ClassLevel, Feat) :-
     valid_trait_choice(class(ClassLevel), asi_or_feat, [feat(Feat)]).
@@ -22,8 +24,7 @@ feat_option(alert).
 feat(alert) ?= "Always on the lookout for danger, you gain the following benefits:
     - You can’t be surprised while you are conscious.
     - You gain a +5 bonus to initiative.
-    - Other creatures don’t gain advantage on attack rolls against you as a result of being hidden from you.
-".
+    - Other creatures don’t gain advantage on attack rolls against you as a result of being hidden from you.".
 feat_trait(alert, add_initiative(5)).
 
 feat_option(durable).

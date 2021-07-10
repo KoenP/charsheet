@@ -9,6 +9,7 @@
 
 choose_traits(_,_,_) :- false.
 
+have(quarterstaff+1).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1
@@ -25,11 +26,6 @@ base_ability(int, 16).
 base_ability(wis, 18).
 base_ability(cha, 8).
 
-%pick_trait(class(druid:1), druid_cantrips, shillelagh).
-%pick_trait(class(druid:1), druid_cantrips, guidance).
-% TODO hier zat ik
-
-% pick_trait(_, _, _) :- false.
 choose_subclass(_,_) :- false.
 choose_feat(_,_) :- false.
 increase_ability_score(_,_) :- false.
@@ -69,6 +65,9 @@ gain_level(6, druid, hp_avg).
 
 
 gain_level(7, wizard, hp_avg).
+
+trait(just_because, feat(durable)).
+
 %gain_level(8, wizard, hp_avg).
 %gain_level(9, druid, hp_avg).
 %gain_level(10, druid, hp_avg).

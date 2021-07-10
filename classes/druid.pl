@@ -4,8 +4,8 @@ class_option(druid).
 hd_per_level(druid, 1 d 8).
 initial_class_base_hp(druid, 8).
 max_hp_per_level(druid, 1 d 8).
-saving_throw(druid, int).
-saving_throw(druid, wis).
+class_saving_throw(druid, int).
+class_saving_throw(druid, wis).
 choose_subclass_level(druid, 2).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -63,9 +63,11 @@ gain_spell_slots(druid, spell_level(9), [17]).
 
 % Druids "know" (= can prepare) all non-cantrip druid spells for which
 % they have slots.
+% We want to avoid duplicating the spells we know from druid circle though.
 spell_known(SpellName, druid, wis, when_prepared, spell_slot) :-
     spell_learnable(druid, SpellName),
     spell(SpellName, level, Level),
+    \+ trait(learn_circle_spell(SpellName)),
     Level > 0.
 
 % Calculate how many spells a druid can prepare.

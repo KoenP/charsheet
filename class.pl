@@ -9,7 +9,7 @@
        subclass_trait_options/4,
        hd_per_level/2,
        max_hp_per_level/2,
-       saving_throw/2,
+       class_saving_throw/2,
        gain_spell_slots/3.
 
 :- [classes/druid].
@@ -76,6 +76,10 @@ trait_options(subclass(Class:Level, Subclass), Name, Spec) :-
     subclass_trait_options(Class:Level, Subclass, Name, Spec),
     subclass(Class, Subclass).
     
+% PC is proficient in the saving throws of their initial class.
+saving_throw_prof(Ability) :-
+    initial_class(Class),
+    class_saving_throw(Class, Ability).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Some class-generic spellcasting stuff.

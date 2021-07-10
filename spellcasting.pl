@@ -22,6 +22,11 @@ spell_slots(Class, SpellLevel, Slots) :-
     length(Xs, Slots),
     Slots > 0.
 
+spell_slot_source(Source) :-
+    findall(S, spell_slots(S, _, _), Sources),
+    list_to_set(Sources, SourcesSet),
+    member(Source, SourcesSet).
+
 % The predicate spell_at_will_attack/5 can be asserted for a spell
 % (usually a cantrip) that in some way lets the PC attack at will
 % (directly, as with fire bolt, or indirectly, as with shillelagh).
@@ -44,7 +49,20 @@ spell_attack_damage(Mod, Base + Extra, BaseDmg + ExtraAndMod) :-
     plus_zero(Dmg, BaseDmg + ExtraDmg),
     ExtraAndMod is ExtraDmg + Extra.
 spell_attack_damage(_, X d Y, X d Y).
-    
+
+spell_to_hit(Spell, Source, ToHit) :-
+    proficiency_bonus(ProfBon),
+    spell_makes_spell_attack(Spell),
+    spell_known(Spell, Source, Ability, _, _),
+    ability_mod(Ability, Mod),
+    ToHit is ProfBon + Mod.
+
+spell_dc(Spell, Source, DC) :-
+    proficiency_bonus(ProfBon),
+    spell_has_dc(Spell),
+    spell_known(Spell, Source, Ability, _, _),
+    ability_mod(Ability, Mod),
+    DC is 8 + ProfBon + Mod.
 
 % Spells can be
 % - learnable (= you have spell slots for this spell level and class)
@@ -91,6 +109,11 @@ cantrip_scale(Scale) :-
     ; Level < 17 -> !, Scale = 3
     ; Scale = 4
     ).
+
+% Some custom display rules.
+custom_display_rule(when_spell_active(S), Str) :-
+    atomics_to_string(['when ', S, ' is active'], Str).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Describe spell.

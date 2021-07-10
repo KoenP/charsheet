@@ -1,5 +1,7 @@
 :- discontiguous
        spell_at_will_attack/5,
+       spell_makes_spell_attack/1,
+       spell_has_dc/1,
        spell/2.
 
 % Cantrips.
@@ -11,6 +13,7 @@ spell('fire bolt',
           range: 120,
           components: [v, s],
           duration: instantaneous)).
+spell_makes_spell_attack('fire bolt').
 spell_at_will_attack('fire bolt', 120, fire, Scale d 10, []) :-
     cantrip_scale(Scale).
     
@@ -25,9 +28,6 @@ spell('druidcraft',
           duration: instantaneous,
           info: "Whispering to the spirits of nature, you create one of the following effects within range: * You create a tiny, harmless sensory effect that predicts what the weather will be at your location for the next 24 hours. The effect might manifest as a golden orb for clear skies, a cloud for rain, falling snowflakes for snow, and so on. This effect persists for 1 round. * You instantly make a flower blossom, a seed pod open, or a leaf bud bloom. * You create an instantaneous, harmless sensory effect, such as falling leaves, a puff of wind, the sound of a small animal, or the faint odor of skunk. The effect must fit in a 5-foot cube. * You instantly light or snuff out a candle, a torch, or a small campfire."
       )).
-
-
-
 
 spell('shillelagh',
       properties(
@@ -79,3 +79,16 @@ spell('moonbeam',
           range: 120,
           components: [v,s,m("several seeds of any moonseed plant and a piece of opalescent feldspar")],
           duration: concentration(minutes(1)))).
+
+spell('hold person',
+      properties(
+          school: enchantment,
+          level: 2,
+          casting_time: action,
+          range: 60,
+          components: [v,s,m("a small, straight piece of iron")],
+          duration: concentration(minutes(1)),
+          info: "Choose a humanoid that you can see within range. The target must succeed on a Wisdom saving throw or be paralyzed for the duration. At the end of each of its turns, the target can make another Wisdom saving throw. On a success, the spell ends on the target.
+
+At Higher Levels. When you cast this spell using a spell slot of 3rd level or higher, you can target one additional humanoid for each slot level above 2nd. The humanoids must be within 30 feet of each other when you target them.")).
+spell_has_dc('hold person').

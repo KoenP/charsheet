@@ -11,18 +11,18 @@ trait(keen_senses, skill(perception)) :- trait(keen_senses).
 racial_trait(elf, fey_ancestry).
 
 
-subrace(elf, high_elf).
-subrace(elf, wood_elf).
+subrace(elf, 'high elf').
+subrace(elf, 'wood elf').
 
 
-racial_trait(high_elf, int+1).
-racial_trait(high_elf, weapon(longsword)).
-racial_trait(high_elf, weapon(shortsword)).
-racial_trait(high_elf, weapon(shortbow)).
-racial_trait(high_elf, weapon(longbow)).
+racial_trait('high elf', int+1).
+racial_trait('high elf', weapon(longsword)).
+racial_trait('high elf', weapon(shortsword)).
+racial_trait('high elf', weapon(shortbow)).
+racial_trait('high elf', weapon(longbow)).
 
-racial_trait_options(high_elf, cantrip, 1 from Cantrips) :-
-    findall(learn_spell(high_elf, Cantrip),
+racial_trait_options('high elf', cantrip, 1 from Cantrips) :-
+    findall(learn_spell('high elf', Cantrip),
             (spell_class(Cantrip, wizard), spell(Cantrip, level, 0)),
             Cantrips).
 

@@ -32,7 +32,7 @@ race(Race) :-
 
 most_specific_race(Race) :-
     race(Race),
-    \+ subrace(_, Race).
+    \+ subrace(Race, _).
 
 % TODO for now assuming that subraces only go one level deep, perhaps
 % I should extend this to support arbitrarily deep nesting.

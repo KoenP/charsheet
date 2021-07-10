@@ -9,6 +9,7 @@
     initial_class_base_hp/1,
     initial_class_base_hp/2,
     spell_known/5,
+    custom_display_rule/2,
     todo/1.
 
 :- op(650, xfx, from).
@@ -107,6 +108,16 @@ ability_after_feats(Ability, Score) :-
 ability(Ability, Score) :-
     ability_after_feats(Ability, Score).
 
+% Saving throws.
+saving_throw(Ability, ST) :-
+    saving_throw_prof(Ability),
+    proficiency_bonus(ProfBon),
+    ability_mod(Ability, Mod),
+    ST is Mod + ProfBon.
+saving_throw(Ability, Mod) :-
+    ability_mod(Ability, Mod),
+    \+ saving_throw_prof(Ability).
+
 % Ability score from base ability, race, abis and feats.
 % Not allowed to exceed 20.
 %natural_ability(Ability, Score) :-
@@ -177,4 +188,5 @@ proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).
 
 re :-
     abolish_all_tables,
-    make.
+    make,
+    out.

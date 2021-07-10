@@ -82,3 +82,6 @@ plus_zero(Weapon+Enchantment, Weapon+Enchantment).
 weapon(scimitar, melee, slashing, 1 d 6, [finesse, light]).
 weapon(quarterstaff, melee, bludgeoning, 1 d 6, [versatile(1 d 8)]).
 weapon(battleaxe, melee, slashing, 1 d 8, [versatile(1 d 10)]).
+
+% Some custom display rules.
+custom_display_rule(versatile(_), versatile).
