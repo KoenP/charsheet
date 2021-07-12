@@ -22,15 +22,16 @@ A known spell has
 - a "prepared" status: either it is always available, or it has to be prepared
 - optionally a resource it consumes
 - overrides: properties of the spell that we wish to set to a different value
-  
-** Cantrips
-Cantrip spells can be
-- 
-  
-** Level 1 and above
-Non-cantrip spells can be
-- learnable, which means you have spell slots for this spell level and class
-- known, which means they can be prepared
-  - some classes know all their learnable spells automatically
-- prepared, which means they can be casted if spell slots are available
-  
+- a list of effects, such as damage, statuses, ...; which may be changed from the original spell by external properties.
+
+** How do external sources affect spell properties?
+For example, a draconic origin sorcerer adds charisma bonus to one damage roll of a spell of matching type. An archdruid can cast all druid spells without components.  We don't want to encode these possibility in the spells themselves, we want to be able to derive this.
+
+To this end, we distinguish between the static properties of a spell (those you can find in the spell description in the book, which do include for example cantrip damage scaling), and dynamic properties of a spell.
+
+Static properties are stored in the predicates
+- spell/2 for the properties automatically parsed from the json file
+- spell/3 for those properties, plus some additional, manually asserted properties, such as
+    - spell('fire bolt', effects, [fire(Scale d 10)]).
+    - spell('fire bolt', spell_attacks, 1).
+

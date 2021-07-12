@@ -17,7 +17,7 @@ table {
 }
 table td {
     text-align: right;
-    padding: 8px;
+    padding: 6px;
     border: 1px solid lightgrey;
 }
 table th { 
@@ -43,7 +43,9 @@ table#spells tr:nth-child(1) {
 }
 table#spells tr{
     font-size: 12px;
-    height: 14px;
+}
+table#spells td{
+    padding: 0px;
 }
 table#spell_slots th {
     background-color: lightgrey;
