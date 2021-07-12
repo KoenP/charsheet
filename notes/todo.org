@@ -4,6 +4,7 @@
   - json parsen voor ruwe spell data
   - dice rolls
   - spell effects tonen
+  - spell targeting tonen
   - oorsprong van spells tonen
   - warlock eldritch invocation spells ondersteunen
 - html genereren

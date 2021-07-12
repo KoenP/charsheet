@@ -2,23 +2,28 @@
     have/1,
     attack/6,
     trait/2,
+    problem/2,
     trait_options/3,
     trait_bad_options/5,
     feature_options/4,
-    problem/2,
     initial_class_base_hp/1,
     initial_class_base_hp/2,
     spell_known/5,
     custom_display_rule/2,
     todo/1.
 
+:- table
+    problem/1,
+    problem/2,
+    trait/1,
+    trait/2,
+    spell_known/5.
+
 :- op(650, xfx, from).
 :- op(1000, xfx, ?=).
 
 :- multifile
        (?=)/2.
-
-:- use_module(library(tabling)).
 
 :- [dice].
 :- [class].

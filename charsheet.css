@@ -41,6 +41,10 @@ table#attacks tr:nth-child(1) {
 table#spells tr:nth-child(1) {
     background-color: lightgrey;
 }
+table#spells tr{
+    font-size: 12px;
+    height: 14px;
+}
 table#spell_slots th {
     background-color: lightgrey;
 }

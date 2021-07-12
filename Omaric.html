@@ -14,13 +14,13 @@
 
 <table style="padding: 4px">
 <tr><th>Race</th><td>high elf</td></tr>
-<tr><th>Class</th><td>wizard:4, druid:5</td></tr>
+<tr><th>Class</th><td>druid:5, wizard:4</td></tr>
 <tr><th>Level</th><td>9</td></tr>
 <tr><th>Max HP</th><td>43</td></tr>
 <tr><th>AC</th><td>13</td></tr>
 <tr><th>Initiative</th><td>+3</td></tr>
 <tr><th>Speed</th><td>30</td></tr>
-<tr><th>HD</th><td>5d8 + 4d6</td></tr>
+<tr><th>HD</th><td>4d6 + 5d8</td></tr>
 <tr><th>PP</th><td>18</td></tr>
 <tr><th>Prof Bon</th><td>+4</td></tr>
 </table>
@@ -76,7 +76,6 @@
 <tr><th></th><th>Range</th><th>Type</th><th>To Hit</th><th>Damage</th><th>Notes</th></tr>
 <tr><td>shillelagh:quarterstaff</td><td>melee</td><td>bludgeoning</td><td>+8</td><td>1d8 + 4</td><td>magical, when shillelagh is active</td></tr>
 <tr><td>shillelagh:quarterstaff+2</td><td>melee</td><td>bludgeoning</td><td>+10</td><td>1d8 + 6</td><td>magical, when shillelagh is active</td></tr>
-<tr><td>fire bolt</td><td>120</td><td>fire</td><td>+4</td><td>2d10</td><td></td></tr>
 <tr><td>scimitar</td><td>melee</td><td>slashing</td><td>+7</td><td>1d6 + 3</td><td>finesse, light</td></tr>
 <tr><td>quarterstaff</td><td>melee</td><td>bludgeoning</td><td>+3</td><td>1d6 - 1</td><td>versatile</td></tr>
 <tr><td>quarterstaff+2</td><td>melee</td><td>bludgeoning</td><td>+5</td><td>1d6 + 1</td><td>versatile</td></tr>
@@ -104,14 +103,201 @@
 
 </caption>
 <tr><th>Prepared</th><th>Level</th><th>Spell</th><th>Casting time</th><th>Range</th><th>To Hit/DC</th><th>Resource</th></tr>
-<tr><td>always</td><td>0</td><td>shillelagh</td><td>bonus</td><td>touch</td><td>-</td><td>at will</td></tr>
-<tr><td>always</td><td>0</td><td>guidance</td><td>action</td><td>touch</td><td>-</td><td>at will</td></tr>
-<tr><td>always</td><td>0</td><td>druidcraft</td><td>action</td><td>30</td><td>-</td><td>at will</td></tr>
-<tr><td>always</td><td>0</td><td>fire bolt</td><td>action</td><td>120</td><td>+4</td><td>at will</td></tr>
-<tr><td><input type="checkbox"></td><td>1</td><td>healing word</td><td>bonus</td><td>60</td><td>-</td><td>druid</td></tr>
-<tr><td><input type="checkbox"></td><td>2</td><td>hold person</td><td>action</td><td>60</td><td>DC 12</td><td>wizard</td></tr>
-<tr><td><input type="checkbox"></td><td>2</td><td>moonbeam</td><td>action</td><td>120</td><td>-</td><td>druid</td></tr>
-<tr><td>always</td><td>2</td><td>hold person</td><td>action</td><td>60</td><td>DC 16</td><td>druid</td></tr>
+<tr><td>always</td><td>0</td><td>guidance</td><td>1 action</td><td>touch</td><td>-</td><td>at will</td></tr>
+<tr><td>always</td><td>0</td><td>fire bolt</td><td>1 action</td><td>120 ft</td><td>+4</td><td>at will</td></tr>
+<tr><td>always</td><td>0</td><td>shillelagh</td><td>1 bonus action</td><td>touch</td><td>-</td><td>at will</td></tr>
+<tr><td>always</td><td>0</td><td>druidcraft</td><td>1 action</td><td>30 ft</td><td>-</td><td>at will</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>earth tremor</td><td>1 action</td><td>self (10-foot radius)</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>expeditious retreat</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>detect evil and good</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>dissonant whispers</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>animal friendship</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>entangle</td><td>1 action</td><td>90 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>guiding bolt</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>fog cloud</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>create or destroy water</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>sleep</td><td>1 action</td><td>90 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>tasha's hideous laughter</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>detect magic</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>healing word</td><td>1 bonus action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>purify food and drink</td><td>1 action</td><td>10 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>thunderwave</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>jump</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>silent image</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>bane</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>beast bond</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>hex</td><td>1 bonus action</td><td>90 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>hellish rebuke</td><td>1 reaction</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>shield</td><td>1 reaction</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>thunderous smite</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>catapult</td><td>1 action</td><td>150 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>illusory script</td><td>1 minute</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>hail of thorns</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>ice knife</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>unseen servant</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>command</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>inflict wounds</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>arms of hadar</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>burning hands</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>hunter's mark</td><td>1 bonus action</td><td>90 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>bless</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>compelled duel</td><td>1 bonus action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>magic missile</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>mage armor</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>protection from evil and good</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>ray of sickness</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>ensnaring strike</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>divine favor</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>disguise self</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>absorb elements</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>detect poison and disease</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>faerie fire</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>charm person</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>cure wounds</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>grease</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>feather fall</td><td>1 reaction</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>speak with animals</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>find familiar</td><td>1 hour</td><td>10 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>goodberry</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>sanctuary</td><td>1 bonus action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>longstrider</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>searing smite</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>alarm</td><td>1 minute</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>false life</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>shield of faith</td><td>1 bonus action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>armor of agathys</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>heroism</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>identify</td><td>1 minute</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>tenser's floating disk</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>color spray</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>comprehend languages</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>chromatic orb</td><td>1 action</td><td>90 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>wrathful smite</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>witch bolt</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>earthbind</td><td>1 action</td><td>300 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>pyrotechnics</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>enlarge/reduce</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>enthrall</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>prayer of healing</td><td>10 minutes</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>skywrite</td><td>1 action</td><td>sight</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>gentle repose</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>spider climb</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>spiritual weapon</td><td>1 bonus action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>suggestion</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>alter self</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>find steed</td><td>10 minutes</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>see invisibility</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>gust of wind</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>scorching ray</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>barkskin</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>enhance ability</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>flame blade</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>aid</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>protection from poison</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>moonbeam</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>locate animals or plants</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>levitate</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>augury</td><td>1 minute</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>knock</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>aganazzar's scorcher</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>blindness/deafness</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>mirror image</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>warding bond</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>melf's acid arrow</td><td>1 action</td><td>90 ft</td><td>-</td><td>druid</td></tr>
+<tr><td>always</td><td>2</td><td>hold person</td><td>1 action</td><td>60 ft</td><td>DC 16</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>hold person</td><td>1 action</td><td>60 ft</td><td>DC 12</td><td>wizard</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>misty step</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>zone of truth</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>maximilian's earthen grasp</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>continual flame</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>dust devil</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>ray of enfeeblement</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>rope trick</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>nystul's magic aura</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>detect thoughts</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>darkness</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>phantasmal force</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>snilloc's snowball swarm</td><td>1 action</td><td>90 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>animal messenger</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>flaming sphere</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>shatter</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>darkvision</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>silence</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>find traps</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>heat metal</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>pass without trace</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>beast sense</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>locate object</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>lesser restoration</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>arcane lock</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>web</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>branding smite</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>invisibility</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>spike growth</td><td>1 action</td><td>150 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>blur</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>warding wind</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>calm emotions</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>cloud of daggers</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>crown of madness</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>magic weapon</td><td>1 bonus action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>cordon of arrows</td><td>1 action</td><td>5 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>2</td><td>magic mouth</td><td>1 minute</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>remove curse</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>revivify</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>nondetection</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>gaseous form</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>stinking cloud</td><td>1 action</td><td>90 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>feign death</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>sending</td><td>1 action</td><td>unlimited</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>fireball</td><td>1 action</td><td>150 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>fear</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>lightning arrow</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>slow</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>protection from energy</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>meld into stone</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>wall of sand</td><td>1 action</td><td>90 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>daylight</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>water walk</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>bestow curse</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>flame arrows</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>call lightning</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>speak with plants</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>clairvoyance</td><td>10 minutes</td><td>1 mi</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>create food and water</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>counterspell</td><td>1 reaction</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>magic circle</td><td>1 minute</td><td>10 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>crusader's mantle</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>mass healing word</td><td>1 bonus action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>major image</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>erupting earth</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>elemental weapon</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>phantom steed</td><td>1 minute</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>speak with dead</td><td>1 action</td><td>10 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>spirit guardians</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>glyph of warding</td><td>1 hour</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>animate dead</td><td>1 minute</td><td>10 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>fly</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>aura of vitality</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>vampiric touch</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>leomund's tiny hut</td><td>1 minute</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>wall of water</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>dispel magic</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>conjure animals</td><td>1 action</td><td>60 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>plant growth</td><td>1 action</td><td>150 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>haste</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>blink</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>wind wall</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>water breathing</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>tidal wave</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>hypnotic pattern</td><td>1 action</td><td>120 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>beacon of hope</td><td>1 action</td><td>30 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>sleet storm</td><td>1 action</td><td>150 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>tongues</td><td>1 action</td><td>touch</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>hunger of hadar</td><td>1 action</td><td>150 ft</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>conjure barrage</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>blinding smite</td><td>1 bonus action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>melf's minute meteors</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
+<tr><td><input type="checkbox"></td><td>3</td><td>lightning bolt</td><td>1 action</td><td>self</td><td>-</td><td>druid</td></tr>
 </table>
 
 </article></div>

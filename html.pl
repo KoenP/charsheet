@@ -179,7 +179,7 @@ spell_table_row(SpellLevel, tr([td(Prepared),
     spell_known(Name, Source, _Ability, PrepVal, ResourceVal),
     spell(Name, level, SpellLevel),
     spell(Name, casting_time, CastingTime),
-    spell(Name, range, Range),
+    spell(Name, range, RangeVal), display_range(RangeVal, Range),
     spell_to_hit_or_dc(Name, Source, ToHitOrDC),
     display_prepared(PrepVal, Prepared),
     display_resource(ResourceVal, Source, Resource).
@@ -188,6 +188,10 @@ spell_to_hit_or_dc(Name, Source, [+, ToHit]) :-
 spell_to_hit_or_dc(Name, Source, ['DC ', DC]) :-
     spell_dc(Name, Source, DC), !.
 spell_to_hit_or_dc(_, _, "-").
+
+display_range(feet(X), [X, ' ft']) :- !.
+display_range(miles(X), [X, ' mi']) :- !.
+display_range(X, X).
 
 display_prepared(when_prepared, input(type=checkbox,[])).
 display_prepared(always_available, 'always').

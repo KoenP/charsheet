@@ -1,4 +1,5 @@
-:- [spells].
+:- [spells/spells].
+:- [spells/spell_effects].
 
 :- discontiguous
        spell/3.
@@ -15,6 +16,7 @@ spell_attack_modifier(Abil, Mod) :-
     proficiency_bonus(Bonus),
     Mod is Bonus + AbilMod.
 
+:- table spell_slots/3.
 spell_slots(Class, SpellLevel, Slots) :-
     gain_spell_slots(Class, SpellLevel, Gains),
     class_level(Class:ClassLevel),
@@ -87,15 +89,10 @@ term_field(Term, Field, Value) :-
     Term =.. L,
     member(Field:Value, L).
 
-spell(Name) :-
-    spell(Name, _).
-spell(Name, component, Component) :-
+:- table spell/3.
+spell(Name, Field, Value) :-
     spell(Name, Properties),
-    term_field(Properties, components, Components),
-    member(Component, Components).
-spell(Name, Prop, Value) :-
-    spell(Name, Properties),
-    term_field(Properties, Prop, Value).
+    Value = Properties.get(Field).
 
 % Cantrips tend to get stronger at character levels 5, 11, and 17 (the
 % rules don't require these levels but this configuration is common
