@@ -1,27 +1,5 @@
 :- use_module(library(http/html_write)).
 
-% <!DOCTYPE html>
-%<html>
-%<title>HTML Tutorial</title>
-%<body>
-%
-%<h1>This is a heading</h1>
-%<p>This is a paragraph.</p>
-%
-%</body>
-%</html> 
-
-example(Html) :-
-     Html = [
-         html([title("HTML Tutorial"),
-               body([h1("This is a heading"),
-                     p("This is a paragraph")
-                    ])])].
-
-
-% myhtml(N d X) --> [N], [d], [X].
-% myhtml(Html) --> {Html \= _ d _}, html_write:html(Html).
-
 out :-
     html_write:html_set_options([doctype(html)]),
     char_sheet_html(Html),
@@ -126,16 +104,23 @@ skill_table_row_span_line(Skill, Rowspan, [th(rowspan=Rowspan, AbilHdr)]) :-
 % Attacks.
 attack_table(Table) :-
     table('attacks', 'Attacks', [Header|Rows], Table),
-    Header = tr([th([]), th('Range'), th('Type'), th('To Hit'), th('Damage'),
-                 th('Notes')]),
+    Header = tr([th([]), th('Range'), th('To Hit'), th('Damage'), th('Notes')]),
     findall(Row, attack_table_row(Row), Rows).
-attack_table_row(tr([td(Name), td(Range), td(Type), td(ToHit), td(Damage), td(FNotes)])) :-
-    attack(AttackName, Range, Type, ToHitVal, DamageDice, Notes),
+attack_table_row(tr([td(Name), td(Range), td(ToHit), td(DamageFmt), td(FNotes)])) :-
+    attack(AttackName, Range, ToHitVal, Damage, Notes),
     format_list(Notes, FNotes, []),
     display_term(AttackName, Name),
     show_bonus(ToHitVal, ToHit),
-    format_dice_sum(DamageDice, Damage).
-    
+    format_damage(Damage, DamageFmt).
+    %format_dice_sum(DamageDice, Damage).
+format_damage(Damage, Format) :-
+    maplist(format_damage_roll, Damage, Fmts),
+    append(Fmts, Format).
+format_damage_roll(Roll, Format) :-
+    Roll =.. [Type, Dice],
+    format_dice_sum(Dice, DiceFmt),
+    append(DiceFmt, [' ', Type], Format).
+
 % Spellcasting section.
 spell_slot_table(Table) :-
     table('spell_slots', 'Spell slots', [Header|Rows], Table),
@@ -170,7 +155,7 @@ spell_table_rows_for_level(SpellLevel, Rows) :-
     findall(Row, spell_table_row(SpellLevel, Row), Rows).
 spell_table_row(SpellLevel, tr([td(Prepared),
                                 td(SpellLevel),
-                                td(Name),
+                                td(div(class=tooltip, [Name, span(class=tooltiptext, Desc)])),
                                 td(CastingTime),
                                 td(Range),
                                 td(ToHitOrDC),
@@ -178,6 +163,7 @@ spell_table_row(SpellLevel, tr([td(Prepared),
                                 ])) :-
     spell_known(Name, Source, _Ability, PrepVal, ResourceVal),
     spell(Name, level, SpellLevel),
+    spell(Name, desc, Desc),
     spell(Name, casting_time, CastingTime),
     spell(Name, range, RangeVal), display_range(RangeVal, Range),
     spell_to_hit_or_dc(Name, Source, ToHitOrDC),
@@ -256,92 +242,6 @@ display_term(T, S) :-
     
     
 
-%charSheetHtml([div(class('container'), 
-%                   [ header(h1(Name))
-%                   , article( 
-%                        [ table( [style='padding: 4px']
-%                               , [ tr([th("Race"), td(Race)])
-%                                 , tr([th("Class"), td(Class)])
-%                                 , tr([th("Level"), td(Level)])
-%                                 , tr([th("AC"), td(Ac)])
-%                                 , tr([th("Initiative"), td(Init)])
-%                                 , tr([th("Speed"), td(Speed)])
-%                                 , tr([th("HD"), td([HdN, d, HdV])])
-%                                 , tr([th("PP"), td(Pp)])
-%                                 , tr([th("Prof Bon"), td(ProfBon)])
-%                                 ])
-%                        , AbilityTable
-%                        , SkillTable
-%                        , SpellCastingTable
-%                        ])
-%                   ])
-%              ]) :- 
-%    name(Name),
-%    race(Race),
-%    baseClass(Class),
-%    level(Level),
-%    ac(ac(Ac)),
-%    init(Init),
-%    speed(ft(Speed)),
-%    hd(d(HdN, HdV)),
-%    passivePerception(Pp),
-%    profBon(ProfBon),
-%    abilityTable(AbilityTable),
-%    skillTable(SkillTable),
-%    spellCastingTable(SpellCastingTable).
-%
-%abilityTable(Table) :- 
-%    table('abilities', 'Abilities', Contents, Table),
-%    Contents = [tr([th([]), th('Score'), th('Modifier'), th('ST')])|Rows],
-%    findall(Row, abilityTableRow(_, Row), Rows).
-%abilityTableRow(Abil, tr([th(AbilHdr), td(Score), td(Mf), td(St)])) :-
-%    abilityHdr(Abil, AbilHdr),
-%    ability(Abil, Score),
-%    abilityMf(Abil, Mf),
-%    st(Abil, St).
-%abilityHdr(str, 'STR').
-%abilityHdr(dex, 'DEX').
-%abilityHdr(con, 'CON').
-%abilityHdr(int, 'INT').
-%abilityHdr(wis, 'WIS').
-%abilityHdr(cha, 'CHA').
-%
-%skillTable(Table) :- 
-%    table('skills', 'Skills', [Header|Rows], Table),
-%    Header = tr([th([]), th('Skill'), th('Score')]),
-%    abilityList(AbilList),
-%    findall(Row, 
-%            (member(Abil, AbilList), skillTableRowsForAbil(Abil, Row)),
-%            AbilRows),
-%    flatten(AbilRows, Rows).
-%skillTableRowsForAbil(Abil, [FirstRow|OtherRows]) :-
-%    findall(Skill, skillAbility(Skill, Abil), Skills),
-%    length(Skills, NumberOfSkills),
-%    [FirstSkill|OtherSkills] = Skills,
-%    skillTableRow(FirstSkill, NumberOfSkills, FirstRow),
-%    repl(0, NumberOfSkills, [0|Zeros]),
-%    maplist(skillTableRow, OtherSkills, Zeros, OtherRows).
-%skillTableRow(Skill, NumberOfSkills, tr(Row)) :- 
-%    skillTableRowSpanLine(Skill, NumberOfSkills, RowSpanLine),
-%    skill(Skill, Score),
-%    append(RowSpanLine, [td(Skill), td(Score)], Row).
-%skillTableRowSpanLine(_, 0, []) :- !.
-%skillTableRowSpanLine(Skill, Rowspan, [th(rowspan=Rowspan, AbilHdr)]) :-
-%    skillAbility(Skill, Abil),
-%    abilityHdr(Abil, AbilHdr).
-%
-%spellCastingTable(Table) :-
-%    table('spellcasting', 'Spellcasting', [R1,R2,R3], Table),
-%    R1 = tr([th('Ability'), td(Abil)]),
-%    R2 = tr([th('Spell save DC'), td(SSDC)]),
-%    R3 = tr([th('Attack Bonus'), td(Amf)]),
-%    baseClass(BaseClass),
-%    spellCastingAbility(BaseClass, Abil),
-%    spellSaveDc(SSDC),
-%    spellAttackModifier(Amf).
-%
-%table(Id, Caption, Contents, table(id=Id, [caption(h3(Caption))|Contents])).
-%
 % Clever little predicate, taken from
 % http://stackoverflow.com/questions/23176840/easily-replicate-an-element-in-prolog
 repl(X, N, L) :-

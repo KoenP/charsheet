@@ -52,3 +52,4 @@ gain_level(8, wizard, hp_avg).
 gain_level(9, wizard, hp_avg).
 
 spell_known('hold person', wizard, int, when_prepared, spell_slot).
+spell_known('scorching ray', wizard, int, when_prepared, spell_slot).

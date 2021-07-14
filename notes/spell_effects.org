@@ -1,0 +1,108 @@
+
+* 'acid splash'
+  up to 2 creatures in range, no more than 5 feet apart from eachother
+  dex saving throw
+  -> Scale d 6 acid damage
+  -> nothing
+
+* aid
+  up to 3 creatures in range
+  max HP + Upcast*5
+  cur HP + Upcast*5
+  
+* 'animal friendship'
+  Upcast number of beasts you can see in range
+  wis saving throw
+  charmed
+  
+* 'armor of agathys'
+  self 
+  +5 temp hp
+  special
+  
+* 'arms of hadar'
+  self
+  in 10 foot radius:
+  each creature makes str ST, or takes 2d6 necrotic and cant react until next turn
+  on a failed save: half damage
+  
+* bane
+  up to three creatures you can see in range
+  cha ST or -d4 to attack and ST rolls
+
+* banishment
+  one creature you can see in range
+  cha ST or be banished
+
+* barkskin
+  touch a willing creature
+  AC no less than 16
+  
+* 'beacon of hope'
+  any number of creatures within range
+  advantage on wis ST and death ST, regain max possible HP from every source of healing
+  
+* 'blade ward'
+  self
+  resistance against bludgeoning, piercing, slashing damage by weapon attacks
+
+* bless
+  up to three creatures in range
+  every attack roll or ST roll + d4
+  
+* 'burning hands'
+  self
+  15 foot cone
+  dex ST -> 3d6 fire damage; half as much
+
+* 'call lightning' (?)
+  point in range directly above you
+  on each turn (action after first turn) you can deal 3d10 (dex ST for half) on a new target under the cloud
+  
+
+  --------------------------------------------------------------------------------
+
+* alarm
+  door, window or area within range that fits in a 20-foot cube
+  trap
+
+* 'alter self'
+  self
+  shapechanging
+
+* 'animal messenger'
+  tiny beast you can see in range
+  communication
+
+* 'animal shapes'
+  any number of willing creatures you can see in range
+  shapechanging
+
+* 'animate dead'
+  X pile(s) of bones or corpse(s) of a medium or small humonoid in range
+  X = 1 + 2*Upcast
+  special
+
+* 'animate objects'
+  up to ten nonmagical objects in range that are not being worn or carried, medium targets count as two objects, large as four, huge as eight (more when upcast)
+  special
+  
+* 'antilife shell'
+  self, 10 ft radius
+  special
+  
+* 'antimagic field'
+  self, 10 ft radius
+  special
+
+* 'antipathy/sympathy'
+  huge or smaller object or creature or an area no larger than a 200-foot cube, within 60 ft range
+  special effect, within 60 feet of spell target
+  
+* 'arcane eye'
+  point in range
+  special
+
+* 'arcane gate'
+  two points on the goround that you can see, one point within 10 feet of you and another within 500 feet of you
+  

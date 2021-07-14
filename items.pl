@@ -8,15 +8,16 @@ body_armor(halfplate, medium, ac(15), [disadvantage(stealth)]).
 
 % Every weapon in inventory is listed as an attack option.
 % TODO mostly duplicated clauses
-attack(Weapon, Range, DamageType, ToHit, DamageDice, Notes) :-
+attack(Weapon, Range, ToHit, [Damage], Notes) :-
     have(Weapon),
     plus_zero(Weapon, BaseWeapon + Enchantment),
     weapon(BaseWeapon, Range, DamageType, BaseDamageDice, Notes),
     weapon_to_hit(BaseWeapon + Enchantment, Ability, ToHit),
     ability_mod(Ability, AbiMod),
     weapon_damage_dice(BaseDamageDice + Enchantment, AbiMod, DamageDicePlusZero),
-    plus_zero(DamageDice, DamageDicePlusZero).
-attack(Weapon:'two handed', Range, DamageType, ToHit, DamageDice, Notes) :-
+    plus_zero(DamageDice, DamageDicePlusZero),
+    Damage =.. [DamageType, DamageDice].
+attack(Weapon:'two handed', Range, ToHit, [Damage], Notes) :-
     have(Weapon),
     plus_zero(Weapon, BaseWeapon + Enchantment),
     weapon(BaseWeapon, Range, DamageType, _, Notes),
@@ -24,7 +25,8 @@ attack(Weapon:'two handed', Range, DamageType, ToHit, DamageDice, Notes) :-
     weapon_to_hit(BaseWeapon + Enchantment, Ability, ToHit),
     ability_mod(Ability, AbiMod),
     weapon_damage_dice(VersatileDice + Enchantment, AbiMod, DamageDicePlusZero),
-    plus_zero(DamageDice, DamageDicePlusZero).
+    plus_zero(DamageDice, DamageDicePlusZero),
+    Damage =.. [DamageType, DamageDice].
 weapon_damage_dice(X d Y + I, AbiMod, X d Y + J) :-
     J is I + AbiMod.
 weapon_to_hit(BaseWeapon + Enchantment, Ability, Modifier) :-

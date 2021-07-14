@@ -1,13 +1,73 @@
 :- discontiguous
+       spell_effect/2,
+       spell_effect/3,
+       spell_damage_rolls/2,
+       spell_damage_rolls/3,
        spell_at_will_attack/5,
        spell_makes_spell_attack/1,
-       spell_has_dc/1.
+       spell_has_dc/2.
 
-spell_makes_spell_attack('fire bolt').
-spell_damage('fire bolt', fire(Scale d 10)) :-
+%spell_effect(Spell, 0, Rolls) :-
+%    spell_effect(Spell, Rolls).
+%spell_effect(Spell, Rolls) :-
+%    spell_damage_rolls(Spell, Rolls).
+%spell_effect(Spell, Upcast, Rolls) :-
+%    spell_damage_rolls(Spell, Upcast, Rolls).
+spell_damage_rolls(Spell, 0, Rolls) :-
+    spell_damage_rolls(Spell, Rolls).
+
+%%%%%
+spell_has_dc('acid splash', dex).
+spell_damage_rolls('acid splash', [acid(Scale d 6)]) :-
     cantrip_scale(Scale).
 
-attack(shillelagh:Weapon, melee, bludgeoning, ToHit , 1 d 8 + DamageBonus,
+%%%%%
+%spell_effect(aid, Upcast, 'max hp' + Bonus) :-
+%    Bonus is (Upcast+1) * 5.
+%spell_effect(aid, Upcast, 'cur hp' + Bonus) :-
+%    Bonus is (Upcast+1) * 5.
+
+%%%%%
+spell_has_dc('animal friendship').
+%spell_effect('animal friendship', charmed).
+
+%%%%%
+%spell_effect('armor of agathys', 'temp hp' + 5).
+%spell_effect('armor of agathys', "special: damage reflection (5 cold)").
+
+%%%%%
+spell_has_dc('arms of hadar', str).
+%spell_effect('arms of hadar', 'no reactions').
+%spell_effect('arms of hadar', on_save('half damage')).
+spell_damage_rolls('arms of hadar', Upcast, [necrotic(N d 6)]) :-
+    in_upcast_range('arms of hadar', Upcast), % ground Upcast
+    N is 2 + Upcast.
+
+%%%%%
+spell_has_dc(bane, cha).
+%spell_effect(bane, 'attack roll' - (1 d 4)).
+%spell_effect(bane, 'ST' - (1 d 4)).
+
+%%%%%
+spell_has_dc(banishment, cha).
+%spell_effect(banishment, banished).
+%spell_effect(banishment, special).
+
+%%%%%
+spell_makes_spell_attack('fire bolt').
+spell_damage_rolls('fire bolt', [fire(Scale d 10)]) :-
+    cantrip_scale(Scale).
+
+%%%%%
+spell_makes_spell_attack('scorching ray').
+spell_damage_rolls('scorching ray', Upcast, Dice) :-
+    in_upcast_range('scorching ray', Upcast), % ground Upcast
+    N is 3 + Upcast,
+    repl(fire(2 d 6), N, Dice).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+attack(shillelagh:Weapon, melee, ToHit, [bludgeoning(1 d 8 + DamageBonus)],
        [magical, when_spell_active(shillelagh)]) :-
     spell_known(shillelagh, _, Ability, always_available, at_will),
     have(Weapon),
@@ -18,7 +78,13 @@ attack(shillelagh:Weapon, melee, bludgeoning, ToHit , 1 d 8 + DamageBonus,
     ToHit is Enchantment + ProfBon + AbiMod,
     DamageBonus is Enchantment + AbiMod.
 
-spell_has_dc('hold person').
+
+in_upcast_range(Spell, Upcast) :-
+    spell(Spell, level, Level),
+    UpperBound is 9 - Level,
+    between(0, UpperBound, Upcast).
+
+%spell_has_dc('hold person').
 
 %
 %% Cantrips.

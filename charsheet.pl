@@ -1,6 +1,6 @@
 :- multifile
     have/1,
-    attack/6,
+    attack/5,
     trait/2,
     problem/2,
     trait_options/3,
@@ -193,5 +193,4 @@ proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).
 
 re :-
     abolish_all_tables,
-    make,
-    out.
+    make.
