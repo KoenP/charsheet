@@ -166,25 +166,22 @@ interleave(_, [], []).
 
 % Spellcasting section.
 spell_slot_table(Table) :-
-    table('spell_slots', 'Spell slots and preparation', [Header|Rows], Table),
-    Header = tr([th([]), th('prep') | Levels]),
+    table('spell_slots', 'Spell slots', [tr(Levels)|Rows], Table),
     findall(th(Str),
             (between(1, 9, Level), atomic_list_concat(['lvl ', Level], Str)),
             Levels),
     findall(Row, spell_slot_table_row(Row), Rows).
-spell_slot_table_row(tr([th(Source), td(Prep) | Row])) :-
-    spell_slot_source(Source),
-    max_prepared_spells(Source, Prep),
+spell_slot_table_row(tr(Row)) :-
     findall(Cell,
-            spell_slot_table_cell(Source, Cell),
+            spell_slot_table_cell(Cell),
             Slots),
     \+ length(Slots, 0),
     length(Row, 9),
     append(Slots, Padding, Row),
     maplist(=(td([])), Padding).
-spell_slot_table_cell(Source, td(Contents)) :-
+spell_slot_table_cell(td(Contents)) :-
     between(1, 9, Level),
-    spell_slots(Source, spell_level(Level), N),
+    spell_slots(Level, N),
     repl(input(type=checkbox, []), N, Contents).
 spell_table(Table) :-
     table('spells', 'Spells', [Header|Rows], Table),

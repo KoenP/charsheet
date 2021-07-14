@@ -1,4 +1,9 @@
 :- multifile
+       % Register whether a class is a full or partial caster,
+       % e.g. caster(wizard, full), caster(ranger, 1/2), ...
+       % For purposes of calculating spell slots.
+       caster/2,
+
        max_prepared_spells/2,
        spell_class/2,
        choose_subclass_level/2,
@@ -17,6 +22,7 @@
 :- [classes/druid].
 :- [classes/fighter].
 :- [classes/wizard].
+:- [classes/ranger].
    
 :- table
    class_level/1,
@@ -32,7 +38,9 @@ class_level(Class:ClassLevel) :-
 :- table class_level/2.
 class_level(CharLevel, Class:ClassLevel) :-
     class_option(Class),
-    findall(L, (initial_class(Class) ; (between(2,CharLevel,L), gain_level(L,Class,_))), Levels),
+    findall(L, (initial_class(Class)
+               ; (between(2,CharLevel,L), gain_level(L,Class,_))),
+            Levels),
     length(Levels, ClassLevel),
     ClassLevel > 0.
 
@@ -41,6 +49,18 @@ matching_class_level(Class:ClassLevel) :-
     between(1, CharClassLevel, ClassLevel).
 
 class_levels(Classes) :- findall(Class, class_level(Class), Classes).
+
+multiclass :-
+    findall(Class, class(Class), [_,_|_]).
+
+% Calculate a class' contribution to multiclass spell slot level.
+class_spell_slot_level(Class, SpellSlotLevel) :-
+    class_level(Class:Level),
+    caster(Class, Factor),
+    spell_slot_factor(Factor, Level, SpellSlotLevel).
+spell_slot_factor(full, Level, Level).
+spell_slot_factor(1 / N, Level, SpellSlotLevel) :-
+    SpellSlotLevel is floor(Level / N).
 
 % Query the PC's current (sub)class(es).
 subclass(Class, Subclass) :-

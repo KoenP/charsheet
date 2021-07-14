@@ -22,6 +22,52 @@ spell(Name, Field, Value) :-
     spell(Name, Properties),
     Value = Properties.get(Field).
 
+% Calculate the number of available spell slots.
+full_caster_spell_slot_table(1, [1,1,2,3]).
+full_caster_spell_slot_table(2, [3,3,4]).
+full_caster_spell_slot_table(3, [5,5,6]).
+full_caster_spell_slot_table(4, [7,8,9]).
+full_caster_spell_slot_table(5, [7,8,9]).
+full_caster_spell_slot_table(6, [11,19]).
+full_caster_spell_slot_table(7, [13,20]).
+full_caster_spell_slot_table(8, [15]).
+full_caster_spell_slot_table(9, [17]).
+
+:- table spell_slots/2.
+spell_slots(SpellLevel, Slots) :-
+    findall(Lvl, class_spell_slot_level(_,Lvl), Levels),
+    Levels = [_,_|_], % this is the multiclassing formula
+    sumlist(Levels, SlotLevel),
+    spell_slot_level_to_slots(SpellLevel, SlotLevel, Slots).
+spell_slots(SpellLevel, Slots) :-
+    \+ multiclass,
+    class_level(Class:Level),
+    caster(Class, Fullness),
+    single_class_slot_level(Level, Fullness, SlotLevel),
+    spell_slot_level_to_slots(SpellLevel, SlotLevel, Slots).
+
+single_class_slot_level(CharLevel, full, CharLevel).
+single_class_slot_level(1, 1 / 2, 0).
+single_class_slot_level(CharLevel, 1 / 2, Level) :-
+    between(2, 9, CharLevel),
+    Level is ceil(CharLevel / 2).
+
+spell_slot_level_to_slots(SpellLevel, SlotLevel, Slots) :-
+    full_caster_spell_slot_table(SpellLevel, Gains),
+    findall(X, (member(X,Gains), X=<SlotLevel), Xs),
+    length(Xs, Slots),
+    Slots > 0.
+    
+
+%multiclass_spell_slots(S)
+
+%    gain_spell_slots(Class, SpellLevel, Gains),
+%    class_level(Class:ClassLevel),
+%    findall(X, (member(X,Gains),X=<ClassLevel), Xs),
+%    length(Xs, Slots),
+%    Slots > 0.
+
+
 % The DC of your spells, parameterized on which ability you cast the
 % spell with. (So note that `Abil` is _not_ the ability the target
 % uses for their ST.)
@@ -39,21 +85,12 @@ spell_attack_modifier(Abil, Mod) :-
     proficiency_bonus(Bonus),
     Mod is Bonus + AbilMod.
 
-% Calculate how many spell slots you have for each spell level, for
-% each class.
-:- table spell_slots/3.
-spell_slots(Class, SpellLevel, Slots) :-
-    gain_spell_slots(Class, SpellLevel, Gains),
-    class_level(Class:ClassLevel),
-    findall(X, (member(X,Gains),X=<ClassLevel), Xs),
-    length(Xs, Slots),
-    Slots > 0.
 
 % Summarize all our spell slot sources.
-spell_slot_source(Source) :-
-    findall(S, spell_slots(S, _, _), Sources),
-    list_to_set(Sources, SourcesSet),
-    member(Source, SourcesSet).
+%spell_slot_source(Source) :-
+%    findall(S, spell_slots(S, _, _), Sources),
+%    list_to_set(Sources, SourcesSet),
+%    member(Source, SourcesSet).
 
 % The predicate spell_at_will_attack/5 can be asserted for a spell
 % (usually a cantrip) that in some way lets the PC attack at will
@@ -104,15 +141,16 @@ spell_dc(Spell, Source, DC) :-
 % completely coincides with their known spells. Still, the list of
 % known spells for these classes is derived from the defintion of
 % learnable spells, as written here.
+% TODO recalculate
 spell_learnable(Class, SpellName) :-
     class(Class),
     spell_class(SpellName, Class),
     spell(SpellName, level, 0).
-spell_learnable(Class, SpellName) :-
-    class(Class),
-    spell(SpellName, level, SpellLevel),
-    spell_slots(Class, spell_level(SpellLevel), N),
-    N > 0.
+%spell_learnable(Class, SpellName) :-
+%    class(Class),
+%    spell(SpellName, level, SpellLevel),
+%    spell_slots(Class, spell_level(SpellLevel), N),
+%    N > 0.
 
 % Known spells are those spells which can be prepared by the PC.
 % Whether a spell is known or not is mostly decided by a PC's class and
