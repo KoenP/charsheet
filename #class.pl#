@@ -1,4 +1,9 @@
 :- multifile
+       % Register whether a class is a full or partial caster,
+       % e.g. caster(wizard, full), caster(ranger, 1/2), ...
+       % For purposes of calculating spell slots.
+       caster/2,
+
        max_prepared_spells/2,
        spell_class/2,
        choose_subclass_level/2,

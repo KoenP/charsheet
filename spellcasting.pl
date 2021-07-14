@@ -1,6 +1,19 @@
 :- [spells/spells].
 :- [spells/spell_effects].
 
+:- multifile 
+       % spell_known(Spell, Origin, Ability, Availability, Resource)
+       % documents which spells the character knows, as well as
+       % from which origin they know the spell (druid, wizard, high
+       % elf, ...), which ability modifier the spell uses,
+       % whether it is always prepared (Availability =
+       % always_available) or needs to be prepared (Availability =
+       % when_prepared), and which resource it uses (at_will for spells,
+       % like cantrips, which consume no resources, spell_slot for
+       % regular spells which consume spell slots, and other options for
+       % more specific cases).
+       spell_known/5.
+
 % The table that stores all "static" information about spells (ie
 % mostly independent of your character, although some things like
 % cantrip scaling with your level are taken into account here already).

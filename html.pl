@@ -38,6 +38,8 @@ char_sheet_body(
                         ]),
                  AbilityTable,
                  SkillTable,
+                 ProfList,
+                 TraitList,
                  AttackTable,
                  SpellSlotTable,
                  SpellTable
@@ -56,6 +58,8 @@ char_sheet_body(
     proficiency_bonus(ProfBonVal), show_bonus(ProfBonVal, ProfBon),
     ability_table(AbilityTable),
     skill_table(SkillTable),
+    proficiency_list(ProfList),
+    trait_list(TraitList),
     attack_table(AttackTable),
     spell_slot_table(SpellSlotTable),
     spell_table(SpellTable).
@@ -101,6 +105,39 @@ skill_table_row_span_line(Skill, Rowspan, [th(rowspan=Rowspan, AbilHdr)]) :-
     skill_ability(Skill, Abil),
     ability_hdr(Abil, AbilHdr).
 
+% Proficiencies, other than skill proficiencies.
+proficiency_list(p([h3("Proficiencies"), ul(Profs)])) :-
+    findall(Prof, proficiency_list_entry(Prof), Profs).
+proficiency_list_entry(Entry) :-
+      proficiency_category("Languages: ", language, Entry)
+    ; proficiency_category("Weapons: ", weapon, Entry)
+    ; proficiency_category("Armor: ", armor, Entry)
+    ; proficiency_category("Tools: ", tool, Entry).
+proficiency_category(CatHdr, CatFunctor, li([b(CatHdr) | Profs])) :-
+    findall(X, (Search =.. [CatFunctor,X], trait(Search)), Xs),
+    format_list(Xs, Profs, []).
+%proficiency_list_entry(li([b("Languages: ") | Languages])) :-
+%    findall(Lang, trait(language(Lang)), Langs),
+%    format_list(Langs, Languages, []).
+%proficiency_list_entry(li([b("Weapons: ") | Weapons])) :-
+%    findall(Weap, trait(weapon(Weap)), Weaps),
+%    format_list(Weaps, Weapons, []).
+%proficiency_list_entry(li([b("Tools: ") | Tools])) :-
+%    findall(Tl, trait(tool(Tl)), Tls),
+%    format_list(Tls, Tools, []).
+
+% Traits.
+trait_list(p([h3("Notable traits"), ul(Items)])) :-
+    findall(li(Item), trait_list_entry(Item), Items).
+trait_list_entry(div(class=tooltip, [Trait, span(class=tooltiptext, Desc)])) :-
+    trait(TraitVal),
+    display_trait(TraitVal, Trait),
+    TraitVal ?= Desc.
+display_trait(CompoundTerm, Atom) :-
+    CompoundTerm =.. [_, Atom].
+display_trait(Atom, Atom) :-
+    atom(Atom).
+
 % Attacks.
 attack_table(Table) :-
     table('attacks', 'Attacks', [Header|Rows], Table),
@@ -115,22 +152,29 @@ attack_table_row(tr([td(Name), td(Range), td(ToHit), td(DamageFmt), td(FNotes)])
     %format_dice_sum(DamageDice, Damage).
 format_damage(Damage, Format) :-
     maplist(format_damage_roll, Damage, Fmts),
-    append(Fmts, Format).
+    interleave([','], Fmts, Sum),
+    append(Sum, Format).
 format_damage_roll(Roll, Format) :-
     Roll =.. [Type, Dice],
     format_dice_sum(Dice, DiceFmt),
     append(DiceFmt, [' ', Type], Format).
+interleave(X, [Y1,Y2|Ys], [Y1,X|Rest]) :-
+    interleave(X, [Y2|Ys], Rest).
+interleave(_, [Y], [Y]).
+interleave(_, [], []).
+
 
 % Spellcasting section.
 spell_slot_table(Table) :-
-    table('spell_slots', 'Spell slots', [Header|Rows], Table),
-    Header = tr([th([])|Levels]),
+    table('spell_slots', 'Spell slots and preparation', [Header|Rows], Table),
+    Header = tr([th([]), th('prep') | Levels]),
     findall(th(Str),
             (between(1, 9, Level), atomic_list_concat(['lvl ', Level], Str)),
             Levels),
     findall(Row, spell_slot_table_row(Row), Rows).
-spell_slot_table_row(tr([th(Source) | Row])) :-
+spell_slot_table_row(tr([th(Source), td(Prep) | Row])) :-
     spell_slot_source(Source),
+    max_prepared_spells(Source, Prep),
     findall(Cell,
             spell_slot_table_cell(Source, Cell),
             Slots),
@@ -145,7 +189,7 @@ spell_slot_table_cell(Source, td(Contents)) :-
 spell_table(Table) :-
     table('spells', 'Spells', [Header|Rows], Table),
     Header = tr([th('Prepared'), th('Level'), th('Spell'), th('Casting time'),
-                 th('Range'), th('To Hit/DC'), th('Resource')]),
+                 th('Range'), th('To Hit/DC'), th('Effect (summary)'), th('Resource')]),
     findall(Row,
             (between(0, 9, Lvl), spell_table_rows_for_level(Lvl, Row)),
             RowsPerLevel),
@@ -159,6 +203,7 @@ spell_table_row(SpellLevel, tr([td(Prepared),
                                 td(CastingTime),
                                 td(Range),
                                 td(ToHitOrDC),
+                                td(Effect),
                                 td(Resource)
                                 ])) :-
     spell_known(Name, Source, _Ability, PrepVal, ResourceVal),
@@ -167,6 +212,7 @@ spell_table_row(SpellLevel, tr([td(Prepared),
     spell(Name, casting_time, CastingTime),
     spell(Name, range, RangeVal), display_range(RangeVal, Range),
     spell_to_hit_or_dc(Name, Source, ToHitOrDC),
+    display_spell_effects(Name, Source, Effect),
     display_prepared(PrepVal, Prepared),
     display_resource(ResourceVal, Source, Resource).
 spell_to_hit_or_dc(Name, Source, [+, ToHit]) :-
@@ -174,6 +220,11 @@ spell_to_hit_or_dc(Name, Source, [+, ToHit]) :-
 spell_to_hit_or_dc(Name, Source, ['DC ', DC]) :-
     spell_dc(Name, Source, DC), !.
 spell_to_hit_or_dc(_, _, "-").
+display_spell_effects(Spell, Source, Damage) :-
+    spell_known_damage(Spell, Source, _, 0, DamageRolls),
+    format_damage(DamageRolls, Damage).
+display_spell_effects(Spell, Source, '-') :-
+    \+ spell_known_damage(Spell, Source, _, 0, _).
 
 display_range(feet(X), [X, ' ft']) :- !.
 display_range(miles(X), [X, ' mi']) :- !.

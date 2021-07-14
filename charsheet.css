@@ -1,6 +1,6 @@
 div.container {
     width: 100%;
-    font-family: "Fira Code", sans-serif;
+    font-family: "Liberation", sans-serif;
 }
 header {
     padding: 1em;
@@ -12,6 +12,7 @@ header {
 article { padding: 1em; }
 
 table {
+    font-family: "Fira Code", sans-serif;
     border-collapse: collapse;
     border: 1px solid lightgrey;
 }
@@ -38,6 +39,9 @@ table#skills tr:nth-child(1) {
 table#attacks tr:nth-child(1) {
     background-color: lightgrey;
 }
+table#spells {
+    font-family: "Liberation", sans-serif;
+}
 table#spells tr:nth-child(1) {
     background-color: lightgrey;
 }
@@ -62,7 +66,7 @@ table#spell_slots th {
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 640px;
+  width: 560px;
   background-color: black;
   color: #fff;
   text-align: center;
@@ -73,9 +77,13 @@ table#spell_slots th {
   position: absolute;
   z-index: 1;
 
-  top: 100%;
-  left: 50%;
-  margin-left: -300px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  top: 0%;
+  left: 100%;
+  /* margin-left: -300px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+.tooltiptext {
+    font-size: 12px;
+    font-family: "Liberation", sans-serif;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */

@@ -13,3 +13,8 @@ gain_spell_slots(wizard, spell_level(7), [13,20]).
 gain_spell_slots(wizard, spell_level(8), [15]).
 gain_spell_slots(wizard, spell_level(9), [17]).
 
+% Calculate how many spells a wizard can prepare.
+max_prepared_spells(wizard, N) :-
+    ability_mod(int, IntMod),
+    class_level(wizard:Level),
+    N is Level + IntMod.

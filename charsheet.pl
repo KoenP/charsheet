@@ -1,16 +1,23 @@
 :- multifile
-    have/1,
-    attack/5,
-    trait/2,
-    problem/2,
-    trait_options/3,
-    trait_bad_options/5,
-    feature_options/4,
-    initial_class_base_hp/1,
-    initial_class_base_hp/2,
-    spell_known/5,
-    custom_display_rule/2,
-    todo/1.
+       % Indicates problems with your character sheet.
+       problem/2,
+
+       % General repository of optional traits your character can have,
+       % along with the origin of the trait (trait(Origin, Trait)).
+       trait/2,
+
+       % Indicates that a trait should be listed on the character sheet.
+       list_trait/1,
+
+       % Item ownership.
+       have/1,
+
+       % Documents an attack to appear in the character sheet's attack table.
+       % attack(Name, Range, ToHit, Damage, Notes)
+       attack/5,
+
+       custom_display_rule/2,
+       todo/1.
 
 :- table
     problem/1,
@@ -26,13 +33,13 @@
        (?=)/2.
 
 :- [dice].
+:- [options].
+:- [spellcasting].
 :- [class].
 :- [race].
 :- [feats].
 :- [skills].
-:- [spellcasting].
 :- [leveling].
-:- [options].
 :- [items].
 :- [shorthands].
 :- [html].
@@ -190,6 +197,12 @@ initiative_mod(Init) :-
 % Proficiency bonus.
 calc_bonus(Level, Bonus) :- Bonus is 2 + div(Level-1, 4).
 proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).
+
+% Unarmed attacks.
+unarmed_attack_modifier(Mod) :-
+    proficiency_bonus(Bon),
+    ability_mod(str, StrMod),
+    Mod is Bon + StrMod.
 
 re :-
     abolish_all_tables,

@@ -51,3 +51,9 @@ spell_known(Spell, Race, Ability, always_available, at_will) :-
     trait(learn_spell(Race, Spell)),
     racial_spellcasting_ability(Ability),
     spell(Spell, level, 0).
+
+% Specify which racial traits we wish to list in the general 'traits'
+% section of the character sheet.
+list_trait(Trait) :-
+    trait(race(_), Trait),
+    \+ member(Trait, [_+_, skill(_), language(_), weapon(_)]).

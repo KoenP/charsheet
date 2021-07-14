@@ -2,8 +2,21 @@
 %       replace trait_options everywhere
 
 :- multifile
-       choose_traits/3,
-       bad_trait_choice/4.
+       % trait_options(Origin, UniqueName, OptionSpec)
+       % Set of options to pick for a trait.
+       % See options.pl to understand the OptionSpec parameter.
+       trait_options/3,
+
+       % problem/2 will automatically recognize when the user picked
+       % an invalid trait option. But in some cases we may want to provide
+       % a more specific error message for certain anticipated mistakes.
+       % In that case, we assert
+       % bad_trait_choice(Origin, Name, Choice, ErrMsg).
+       bad_trait_choice/4,
+
+       % The user uses this predicate to pick traits from a
+       % trait_options/3 menu.
+       choose_traits/3.
 
 chosen_trait(Origin, Name, Trait) :-
     trait(choose_traits(Origin, Name), Trait).
