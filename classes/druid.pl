@@ -83,6 +83,45 @@ You can’t cast spells, and your ability to speak or take any action that requi
 You retain the benefit of any features from your class, race, or other source and can use them if the new form is physically capable of doing so. However, you can’t use any of your special senses, such as darkvision, unless your new form also has that sense.
 You choose whether your equipment falls to the ground in your space, merges into your new form, or is worn by it. Worn equipment functions as normal, but the GM decides whether it is practical for the new form to wear a piece of equipment, based on the creature’s shape and size. Your equipment doesn’t change size or shape to match the new form, and any equipment that the new form can’t wear must either fall to the ground or merge with it. Equipment that merges with the form has no effect until you leave the form.".
 
+wild_shape_uses(2) :-
+    class(druid),
+    \+ trait(archdruid).
+wild_shape_uses(unlimited) :-
+    trait(archdruid).
+
+wild_shape_max_cr(CR) :-
+    class_level(druid:Level),
+    \+ subclass(druid, moon),
+    ( between(2,3,Level) -> CR = 1 / 4
+    ; between(4,7,Level) -> CR = 1 / 2
+    ; Level >= 8 -> CR = 1).
+wild_shape_max_cr(CR) :-
+    class_level(druid:Level),
+    subclass(druid, moon),
+    moon_max_cr(Level, CR).
+moon_max_cr(Level, 1) :-
+    between(2, 5, Level).
+moon_max_cr(Level, CR) :-
+    between(6, 20, Level),
+    CR is floor(Level / 3).
+
+wild_shape_restriction('no flying') :-
+    class_level(druid:Level),
+    Level < 8.
+wild_shape_restriction('no swimming') :-
+    class_level(druid:Level),
+    Level < 4.
+
+custom_section(Table) :-
+    trait('wild shape'),
+    table('wild shape', "Wild shape", [Header,Row], Table),
+    Header = tr([th('Uses left'), th('Max CR'), th('Restrictions')]),
+    Row = tr([td(Boxes), td(CR), td(Restrictions)]),
+    wild_shape_uses(Uses), repl(input(type=checkbox,[]), Uses, Boxes),
+    wild_shape_max_cr(CRVal), display_term(CRVal, CR),
+    findall(R, wild_shape_restriction(R), Restrictions).
+    
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Remaining general features.
 class_trait(druid:18, timeless_body).

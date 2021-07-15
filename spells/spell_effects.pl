@@ -28,7 +28,7 @@ spell_damage_rolls('acid splash', [acid(Scale d 6)]) :-
 %    Bonus is (Upcast+1) * 5.
 
 %%%%%
-spell_has_dc('animal friendship').
+spell_has_dc('animal friendship', wis).
 %spell_effect('animal friendship', charmed).
 
 %%%%%
@@ -67,6 +67,7 @@ spell_damage_rolls('scorching ray', Upcast, Dice) :-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 attack(shillelagh:Weapon, melee, ToHit, [bludgeoning(1 d 8 + DamageBonus)],
        [magical, when_spell_active(shillelagh)]) :-
     spell_known(shillelagh, _, Ability, always_available, at_will),

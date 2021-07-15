@@ -9,7 +9,7 @@
   - warlock eldritch invocation spells ondersteunen
   - spell effects terug introduceren
   - simpele DC based spells zoals sacred flame toevoegen aan attack table
-  - ik heb multiclass spell slots verkeerd gedaan
+  - spell_learnable is nu kapot
 - html genereren
 
 - alternatief voor trait_options: een waarbij je niet rechtstreeks je traits kiest maar opties die expanded worden naar traits, om af te raken van "trait pollution", zoals het learn_spell trait

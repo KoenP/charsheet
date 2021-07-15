@@ -40,7 +40,10 @@ spell_slots(SpellLevel, Slots) :-
     sumlist(Levels, SlotLevel),
     spell_slot_level_to_slots(SpellLevel, SlotLevel, Slots).
 spell_slots(SpellLevel, Slots) :-
-    \+ multiclass,
+    \+ multiclass, % this is the single class formula
+    spell_slots_single_class(SpellLevel, _, Slots).
+
+spell_slots_single_class(SpellLevel, Class, Slots) :-
     class_level(Class:Level),
     caster(Class, Fullness),
     single_class_slot_level(Level, Fullness, SlotLevel),
@@ -128,24 +131,33 @@ spell_to_hit(Spell, Source, ToHit) :-
     ability_mod(Ability, Mod),
     ToHit is ProfBon + Mod.
 
-spell_dc(Spell, Source, DC) :-
+spell_dc(Spell, Source, DCAbility, DC) :-
     proficiency_bonus(ProfBon),
-    spell_has_dc(Spell),
-    spell_known(Spell, Source, Ability, _, _),
-    ability_mod(Ability, Mod),
+    spell_has_dc(Spell, DCAbility),
+    spell_known(Spell, Source, CastingAbility, _, _),
+    ability_mod(CastingAbility, Mod),
     DC is 8 + ProfBon + Mod.
 
-% The notion of "learnable spells" is not meaningful for each class.
-% For e.g. wizards and sorcerers, it's the list of spells they can
-% learn new spells from. For e.g. druids and clerics this concept
-% completely coincides with their known spells. Still, the list of
-% known spells for these classes is derived from the defintion of
-% learnable spells, as written here.
-% TODO recalculate
+% Learnable spells are those spells you can choose from whenever
+% you get to select a new spell, such as on levelup with a wizard
+% or sorcerer, or when transcribing as a wizard.
+% For some classes, like clerics and druids, all learnable class
+% spells of level 1 or greater are immediately known.
+% Which spells are learnable depends on your spell slots, or
+% more precisely: a simulation of single-class spell slots, even when
+% you're multiclassing.
 spell_learnable(Class, SpellName) :-
     class(Class),
+    learnable_spell_level(Class, SpellLevel),
     spell_class(SpellName, Class),
-    spell(SpellName, level, 0).
+    spell(SpellName, level, SpellLevel).
+
+learnable_spell_level(Class, 0) :-
+    class(Class).
+learnable_spell_level(Class, SpellLevel) :-
+    spell_slots_single_class(SpellLevel, Class, N),
+    N > 0.
+    
 %spell_learnable(Class, SpellName) :-
 %    class(Class),
 %    spell(SpellName, level, SpellLevel),

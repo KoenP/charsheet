@@ -16,6 +16,10 @@
        % attack(Name, Range, ToHit, Damage, Notes)
        attack/5,
 
+       % A custom chunk of html to add to the character sheet, usually
+       % for a specific trait.
+       custom_section/1,
+
        custom_display_rule/2,
        todo/1.
 

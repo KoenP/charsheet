@@ -19,12 +19,16 @@ table {
 table td {
     text-align: right;
     padding: 6px;
-    border: 1px solid lightgrey;
+    /* border: 1px solid lightgrey; */
 }
 table th { 
     text-align: right;
     padding: 8px;
-    border: 1px solid lightgrey;
+    background-color: lightgrey;
+    /* border: 1px solid lightgrey; */
+}
+table#summary {
+    float: right;
 }
 table#abilities tr:nth-child(1) {
     background-color: lightgrey;
@@ -42,7 +46,7 @@ table#attacks tr:nth-child(1) {
 table#spells {
     font-family: "Liberation", sans-serif;
 }
-table#spells tr:nth-child(1) {
+table#spells tr:nth-child(odd) {
     background-color: lightgrey;
 }
 table#spells tr{

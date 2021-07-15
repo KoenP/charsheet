@@ -46,10 +46,10 @@ gain_level(4, druid, hp_avg).
 %choose_traits(class(druid:4), asi_or_feat, [str+2]).
 
 gain_level(5, druid, hp_avg).
-gain_level(6, wizard, hp_avg).
-gain_level(7, ranger, hp_avg).
-gain_level(8, ranger, hp_avg).
-gain_level(9, ranger, hp_avg).
+%gain_level(6, wizard, hp_avg).
+%gain_level(7, ranger, hp_avg).
+%gain_level(8, ranger, hp_avg).
+%gain_level(9, ranger, hp_avg).
 
 spell_known('hold person', wizard, int, when_prepared, spell_slot).
 spell_known('scorching ray', wizard, int, when_prepared, spell_slot).

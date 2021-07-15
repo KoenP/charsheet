@@ -24,25 +24,25 @@ char_sheet_body(
     [div(class('container'),
          [ header(h1(Name)),
            article(
-               [ table( [style='padding: 4px']
-                      , [ tr([th("Race"), td(Race)])
-                        , tr([th("Class"), td(Classes)])
-                        , tr([th("Level"), td(Level)])
-                        , tr([th("Max HP"), td(HP)])
-                        , tr([th("AC"), td(AC)])
-                        , tr([th("Initiative"), td(Init)])
-                        , tr([th("Speed"), td(Speed)])
-                        , tr([th("HD"), td(HD)])
-                        , tr([th("PP"), td(PP)])
-                        , tr([th("Prof Bon"), td(ProfBon)])
-                        ]),
-                 AbilityTable,
-                 SkillTable,
-                 ProfList,
-                 TraitList,
-                 AttackTable,
-                 SpellSlotTable,
-                 SpellTable
+               [ div([table( [id=summary, style='padding: 4px'] ,
+                             [ tr([th("Race"), td(Race)])
+                             , tr([th("Class"), td(Classes)])
+                             , tr([th("Level"), td(Level)])
+                             , tr([th("Max HP"), td(HP)])
+                             , tr([th("AC"), td(AC)])
+                             , tr([th("Initiative"), td(Init)])
+                             , tr([th("Speed"), td(Speed)])
+                             , tr([th("HD"), td(HD)])
+                             , tr([th("PP"), td(PP)])
+                             , tr([th("Prof Bon"), td(ProfBon)])
+                             ])
+                     , AbilityTable
+                     ]),
+                 div([SkillTable, ProfList, TraitList]),
+                 div(Custom),
+                 span(AttackTable),
+                 span(SpellSlotTable),
+                 span(SpellTable)
                ]
            )])]) :-
     name(Name),
@@ -60,6 +60,7 @@ char_sheet_body(
     skill_table(SkillTable),
     proficiency_list(ProfList),
     trait_list(TraitList),
+    custom_sections(Custom),
     attack_table(AttackTable),
     spell_slot_table(SpellSlotTable),
     spell_table(SpellTable).
@@ -106,7 +107,7 @@ skill_table_row_span_line(Skill, Rowspan, [th(rowspan=Rowspan, AbilHdr)]) :-
     ability_hdr(Abil, AbilHdr).
 
 % Proficiencies, other than skill proficiencies.
-proficiency_list(p([h3("Proficiencies"), ul(Profs)])) :-
+proficiency_list(p([h3("Proficiencies"), div([id=proficiencies], ul(Profs))])) :-
     findall(Prof, proficiency_list_entry(Prof), Profs).
 proficiency_list_entry(Entry) :-
       proficiency_category("Languages: ", language, Entry)
@@ -127,7 +128,7 @@ proficiency_category(CatHdr, CatFunctor, li([b(CatHdr) | Profs])) :-
 %    format_list(Tls, Tools, []).
 
 % Traits.
-trait_list(p([h3("Notable traits"), ul(Items)])) :-
+trait_list(p([h3("Notable traits"), div([id=traits], ul(Items))])) :-
     findall(li(Item), trait_list_entry(Item), Items).
 trait_list_entry(div(class=tooltip, [Trait, span(class=tooltiptext, Desc)])) :-
     trait(TraitVal),
@@ -137,6 +138,10 @@ display_trait(CompoundTerm, Atom) :-
     CompoundTerm =.. [_, Atom].
 display_trait(Atom, Atom) :-
     atom(Atom).
+
+% Custom sections.
+custom_sections(Sections) :-
+    findall(Section, custom_section(Section), Sections).
 
 % Attacks.
 attack_table(Table) :-
@@ -193,16 +198,20 @@ spell_table(Table) :-
     append(RowsPerLevel, Rows).
 
 spell_table_rows_for_level(SpellLevel, Rows) :-
-    findall(Row, spell_table_row(SpellLevel, Row), Rows).
-spell_table_row(SpellLevel, tr([td(Prepared),
-                                td(SpellLevel),
-                                td(div(class=tooltip, [Name, span(class=tooltiptext, Desc)])),
-                                td(CastingTime),
-                                td(Range),
-                                td(ToHitOrDC),
-                                td(Effect),
-                                td(Resource)
-                                ])) :-
+    between(0, 9, SpellLevel), % ground SpellLevel
+    findall(Spell, spell(Spell, level, SpellLevel), SpellsUnsorted),
+    sort(SpellsUnsorted, Spells),
+    findall(Row, (member(Spell,Spells), spell_table_row(Spell,SpellLevel,Row)), Rows).
+spell_table_row(Name, SpellLevel, tr([td(Prepared),
+                                      td(SpellLevel),
+                                      td(div(class=tooltip,
+                                             [Name, span(class=tooltiptext, Desc)])),
+                                      td(CastingTime),
+                                      td(Range),
+                                      td(ToHitOrDC),
+                                      td(Effect),
+                                      td(Resource)
+                                      ])) :-
     spell_known(Name, Source, _Ability, PrepVal, ResourceVal),
     spell(Name, level, SpellLevel),
     spell(Name, desc, Desc),
@@ -211,11 +220,11 @@ spell_table_row(SpellLevel, tr([td(Prepared),
     spell_to_hit_or_dc(Name, Source, ToHitOrDC),
     display_spell_effects(Name, Source, Effect),
     display_prepared(PrepVal, Prepared),
-    display_resource(ResourceVal, Source, Resource).
+    display_resource(ResourceVal, Resource).
 spell_to_hit_or_dc(Name, Source, [+, ToHit]) :-
     spell_to_hit(Name, Source, ToHit), !.
-spell_to_hit_or_dc(Name, Source, ['DC ', DC]) :-
-    spell_dc(Name, Source, DC), !.
+spell_to_hit_or_dc(Name, Source, ['DC ', DC, ' ', Ability]) :-
+    spell_dc(Name, Source, Ability, DC), !.
 spell_to_hit_or_dc(_, _, "-").
 display_spell_effects(Spell, Source, Damage) :-
     spell_known_damage(Spell, Source, _, 0, DamageRolls),
@@ -230,8 +239,8 @@ display_range(X, X).
 display_prepared(when_prepared, input(type=checkbox,[])).
 display_prepared(always_available, 'always').
 
-display_resource(at_will, _, 'at will').
-display_resource(spell_slot, Source, Source).
+display_resource(at_will, 'at will').
+display_resource(spell_slot, slot).
 
 
 % Helper predicates.
