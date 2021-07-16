@@ -38,7 +38,7 @@ choose_traits(class(druid:1), skills, [skill(perception), skill(nature)]).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 2
 gain_level(2, druid, hp_avg).
-choose_subclass(druid, land).
+choose_subclass(druid, moon).
 %choose_traits(subclass(druid:2,land), extra_cantrip, )
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,13 +62,8 @@ gain_level(5, druid, hp_avg).
 % Level 6
 gain_level(6, druid, hp_avg).
 
+%gain_level(7, ranger, hp_avg).
+gain_level(7, ranger, hp_avg).
+gain_level(8, ranger, hp_avg).
+%gain_level(9, ranger, hp_avg).
 
-
-gain_level(7, wizard, hp_avg).
-
-trait(just_because, feat(durable)).
-
-%gain_level(8, wizard, hp_avg).
-%gain_level(9, druid, hp_avg).
-%gain_level(10, druid, hp_avg).
-%choose_traits(class(druid:8), asi_or_feat, [str+2]).

@@ -27,7 +27,7 @@ full_caster_spell_slot_table(1, [1,1,2,3]).
 full_caster_spell_slot_table(2, [3,3,4]).
 full_caster_spell_slot_table(3, [5,5,6]).
 full_caster_spell_slot_table(4, [7,8,9]).
-full_caster_spell_slot_table(5, [7,8,9]).
+full_caster_spell_slot_table(5, [9,10,17]).
 full_caster_spell_slot_table(6, [11,19]).
 full_caster_spell_slot_table(7, [13,20]).
 full_caster_spell_slot_table(8, [15]).

@@ -38,11 +38,14 @@ char_sheet_body(
                              ])
                      , AbilityTable
                      ]),
-                 div([SkillTable, ProfList, TraitList]),
+                 SkillTable,
+                 ProfList,
+                 TraitList,
                  div(Custom),
-                 span(AttackTable),
-                 span(SpellSlotTable),
-                 span(SpellTable)
+                 AttackTable,
+                 SpellSlotTable,
+                 SpellPrepTable,
+                 SpellTable
                ]
            )])]) :-
     name(Name),
@@ -63,6 +66,7 @@ char_sheet_body(
     custom_sections(Custom),
     attack_table(AttackTable),
     spell_slot_table(SpellSlotTable),
+    spell_preparation_table(SpellPrepTable),
     spell_table(SpellTable).
 
 % Ability table.
@@ -188,6 +192,17 @@ spell_slot_table_cell(td(Contents)) :-
     between(1, 9, Level),
     spell_slots(Level, N),
     repl(input(type=checkbox, []), N, Contents).
+
+spell_preparation_table(Table) :-
+    table('spell preparation', 'Spells to prepare', [Header|Rows], Table),
+    Header = tr([th('Class'), th('Number'), th('Max Lvl')]),
+    findall(Row, spell_preparation_table_row(Row), Rows).
+spell_preparation_table_row(tr([td(Class), td(Prep), td(MaxLvl)])) :-
+    class(Class),
+    max_prepared_spells(Class, Prep),
+    findall(Level, spell_slots_single_class(Level, Class, _), Levels),
+    max_list(Levels, MaxLvl).
+
 spell_table(Table) :-
     table('spells', 'Spells', [Header|Rows], Table),
     Header = tr([th('Prepared'), th('Level'), th('Spell'), th('Casting time'),

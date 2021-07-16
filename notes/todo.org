@@ -19,5 +19,9 @@
 - effecten van short en long rests registreren
 - trait predicate niet-recursief maken
 - spell_damage predicaat -> support voor draconic ancestry
+- "asserted"/GM fiat traits toevoegen
+- manuele overrides toevoegen
+- beast json
+- lege tabellen (bv spell prep) niet tonen
 
 - onderscheid tussen initial class exclusive traits en reguliere level 1 traits (zie https://5thsrd.org/rules/multiclassing/#proficiencies)

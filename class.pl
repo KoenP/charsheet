@@ -8,11 +8,17 @@
        spell_class/2,
        choose_subclass_level/2,
        spell_available/1,
+
        class_option/1,
+       subclass_option/2,
+
        class_trait/2,
        class_trait_options/3,
+
        subclass_trait/3,
        subclass_trait_options/4,
+
+
        hd_per_level/2,
        initial_class_base_hp/2,
        max_hp_per_level/2,

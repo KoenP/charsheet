@@ -53,10 +53,13 @@ class_trait_options(druid:Level, cantrip, 1 from Cantrips) :-
 
 % Druids "know" (= can prepare) all non-cantrip druid spells for which
 % they have slots.
-% We want to avoid duplicating the spells we know from druid circle though.
+% We want to avoid duplicating the spells we know from druid circle though,
+% and we don't want to duplicate 'alter self' for a level 14 and above
+% moon druid.
 spell_known(SpellName, druid, wis, when_prepared, spell_slot) :-
     spell_learnable(druid, SpellName),
     spell(SpellName, level, Level),
+    \+ (SpellName = 'alter self', trait('thousand forms')),
     \+ trait(learn_circle_spell(SpellName)),
     Level > 0.
 
@@ -91,13 +94,13 @@ wild_shape_uses(unlimited) :-
 
 wild_shape_max_cr(CR) :-
     class_level(druid:Level),
-    \+ subclass(druid, moon),
+    \+ trait(subclass(druid:_, moon), 'circle forms'),
     ( between(2,3,Level) -> CR = 1 / 4
     ; between(4,7,Level) -> CR = 1 / 2
     ; Level >= 8 -> CR = 1).
 wild_shape_max_cr(CR) :-
     class_level(druid:Level),
-    subclass(druid, moon),
+    trait(subclass(druid:_, moon), 'circle forms'),
     moon_max_cr(Level, CR).
 moon_max_cr(Level, 1) :-
     between(2, 5, Level).
@@ -131,6 +134,28 @@ class_trait(druid:20, archdruid).
 timeless_body ?= "Starting at 18th level, the primal magic that you wield causes you to age more slowly. For every 10 years that pass, your body ages only 1 year.".
 beast_spells ?= "Beginning at 18th level, you can cast many of your druid spells in any shape you assume using Wild Shape. You can perform the somatic and verbal components of a druid spell while in a beast shape, but you aren’t able to provide material components.".
 archdruid ?= "At 20th level, you can use your Wild Shape an unlimited number of times. Additionally, you can ignore the verbal and somatic components of your druid spells, as well as any material components that lack a cost and aren’t consumed by a spell. You gain this benefit in both your normal shape and your beast shape from Wild Shape.".
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Subclass: Circle of the Moon
+subclass_option(druid, moon).
+subclass_trait(druid:2, moon, 'combat wild shape').
+subclass_trait(druid:2, moon, 'circle forms').
+subclass_trait(druid:6, moon,  'primal strike').
+subclass_trait(druid:10, moon, 'elemental wild shape').
+subclass_trait(druid:14, moon, 'thousand forms').
+spell_known('alter self', druid, wis, always_available, at_will) :-
+    trait('thousand forms').
+
+'combat wild shape' ?= "When you choose this circle at 2nd level, you gain the ability to use Wild Shape on your turn as a bonus action, rather than as an action.
+
+Additionally, while you are transformed by Wild Shape, you can use a bonus action to expend one spell slot to regain 1d8 hit points per level of the spell slot expended.".
+'circle forms' ?= "The rites of your circle grant you the ability to transform into more dangerous animal forms. Starting at 2nd level, you can use your Wild Shape to transform into a beast with a challenge rating as high as 1. You ignore the Max. CR column of the Beast Shapes table, but must abide by the other limitations there.
+
+Starting at 6th level, you can transform into a beast with a challenge rating as high as your druid level divided by 3, rounded down.".
+
+'primal strike' ?= "Starting at 6th level, your attacks in beast form count as magical for the purpose of overcoming resistance and immunity to nonmagical attacks and damage.".
+'elemental wild shape' ?= "At 10th level, you can expend two uses of Wild Shape at the same time to transform into an air elemental, an earth elemental, a fire elemental, or a water elemental.".
+'thousand forms' ?= "By 14th level, you have learned to use magic to alter your physical form in more subtle ways. You can cast the Alter Self spell at will.".
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Subclass: Circle of the Land
