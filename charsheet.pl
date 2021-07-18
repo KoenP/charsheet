@@ -20,6 +20,20 @@
        % for a specific trait.
        custom_section/1,
 
+       % resource(Name, Max)
+       % Your PC's class-specific finite resources such as sorcery points,
+       % wild shape uses, ...
+       resource/3,
+
+       % Register an effect to happen on long (/short) rest (usually resources being replenished).
+       % on_long_rest(_, restore) means to restore a resource to max (0 used).
+       % on_long_rest(_, restore(4)) means to restore a resource by 4.
+       % on_long_rest(_, set(4)) means to set a resource to 4.
+       on_long_rest/2,
+       on_short_rest/2,
+
+       trait_effect/2,
+
        custom_display_rule/2,
        todo/1.
 
@@ -52,12 +66,16 @@
 % Traits.
 trait(Trait) :- trait(_, Trait).
 
+trait(Trait, Effect) :-
+    trait_effect(Trait, Effect),
+    trait(Trait).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Character sheet calculations.
 
 % Hit points.
 max_hp(HP) :-
-    findall(Term, hp_term_for_level(_, Term), Terms),
+    findall(Term, (hp_term_for_level(_, Term); trait(max_hp + Term)), Terms),
     sumlist(Terms, HP).
 
 initial_class_base_hp(HP) :-
@@ -187,6 +205,9 @@ ac(AC) :- equipped(Armor), body_armor(Armor, medium, ac(ArmorAC), _), !,
           ability_mod(dex, Mod),
           AC is ArmorAC + min(Mod,2).
 ac(AC) :- equipped(Armor), body_armor(Armor, light, ac(ArmorAC), _), !,
+          ability_mod(dex, Mod),
+          AC is ArmorAC + Mod.
+ac(AC) :- trait(natural_resilience(ArmorAC)), !,
           ability_mod(dex, Mod),
           AC is ArmorAC + Mod.
 ac(AC) :- ability_mod(dex, Mod),

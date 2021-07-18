@@ -24,3 +24,8 @@ simplify_dice_sum(Dice, NewDs) :-
     add_up_dice(List, SumList),
     list_to_sum(SumList, NewDs).
 
+normalize_dice_formula(Dice + N, Dice + N) :-
+    number(N),
+    N \= 0,
+    !.
+normalize_dice_formula(Dice , Dice + 0).

@@ -37,6 +37,9 @@ table#abilities td {
     table-layout: fixed;
     width: 25%;
 }
+table#skills td {
+    border: 1px solid lightgrey;
+}
 table#skills tr:nth-child(1) {
     background-color: lightgrey;
 }
@@ -45,6 +48,8 @@ table#attacks tr:nth-child(1) {
 }
 table#spells {
     font-family: "Liberation", sans-serif;
+    /* border-collapse: separate; */
+    /* border-spacing: 10px 0; */
 }
 table#spells tr:nth-child(odd) {
     background-color: lightgrey;
@@ -53,7 +58,7 @@ table#spells tr{
     font-size: 12px;
 }
 table#spells td{
-    padding: 0px;
+    padding: 0 6px;
 }
 table#spell_slots th {
     background-color: lightgrey;

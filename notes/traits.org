@@ -1,0 +1,8 @@
+
+
+
+
+We want "named traits" to show up with their proper names in the character sheet.
+For instance, we don't want to see two separate traits "+3 HP" and "13 AC while not wearing armor", we want to see "draconic resilience (13 AC while not wearing armor, +3 max HP)".
+
+Currently, we say that trait(max_hp + 3) is a consequence of trait('draconic resilience'), but perhaps we should say trait_effect('draconic resilience', max_hp+3), and almost everywhere we're now querying trait, we should query trait_effect.

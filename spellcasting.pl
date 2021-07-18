@@ -12,7 +12,12 @@
        % like cantrips, which consume no resources, spell_slot for
        % regular spells which consume spell slots, and other options for
        % more specific cases).
-       spell_known/5.
+       spell_known/5,
+
+       % spell_single_roll_damage_bonus(Spell, Origin, Bonus)
+       % Register a damage bonus to be added to a single roll of a spell.
+       % When the 
+       spell_single_roll_damage_bonus/3.
 
 % The table that stores all "static" information about spells (ie
 % mostly independent of your character, although some things like
@@ -21,6 +26,9 @@
 spell(Name, Field, Value) :-
     spell(Name, Properties),
     Value = Properties.get(Field).
+
+cantrip(Spell) :-
+    spell(Spell, level, 0).
 
 % Calculate the number of available spell slots.
 full_caster_spell_slot_table(1, [1,1,2,3]).
@@ -181,10 +189,48 @@ spell_known(Spell) :-
 % as the amount listed in the spell description; you might have other
 % factors influencing it. These factors are taken into account in
 % spell_known_damage/3.
-spell_known_damage(Spell, Origin, Ability, Upcast, Rolls) :-
+% Elemental affinity states that the player can add CHA mod to one
+% damage roll (it seems you can choose which one) of a spell that
+% deals damage of the type associated with your draconic ancestry.
+% That leaves a point of confusion. For example, say your element is
+% cold, and you cast ice knife. Ice knife deals both cold and piercing
+% damage. Strictly speaking, the way elemental affinity is worded,
+% you can choose to add the damage to either the piercing damage roll
+% or the cold damage roll. But I think many players find this
+% counterintuitive and will rule that it is intended to apply to the
+% cold damage roll only.
+% So I'll err on the side of caution here: the automation adds the bonus
+% directly to the damage roll if the spell lists only one damage roll.
+% If an eligible spell has more than one damage roll, we just add a
+% note in the spell table to add the damage to a roll of choice.
+% TODO: how to deal with multiturn damage (spells that work like
+% moonbeam); probably we should also add a note, but then the damage
+% should be somehow 'marked' as multi-turm.
+spell_known_damage(Spell, Origin, Ability, Upcast, FinalRolls) :-
     spell_known(Spell, Origin, Ability, _, _),
     in_upcast_range(Spell, Upcast), % ground Upcast
-    spell_damage_rolls(Spell, Upcast, Rolls).
+    spell_damage_rolls(Spell, Upcast, Rolls),
+    findall(Bonus, spell_single_roll_damage_bonus(Spell,Upcast,Origin,Bonus), Bonuses),
+    sumlist(Bonuses, TotalBonus),
+    add_single_roll_damage_bonus(TotalBonus, Rolls, FinalRolls).
+add_single_roll_damage_bonus(Bonus, [Roll], [NewRoll]) :-
+    Roll =.. [Element, Damage],
+    normalize_dice_formula(Damage, Dice + Constant),
+    NewConstant is Constant + Bonus,
+    normalize_dice_formula(NewDamage, Dice + NewConstant),
+    NewRoll =.. [Element, NewDamage],
+    !.
+add_single_roll_damage_bonus(_, Rolls, Rolls).
+spell_known_effect(Spell, _, Effect) :-
+    spell_effect(Spell, Effect).
+spell_known_effect(Spell, Origin, Effect) :-
+    spell_damage_rolls(Spell, 0, [_|_]),
+    findall(Bonus, spell_single_roll_damage_bonus(Spell,0,Origin,Bonus), Bonuses),
+    sumlist(Bonuses, TotalBonus),
+    TotalBonus \= 0,
+    atomics_to_string(['+', TotalBonus, ' to one roll'], Effect).
+    
+    
 
 % Cantrips tend to get stronger at character levels 5, 11, and 17 (the
 % rules don't require these levels but this configuration is common

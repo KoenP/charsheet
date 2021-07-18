@@ -54,6 +54,14 @@ spell_has_dc(banishment, cha).
 %spell_effect(banishment, special).
 
 %%%%%
+spell_has_dc('burning hands', dex).
+spell_damage_rolls('burning hands', Upcast, [fire(N d 6)]) :-
+    N is 3 + Upcast.
+
+%%%%%
+spell_effect('mage armor', "AC = 13 + dex mod").
+
+%%%%%
 spell_makes_spell_attack('fire bolt').
 spell_damage_rolls('fire bolt', [fire(Scale d 10)]) :-
     cantrip_scale(Scale).

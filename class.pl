@@ -26,6 +26,7 @@
        gain_spell_slots/3.
 
 :- [classes/druid].
+:- [classes/sorcerer].
 :- [classes/fighter].
 :- [classes/wizard].
 :- [classes/ranger].
@@ -116,6 +117,10 @@ saving_throw_prof(Ability) :-
 class_cantrip(Class, Cantrip) :- 
     spell(Cantrip, level, 0),
     spell_class(Cantrip, Class).
+
+% Generate a list of learn_spell options for cantrips.
+learn_cantrip_options(Class, Cantrips) :-
+    findall(learn_spell(Class, Cantrip), class_cantrip(Class, Cantrip), Cantrips).
 
 % PC knows all cantrips that you explicitly selected.
 spell_known(Spell, Class, Ability, always_available, at_will) :-

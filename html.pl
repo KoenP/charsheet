@@ -106,7 +106,7 @@ skill_table_row(Skill, NumberOfSkills, tr(Row)) :-
     skill(Skill, ScoreVal), show_bonus(ScoreVal, Score),
     append(RowSpanLine, [td(Skill), td(Score)], Row).
 skill_table_row_span_line(_, 0, []) :- !.
-skill_table_row_span_line(Skill, Rowspan, [th(rowspan=Rowspan, AbilHdr)]) :-
+skill_table_row_span_line(Skill, Rowspan, [td(rowspan=Rowspan, b(AbilHdr))]) :-
     skill_ability(Skill, Abil),
     ability_hdr(Abil, AbilHdr).
 
@@ -241,11 +241,16 @@ spell_to_hit_or_dc(Name, Source, [+, ToHit]) :-
 spell_to_hit_or_dc(Name, Source, ['DC ', DC, ' ', Ability]) :-
     spell_dc(Name, Source, Ability, DC), !.
 spell_to_hit_or_dc(_, _, "-").
-display_spell_effects(Spell, Source, Damage) :-
+
+display_spell_effects(Spell, Source, Effects) :-
+    findall(Effect, display_spell_effect(Spell, Source, Effect), EffectsList),
+    interleave([','], EffectsList, L),
+    append(L, Effects).
+display_spell_effect(Spell, Source, Damage) :-
     spell_known_damage(Spell, Source, _, 0, DamageRolls),
     format_damage(DamageRolls, Damage).
-display_spell_effects(Spell, Source, '-') :-
-    \+ spell_known_damage(Spell, Source, _, 0, _).
+display_spell_effect(Spell, Source, [Effect]) :-
+    spell_known_effect(Spell, Source, Effect).
 
 display_range(feet(X), [X, ' ft']) :- !.
 display_range(miles(X), [X, ' mi']) :- !.
