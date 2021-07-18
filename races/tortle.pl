@@ -1,3 +1,4 @@
+base_race_option(tortle).
 race_size(tortle, medium).
 race_base_speed(tortle, 30).
 

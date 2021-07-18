@@ -10,6 +10,13 @@ class_saving_throw(sorcerer, con).
 class_saving_throw(sorcerer, cha).
 choose_subclass_level(sorcerer, 1).
 
+% Calculate how many spells a sorcerer can prepare.
+max_prepared_spells(sorcerer, N) :-
+    ability_mod(cha, Mod),
+    class_level(sorcerer:Level),
+    N is Level + Mod.
+spellcasting_ability(sorcerer, cha).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generic features and options available on level 1.
 

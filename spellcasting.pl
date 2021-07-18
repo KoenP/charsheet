@@ -228,7 +228,7 @@ spell_known_effect(Spell, Origin, Effect) :-
     findall(Bonus, spell_single_roll_damage_bonus(Spell,0,Origin,Bonus), Bonuses),
     sumlist(Bonuses, TotalBonus),
     TotalBonus \= 0,
-    atomics_to_string(['+', TotalBonus, ' to one roll'], Effect).
+    atomics_to_string(['+', TotalBonus, ' to one damage roll'], Effect).
     
     
 

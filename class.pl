@@ -4,6 +4,8 @@
        % For purposes of calculating spell slots.
        caster/2,
 
+       spellcasting_ability/2,
+
        max_prepared_spells/2,
        spell_class/2,
        choose_subclass_level/2,

@@ -1,4 +1,3 @@
-
 :- discontiguous
        race/1,
        gain_level/3,
@@ -16,7 +15,7 @@ equipped(_) :- false.
 % Level 1
 name('Zahar').
 initial_class(sorcerer).
-race('high elf').
+race(human).
 base_ability(str, 9).
 base_ability(dex, 14).
 base_ability(con, 17).

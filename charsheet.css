@@ -57,8 +57,11 @@ table#spells tr:nth-child(odd) {
 table#spells tr{
     font-size: 12px;
 }
+table#spells th{
+    text-align: left;
+}
 table#spells td{
-    padding: 0 6px;
+    text-align: left;
 }
 table#spell_slots th {
     background-color: lightgrey;
