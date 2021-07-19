@@ -19,13 +19,13 @@ table {
 table td {
     text-align: right;
     padding: 6px;
-    /* border: 1px solid lightgrey; */
+    border: 1px solid lightgrey;
 }
 table th { 
     text-align: right;
     padding: 8px;
     background-color: lightgrey;
-    /* border: 1px solid lightgrey; */
+    border: 1px solid lightgrey;
 }
 table#summary {
     float: right;
@@ -37,9 +37,6 @@ table#abilities td {
     table-layout: fixed;
     width: 25%;
 }
-table#skills td {
-    border: 1px solid lightgrey;
-}
 table#skills tr:nth-child(1) {
     background-color: lightgrey;
 }
@@ -48,8 +45,6 @@ table#attacks tr:nth-child(1) {
 }
 table#spells {
     font-family: "Liberation", sans-serif;
-    /* border-collapse: separate; */
-    /* border-spacing: 10px 0; */
 }
 table#spells tr:nth-child(odd) {
     background-color: lightgrey;
@@ -62,6 +57,7 @@ table#spells th{
 }
 table#spells td{
     text-align: left;
+    border: none;
 }
 table#spell_slots th {
     background-color: lightgrey;

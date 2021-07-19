@@ -16,7 +16,12 @@
 
        % The user uses this predicate to pick traits from a
        % trait_options/3 menu.
-       choose_traits/3.
+       choose_traits/3,
+
+       % The player can use this to not pick a trait option so it won't show up
+       % in their todo anymore (for example for the replace_spell
+       % option for sorcerers).
+       forego/2.
 
 chosen_trait(Origin, Name, Trait) :-
     trait(choose_traits(Origin, Name), Trait).
@@ -101,6 +106,7 @@ problem(choose_traits(Origin, Name, Choice), picked_more_than_once(Trait)) :-
 % Generate a todo when the user has not yet picked any options for a trait they are eligible for.
 todo(choose_traits(Origin, Name)) :-
     trait_options(Origin, Name, _),
+    \+ forego(Origin, Name),
     \+ choose_traits(Origin, Name, _).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

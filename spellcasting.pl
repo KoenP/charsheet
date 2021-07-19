@@ -224,7 +224,7 @@ add_single_roll_damage_bonus(_, Rolls, Rolls).
 spell_known_effect(Spell, _, Effect) :-
     spell_effect(Spell, Effect).
 spell_known_effect(Spell, Origin, Effect) :-
-    spell_damage_rolls(Spell, 0, [_|_]),
+    spell_damage_rolls(Spell, 0, [_,_|_]),
     findall(Bonus, spell_single_roll_damage_bonus(Spell,0,Origin,Bonus), Bonuses),
     sumlist(Bonuses, TotalBonus),
     TotalBonus \= 0,

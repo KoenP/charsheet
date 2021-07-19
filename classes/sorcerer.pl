@@ -27,12 +27,12 @@ class_trait(sorcerer:1, weapon(quarterstaff)).
 class_trait(sorcerer:1, weapon('light crossbow')).
 class_trait(sorcerer:1, spellcasting_focus(arcane)).
 
-class_trait_options(sorcerer:1, skill, 2 from [arcana,
-                                               deception,
-                                               insight,
-                                               intimidation,
-                                               persuasion,
-                                               religion]).
+class_trait_options(sorcerer:1, skill, 2 from [skill(arcana      ) ,
+                                               skill(deception   ) ,
+                                               skill(insight     ) ,
+                                               skill(intimidation) ,
+                                               skill(persuasion  ) ,
+                                               skill(religion    ) ]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generic levelup features.
@@ -77,6 +77,8 @@ metamagic('subtle spell') ?=
 metamagic('twinned spell') ?=
   "When you cast a spell that targets only one creature and doesn't have a range of self, you can spend a number of sorcery points equal to the spell's level to target a second creature in range with the same spell (1 sorcery point if the spell is a cantrip).
 To be eligible, a spell must be incapable of targeting more than one creature at the spell's current level. For example, magic missile and scorching ray aren't eligible, but ray of frost and chromatic orb are. ".
+custom_display_rule(metamagic(X), Str) :-
+    atomic_list_concat(["metamagic (", X, ")"], Str).
 
 'font of magic' ?= "At 2nd level, you tap into a deep wellspring of magic within yourself. This wellspring is represented by sorcery points, which allow you to create a variety of magical effects.
 Sorcery Points

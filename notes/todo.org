@@ -1,8 +1,6 @@
 - spellcasting
   - druid spell_known/5 logic veralgemenen
   - gekende spells filteren uit learn_spell lijstjes
-  - json parsen voor ruwe spell data
-  - dice rolls
   - spell effects tonen
   - spell targeting tonen
   - oorsprong van spells tonen

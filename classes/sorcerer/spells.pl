@@ -1,7 +1,9 @@
 spell_class('acid splash', sorcerer).
+spell_class('blade ward', sorcerer).
 spell_class('chill touch', sorcerer).
 spell_class('dancing lights', sorcerer).
 spell_class('fire bolt', sorcerer).
+spell_class('friends', sorcerer).
 spell_class('light', sorcerer).
 spell_class('mage hand', sorcerer).
 spell_class('mending', sorcerer).

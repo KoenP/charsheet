@@ -138,9 +138,13 @@ trait_list_entry(div(class=tooltip, [Trait, span(class=tooltiptext, Desc)])) :-
     trait(TraitVal),
     display_trait(TraitVal, Trait),
     TraitVal ?= Desc.
+display_trait(Term, Str) :-
+    custom_display_rule(Term, Str).
 display_trait(CompoundTerm, Atom) :-
+    \+ custom_display_rule(CompoundTerm, _),
     CompoundTerm =.. [_, Atom].
 display_trait(Atom, Atom) :-
+    \+ custom_display_rule(Atom, _),
     atom(Atom).
 
 % Custom sections.
@@ -205,8 +209,9 @@ spell_preparation_table_row(tr([td(Class), td(Prep), td(MaxLvl)])) :-
 
 spell_table(Table) :-
     table('spells', 'Spells', [Header|Rows], Table),
-    Header = tr([th('Prepared'), th('Level'), th('Spell'), th('Casting time'),
-                 th('Range'), th('To Hit/DC'), th('Effect (summary)'), th('Resource')]),
+    Header = tr([th('Prep\'d'), th('Lvl'), th('Spell'), th('Cast time'),
+                 th('Rng'), th('Cpts'), th('Dur'), th('To Hit/DC'),
+                 th('Effect (summary)'), th('Res')]),
     findall(Row,
             (between(0, 9, Lvl), spell_table_rows_for_level(Lvl, Row)),
             RowsPerLevel),
@@ -223,6 +228,8 @@ spell_table_row(Name, SpellLevel, tr([td(Prepared),
                                              [Name, span(class=tooltiptext, Desc)])),
                                       td(CastingTime),
                                       td(Range),
+                                      td(Components),
+                                      td(Duration),
                                       td(ToHitOrDC),
                                       td(Effect),
                                       td(Resource)
@@ -232,6 +239,8 @@ spell_table_row(Name, SpellLevel, tr([td(Prepared),
     spell(Name, desc, Desc),
     spell(Name, casting_time, CastingTime),
     spell(Name, range, RangeVal), display_range(RangeVal, Range),
+    spell(Name, components, ComponentsVal), display_components(ComponentsVal, Components),
+    spell(Name, duration, Duration),
     spell_to_hit_or_dc(Name, Source, ToHitOrDC),
     display_spell_effects(Name, Source, Effect),
     display_prepared(PrepVal, Prepared),
@@ -255,6 +264,12 @@ display_spell_effect(Spell, Source, [Effect]) :-
 display_range(feet(X), [X, ' ft']) :- !.
 display_range(miles(X), [X, ' mi']) :- !.
 display_range(X, X).
+
+display_components(Cs, Display) :-
+    maplist(display_component, Cs, Display).
+    %format_list(Displays, Display, []).
+display_component(m(M), span(class=tooltip, [m, span(class=tooltiptext, M)])).
+display_component(C, C) :- C \= m(_).
 
 display_prepared(when_prepared, input(type=checkbox,[])).
 display_prepared(always_available, 'always').

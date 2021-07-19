@@ -28,6 +28,9 @@ spell_damage_rolls('acid splash', [acid(Scale d 6)]) :-
 %    Bonus is (Upcast+1) * 5.
 
 %%%%%
+spell_effect('alter self', "shapechanging").
+
+%%%%%
 spell_has_dc('animal friendship', wis).
 %spell_effect('animal friendship', charmed).
 
@@ -54,17 +57,36 @@ spell_has_dc(banishment, cha).
 %spell_effect(banishment, special).
 
 %%%%%
+spell_effect('blade ward', 'resist bludgeoning, piercing, slashing from weapons').
+
+%%%%%
 spell_has_dc('burning hands', dex).
 spell_damage_rolls('burning hands', Upcast, [fire(N d 6)]) :-
     N is 3 + Upcast.
 
 %%%%%
-spell_effect('mage armor', "AC = 13 + dex mod").
+spell_effect(counterspell, "interrupt spell").
+
+%%%%%
+spell_makes_spell_attack(fireball).
+spell_damage_rolls(fireball, Upcast, [fire(N d 6)]) :-
+    N is 8 + Upcast.
 
 %%%%%
 spell_makes_spell_attack('fire bolt').
 spell_damage_rolls('fire bolt', [fire(Scale d 10)]) :-
     cantrip_scale(Scale).
+
+%%%%%
+spell_effect('mage armor', "AC = 13 + dex mod").
+
+%%%%%
+spell_damage_rolls('magic missile', [force(1 d 4 + 1)]).
+spell_effect('magic missile', "3 darts").
+spell_effect('magic missile', "always hits").
+
+%%%%%
+spell_effect('misty step', "teleport 30 ft").
 
 %%%%%
 spell_makes_spell_attack('scorching ray').
