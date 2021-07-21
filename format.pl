@@ -1,6 +1,10 @@
 :- multifile
        custom_format//1.
 
+fmt(Spec, Out) :-
+    phrase(Spec, Phrase),
+    atomics_to_string(Phrase, Out).
+
 format(Term, Format) :-
     phrase(format_term(Term), List),
     atomics_to_string(List, Format).
@@ -18,6 +22,7 @@ format_term(X : Y) --> format_term(X), [':'], format_term(Y).
 format_term(X + Y) --> format_term(X), ['+'], format_term(Y).
 format_term(Number) --> {number(Number)}, [Number].
 format_term(Atom) --> {atom(Atom)}, format_atom(Atom).
+format_term(String) --> {string(String)}, [String].
 format_term(List) --> format_list(List).
 
 format_atom(Atom) -->
@@ -36,17 +41,18 @@ format_list_flat([]) --> [].
 format_list_flat([X]) --> [X].
 format_list_flat([X|Xs]) --> {Xs \= []}, [X], [', '], format_list_flat(Xs).
 
-format_dice_sum(Ds + K) --> {number(K)}, format_dice_sum(Ds), ['+'], [K].
-format_dice_sum(Ds + D) --> format_dice_sum(Ds), ['+'], format_dice(D).
-format_dice_sum(Ds) --> format_dice(Ds).
-format_dice(N d X) --> seq([N, 'd', X]).
-
 format_damage([R|Rs]) --> {Rs \= []}, format_damage_roll(R), ',', format_damage(Rs).
 format_damage([R]) --> format_damage_roll(R).
 format_damage([]) --> [].
 format_damage_roll(Roll) -->
     {Roll =.. [Type, Dice]},
     format_dice_sum(Dice), [' '], [Type].
+
+format_dice_sum(Ds + K) --> {number(K), K \= 0}, format_dice_sum(Ds), ['+'], [K].
+format_dice_sum(Ds + 0) --> format_dice_sum(Ds).
+format_dice_sum(Ds + D) --> format_dice_sum(Ds), ['+'], format_dice(D).
+format_dice_sum(Ds) --> format_dice(Ds).
+format_dice(N d X) --> seq([N, 'd', X]).
 
 format_bonus(N) --> {N >= 0}, ['+'], [N].
 format_bonus(N) --> {N < 0}, [N].

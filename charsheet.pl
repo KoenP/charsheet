@@ -52,6 +52,7 @@
 
 :- use_module(library(lambda)).
 :- [dice].
+:- [format].
 :- [options].
 :- [spellcasting].
 :- [class].
@@ -62,7 +63,6 @@
 :- [leveling].
 :- [items].
 :- [shorthands].
-:- [format].
 :- [html].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

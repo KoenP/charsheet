@@ -57,7 +57,7 @@ char_sheet_body(
     ac(AC),
     initiative_mod(InitVal), format_bonus(InitVal, Init, []),
     speed(Speed),
-    hit_dice(HDTerm), phrase(format_dice_sum(HDTerm), HD), %term_to_atom(HDTerm, HD),
+    hit_dice(HDTerm), fmt(format_dice_sum(HDTerm), HD), %term_to_atom(HDTerm, HD),
     passive_perception(PP),
     proficiency_bonus(ProfBonVal), format_bonus(ProfBonVal, ProfBon, []),
     ability_table(AbilityTable),
@@ -148,8 +148,7 @@ trait_list(p([h3("Notable traits"), div([id=traits], ul(Items))])) :-
 trait_list_entry(div(class=tooltip, [Trait, span(class=tooltiptext, Desc)])) :-
     trait(TraitVal),
     \+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_)]),
-    phrase(format_trait(TraitVal), TraitFmt),
-    atomic_list_concat(TraitFmt, Trait),
+    fmt(format_trait(TraitVal), Trait),
     %format_trait(TraitVal, Trait),
     TraitVal ?= Desc.
 
@@ -188,7 +187,7 @@ attack_table_row(tr([td(Name), td(Range), td(ToHit), td(DamageFmt), td(FNotes)])
     format_list(Notes, FNotes, []),
     format(AttackName, Name),
     format_bonus(ToHitVal, ToHit, []),
-    phrase(format_damage(Damage), DamageFmt).
+    fmt(format_damage(Damage), DamageFmt).
 %format_damage(Damage, Format) :-
 %    maplist(format_damage_roll, Damage, Fmts),
 %    interleave([','], Fmts, Sum),
@@ -269,9 +268,7 @@ spell_table_row(Name, SpellLevel, tr([td(Prepared),
     spell(Name, components, ComponentsVal), format_components(ComponentsVal, Components),
     spell(Name, duration, Duration),
     spell_to_hit_or_dc(Name, Source, ToHitOrDC),
-
-    findall(Effect, spell_known_effect(Name,Source,Effect), EffectsVal), phrase(format_terms(EffectsVal), Effects),
-    %format_spell_effects(Name, Source, Effect),
+    findall(Effect, spell_known_effect(Name,Source,Effect), EffectsVal), fmt(format_terms(EffectsVal), Effects),
     format_prepared(PrepVal, Prepared),
     format_resource(ResourceVal, Resource).
 spell_to_hit_or_dc(Name, Source, [+, ToHit]) :-
