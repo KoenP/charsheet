@@ -75,15 +75,15 @@ spellcasting_ability(druid, wis).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Wild shape
 class_trait(druid:2, 'wild shape').
-custom_display_rule('wild shape', Display) :-
-    phrase(display_wild_shape, Atomics),
-    atomics_to_string(Atomics, Display).
+summary('wild shape') --> ['CR '], format_ws_cr, format_ws_restrictions.
+%custom_display_rule('wild shape', Display) :-
+%    phrase(display_wild_shape, Atomics),
+%    atomics_to_string(Atomics, Display).
 
-display_wild_shape --> ['wild shape (CR '], display_ws_cr, display_ws_restrictions, [')'].
-display_ws_cr --> {wild_shape_max_cr(CR)}, display_cr(CR).
-display_ws_restrictions --> {findall(R,wild_shape_restriction(R),Rs), length(Rs,Len), length(Commas,Len), maplist(=(', '),Commas)},
-                          interleave(Commas, Rs).
-                          %sep([','], Rs).
+format_ws_cr --> {wild_shape_max_cr(CR)}, display_cr(CR).
+format_ws_restrictions --> {findall(R,wild_shape_restriction(R),Rs), length(Rs,Len), length(Commas,Len), maplist(=(', '),Commas)},
+                         interleave(Commas, Rs).
+%sep([','], Rs).
 
 display_cr(CR) --> display_fraction(CR).
 display_cr(CR) --> {number(CR)}, [CR].

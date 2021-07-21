@@ -64,4 +64,7 @@ choose_traits(class(sorcerer:6), spell, [learn_sorcerer_spell('counterspell')]).
 
 
 gain_level(7, druid, hp_avg).
+choose_traits(class(druid:1), cantrip, [learn_spell(druid, shillelagh), learn_spell(druid, guidance)]).
+have(quarterstaff).
+
 gain_level(8, druid, hp_avg).

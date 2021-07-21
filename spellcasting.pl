@@ -253,5 +253,4 @@ cantrip_scale(Scale) :-
     ).
 
 % Some custom display rules.
-custom_display_rule(when_spell_active(S), Str) :-
-    atomics_to_string(['when ', S, ' is active'], Str).
+custom_format(when_spell_active(S)) --> ["when "], format_term(S), [" is active"].

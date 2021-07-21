@@ -121,8 +121,17 @@ proficiency_list_entry(Entry) :-
     ; proficiency_category("Armor: ", armor, Entry)
     ; proficiency_category("Tools: ", tool, Entry).
 proficiency_category(CatHdr, CatFunctor, li([b(CatHdr) | Profs])) :-
-    findall(X, (Search =.. [CatFunctor,X], trait(Search)), Xs),
-    format_list(Xs, Profs, []).
+    findall(T,
+            (Search =.. [CatFunctor,X], trait(Search), maybe_tooltip(Search, X, T)),
+            Ts),
+    format_list_flat(Ts, Profs, []).
+
+maybe_tooltip(Subject, Text, WithTooltip) :-
+    (Subject ?= Tooltip),
+    tooltip(Text, Tooltip, WithTooltip).
+maybe_tooltip(Subject, Text, Text) :-
+    \+ (Subject ?= _).
+
 %proficiency_list_entry(li([b("Languages: ") | Languages])) :-
 %    findall(Lang, trait(language(Lang)), Langs),
 %    format_list(Langs, Languages, []).
@@ -138,16 +147,23 @@ trait_list(p([h3("Notable traits"), div([id=traits], ul(Items))])) :-
     findall(li(Item), trait_list_entry(Item), Items).
 trait_list_entry(div(class=tooltip, [Trait, span(class=tooltiptext, Desc)])) :-
     trait(TraitVal),
-    format_trait(TraitVal, Trait),
+    \+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_)]),
+    phrase(format_trait(TraitVal), TraitFmt),
+    atomic_list_concat(TraitFmt, Trait),
+    %format_trait(TraitVal, Trait),
     TraitVal ?= Desc.
-format_trait(Term, Str) :-
-    custom_display_rule(Term, Str).
-format_trait(CompoundTerm, Atom) :-
-    \+ custom_display_rule(CompoundTerm, _),
-    CompoundTerm =.. [_, Atom].
-format_trait(Atom, Atom) :-
-    \+ custom_display_rule(Atom, _),
-    atom(Atom).
+
+format_trait(T) --> format_term(T), [' ('], summary(T), !, [')'].
+format_trait(T) --> format_term(T).
+
+%format_trait(Term, Str) :-
+%    custom_display_rule(Term, Str).
+%format_trait(CompoundTerm, Atom) :-
+%    \+ custom_display_rule(CompoundTerm, _),
+%    CompoundTerm =.. [_, Atom].
+%format_trait(Atom, Atom) :-
+%    \+ custom_display_rule(Atom, _),
+%    atom(Atom).
 
 % Custom sections.
 custom_sections(Sections) :-
@@ -155,8 +171,8 @@ custom_sections(Sections) :-
 
 % Resources
 resource_table(Table) :-
-    table('resources', 'Resources', [tr([th('Resource')|Resources]), tr([th('Uses')|Boxes])], Table),
-    findall(td(Res)-td(Boxes),
+    table('resources', 'Resources', [tr(Resources), tr(Boxes)], Table),
+    findall(th(Res)-td(Boxes),
             (resource(ResVal,N), format(ResVal,Res), checkboxes(N,Boxes)),
             Pairs),
     maplist(\X^Y^(X = (Y-_)), Pairs, Resources),
@@ -264,16 +280,6 @@ spell_to_hit_or_dc(Name, Source, ['DC ', DC, ' ', Ability]) :-
     spell_dc(Name, Source, Ability, DC), !.
 spell_to_hit_or_dc(_, _, "-").
 
-%format_spell_effects(Spell, Source, Effects) :-
-%    findall(Effect, format_spell_effect(Spell, Source, Effect), EffectsList),
-%    interleave([','], EffectsList, L),
-%    append(L, Effects).
-%format_spell_effect(Spell, Source, Damage) :-
-%    spell_known_damage(Spell, Source, _, 0, DamageRolls),
-%    phrase(format_damage(DamageRolls), Damage).
-%format_spell_effect(Spell, Source, [Effect]) :-
-%    spell_known_effect(Spell, Source, Effect).
-
 format_range(feet(X), [X, ' ft']) :- !.
 format_range(miles(X), [X, ' mi']) :- !.
 format_range(X, X).
@@ -290,6 +296,7 @@ format_prepared(always_available, 'always').
 format_resource(at_will, 'at will').
 format_resource(spell_slot, slot).
 
+tooltip(Text, Tooltip, div(class=tooltip, [Text, span(class=tooltiptext, Tooltip)])).
 
 % Helper predicates.
 table(Id, Caption, Contents, table(id=Id, [caption(h3(Caption))|Contents])).

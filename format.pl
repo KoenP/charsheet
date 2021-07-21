@@ -1,11 +1,11 @@
 :- multifile
-       custom_format_rule//1.
+       custom_format//1.
 
 format(Term, Format) :-
     phrase(format_term(Term), List),
-    atomic_list_concat(List, Format).
+    atomics_to_string(List, Format).
 
-format_term(Custom) --> custom_format_rule(Custom), !.
+format_term(Custom) --> custom_format(Custom), !.
 format_term(Compound) -->
     {\+ is_list(Compound), Compound =.. [Ftor|Tms], \+ member(Ftor, ['/', ':', 'd', '+']), Tms \= []},
     format_atom(Ftor),
@@ -32,6 +32,10 @@ format_list([]) --> [].
 format_list([X]) --> format_term(X).
 format_list([X|Xs]) --> {Xs \= []}, format_term(X), [', '], format_list(Xs).
 
+format_list_flat([]) --> [].
+format_list_flat([X]) --> [X].
+format_list_flat([X|Xs]) --> {Xs \= []}, [X], [', '], format_list_flat(Xs).
+
 format_dice_sum(Ds + K) --> {number(K)}, format_dice_sum(Ds), ['+'], [K].
 format_dice_sum(Ds + D) --> format_dice_sum(Ds), ['+'], format_dice(D).
 format_dice_sum(Ds) --> format_dice(Ds).
@@ -46,7 +50,7 @@ format_damage_roll(Roll) -->
 
 format_bonus(N) --> {N >= 0}, ['+'], [N].
 format_bonus(N) --> {N < 0}, [N].
-    
+
 %! Replace underscores by spaces.
 us_to_space([ X |Xs]) --> {X \= '_'}, [X], us_to_space(Xs).
 us_to_space(['_'|Xs]) --> [' '], us_to_space(Xs).

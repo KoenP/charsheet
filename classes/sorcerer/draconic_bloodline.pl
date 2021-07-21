@@ -37,15 +37,11 @@ subclass_trait(sorcerer:14, 'draconic bloodline', 'dragon wings').
 subclass_trait(sorcerer:18, 'draconic bloodline', 'draconic presence').
 
 dragon_ancestor(_) ?= "You have a specific dragon type as your ancestor. Whenever you make a Charisma check when interacting with dragons, your proficiency bonus is doubled if it applies to the check.".
-custom_display_rule(dragon_ancestor(Color), Str) :-
-    atomic_list_concat(["dragon ancestor (", Color, ")"], Str).
 
 'draconic resilience' ?= "As magic flows through your body, it causes physical traits of your dragon ancestors to emerge. At 1st level, your hit point maximum increases by 1 and increases by 1 again whenever you gain a level in this class.
 Additionally, parts of your skin are covered by a thin sheen of dragon-like scales. When you aren't wearing armor, your AC equals 13 + your Dexterity modifier. ".
 
 elemental_affinity(_) ?= "Starting at 6th level, when you cast a spell that deals damage of the type associated with your draconic ancestry, you can add your Charisma modifier to one damage roll of that spell. At the same time, you can spend 1 sorcery point to gain resistance to that damage type for 1 hour.".
-custom_display_rule(elemental_affinity(Element), Str) :-
-    atomic_list_concat(["elemental affinity (", Element, ")"], Str).
 
 'dragon wings' ?= "At 14th level, you gain the ability to sprout a pair of dragon wings from your back, gaining a flying speed equal to your current speed. You can create these wings as a bonus action on your turn. They last until you dismiss them as a bonus action on your turn.
 You can't manifest your wings while wearing armor unless the armor is made to accommodate them, and clothing not made to accommodate your wings might be destroyed when you manifest them.".

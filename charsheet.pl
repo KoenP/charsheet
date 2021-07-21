@@ -110,7 +110,8 @@ hit_dice(Class, M d X) :-
     M is N * Level.
 resource(hit_dice(X), N) :-
     hit_dice(_, N d X).
-custom_display_rule(hit_dice(X), ['hit dice (d', X, ')']).
+custom_format(hit_dice(X)) --> {X \= _ d _}, ["hit dice (d"], [X], [")"].
+%custom_display_rule(hit_dice(X), ['hit dice (d', X, ')']).
 
 % Abilities and modifiers.
 ability(str).
