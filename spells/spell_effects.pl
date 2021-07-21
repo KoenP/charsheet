@@ -1,20 +1,25 @@
 :- discontiguous
-       spell_effect/2,
-       spell_effect/3,
+       spell_other_effect/2,
+       spell_other_effect/3,
        spell_damage_rolls/2,
        spell_damage_rolls/3,
        spell_at_will_attack/5,
        spell_makes_spell_attack/1,
        spell_has_dc/2.
 
-%spell_effect(Spell, 0, Rolls) :-
-%    spell_effect(Spell, Rolls).
-%spell_effect(Spell, Rolls) :-
+%spell_other_effect(Spell, 0, Rolls) :-
+%    spell_other_effect(Spell, Rolls).
+%spell_other_effect(Spell, Rolls) :-
 %    spell_damage_rolls(Spell, Rolls).
-%spell_effect(Spell, Upcast, Rolls) :-
+%spell_other_effect(Spell, Upcast, Rolls) :-
 %    spell_damage_rolls(Spell, Upcast, Rolls).
 spell_damage_rolls(Spell, 0, Rolls) :-
     spell_damage_rolls(Spell, Rolls).
+
+spell_effect(Spell, Effect) :-
+    spell_other_effect(Spell, 0, Effect).
+spell_effect(Spell, Damage) :-
+    spell_damage_rolls(Spell, 0, Damage).
 
 %%%%%
 spell_has_dc('acid splash', dex).
@@ -22,42 +27,42 @@ spell_damage_rolls('acid splash', [acid(Scale d 6)]) :-
     cantrip_scale(Scale).
 
 %%%%%
-%spell_effect(aid, Upcast, 'max hp' + Bonus) :-
+%spell_other_effect(aid, Upcast, 'max hp' + Bonus) :-
 %    Bonus is (Upcast+1) * 5.
-%spell_effect(aid, Upcast, 'cur hp' + Bonus) :-
+%spell_other_effect(aid, Upcast, 'cur hp' + Bonus) :-
 %    Bonus is (Upcast+1) * 5.
 
 %%%%%
-spell_effect('alter self', "shapechanging").
+spell_other_effect('alter self', "shapechanging").
 
 %%%%%
 spell_has_dc('animal friendship', wis).
-%spell_effect('animal friendship', charmed).
+%spell_other_effect('animal friendship', charmed).
 
 %%%%%
-%spell_effect('armor of agathys', 'temp hp' + 5).
-%spell_effect('armor of agathys', "special: damage reflection (5 cold)").
+%spell_other_effect('armor of agathys', 'temp hp' + 5).
+%spell_other_effect('armor of agathys', "special: damage reflection (5 cold)").
 
 %%%%%
 spell_has_dc('arms of hadar', str).
-%spell_effect('arms of hadar', 'no reactions').
-%spell_effect('arms of hadar', on_save('half damage')).
+%spell_other_effect('arms of hadar', 'no reactions').
+%spell_other_effect('arms of hadar', on_save('half damage')).
 spell_damage_rolls('arms of hadar', Upcast, [necrotic(N d 6)]) :-
     in_upcast_range('arms of hadar', Upcast), % ground Upcast
     N is 2 + Upcast.
 
 %%%%%
 spell_has_dc(bane, cha).
-%spell_effect(bane, 'attack roll' - (1 d 4)).
-%spell_effect(bane, 'ST' - (1 d 4)).
+%spell_other_effect(bane, 'attack roll' - (1 d 4)).
+%spell_other_effect(bane, 'ST' - (1 d 4)).
 
 %%%%%
 spell_has_dc(banishment, cha).
-%spell_effect(banishment, banished).
-%spell_effect(banishment, special).
+%spell_other_effect(banishment, banished).
+%spell_other_effect(banishment, special).
 
 %%%%%
-spell_effect('blade ward', 'resist bludgeoning, piercing, slashing from weapons').
+spell_other_effect('blade ward', 'resist bludgeoning, piercing, slashing from weapons').
 
 %%%%%
 spell_has_dc('burning hands', dex).
@@ -65,7 +70,7 @@ spell_damage_rolls('burning hands', Upcast, [fire(N d 6)]) :-
     N is 3 + Upcast.
 
 %%%%%
-spell_effect(counterspell, "interrupt spell").
+spell_other_effect(counterspell, "interrupt spell").
 
 %%%%%
 spell_makes_spell_attack(fireball).
@@ -78,15 +83,15 @@ spell_damage_rolls('fire bolt', [fire(Scale d 10)]) :-
     cantrip_scale(Scale).
 
 %%%%%
-spell_effect('mage armor', "AC = 13 + dex mod").
+spell_other_effect('mage armor', "AC = 13 + dex mod").
 
 %%%%%
 spell_damage_rolls('magic missile', [force(1 d 4 + 1)]).
-spell_effect('magic missile', "3 darts").
-spell_effect('magic missile', "always hits").
+spell_other_effect('magic missile', "3 darts").
+spell_other_effect('magic missile', "always hits").
 
 %%%%%
-spell_effect('misty step', "teleport 30 ft").
+spell_other_effect('misty step', "teleport 30 ft").
 
 %%%%%
 spell_makes_spell_attack('scorching ray').

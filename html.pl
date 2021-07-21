@@ -42,6 +42,7 @@ char_sheet_body(
                  ProfList,
                  TraitList,
                  div(Custom),
+                 ResourceTable,
                  AttackTable,
                  SpellSlotTable,
                  SpellPrepTable,
@@ -49,21 +50,22 @@ char_sheet_body(
                ]
            )])]) :-
     name(Name),
-    most_specific_race(RaceVal), display_term(RaceVal, Race),
-    class_levels(ClassesTerm), format_list(ClassesTerm, Classes, []),
+    most_specific_race(RaceVal), display(RaceVal, Race),
+    class_levels(ClassesTerm), display_list(ClassesTerm, Classes, []),
     level(Level),
     max_hp(HP),
     ac(AC),
-    initiative_mod(InitVal), show_bonus(InitVal, Init),
+    initiative_mod(InitVal), display_bonus(InitVal, Init, []),
     speed(Speed),
-    hit_dice(HDTerm), format_dice_sum(HDTerm, HD), %term_to_atom(HDTerm, HD),
+    hit_dice(HDTerm), phrase(display_dice_sum(HDTerm), HD), %term_to_atom(HDTerm, HD),
     passive_perception(PP),
-    proficiency_bonus(ProfBonVal), show_bonus(ProfBonVal, ProfBon),
+    proficiency_bonus(ProfBonVal), display_bonus(ProfBonVal, ProfBon, []),
     ability_table(AbilityTable),
     skill_table(SkillTable),
     proficiency_list(ProfList),
     trait_list(TraitList),
     custom_sections(Custom),
+    resource_table(ResourceTable),
     attack_table(AttackTable),
     spell_slot_table(SpellSlotTable),
     spell_preparation_table(SpellPrepTable),
@@ -77,8 +79,8 @@ ability_table(Table) :-
 ability_table_row(Abil, tr([th(AbilHdr), td(Score), td(Mf), td(ST)])) :-
     ability(Abil, Score),
     ability_hdr(Abil, AbilHdr),
-    ability_mod(Abil, MfVal), show_bonus(MfVal, Mf),
-    saving_throw(Abil, STVal), show_bonus(STVal, ST).
+    ability_mod(Abil, MfVal), display_bonus(MfVal, Mf, []),
+    saving_throw(Abil, STVal), display_bonus(STVal, ST, []).
 ability_hdr(str, 'STR').
 ability_hdr(dex, 'DEX').
 ability_hdr(con, 'CON').
@@ -103,7 +105,7 @@ skill_table_rows_for_abil(Abil, [FirstRow|OtherRows]) :-
     maplist(skill_table_row, OtherSkills, Zeros, OtherRows).
 skill_table_row(Skill, NumberOfSkills, tr(Row)) :- 
     skill_table_row_span_line(Skill, NumberOfSkills, RowSpanLine),
-    skill(Skill, ScoreVal), show_bonus(ScoreVal, Score),
+    skill(Skill, ScoreVal), display_bonus(ScoreVal, Score, []),
     append(RowSpanLine, [td(Skill), td(Score)], Row).
 skill_table_row_span_line(_, 0, []) :- !.
 skill_table_row_span_line(Skill, Rowspan, [td(rowspan=Rowspan, b(AbilHdr))]) :-
@@ -120,7 +122,7 @@ proficiency_list_entry(Entry) :-
     ; proficiency_category("Tools: ", tool, Entry).
 proficiency_category(CatHdr, CatFunctor, li([b(CatHdr) | Profs])) :-
     findall(X, (Search =.. [CatFunctor,X], trait(Search)), Xs),
-    format_list(Xs, Profs, []).
+    display_list(Xs, Profs, []).
 %proficiency_list_entry(li([b("Languages: ") | Languages])) :-
 %    findall(Lang, trait(language(Lang)), Langs),
 %    format_list(Langs, Languages, []).
@@ -151,6 +153,15 @@ display_trait(Atom, Atom) :-
 custom_sections(Sections) :-
     findall(Section, custom_section(Section), Sections).
 
+% Resources
+resource_table(Table) :-
+    table('resources', 'Resources', [tr([th('Resource')|Resources]), tr([th('Uses')|Boxes])], Table),
+    findall(td(Res)-td(Boxes),
+            (resource(ResVal,N), display(ResVal,Res), checkboxes(N,Boxes)),
+            Pairs),
+    maplist(\X^Y^(X = (Y-_)), Pairs, Resources),
+    maplist(\X^Y^(X = (_-Y)), Pairs, Boxes).
+
 % Attacks.
 attack_table(Table) :-
     table('attacks', 'Attacks', [Header|Rows], Table),
@@ -158,24 +169,22 @@ attack_table(Table) :-
     findall(Row, attack_table_row(Row), Rows).
 attack_table_row(tr([td(Name), td(Range), td(ToHit), td(DamageFmt), td(FNotes)])) :-
     attack(AttackName, Range, ToHitVal, Damage, Notes),
-    format_list(Notes, FNotes, []),
-    display_term(AttackName, Name),
-    show_bonus(ToHitVal, ToHit),
-    format_damage(Damage, DamageFmt).
-    %format_dice_sum(DamageDice, Damage).
-format_damage(Damage, Format) :-
-    maplist(format_damage_roll, Damage, Fmts),
-    interleave([','], Fmts, Sum),
-    append(Sum, Format).
-format_damage_roll(Roll, Format) :-
-    Roll =.. [Type, Dice],
-    format_dice_sum(Dice, DiceFmt),
-    append(DiceFmt, [' ', Type], Format).
-interleave(X, [Y1,Y2|Ys], [Y1,X|Rest]) :-
-    interleave(X, [Y2|Ys], Rest).
-interleave(_, [Y], [Y]).
-interleave(_, [], []).
-
+    display_list(Notes, FNotes, []),
+    display(AttackName, Name),
+    display_bonus(ToHitVal, ToHit, []),
+    phrase(display_damage(Damage), DamageFmt).
+%format_damage(Damage, Format) :-
+%    maplist(format_damage_roll, Damage, Fmts),
+%    interleave([','], Fmts, Sum),
+%    append(Sum, Format).
+%format_damage_roll(Roll, Format) :-
+%    Roll =.. [Type, Dice],
+%    phrase(display_dice_sum(Dice), DiceFmt),
+%    append(DiceFmt, [' ', Type], Format).
+%interleave(X, [Y1,Y2|Ys], [Y1,X|Rest]) :-
+%    interleave(X, [Y2|Ys], Rest).
+%interleave(_, [Y], [Y]).
+%interleave(_, [], []).
 
 % Spellcasting section.
 spell_slot_table(Table) :-
@@ -197,10 +206,11 @@ spell_slot_table_cell(td(Contents)) :-
     spell_slots(Level, N),
     repl(input(type=checkbox, []), N, Contents).
 
-spell_preparation_table(Table) :-
+spell_preparation_table(Html) :-
     table('spell preparation', 'Spells to prepare', [Header|Rows], Table),
     Header = tr([th('Class'), th('Number'), th('Max Lvl')]),
-    findall(Row, spell_preparation_table_row(Row), Rows).
+    findall(Row, spell_preparation_table_row(Row), Rows),
+    (Rows = [] -> Html = div([]); Rows \= [] -> Html = Table).
 spell_preparation_table_row(tr([td(Class), td(Prep), td(MaxLvl)])) :-
     class(Class),
     max_prepared_spells(Class, Prep),
@@ -209,7 +219,7 @@ spell_preparation_table_row(tr([td(Class), td(Prep), td(MaxLvl)])) :-
 
 spell_table(Table) :-
     table('spells', 'Spells', [Header|Rows], Table),
-    Header = tr([th('Prep\'d'), th('Lvl'), th('Spell'), th('Cast time'),
+    Header = tr([th('Prep\'d'), th('Lvl'), th('Source'), th('Spell'), th('Cast time'),
                  th('Rng'), th('Cpts'), th('Dur'), th('To Hit/DC'),
                  th('Effect (summary)'), th('Res')]),
     findall(Row,
@@ -224,6 +234,7 @@ spell_table_rows_for_level(SpellLevel, Rows) :-
     findall(Row, (member(Spell,Spells), spell_table_row(Spell,SpellLevel,Row)), Rows).
 spell_table_row(Name, SpellLevel, tr([td(Prepared),
                                       td(SpellLevel),
+                                      td(Source),
                                       td(div(class=tooltip,
                                              [Name, span(class=tooltiptext, Desc)])),
                                       td(CastingTime),
@@ -231,7 +242,7 @@ spell_table_row(Name, SpellLevel, tr([td(Prepared),
                                       td(Components),
                                       td(Duration),
                                       td(ToHitOrDC),
-                                      td(Effect),
+                                      td(Effects),
                                       td(Resource)
                                       ])) :-
     spell_known(Name, Source, _Ability, PrepVal, ResourceVal),
@@ -242,7 +253,9 @@ spell_table_row(Name, SpellLevel, tr([td(Prepared),
     spell(Name, components, ComponentsVal), display_components(ComponentsVal, Components),
     spell(Name, duration, Duration),
     spell_to_hit_or_dc(Name, Source, ToHitOrDC),
-    display_spell_effects(Name, Source, Effect),
+
+    findall(Effect, spell_known_effect(Name,Source,Effect), EffectsVal), phrase(display_terms(EffectsVal), Effects),
+    %display_spell_effects(Name, Source, Effect),
     display_prepared(PrepVal, Prepared),
     display_resource(ResourceVal, Resource).
 spell_to_hit_or_dc(Name, Source, [+, ToHit]) :-
@@ -251,15 +264,15 @@ spell_to_hit_or_dc(Name, Source, ['DC ', DC, ' ', Ability]) :-
     spell_dc(Name, Source, Ability, DC), !.
 spell_to_hit_or_dc(_, _, "-").
 
-display_spell_effects(Spell, Source, Effects) :-
-    findall(Effect, display_spell_effect(Spell, Source, Effect), EffectsList),
-    interleave([','], EffectsList, L),
-    append(L, Effects).
-display_spell_effect(Spell, Source, Damage) :-
-    spell_known_damage(Spell, Source, _, 0, DamageRolls),
-    format_damage(DamageRolls, Damage).
-display_spell_effect(Spell, Source, [Effect]) :-
-    spell_known_effect(Spell, Source, Effect).
+%display_spell_effects(Spell, Source, Effects) :-
+%    findall(Effect, display_spell_effect(Spell, Source, Effect), EffectsList),
+%    interleave([','], EffectsList, L),
+%    append(L, Effects).
+%display_spell_effect(Spell, Source, Damage) :-
+%    spell_known_damage(Spell, Source, _, 0, DamageRolls),
+%    phrase(display_damage(DamageRolls), Damage).
+%display_spell_effect(Spell, Source, [Effect]) :-
+%    spell_known_effect(Spell, Source, Effect).
 
 display_range(feet(X), [X, ' ft']) :- !.
 display_range(miles(X), [X, ' mi']) :- !.
@@ -281,57 +294,58 @@ display_resource(spell_slot, slot).
 % Helper predicates.
 table(Id, Caption, Contents, table(id=Id, [caption(h3(Caption))|Contents])).
 
-show_list([X], String) :-
-    term_string(X, String).
-show_list([X|Xs], String) :-
-    term_string(X, String1),
-    show_list(Xs, String2),
-    string_concat(String1, String2, String).
-
-show_bonus(Val, ['+', Val]) :- Val >= 0.
-show_bonus(Val, Val) :- Val < 0.
-
-format_list([],[],[]).
-format_list([X]) --> lit(X).
-format_list([X|Xs]) --> {Xs \= []}, lit(X), [", "], format_list(Xs).
-lit(X,[Str|T],T) :-
-    display_term(X, Str).
-
-format_dice(N d X, [N,d,X]).
-format_dice_sum(D, F) :-
-    format_dice(D, F).
-%format_dice_sum(D, D) :-
-%    D \= _ + _.
-format_dice_sum(Ds + D, F) :-
-    format_dice(D, FD),
-    format_dice_sum(Ds, FDs),
-    append([FDs, [" + "], FD], F).
-format_dice_sum(Ds + K, F) :-
-    number(K),
-    K < 0,
-    N is - K,
-    format_dice_sum(Ds, FDs),
-    append([FDs, [" - "], [N]], F).
-format_dice_sum(Ds + K, F) :-
-    number(K),
-    K >= 0,
-    format_dice_sum(Ds, FDs),
-    append([FDs, [" + "], [K]], F).
+%show_list([X], String) :-
+%    term_string(X, String).
+%show_list([X|Xs], String) :-
+%    term_string(X, String1),
+%    show_list(Xs, String2),
+%    string_concat(String1, String2, String).
+%
+%show_bonus(Val, ['+', Val]) :- Val >= 0.
+%show_bonus(Val, Val) :- Val < 0.
+%
+%format_list([],[],[]).
+%format_list([X]) --> lit(X).
+%format_list([X|Xs]) --> {Xs \= []}, lit(X), [", "], format_list(Xs).
+%lit(X,[Str|T],T) :-
+%    display_term(X, Str).
+%
+%format_dice(N d X, [N,d,X]).
+%format_dice_sum(D, F) :-
+%    format_dice(D, F).
+%%format_dice_sum(D, D) :-
+%%    D \= _ + _.
+%format_dice_sum(Ds + D, F) :-
+%    format_dice(D, FD),
+%    format_dice_sum(Ds, FDs),
+%    append([FDs, [" + "], FD], F).
+%format_dice_sum(Ds + K, F) :-
+%    number(K),
+%    K < 0,
+%    N is - K,
+%    format_dice_sum(Ds, FDs),
+%    append([FDs, [" - "], [N]], F).
+%format_dice_sum(Ds + K, F) :-
+%    number(K),
+%    K >= 0,
+%    format_dice_sum(Ds, FDs),
+%    append([FDs, [" + "], [K]], F).
     
-display_term(T, U) :-
-    custom_display_rule(T, U),
-    !.
-display_term(List, U) :-
-    format_list(List, U, []),
-    !.
-display_term(Atom, S) :-
-    atom(Atom),
-    !,
-    atomics_to_string([Atom], S).
-display_term(T, S) :-
-    term_string(T, S).
+%display_term(T, U) :-
+%    custom_display_rule(T, U),
+%    !.
+%display_term(List, U) :-
+%    format_list(List, U, []),
+%    !.
+%display_term(Atom, S) :-
+%    atom(Atom),
+%    !,
+%    atomics_to_string([Atom], S).
+%display_term(T, S) :-
+%    term_string(T, S).
 
-    
+checkboxes(N, Boxes) :-    
+    repl(input(type=checkbox, []), N, Boxes).
     
 
 % Clever little predicate, taken from

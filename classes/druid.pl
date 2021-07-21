@@ -75,7 +75,24 @@ spellcasting_ability(druid, wis).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Wild shape
 class_trait(druid:2, 'wild shape').
-% TODO wild shape CR etc
+custom_display_rule('wild shape', Display) :-
+    phrase(display_wild_shape, Atomics),
+    atomics_to_string(Atomics, Display).
+
+display_wild_shape --> ['wild shape (CR '], display_ws_cr, display_ws_restrictions, [')'].
+display_ws_cr --> {wild_shape_max_cr(CR)}, display_cr(CR).
+display_ws_restrictions --> {findall(R,wild_shape_restriction(R),Rs), length(Rs,Len), length(Commas,Len), maplist(=(', '),Commas)},
+                          interleave(Commas, Rs).
+                          %sep([','], Rs).
+
+display_cr(CR) --> display_fraction(CR).
+display_cr(CR) --> {number(CR)}, [CR].
+
+display_fraction(N / D) --> [N], ['/'], [D].
+%restrictions --> restrictions0.
+%restrictions0 --> , [','], [R], restrictions0.
+
+
 'wild shape' ?= "Starting at 2nd level, you can use your action to magically assume the shape of a beast that you have seen before. You can use this feature twice. You regain expended uses when you finish a short or long rest.
 Your druid level determines the beasts you can transform into, as shown in Table: Beast Shapes. At 2nd level, for example, you can transform into any beast that has a challenge rating of 1/4 or lower that doesn’t have a flying or swimming speed.
 You can stay in a beast shape for a number of hours equal to half your druid level (rounded down). You then revert to your normal form unless you expend another use of this feature. You can revert to your normal form earlier by using a bonus action on your turn. You automatically revert if you fall unconscious, drop to 0 hit points, or die.
@@ -85,6 +102,11 @@ When you transform, you assume the beast’s hit points and Hit Dice. When you r
 You can’t cast spells, and your ability to speak or take any action that requires hands is limited to the capabilities of your beast form. Transforming doesn’t break your concentration on a spell you’ve already cast, however, or prevent you from taking actions that are part of a spell, such as call lightning, that you’ve already cast.
 You retain the benefit of any features from your class, race, or other source and can use them if the new form is physically capable of doing so. However, you can’t use any of your special senses, such as darkvision, unless your new form also has that sense.
 You choose whether your equipment falls to the ground in your space, merges into your new form, or is worn by it. Worn equipment functions as normal, but the GM decides whether it is practical for the new form to wear a piece of equipment, based on the creature’s shape and size. Your equipment doesn’t change size or shape to match the new form, and any equipment that the new form can’t wear must either fall to the ground or merge with it. Equipment that merges with the form has no effect until you leave the form.".
+
+resource('wild shape', Uses) :-
+    wild_shape_uses(Uses).
+on_short_rest('wild shape', restore) :-
+    trait('wild shape').
 
 wild_shape_uses(2) :-
     class(druid),
@@ -115,14 +137,14 @@ wild_shape_restriction('no swimming') :-
     class_level(druid:Level),
     Level < 4.
 
-custom_section(Table) :-
-    trait('wild shape'),
-    table('wild shape', "Wild shape", [Header,Row], Table),
-    Header = tr([th('Uses left'), th('Max CR'), th('Restrictions')]),
-    Row = tr([td(Boxes), td(CR), td(Restrictions)]),
-    wild_shape_uses(Uses), repl(input(type=checkbox,[]), Uses, Boxes),
-    wild_shape_max_cr(CRVal), display_term(CRVal, CR),
-    findall(R, wild_shape_restriction(R), Restrictions).
+%custom_section(Table) :-
+%    trait('wild shape'),
+%    table('wild shape', "Wild shape", [Header,Row], Table),
+%    Header = tr([th('Uses left'), th('Max CR'), th('Restrictions')]),
+%    Row = tr([td(Boxes), td(CR), td(Restrictions)]),
+%    wild_shape_uses(Uses), repl(input(type=checkbox,[]), Uses, Boxes),
+%    wild_shape_max_cr(CRVal), display_term(CRVal, CR),
+%    findall(R, wild_shape_restriction(R), Restrictions).
     
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

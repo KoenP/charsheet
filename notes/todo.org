@@ -21,5 +21,6 @@
 - manuele overrides toevoegen
 - beast json
 - lege tabellen (bv spell prep) niet tonen
+- ergens een lijst van talen toevoegen; of meer algemeen: omgaan met het idee "kies van deze lijst, of vul gewoon zelf iets in"
 
 - onderscheid tussen initial class exclusive traits en reguliere level 1 traits (zie https://5thsrd.org/rules/multiclassing/#proficiencies)

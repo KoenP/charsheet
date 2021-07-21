@@ -1,15 +1,4 @@
-:- discontiguous
-       race/1,
-       gain_level/3,
-       choose_subclass/2,
-       pick_feat/2,
-       pick_abi/2.
-
 :- [charsheet].
-
-choose_traits(_,_,_) :- false.
-
-equipped(_) :- false.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1
@@ -31,12 +20,16 @@ choose_traits(class(sorcerer:1), cantrip, [ learn_spell(sorcerer, 'fire bolt'),
                                             learn_spell(sorcerer, message) ]).
 choose_traits(class(sorcerer:1), spell, [learn_sorcerer_spell('burning hands'),
                                          learn_sorcerer_spell('magic missile')]).
-choose_traits(class(sorcerer:1), skill, [skill(intimidation), skill(arcana)]).
+choose_traits(class(sorcerer:1), skill, [skill(intimidation), skill(insight)]).
 
 choose_subclass(sorcerer, 'draconic bloodline').
 choose_traits(subclass(sorcerer:1, 'draconic bloodline'),
               'dragon ancestor',
               [dragon_ancestor(red)]).
+
+background(noble).
+choose_traits(background(noble), gaming_set, [tool('dice set')]).
+choose_traits(background(noble), language, [language(celestial)]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 gain_level(2, sorcerer, hp_avg).
@@ -68,3 +61,7 @@ choose_traits(class(sorcerer:5), spell, [learn_sorcerer_spell('fireball')]).
 gain_level(6, sorcerer, hp_avg).
 forego(class(sorcerer:6), replace_spell).
 choose_traits(class(sorcerer:6), spell, [learn_sorcerer_spell('counterspell')]).
+
+
+gain_level(7, druid, hp_avg).
+gain_level(8, druid, hp_avg).

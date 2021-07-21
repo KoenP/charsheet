@@ -1,0 +1,14 @@
+
+
+Many terms, in particular atoms, can be displayed directly, for example 'fire bolt' can use its Prolog representation in the HTML file.
+
+For other terms this is not desirable.
+- `language(common)` is best rendered as simply `common`.
+- `dragon_ancestor(red)` should be rendered as 'dragon ancestor (red)'
+- In the notable traits list, I want to show 'wild shape' as (for example) 'wild shape (CR 1/4, no flying, no swimming)'.
+  However, in all other places I want 'wild shape' to just render as 'wild shape'.
+
+So in general, we'll just use a dcg display_term//1 that converts things like `dragon_ancestor(red)` into 'dragon ancestor (red)'.
+
+
+Where it doesn't suffice, we add a summary/2 predicate, for instance `summary('wild shape', 'CR 1/4, no flying, no swimming')`

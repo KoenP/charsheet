@@ -10,11 +10,6 @@ class_saving_throw(sorcerer, con).
 class_saving_throw(sorcerer, cha).
 choose_subclass_level(sorcerer, 1).
 
-% Calculate how many spells a sorcerer can prepare.
-max_prepared_spells(sorcerer, N) :-
-    ability_mod(cha, Mod),
-    class_level(sorcerer:Level),
-    N is Level + Mod.
 spellcasting_ability(sorcerer, cha).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,11 +46,11 @@ class_trait(sorcerer:20, 'sorcerous restoration').
 max_sorcery_points(Level) :-
     class_level(sorcerer:Level),
     Level > 1.
-resource('sorcery point', SP) :-
+resource('sorcery points', SP) :-
     max_sorcery_points(SP).
-on_long_rest('sorcery point', restore) :-
+on_long_rest('sorcery points', restore) :-
     trait('font of magic').
-on_short_rest('sorcery point', restore(4)) :-
+on_short_rest('sorcery points', restore(4)) :-
     trait('sorcerous restoration').
 
 metamagic('careful spell') ?=
@@ -119,7 +114,7 @@ sorcerer_proper_spell_known_at_level(Level, Spell) :-
 spell_known(Spell, sorcerer, cha, always_available, at_will) :-
     trait(learn_spell(sorcerer, Spell)),
     cantrip(Spell).
-spell_known(Spell, sorcerer, cha, when_prepared, spell_slot) :-
+spell_known(Spell, sorcerer, cha, always_available, spell_slot) :-
     trait(learn_sorcerer_spell(Spell)).
 
 class_trait_options(sorcerer:1, spell, 2 from Spells) :-

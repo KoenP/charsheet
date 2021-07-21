@@ -38,11 +38,11 @@
        todo/1.
 
 :- table
-    problem/1,
-    problem/2,
-    trait/1,
-    trait/2,
-    spell_known/5.
+   problem/1,
+   problem/2,
+   trait/1,
+   trait/2,
+   spell_known/5.
 
 :- op(650, xfx, from).
 :- op(1000, xfx, ?=).
@@ -50,16 +50,19 @@
 :- multifile
        (?=)/2.
 
+:- use_module(library(lambda)).
 :- [dice].
 :- [options].
 :- [spellcasting].
 :- [class].
 :- [race].
+:- [background].
 :- [feats].
 :- [skills].
 :- [leveling].
 :- [items].
 :- [shorthands].
+:- [display].
 :- [html].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -105,6 +108,9 @@ hit_dice(Class, M d X) :-
     class_level(Class:Level),
     hd_per_level(Class, N d X),
     M is N * Level.
+resource(hit_dice(X), N) :-
+    hit_dice(_, N d X).
+custom_display_rule(hit_dice(X), ['hit dice (d', X, ')']).
 
 % Abilities and modifiers.
 ability(str).
@@ -232,3 +238,24 @@ unarmed_attack_modifier(Mod) :-
 re :-
     abolish_all_tables,
     make.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+:- multifile
+       name/1,
+       race/1,
+       initial_class/1,
+       background/1,
+       choose_traits/3,
+       choose_subclass/2,
+       equipped/1,
+       gain_level/3.
+       
+
+name(_) :- false.
+race(_) :- false.
+initial_class(_) :- false.
+background(_) :- false.
+choose_traits(_,_,_) :- false.
+choose_subclass(_,_) :- false.
+equipped(_) :- false.
+gain_level(_,_,_) :- false.

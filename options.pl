@@ -46,10 +46,16 @@ problem(choose_traits(Origin, Name, Choice), not_eligible(Origin, Name)) :-
     choose_traits(Origin, Name, Choice),
     \+ trait_options(Origin, Name, _).
 
+% User's trait selection is not a list.
+problem(choose_traits(Origin, Name, Choice), not_a_list(Choice)) :-
+    choose_traits(Origin, Name, Choice),
+    \+ is_list(Choice).
+
 % User's choice doesn't match the spec, and we don't have a more specific error message.
 % TODO: I think I can make more specific error messages than this.
 problem(choose_traits(Origin, Name, Choice), doesnt_match_spec(Choice, Spec)) :-
     choose_traits(Origin, Name, Choice),
+    is_list(Choice), % if it's not a list, we want another problem to fire
     trait_options(Origin, Name, Spec),
     \+ bad_trait_choice(Origin, Name, Choice, _),
     \+ choice_matches_spec(Choice, Spec, match).

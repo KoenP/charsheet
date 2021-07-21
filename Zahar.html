@@ -15,13 +15,13 @@
 
 <table id="summary" style="padding: 4px">
 <tr><th>Race</th><td>human</td></tr>
-<tr><th>Class</th><td>sorcerer:6</td></tr>
-<tr><th>Level</th><td>6</td></tr>
-<tr><th>Max HP</th><td>56</td></tr>
+<tr><th>Class</th><td>druid:2, sorcerer:6</td></tr>
+<tr><th>Level</th><td>8</td></tr>
+<tr><th>Max HP</th><td>74</td></tr>
 <tr><th>AC</th><td>15</td></tr>
 <tr><th>Initiative</th><td>+2</td></tr>
 <tr><th>Speed</th><td>30</td></tr>
-<tr><th>HD</th><td>6d6</td></tr>
+<tr><th>HD</th><td>6d6+2d8</td></tr>
 <tr><th>PP</th><td>10</td></tr>
 <tr><th>Prof Bon</th><td>+3</td></tr>
 </table>
@@ -55,19 +55,19 @@
 <tr><td>sleight of hand</td><td>+2</td></tr>
 <tr><td>stealth</td><td>+2</td></tr>
 <tr><td rowspan="5"><b>WIS</b></td><td>animal handling</td><td>+0</td></tr>
-<tr><td>insight</td><td>+0</td></tr>
+<tr><td>insight</td><td>+3</td></tr>
 <tr><td>medicine</td><td>+0</td></tr>
 <tr><td>perception</td><td>+0</td></tr>
 <tr><td>survival</td><td>+0</td></tr>
-<tr><td rowspan="5"><b>INT</b></td><td>arcana</td><td>+5</td></tr>
-<tr><td>history</td><td>+2</td></tr>
+<tr><td rowspan="5"><b>INT</b></td><td>arcana</td><td>+2</td></tr>
+<tr><td>history</td><td>+5</td></tr>
 <tr><td>investigation</td><td>+2</td></tr>
 <tr><td>nature</td><td>+2</td></tr>
 <tr><td>religion</td><td>+2</td></tr>
 <tr><td rowspan="4"><b>CHA</b></td><td>deception</td><td>+5</td></tr>
 <tr><td>intimidation</td><td>+8</td></tr>
 <tr><td>performance</td><td>+5</td></tr>
-<tr><td>persuasion</td><td>+5</td></tr>
+<tr><td>persuasion</td><td>+8</td></tr>
 </table>
 
 <p>
@@ -76,10 +76,10 @@
 
 <div id="proficiencies">
 <ul>
-<li><b>Languages: </b>common, draconic, elvish</li>
-<li><b>Weapons: </b>dart, light crossbow, quarterstaff, dagger, sling</li>
-<li><b>Armor: </b></li>
-<li><b>Tools: </b></li>
+<li><b>Languages: </b>celestial, elvish, druidic, draconic, common</li>
+<li><b>Weapons: </b>dagger, dart, club, javelin, quarterstaff, light crossbow, spear, mace, scimitar, sickle, sling</li>
+<li><b>Armor: </b>light armor, medium armor, shields</li>
+<li><b>Tools: </b>dice set, herbalism kit</li>
 </ul>
 </div>
 </p>
@@ -91,7 +91,25 @@
 <div id="traits">
 <ul>
 <li>
-<div class="tooltip">dragon ancestor (red)<span class="tooltiptext">You have a specific dragon type as your ancestor. Whenever you make a Charisma check when interacting with dragons, your proficiency bonus is doubled if it applies to the check.</span></div>
+<div class="tooltip">wild shape (CR 1/4, no flying, no swimming)<span class="tooltiptext">Starting at 2nd level, you can use your action to magically assume the shape of a beast that you have seen before. You can use this feature twice. You regain expended uses when you finish a short or long rest.
+Your druid level determines the beasts you can transform into, as shown in Table: Beast Shapes. At 2nd level, for example, you can transform into any beast that has a challenge rating of 1/4 or lower that doesn’t have a flying or swimming speed.
+You can stay in a beast shape for a number of hours equal to half your druid level (rounded down). You then revert to your normal form unless you expend another use of this feature. You can revert to your normal form earlier by using a bonus action on your turn. You automatically revert if you fall unconscious, drop to 0 hit points, or die.
+While you are transformed, the following rules apply:
+Your game statistics are replaced by the statistics of the beast, but you retain your alignment, personality, and Intelligence, Wisdom, and Charisma scores. You also retain all of your skill and saving throw proficiencies, in addition to gaining those of the creature. If the creature has the same proficiency as you and the bonus in its stat block is higher than yours, use the creature’s bonus instead of yours. If the creature has any legendary or lair actions, you can’t use them.
+When you transform, you assume the beast’s hit points and Hit Dice. When you revert to your normal form, you return to the number of hit points you had before you transformed. However, if you revert as a result of dropping to 0 hit points, any excess damage carries over to your normal form. For example, if you take 10 damage in animal form and have only 1 hit point left, you revert and take 9 damage. As long as the excess damage doesn’t reduce your normal form to 0 hit points, you aren’t knocked unconscious.
+You can’t cast spells, and your ability to speak or take any action that requires hands is limited to the capabilities of your beast form. Transforming doesn’t break your concentration on a spell you’ve already cast, however, or prevent you from taking actions that are part of a spell, such as call lightning, that you’ve already cast.
+You retain the benefit of any features from your class, race, or other source and can use them if the new form is physically capable of doing so. However, you can’t use any of your special senses, such as darkvision, unless your new form also has that sense.
+You choose whether your equipment falls to the ground in your space, merges into your new form, or is worn by it. Worn equipment functions as normal, but the GM decides whether it is practical for the new form to wear a piece of equipment, based on the creature’s shape and size. Your equipment doesn’t change size or shape to match the new form, and any equipment that the new form can’t wear must either fall to the ground or merge with it. Equipment that merges with the form has no effect until you leave the form.</span></div>
+</li>
+<li>
+<div class="tooltip">metamagic (careful spell)<span class="tooltiptext">When you cast a spell that forces other creatures to make a saving throw, you can protect some of those creatures from the spell's full force. To do so, you spend 1 sorcery point and choose a number of those creatures up to your Charisma modifier (minimum of one creature). A chosen creature automatically succeeds on its saving throw against the spell.</span></div>
+</li>
+<li>
+<div class="tooltip">metamagic (empowered spell)<span class="tooltiptext">When you roll damage for a spell, you can spend 1 sorcery point to reroll a number of the damage dice up to your Charisma modifier (minimum of one). You must use the new rolls.
+You can use Empowered Spell even if you have already used a different Metamagic option during the casting of the spell.</span></div>
+</li>
+<li>
+<div class="tooltip">position of privilege<span class="tooltiptext">Thanks to your noble birth, people are inclined to think the best of you. You are welcome in high society, and people assume you have the right to be wherever you are. The common folk make every effort to accommodate you and avoid your displeasure, and other people of high birth treat you as a member of the same social sphere. You can secure an audience with a local noble if you need to.</span></div>
 </li>
 <li>
 <div class="tooltip">font of magic<span class="tooltiptext">At 2nd level, you tap into a deep wellspring of magic within yourself. This wellspring is represented by sorcery points, which allow you to create a variety of magical effects.
@@ -113,23 +131,32 @@ Spell Points
 Converting a Spell Slot to Sorcery Points. As a bonus action on your turn, you can expend one spell slot and gain a number of sorcery points equal to the slot's level.</span></div>
 </li>
 <li>
+<div class="tooltip">druidic<span class="tooltiptext">You know Druidic, the Secret language of druids. You can speak the language and use it to leave hidden messages. You and others who know this language automatically spot such a Message. Others spot the message's presence with a successful DC 15 Wisdom (Perception) check but can't decipher it without magic.</span></div>
+</li>
+<li>
 <div class="tooltip">elemental affinity (fire)<span class="tooltiptext">Starting at 6th level, when you cast a spell that deals damage of the type associated with your draconic ancestry, you can add your Charisma modifier to one damage roll of that spell. At the same time, you can spend 1 sorcery point to gain resistance to that damage type for 1 hour.</span></div>
-</li>
-<li>
-<div class="tooltip">metamagic (empowered spell)<span class="tooltiptext">When you roll damage for a spell, you can spend 1 sorcery point to reroll a number of the damage dice up to your Charisma modifier (minimum of one). You must use the new rolls.
-You can use Empowered Spell even if you have already used a different Metamagic option during the casting of the spell.</span></div>
-</li>
-<li>
-<div class="tooltip">metamagic (careful spell)<span class="tooltiptext">When you cast a spell that forces other creatures to make a saving throw, you can protect some of those creatures from the spell's full force. To do so, you spend 1 sorcery point and choose a number of those creatures up to your Charisma modifier (minimum of one creature). A chosen creature automatically succeeds on its saving throw against the spell.</span></div>
 </li>
 <li>
 <div class="tooltip">draconic resilience<span class="tooltiptext">As magic flows through your body, it causes physical traits of your dragon ancestors to emerge. At 1st level, your hit point maximum increases by 1 and increases by 1 again whenever you gain a level in this class.
 Additionally, parts of your skin are covered by a thin sheen of dragon-like scales. When you aren't wearing armor, your AC equals 13 + your Dexterity modifier. </span></div>
 </li>
+<li>
+<div class="tooltip">dragon ancestor (red)<span class="tooltiptext">You have a specific dragon type as your ancestor. Whenever you make a Charisma check when interacting with dragons, your proficiency bonus is doubled if it applies to the check.</span></div>
+</li>
 </ul>
 </div>
 </p>
 <div></div>
+
+<table id="resources">
+<caption>
+
+<h3>Resources</h3>
+
+</caption>
+<tr><th>Resource</th><td>wild shape</td><td>sorcery points</td><td>hit dice (8)</td><td>hit dice (6)</td></tr>
+<tr><th>Uses</th><td><input type="checkbox"><input type="checkbox"></td><td><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"></td><td><input type="checkbox"><input type="checkbox"></td><td><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"></td></tr>
+</table>
 
 <table id="attacks">
 <caption>
@@ -138,7 +165,7 @@ Additionally, parts of your skin are covered by a thin sheen of dragon-like scal
 
 </caption>
 <tr><th></th><th>Range</th><th>To Hit</th><th>Damage</th><th>Notes</th></tr>
-<tr><td>fire bolt</td><td><feet>120</feet></td><td>+8</td><td>2d10 + 5 fire</td><td>sorcerer cantrip</td></tr>
+<tr><td>fire bolt</td><td><feet>120</feet></td><td>+8</td><td>2d10+5 fire</td><td>sorcerer cantrip</td></tr>
 </table>
 
 <table id="spell_slots">
@@ -148,7 +175,7 @@ Additionally, parts of your skin are covered by a thin sheen of dragon-like scal
 
 </caption>
 <tr><th>lvl 1</th><th>lvl 2</th><th>lvl 3</th><th>lvl 4</th><th>lvl 5</th><th>lvl 6</th><th>lvl 7</th><th>lvl 8</th><th>lvl 9</th></tr>
-<tr><td><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"></td><td><input type="checkbox"><input type="checkbox"><input type="checkbox"></td><td><input type="checkbox"><input type="checkbox"><input type="checkbox"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"></td><td><input type="checkbox"><input type="checkbox"><input type="checkbox"></td><td><input type="checkbox"><input type="checkbox"><input type="checkbox"></td><td><input type="checkbox"><input type="checkbox"></td><td></td><td></td><td></td><td></td><td></td></tr>
 </table>
 
 <table id="spell preparation">
@@ -158,7 +185,7 @@ Additionally, parts of your skin are covered by a thin sheen of dragon-like scal
 
 </caption>
 <tr><th>Class</th><th>Number</th><th>Max Lvl</th></tr>
-<tr><td>sorcerer</td><td>11</td><td>3</td></tr>
+<tr><td>druid</td><td>2</td><td>1</td></tr>
 </table>
 
 <table id="spells">
@@ -167,43 +194,79 @@ Additionally, parts of your skin are covered by a thin sheen of dragon-like scal
 <h3>Spells</h3>
 
 </caption>
-<tr><th>Prep'd</th><th>Lvl</th><th>Spell</th><th>Cast time</th><th>Rng</th><th>Cpts</th><th>Dur</th><th>To Hit/DC</th><th>Effect (summary)</th><th>Res</th></tr>
-<tr><td>always</td><td>0</td><td>
+<tr><th>Prep'd</th><th>Lvl</th><th>Source</th><th>Spell</th><th>Cast time</th><th>Rng</th><th>Cpts</th><th>Dur</th><th>To Hit/DC</th><th>Effect (summary)</th><th>Res</th></tr>
+<tr><td>always</td><td>0</td><td>sorcerer</td><td>
 <div class="tooltip">blade ward<span class="tooltiptext">You extend your hand and trace a sigil of warding in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.</span></div>
 </td><td>1 action</td><td>self</td><td>vs</td><td>1 round</td><td>-</td><td>resist bludgeoning, piercing, slashing from weapons</td><td>at will</td></tr>
-<tr><td>always</td><td>0</td><td>
+<tr><td>always</td><td>0</td><td>sorcerer</td><td>
 <div class="tooltip">fire bolt<span class="tooltiptext">You hurl a mote of fire at a creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 fire damage. A flammable object hit by this spell ignites if it isn’t being worn or carried.This spell’s damage increases by 1d10 when you reach 5th level (2d10), 11th level (3d10), and 17th level (4d10).</span></div>
-</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>+8</td><td>2d10 + 5 fire</td><td>at will</td></tr>
-<tr><td>always</td><td>0</td><td>
+</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>+8</td><td>fire (2d10+5)</td><td>at will</td></tr>
+<tr><td>always</td><td>0</td><td>sorcerer</td><td>
 <div class="tooltip">friends<span class="tooltiptext">For the duration, you have advantage on all Charisma checks directed at one creature of your choice that isn’t hostile toward you. When the spell ends, the creature realizes that you have used magic to influence its mood and becomes hostile toward you. A creature prone to violence might attack you. Another creature might seek retribution in other ways (at the DM’s discretion), depending on the nature of your interaction with it.</span></div>
 </td><td>1 action</td><td>self</td><td>s<span class="tooltip">m<span class="tooltiptext">A small amount of makeup applied to the face as this spell is cast.</span></span></td><td>Up to 1 minute</td><td>-</td><td></td><td>at will</td></tr>
-<tr><td>always</td><td>0</td><td>
+<tr><td>always</td><td>0</td><td>sorcerer</td><td>
 <div class="tooltip">message<span class="tooltiptext">You point your finger toward a creature within range and whisper a message. The target (and only the target) hears the message and can reply in a whisper that only you can hear.You can cast this spell through solid objects if you are familiar with the target and know it is beyond the barrier. Magical silence, 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood blocks the spell. The spell doesn’t have to follow a straight line and can travel freely around corners or through openings.</span></div>
 </td><td>1 action</td><td>120 ft</td><td>vs<span class="tooltip">m<span class="tooltiptext">A short piece of copper wire.</span></span></td><td>1 round</td><td>-</td><td></td><td>at will</td></tr>
-<tr><td>always</td><td>0</td><td>
+<tr><td>always</td><td>0</td><td>sorcerer</td><td>
 <div class="tooltip">minor illusion<span class="tooltiptext">You create a sound or an image of an object within range that lasts for the duration. The illusion also ends if you dismiss it as an action or cast this spell again.If you create a sound, its volume can range from a whisper to a scream. It can be your voice, someone else’s voice, a lion’s roar, a beating of drums, or any other sound you choose. The sound continues unabated throughout the duration, or you can make discrete sounds at different times before the spell ends.If you create an image of an object—such as a chair, muddy footprints, or a small chest—it must be no larger than a 5-foot cube. The image can’t create sound, light, smell, or any other sensory effect. Physical interaction with the image reveals it to be an illusion, because things can pass through it.If a creature uses its action to examine the sound or image, the creature can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the illusion becomes faint to the creature.</span></div>
 </td><td>1 action</td><td>30 ft</td><td>s<span class="tooltip">m<span class="tooltiptext">A bit of fleece.</span></span></td><td>1 minute</td><td>-</td><td></td><td>at will</td></tr>
-<tr><td><input type="checkbox"></td><td>1</td><td>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">animal friendship<span class="tooltiptext">This spell lets you convince a beast that you mean it no harm. Choose a beast that you can see within range. It must see and hear you. If the beast’s Intelligence is 4 or higher, the spell fails. Otherwise, the beast must succeed on a wisdom saving throw or be charmed by you for the spell’s duration. If you or one of your companions harms the target, the spells ends.</span></div>
+</td><td>1 action</td><td>30 ft</td><td>vs<span class="tooltip">m<span class="tooltiptext">A morsel of food.</span></span></td><td>24 hours</td><td>DC 11 wis</td><td></td><td>slot</td></tr>
+<tr><td>always</td><td>1</td><td>sorcerer</td><td>
 <div class="tooltip">burning hands<span class="tooltiptext">As you hold your hands with thumbs touching and fingers spread, a thin sheet of flames shoots forth from your outstretched fingertips. Each creature in a 15-foot cone must make a dexterity saving throw. A creature takes 3d6 fire damage on a failed save, or half as much damage on a successful one.The fire ignites any flammable objects in the area that aren’t being worn or carried.</span></div>
-</td><td>1 action</td><td>self</td><td>vs</td><td>Instantaneous</td><td>DC 16 dex</td><td>3d6 + 5 fire</td><td>slot</td></tr>
-<tr><td><input type="checkbox"></td><td>1</td><td>
-<div class="tooltip">magic missile<span class="tooltiptext">You create three glowing darts of magical force. Each dart hits a creature of your choice that you can see within range. A dart deals 1d4 + 1 force damage to its target. The darts all strike simultaneously, and you can direct them to hit one creature or several.</span></div>
-</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>-</td><td>1d4 + 1 force,3 darts,always hits</td><td>slot</td></tr>
-<tr><td><input type="checkbox"></td><td>2</td><td>
-<div class="tooltip">alter self<span class="tooltiptext">You assume a different form. When you cast the spell, choose one of the following options, the effects of which last for the duration of the spell. While the spell lasts, you can end one option as an action to gain the benefits of a different one.Aquatic Adaptation. You adapt your body to an aquatic environment, sprouting gills and growing webbing between your fingers. You can breathe underwater and gain a swimming speed equal to your walking speed.Change Appearance. You transform your appearance. You decide what you look like, including your height, weight, facial features, sound of your voice, hair length, coloration, and distinguishing characteristics, if any. You can make yourself appear as a member of another race, though none of your statistics change. You also can’t appear as a creature of a different size than you, and your basic shape stays the same; if you're bipedal, you can’t use this spell to become quadrupedal, for instance. At any time for the duration of the spell, you can use your action to change your appearance in this way again.Natural Weapons. You grow claws, fangs, spines, horns, or a different natural weapon of your choice. Your unarmed strikes deal 1d6 bludgeoning, piercing, or slashing damage, as appropriate to the natural weapon you chose, and you are proficient with your unarmed strikes. Finally, the natural weapon is magic and you have a +1 bonus to the attack and damage rolls you make using it.</span></div>
-</td><td>1 action</td><td>self</td><td>vs</td><td>Up to 1 hour</td><td>-</td><td>shapechanging</td><td>slot</td></tr>
-<tr><td><input type="checkbox"></td><td>2</td><td>
-<div class="tooltip">misty step<span class="tooltiptext">Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space that you can see.</span></div>
-</td><td>1 bonus action</td><td>self</td><td>v</td><td>Instantaneous</td><td>-</td><td>teleport 30 ft</td><td>slot</td></tr>
-<tr><td><input type="checkbox"></td><td>2</td><td>
+</td><td>1 action</td><td>self</td><td>vs</td><td>Instantaneous</td><td>DC 16 dex</td><td>fire (3d6+5)</td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">charm person<span class="tooltiptext">You attempt to charm a humanoid you can see within range. It must make a wisdom saving throw, and does so with advantage if you or your companions are fighting it. If it fails the saving throw, it is charmed by you until the spell ends or until you or your companions do anything harmful to it. The charmed creature regards you as a friendly acquaintance. When the spell ends, the creature knows it was charmed by you.</span></div>
+</td><td>1 action</td><td>30 ft</td><td>vs</td><td>1 hour</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">create or destroy water<span class="tooltiptext">You either create or destroy water.Create Water. You create up to 10 gallons of clean water within range in an open container. Alternatively, the water falls as rain in a 30-foot cube within range.Destroy Water. You destroy up to 10 gallons of water in an open container within range. Alternatively, you destroy fog in a 30-foot cube within range.</span></div>
+</td><td>1 action</td><td>30 ft</td><td>vs<span class="tooltip">m<span class="tooltiptext">A drop of water if creating water, or a few grains of sand if destroying it.</span></span></td><td>Instantaneous</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">cure wounds<span class="tooltiptext">A creature you touch regains a number of hit points equal to 1d8 + your spellcasting ability modifier. This spell has no effect on undead or constructs.</span></div>
+</td><td>1 action</td><td>touch</td><td>vs</td><td>Instantaneous</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">detect magic<span class="tooltiptext">For the duration, you sense the presence of magic within 30 feet of you. If you sense magic in this way, you can use your action to see a faint aura around any visible creature or object in the area that bears magic, and you learn its school of magic, if any.The spell can penetrate most barriers, but it is blocked by 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood or dirt.</span></div>
+</td><td>1 action</td><td>self</td><td>vs</td><td>Up to 10 minutes</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">detect poison and disease<span class="tooltiptext">For the duration, you can sense the presence and location of poisons, poisonous creatures, and diseases within 30 feet of you. You also identify the kind of poison, poisonous creature, or disease in each case.The spell can penetrate most barriers, but it is blocked by 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood or dirt.</span></div>
+</td><td>1 action</td><td>self</td><td>vs<span class="tooltip">m<span class="tooltiptext">A yew leaf.</span></span></td><td>Up to 10 minutes</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">entangle<span class="tooltiptext">Grasping weeds and vines sprout from the ground in a 20-foot square starting form a point within range. For the duration, these plants turn the ground in the area into difficult terrain.A creature in the area when you cast the spell must succeed on a strength saving throw or be restrained by the entangling plants until the spell ends. A creature restrained by the plants can use its action to make a Strength check against your spell save DC. On a success, it frees itself.When the spell ends, the conjured plants wilt away.</span></div>
+</td><td>1 action</td><td>90 ft</td><td>vs</td><td>Up to 1 minute</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">faerie fire<span class="tooltiptext">Each object in a 20-foot cube within range is outlined in blue, green, or violet light (your choice). Any creature in the area when the spell is cast is also outlined in light if it fails a dexterity saving throw. For the duration, objects and affected creatures shed dim light in a 10-foot radius.Any attack roll against an affected creature or object has advantage if the attacker can see it, and the affected creature or object can’t benefit from being invisible.</span></div>
+</td><td>1 action</td><td>60 ft</td><td>v</td><td>Up to 1 minute</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">fog cloud<span class="tooltiptext">You create a 20-foot-radius sphere of fog centered on a point within range. The sphere spreads around corners, and its area is heavily obscured. It lasts for the duration or until a wind of moderate or greater speed (at least 10 miles per hour) disperses it.</span></div>
+</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Up to 1 hour</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">goodberry<span class="tooltiptext">Up to ten berries appear in your hand and are infused with magic for the duration. A creature can use its action to eat one berry. Eating a berry restores 1 hit point, and the berry provides enough nourishment to sustain a creature for a day.The berries lose their potency if they have not been consumed within 24 hours of the casting of this spell.</span></div>
+</td><td>1 action</td><td>touch</td><td>vs<span class="tooltip">m<span class="tooltiptext">A sprig of mistletoe.</span></span></td><td>Instantaneous</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">healing word<span class="tooltiptext">A creature of your choice that you can see within range regains hit points equal to 1d4 + your spellcasting ability modifier. This spell has no effect on undead or constructs.</span></div>
+</td><td>1 bonus action</td><td>60 ft</td><td>v</td><td>Instantaneous</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">jump<span class="tooltiptext">You touch a creature. The creature’s jump distance is tripled until the spell ends.</span></div>
+</td><td>1 action</td><td>touch</td><td>vs<span class="tooltip">m<span class="tooltiptext">A grasshopper’s hind leg.</span></span></td><td>1 minute</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">longstrider<span class="tooltiptext">You touch a creature. The target’s speed increases by 10 feet until the spell ends.</span></div>
+</td><td>1 action</td><td>touch</td><td>vs<span class="tooltip">m<span class="tooltiptext">A pinch of dirt.</span></span></td><td>1 hour</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">purify food and drink<span class="tooltiptext">All nonmagical food and drink within a 5-foot radius sphere centered on a point of your choice within range is purified and rendered free of poison and disease.</span></div>
+</td><td>1 action</td><td>10 ft</td><td>vs</td><td>Instantaneous</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">speak with animals<span class="tooltiptext">You gain the ability to comprehend and verbally communicate with beasts for the duration. The knowledge and awareness of many beasts is limited by their intelligence, but at a minimum, beasts can give you information about nearby locations and monsters, including whatever they can perceive or have perceived within the past day. You might be able to persuade a beast to perform a small favor for you, at the DM’s discretion.</span></div>
+</td><td>1 action</td><td>self</td><td>vs</td><td>10 minutes</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td><input type="checkbox"></td><td>1</td><td>druid</td><td>
+<div class="tooltip">thunderwave<span class="tooltiptext">A wave of thunderous force sweeps out from you. Each creature in a 15-foot cube originating from you must make a constitution saving throw. On a failed save, a creature takes 2d8 thunder damage and is pushed 10 feet away from you. On a successful save, the creature takes half as much damage and isn’t pushed.In addition, unsecured objects that are completely within the area of effect are automatically pushed 10 feet away from you by the spell’s effect, and the spell emits a thunderous boom audible out to 300 feet.</span></div>
+</td><td>1 action</td><td>self</td><td>vs</td><td>Instantaneous</td><td>-</td><td></td><td>slot</td></tr>
+<tr><td>always</td><td>2</td><td>sorcerer</td><td>
 <div class="tooltip">scorching ray<span class="tooltiptext">You generate three rays of fire and will throw to targets in the range of the spell. You can project them on one or more targets.Perform a remote attack spell for each department. If it hits, the target takes 2d6 fire damage.</span></div>
-</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>+8</td><td>2d6 fire,2d6 fire,2d6 fire,+5 to one damage roll</td><td>slot</td></tr>
-<tr><td><input type="checkbox"></td><td>3</td><td>
-<div class="tooltip">counterspell<span class="tooltiptext">You attempt to interrupt a creature in the process of casting a spell. If the creature is casting a spell of 3rd level or lower, its spell fails and has no effect. If it is casting a spell of 4th level or higher, make an ability check using your spellcasting ability. The DC equals 10 + the spell’s level. On a success, the creature’s spell fails and has no effect.</span></div>
-</td><td>1 reaction</td><td>60 ft</td><td>s</td><td>Instantaneous</td><td>-</td><td>interrupt spell</td><td>slot</td></tr>
-<tr><td><input type="checkbox"></td><td>3</td><td>
+</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>+8</td><td>fire (2d6), fire (2d6), fire (2d6), +5 to one damage roll</td><td>slot</td></tr>
+<tr><td>always</td><td>3</td><td>sorcerer</td><td>
 <div class="tooltip">fireball<span class="tooltiptext">A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame. Each creature in a 20-foot-radius sphere centered on that point must make a dexterity saving throw. A target takes 8d6 fire damage on a failed save, or half as much damage on a successful one.The fire spreads around corners. It ignites flammable objects in the area that aren’t being worn or carried.</span></div>
-</td><td>1 action</td><td>150 ft</td><td>vs<span class="tooltip">m<span class="tooltiptext">A tiny ball of bat guano and sulfur.</span></span></td><td>Instantaneous</td><td>+8</td><td>8d6 + 5 fire</td><td>slot</td></tr>
+</td><td>1 action</td><td>150 ft</td><td>vs<span class="tooltip">m<span class="tooltiptext">A tiny ball of bat guano and sulfur.</span></span></td><td>Instantaneous</td><td>+8</td><td>fire (8d6+5)</td><td>slot</td></tr>
 </table>
 
 </article></div>

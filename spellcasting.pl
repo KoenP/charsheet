@@ -30,6 +30,12 @@ spell(Name, Field, Value) :-
 cantrip(Spell) :-
     spell(Spell, level, 0).
 
+% True if PC has non-warlock spell slots.
+spellcaster :-
+    spell_slots(_, _), !.
+on_long_rest('spell slots', restore) :-
+    spellcaster.
+
 % Calculate the number of available spell slots.
 full_caster_spell_slot_table(1, [1,1,2,3]).
 full_caster_spell_slot_table(2, [3,3,4]).
@@ -68,7 +74,6 @@ spell_slot_level_to_slots(SpellLevel, SlotLevel, Slots) :-
     findall(X, (member(X,Gains), X=<SlotLevel), Xs),
     length(Xs, Slots),
     Slots > 0.
-    
 
 %multiclass_spell_slots(S)
 
@@ -221,14 +226,16 @@ add_single_roll_damage_bonus(Bonus, [Roll], [NewRoll]) :-
     NewRoll =.. [Element, NewDamage],
     !.
 add_single_roll_damage_bonus(_, Rolls, Rolls).
+spell_known_effect(Spell, Origin, Damage) :-
+    spell_known_damage(Spell, Origin, _, 0, Damage).
 spell_known_effect(Spell, _, Effect) :-
-    spell_effect(Spell, Effect).
+    spell_other_effect(Spell, Effect).
 spell_known_effect(Spell, Origin, Effect) :-
     spell_damage_rolls(Spell, 0, [_,_|_]),
     findall(Bonus, spell_single_roll_damage_bonus(Spell,0,Origin,Bonus), Bonuses),
     sumlist(Bonuses, TotalBonus),
     TotalBonus \= 0,
-    atomics_to_string(['+', TotalBonus, ' to one damage roll'], Effect).
+    atomic_list_concat(['+', TotalBonus, ' to one damage roll'], Effect).
     
     
 
