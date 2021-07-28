@@ -9,6 +9,7 @@ problem(gain_level, not_contiguous(Levels)) :-
     findall(L, between(2,Highest,L), Levels2),
     Levels \= Levels2.
 
+:- table level/1.
 level(Level) :-
     findall(L, gain_level(L,_,_), Levels),
     max_member(Level, [1|Levels]).
@@ -30,7 +31,7 @@ levelup_asi(Level, Ability+Increment) :-
 asi_level(Level) :-
     asi_level(Level, _).
 asi_level(Level, Class:ClassLevel) :-
-    \+ problem(gain_level, _),
+    % \+ problem(gain_level, _),
     gain_level(Level, Class, _),
     class_level(Level, Class:ClassLevel),
     ability_score_increase_level(ClassLevel).

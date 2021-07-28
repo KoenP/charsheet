@@ -13,7 +13,7 @@ problem(background, picked_multiple_backgrounds(Bs)) :-
     findall(B, background(B), Bs),
     Bs = [_,_|_].
 
-trait(background(B), T) :-
+gain_trait(1, background(B), T) :-
     background(B),
     background_trait(B, T).
 

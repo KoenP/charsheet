@@ -16,6 +16,7 @@
 
        class_trait/2,
        class_trait_options/3,
+       wrap_class_trait_option/4,
 
        subclass_trait/3,
        subclass_trait_options/4,
@@ -30,6 +31,7 @@
 :- [classes/druid].
 :- [classes/sorcerer].
 :- [classes/fighter].
+:- [classes/warlock].
 :- [classes/wizard].
 :- [classes/ranger].
    
@@ -59,6 +61,16 @@ matching_class_level(Class:ClassLevel) :-
 
 class_levels(Classes) :- findall(Class, class_level(Class), Classes).
 
+:- table reached_class_level_on_char_level/2.
+reached_class_level_on_char_level(Class:ClassLevel, CharLevel) :-
+    level(CurLevel),
+    findall(L,
+            ((initial_class(Class), L=1) ; (between(2,CurLevel,L), gain_level(L,Class,_))),
+            Ls),
+    length(Prefix, ClassLevel),
+    append(Prefix, _, Ls),
+    last(Prefix, CharLevel).
+
 multiclass :-
     findall(Class, class(Class), [_,_|_]).
 
@@ -80,16 +92,29 @@ choose_traits(class(Class:Level), subclass, [subclass(Class, Subclass)]) :-
     choose_subclass_level(Class, Level),
     choose_subclass(Class, Subclass).
 
+% Query traits that originate from your class, directly or indirectly.
+trait_from_class(Class, Origin, Trait) :-
+    trait(Origin, Trait),
+    class_origin(Class, Origin).
+class_origin(Class, class(Class)).
+class_origin(Class, class(Class:_)).
+class_origin(Class, subclass(Class, _)).
+class_origin(Class, subclass(Class:_, _)).
+class_origin(Class, choose_traits(class(Class), _)).
+class_origin(Class, choose_traits(class(Class:_), _)).
+class_origin(Class, choose_traits(subclass(Class, _), _)).
+class_origin(Class, choose_traits(subclass(Class:_, _), _)).
+
 % Generate a class trait option for each subclass.
 class_trait_options(Class:Level, subclass, 1 from Subclasses) :-
     choose_subclass_level(Class, Level),
     findall(subclass(Class, Subclass), subclass_option(Class, Subclass), Subclasses).
-    
 
 % Select the right class traits.
-trait(class(ClassLevel), Trait) :-
+gain_trait(Level, class(ClassLevel), Trait) :-
     matching_class_level(ClassLevel),
-    class_trait(ClassLevel, Trait).
+    class_trait(ClassLevel, Trait),
+    reached_class_level_on_char_level(ClassLevel, Level).
 
 trait_options(class(Class), Name, Spec) :-
     class(Class),
@@ -98,14 +123,18 @@ trait_options(class(ClassLevel), Name, Spec) :-
     matching_class_level(ClassLevel),
     class_trait_options(ClassLevel, Name, Spec).
 
-trait(subclass(Class:Level, Subclass), Trait) :-
+gain_trait(CharLevel, subclass(Class:Level, Subclass), Trait) :-
     matching_class_level(Class:Level),
     subclass_trait(Class:Level, Subclass, Trait),
-    subclass(Class, Subclass).
+    subclass(Class, Subclass),
+    reached_class_level_on_char_level(Class:Level, CharLevel).
 trait_options(subclass(Class:Level, Subclass), Name, Spec) :-
     matching_class_level(Class:Level),
     subclass_trait_options(Class:Level, Subclass, Name, Spec),
     subclass(Class, Subclass).
+
+wrap_trait_option(class(C), Name, X, Y) :-
+    wrap_class_trait_option(C, Name, X, Y).
     
 % PC is proficient in the saving throws of their initial class.
 saving_throw_prof(Ability) :-
@@ -120,9 +149,8 @@ class_cantrip(Class, Cantrip) :-
     spell(Cantrip, level, 0),
     spell_class(Cantrip, Class).
 
-% Generate a list of learn_spell options for cantrips.
-learn_cantrip_options(Class, Cantrips) :-
-    findall(learn_spell(Class, Cantrip), class_cantrip(Class, Cantrip), Cantrips).
+list_class_cantrips(Class, Cantrips) :-
+    findall(Cantrip, class_cantrip(Class, Cantrip), Cantrips).
 
 % PC knows all cantrips that you explicitly selected.
 spell_known(Spell, Class, Ability, always_available, at_will) :-

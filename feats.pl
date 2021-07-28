@@ -7,8 +7,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Feat inferences.
-trait(feat(Feat), Trait) :-
-    feat(Feat),
+trait_effect(feat(Feat), Trait) :-
     feat_trait(Feat, Trait).
 
 feat(Feat) :-
@@ -16,7 +15,8 @@ feat(Feat) :-
 feat(Feat) :-
     feat(_, Feat).
 feat(ClassLevel, Feat) :-
-    valid_trait_choice(class(ClassLevel), asi_or_feat, [feat(Feat)]).
+    choose_traits(class(ClassLevel), asi_or_feat, [feat(Feat)]).
+    %valid_trait_choice(class(ClassLevel), asi_or_feat, [feat(Feat)]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % List of feats.

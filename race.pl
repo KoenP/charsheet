@@ -5,6 +5,7 @@
        base_race/1,
        racial_trait/2,
        racial_trait_options/3,
+       racial_trait_options/4,
        racial_spellcasting_ability/1,
        subrace/2.
 
@@ -16,9 +17,12 @@ race_option(Race) :-
     base_race_option(Race) ; subrace(_, Race).
 
 % Racial traits are those traits obtained by belonging to some race.
-trait(race(Race), Trait) :-
+gain_trait(1, race(Race), Trait) :-
     race(Race),
     racial_trait(Race, Trait).
+
+racial_trait_options(Race, Name, id, Options) :-
+    racial_trait_options(Race, Name, Options).
 
 trait_options(race(Race), Name, Options) :-
     race(Race),

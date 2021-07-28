@@ -1,6 +1,7 @@
 :- use_module(library(http/html_write)).
 
 out :-
+    warn_if_problems,
     html_write:html_set_options([doctype(html)]),
     char_sheet_html(Html),
     name(Name),
@@ -132,16 +133,6 @@ maybe_tooltip(Subject, Text, WithTooltip) :-
 maybe_tooltip(Subject, Text, Text) :-
     \+ (Subject ?= _).
 
-%proficiency_list_entry(li([b("Languages: ") | Languages])) :-
-%    findall(Lang, trait(language(Lang)), Langs),
-%    format_list(Langs, Languages, []).
-%proficiency_list_entry(li([b("Weapons: ") | Weapons])) :-
-%    findall(Weap, trait(weapon(Weap)), Weaps),
-%    format_list(Weaps, Weapons, []).
-%proficiency_list_entry(li([b("Tools: ") | Tools])) :-
-%    findall(Tl, trait(tool(Tl)), Tls),
-%    format_list(Tls, Tools, []).
-
 % Traits.
 trait_list(p([h3("Notable traits"), div([id=traits], ul(Items))])) :-
     findall(li(Item), trait_list_entry(Item), Items).
@@ -155,15 +146,6 @@ trait_list_entry(div(class=tooltip, [Trait, span(class=tooltiptext, Desc)])) :-
 format_trait(T) --> format_term(T), [' ('], summary(T), !, [')'].
 format_trait(T) --> format_term(T).
 
-%format_trait(Term, Str) :-
-%    custom_display_rule(Term, Str).
-%format_trait(CompoundTerm, Atom) :-
-%    \+ custom_display_rule(CompoundTerm, _),
-%    CompoundTerm =.. [_, Atom].
-%format_trait(Atom, Atom) :-
-%    \+ custom_display_rule(Atom, _),
-%    atom(Atom).
-
 % Custom sections.
 custom_sections(Sections) :-
     findall(Section, custom_section(Section), Sections).
@@ -174,8 +156,11 @@ resource_table(Table) :-
     findall(th(Res)-td(Boxes),
             (resource(ResVal,N), format(ResVal,Res), checkboxes(N,Boxes)),
             Pairs),
-    maplist(\X^Y^(X = (Y-_)), Pairs, Resources),
-    maplist(\X^Y^(X = (_-Y)), Pairs, Boxes).
+
+    maplist([X,Y]>>(X = (Y-_)), Pairs, Resources),
+    maplist([X,Y]>>(X = (_-Y)), Pairs, Boxes).
+    %maplist(\X^Y^(X = (Y-_)), Pairs, Resources),
+    %maplist(\X^Y^(X = (_-Y)), Pairs, Boxes).
 
 % Attacks.
 attack_table(Table) :-
@@ -188,18 +173,6 @@ attack_table_row(tr([td(Name), td(Range), td(ToHit), td(DamageFmt), td(FNotes)])
     format(AttackName, Name),
     format_bonus(ToHitVal, ToHit, []),
     fmt(format_damage(Damage), DamageFmt).
-%format_damage(Damage, Format) :-
-%    maplist(format_damage_roll, Damage, Fmts),
-%    interleave([','], Fmts, Sum),
-%    append(Sum, Format).
-%format_damage_roll(Roll, Format) :-
-%    Roll =.. [Type, Dice],
-%    phrase(format_dice_sum(Dice), DiceFmt),
-%    append(DiceFmt, [' ', Type], Format).
-%interleave(X, [Y1,Y2|Ys], [Y1,X|Rest]) :-
-%    interleave(X, [Y2|Ys], Rest).
-%interleave(_, [Y], [Y]).
-%interleave(_, [], []).
 
 % Spellcasting section.
 spell_slot_table(Table) :-
@@ -237,16 +210,13 @@ spell_table(Table) :-
     Header = tr([th('Prep\'d'), th('Lvl'), th('Source'), th('Spell'), th('Cast time'),
                  th('Rng'), th('Cpts'), th('Dur'), th('To Hit/DC'),
                  th('Effect (summary)'), th('Res')]),
-    findall(Row,
-            (between(0, 9, Lvl), spell_table_rows_for_level(Lvl, Row)),
-            RowsPerLevel),
-    append(RowsPerLevel, Rows).
+    spell_table_rows(Rows).
 
-spell_table_rows_for_level(SpellLevel, Rows) :-
-    between(0, 9, SpellLevel), % ground SpellLevel
-    findall(Spell, spell(Spell, level, SpellLevel), SpellsUnsorted),
-    sort(SpellsUnsorted, Spells),
-    findall(Row, (member(Spell,Spells), spell_table_row(Spell,SpellLevel,Row)), Rows).
+spell_table_rows(Rows) :-
+    findall((Level,Name)-Row, spell_table_row(Name, Level, Row), LRows),
+    sort(1, @=<, LRows, SortedLRows),
+    maplist([_-R,R] >> true, SortedLRows, Rows).
+
 spell_table_row(Name, SpellLevel, tr([td(Prepared),
                                       td(SpellLevel),
                                       td(Source),

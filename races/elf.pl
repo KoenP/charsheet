@@ -7,7 +7,7 @@ racial_spellcasting_ability(int). % Ability to use for the racial cantrip.
 racial_trait(elf, dex+2).
 racial_trait(elf, sense(darkvision(60))).
 racial_trait(elf, 'keen senses').
-trait('keen senses', skill(perception)) :- trait('keen senses').
+trait_effect('keen senses', skill(perception)).
 racial_trait(elf, 'fey ancestry').
 'fey ancestry' ?= "You have advantage on saving throws against being charmed, and magic can’t put you to sleep.".
 racial_trait(elf, trance).

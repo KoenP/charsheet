@@ -2,6 +2,12 @@ problems :-
     setof(P:E, problem(P,E), Problems),
     maplist(writeln, Problems).
 
+warn_if_problems :-
+    problem(_, _),
+    !,
+    writeln("WARNING: your character sheet has some problems").
+warn_if_problems :- true.
+
 todo :-
     setof(T, todo(T), Todos),
     maplist(writeln, Todos).
@@ -26,3 +32,8 @@ search(X) :-
     write("Found: "),
     writeln(Y),
     writeln(D).
+
+showopts(Origin, Name) :-
+    trait_options(Origin, Name, Spec),
+    findall(O, spec_option(Spec, O), Os),
+    maplist(writeln, Os).

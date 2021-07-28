@@ -30,26 +30,21 @@ class_trait(druid:1, ritual_casting(druid)).
 class_trait(druid:1, spellcasting_focus(druid)).
 language(druidic) ?= "You know Druidic, the Secret language of druids. You can speak the language and use it to leave hidden messages. You and others who know this language automatically spot such a Message. Others spot the message's presence with a successful DC 15 Wisdom (Perception) check but can't decipher it without magic.".
 
-class_trait_options(druid:1, skills, 2 from Proficiencies) :-
-    Proficiencies = [ skill(arcana)
-                    , skill('animal handling')
-                    , skill(insight)
-                    , skill(medicine)
-                    , skill(nature)
-                    , skill(perception)
-                    , skill(religion)
-                    , skill(survival)
-                    ].
+wrap_class_trait_option(druid:1, skill, X, skill(X)).
+class_trait_options(druid:1, skill, 2 from Proficiencies) :-
+    Proficiencies = [ arcana , 'animal handling' , insight , medicine , nature
+                    , perception , religion , survival].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Spellcasting.
 
 % Cantrips.
+wrap_class_trait_option(druid:_, cantrip, X, learn_spell(druid, X)).
 class_trait_options(druid:1, cantrip, 2 from Cantrips) :-
-    findall(learn_spell(druid, Cantrip), class_cantrip(druid, Cantrip), Cantrips).
+    findall(Cantrip, class_cantrip(druid, Cantrip), Cantrips).
 class_trait_options(druid:Level, cantrip, 1 from Cantrips) :-
     member(Level, [4, 10]),
-    findall(learn_spell(druid, Cantrip), class_cantrip(druid, Cantrip), Cantrips).
+    findall(Cantrip, class_cantrip(druid, Cantrip), Cantrips).
 
 % Druids "know" (= can prepare) all non-cantrip druid spells for which
 % they have slots.

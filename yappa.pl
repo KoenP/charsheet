@@ -31,8 +31,8 @@ choose_feat(_,_) :- false.
 increase_ability_score(_,_) :- false.
 equipped(_) :- false.
 
-choose_traits(class(druid:1), cantrip, [learn_spell(druid, shillelagh), learn_spell(druid, guidance)]).
-choose_traits(class(druid:1), skills, [skill(perception), skill(nature)]).
+choose_traits(class(druid:1), cantrip, [shillelagh, guidance]).
+choose_traits(class(druid:1), skill, [perception, nature]).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -44,13 +44,14 @@ choose_subclass(druid, moon).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 3
 gain_level(3, druid, hp_avg).
-choose_traits(subclass(druid:3,land), land_type, [druid_land_type(arctic)]).
-choose_traits(subclass(druid:3,land), circle_spell, [learn_circle_spell('hold person')]).
+%choose_traits(subclass(druid:3,land), land_type, [druid_land_type(arctic)]).
+%choose_traits(subclass(druid:3,land), circle_spell, [learn_circle_spell('hold person')]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 4
 gain_level(4, druid, hp_avg).
-choose_traits(class(druid:4), asi_or_feat, [feat(alert)]).
+choose_trait(class(druid:4), asi_or_feat, feat(alert)).
+choose_trait(class(druid:4), cantrip, druidcraft).
 %pick_feat(4, alert).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

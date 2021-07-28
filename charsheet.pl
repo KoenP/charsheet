@@ -2,10 +2,6 @@
        % Indicates problems with your character sheet.
        problem/2,
 
-       % General repository of optional traits your character can have,
-       % along with the origin of the trait (trait(Origin, Trait)).
-       trait/2,
-
        % Indicates that a trait should be listed on the character sheet.
        list_trait/1,
 
@@ -23,7 +19,7 @@
        % resource(Name, Max)
        % Your PC's class-specific finite resources such as sorcery points,
        % wild shape uses, ...
-       resource/3,
+       resource/2,
 
        % Register an effect to happen on long (/short) rest (usually resources being replenished).
        % on_long_rest(_, restore) means to restore a resource to max (0 used).
@@ -50,9 +46,10 @@
 :- multifile
        (?=)/2.
 
-:- use_module(library(lambda)).
+:- use_module(library(list_util)).
 :- [dice].
 :- [format].
+:- [traits].
 :- [options].
 :- [spellcasting].
 :- [class].
@@ -65,13 +62,14 @@
 :- [shorthands].
 :- [html].
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Traits.
-trait(Trait) :- trait(_, Trait).
-
-trait(Trait, Effect) :-
-    trait_effect(Trait, Effect),
-    trait(Trait).
+%traits_at_level(Level, Traits) :-
+%    between(1, 20, Level),
+%    findall(Trait, gain_trait(Level, Trait), NewTraits),
+%    findall(Trait, lose_trait(Level, Trait), LostTraits),
+%    PrevLevel is Level - 1,
+%    traits_at_level(PrevLevel, OldTraits)
+%    append(NewTraits, OldTraits, )
+    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Character sheet calculations.
@@ -111,7 +109,13 @@ hit_dice(Class, M d X) :-
 resource(hit_dice(X), N) :-
     hit_dice(_, N d X).
 custom_format(hit_dice(X)) --> {X \= _ d _}, ["hit dice (d"], [X], [")"].
-%custom_display_rule(hit_dice(X), ['hit dice (d', X, ')']).
+on_rest(short, 'hit dice heal').
+on_rest(long, regain('hit dice', M)) :-
+    findall(N, resource(hit_dice(_), N), Ns),
+    sumlist(Ns, SumNs),
+    M is max(1, floor(SumNs / 2)).
+custom_format(regain(R,N)) --> [R], [": regain up to "], [N].
+'hit dice heal' ?= "A character can spend one or more Hit Dice at the end of a short rest, up to the character's maximum number of Hit Dice, which is equal to the character's level. For each Hit Die spent in this way, the player rolls the die and adds the character's Constitution modifier to it. The character regains hit points equal to the total. The player can decide to spend an additional Hit Die after each roll.".
 
 % Abilities and modifiers.
 ability(str).
@@ -129,6 +133,11 @@ ability_max(Ability, 20) :- ability(Ability).
 % Then we add asis from level-up, in-order. The first asi that causes an ability score to exceed the maximum (normally 20) raises a problem (this is handled in leveling.pl).
 % After that we add asis from feats. If these increases make a score go over 20, it is simply ignored instead of raising an error. TODO: maybe add a "note" or something?
 % Item effects are TODO.
+:- table
+   naked_lvl1_ability/2,
+   ability_after_levelup_asis/3,
+   ability_after_feats/2.
+
 naked_lvl1_ability(Ability, Score) :-
     base_ability(Ability, Base),
     findall(Term, racial_asi(Ability+Term), Racial),
@@ -256,6 +265,7 @@ name(_) :- false.
 race(_) :- false.
 initial_class(_) :- false.
 background(_) :- false.
+choose_trait(_,_,_) :- false.
 choose_traits(_,_,_) :- false.
 choose_subclass(_,_) :- false.
 equipped(_) :- false.

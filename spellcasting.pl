@@ -159,6 +159,12 @@ spell_dc(Spell, Source, DCAbility, DC) :-
 % Which spells are learnable depends on your spell slots, or
 % more precisely: a simulation of single-class spell slots, even when
 % you're multiclassing.
+list_learnable_proper_spells(Class, Spells) :-
+    findall(Spell,
+            (spell_learnable(Class,Spell), spell(Spell, level, L), L > 0),
+            Spells).
+
+:- table spell_learnable/2.
 spell_learnable(Class, SpellName) :-
     class(Class),
     learnable_spell_level(Class, SpellLevel),

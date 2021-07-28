@@ -22,25 +22,28 @@ class_trait(sorcerer:1, weapon(quarterstaff)).
 class_trait(sorcerer:1, weapon('light crossbow')).
 class_trait(sorcerer:1, spellcasting_focus(arcane)).
 
-class_trait_options(sorcerer:1, skill, 2 from [skill(arcana      ) ,
-                                               skill(deception   ) ,
-                                               skill(insight     ) ,
-                                               skill(intimidation) ,
-                                               skill(persuasion  ) ,
-                                               skill(religion    ) ]).
+wrap_trait_option(sorcerer:1, skill, X, skill(X)).
+class_trait_options(sorcerer:1, skill,
+                    2 from [arcana       ,
+                            deception    ,
+                            insight      ,
+                            intimidation ,
+                            persuasion   ,
+                            religion     ]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generic levelup features.
 class_trait(sorcerer:2, 'font of magic').
+wrap_trait_option(sorcerer:3, metamagic, X, metamagic(X)).
 class_trait_options(sorcerer:3, metamagic, 2 from Metamagic) :-
-    Metamagic = [metamagic('careful spell'   ),
-                 metamagic('distand spell'   ),
-                 metamagic('empowered spell' ),
-                 metamagic('extended spell'  ),
-                 metamagic('heightened spell'),
-                 metamagic('quickened spell' ),
-                 metamagic('subtle spell'    ),
-                 metamagic('twinned spell'   )].
+    Metamagic = ['careful spell'   ,
+                 'distand spell'   ,
+                 'empowered spell' ,
+                 'extended spell'  ,
+                 'heightened spell',
+                 'quickened spell' ,
+                 'subtle spell'    ,
+                 'twinned spell'   ].
 class_trait(sorcerer:20, 'sorcerous restoration').
 
 max_sorcery_points(Level) :-
@@ -96,42 +99,86 @@ Converting a Spell Slot to Sorcery Points. As a bonus action on your turn, you c
 % Spellcasting.
 
 % Cantrips.
+wrap_trait_option(class(sorcerer:_), cantrip, X, learn_spell(sorcerer,X)).
 class_trait_options(sorcerer:1, cantrip, 4 from Cantrips) :-
-    learn_cantrip_options(sorcerer, Cantrips).
+    list_class_cantrips(sorcerer, Cantrips).
 class_trait_options(sorcerer:Level, cantrip, 1 from Cantrips) :-
     member(Level, [4, 10]),
-    learn_cantrip_options(sorcerer, Cantrips).
+    list_class_cantrips(sorcerer, Cantrips).
     
 
 % Learning new spells.
-sorcerer_proper_spell_known_at_level(Level, Spell) :-
-    chosen_trait(class(sorcerer:LearnLevel), spell, learn_sorcerer_spell(Spell)),
-    LearnLevel1 is LearnLevel + 1, Level1 is Level - 1,
-    \+ (between(LearnLevel1, Level1, ForgetLevel),
-        chosen_trait(class(sorcerer:ForgetLevel), replace_spell, replace_sorcerer_spell(Spell))).
-
-spell_known(Spell, sorcerer, cha, always_available, at_will) :-
-    trait(learn_spell(sorcerer, Spell)),
-    cantrip(Spell).
 spell_known(Spell, sorcerer, cha, always_available, spell_slot) :-
-    trait(learn_sorcerer_spell(Spell)).
+    class_level(sorcerer:Level),
+    sorcerer_proper_spell_known_at_level(sorcerer:Level, Spell).
 
+:- table sorcerer_proper_spell_known_at_level/2.
+sorcerer_proper_spell_known_at_level(sorcerer:SorcLevel, Spell) :-
+    between(1, 20, SorcLevel),
+    reached_class_level_on_char_level(sorcerer:SorcLevel, Level),
+    gain_trait(LearnLevel, choose_traits(class(sorcerer:_), spell), learn_proper_sorcerer_spell(Spell)),
+    LearnLevel =< Level,
+    L is LearnLevel - 1,
+    \+ (between(2,L,ForgetLevel),
+        gain_trait(ForgetLevel,
+                   choose_traits(class(sorcerer:_), spell),
+                   forget_sorcerer_spell(Spell))).
+
+% Learn new spells.
 class_trait_options(sorcerer:1, spell, 2 from Spells) :-
-    learn_sorcerer_spell_options(Spells).
+    list_learnable_proper_spells(sorcerer, Spells).
+
 class_trait_options(sorcerer:Level, spell, 1 from Spells) :-
     member(Level, [2,3,4,5,6,7,8,9,10,11,13,15,17]),
-    learn_sorcerer_spell_options(Spells).
+    list_learnable_proper_spells(sorcerer, AllLearnable),
+    sort(AllLearnable, AllLearnableSorted),
+    PrevLevel is Level - 1,
+    findall(Spell,
+            sorcerer_proper_spell_known_at_level(sorcerer:PrevLevel, Spell),
+            AlreadyKnown),
+    subtract(AllLearnableSorted, AlreadyKnown, Spells).
 
-class_trait_options(sorcerer:Level, replace_spell, 2 from [1 from Forget, 1 from New]) :-
-    between(2, 20, Level),
-    Level1 is Level - 1,
-    findall(forget_sorcerer_spell(Spell),
-            sorcerer_proper_spell_known_at_level(Level1, Spell),
-            Forget),
-    learn_sorcerer_spell_options(New).
-    
+wrap_trait_option(class(sorcerer:_), spell, X, learn_proper_sorcerer_spell(X)).
 
-learn_sorcerer_spell_options(Spells) :-
-    findall(learn_sorcerer_spell(Spell),
-            (spell_learnable(sorcerer, Spell), spell(Spell, level, N), N > 0),
-            Spells).
+
+
+
+%:- table sorcerer_proper_spell_known_at_level/2.
+%sorcerer_proper_spell_known_at_level(Level, Spell) :- false.
+%%    between(1, Level, LearnLevel),
+%%    chosen_trait(class(sorcerer:LearnLevel), _, learn_sorcerer_spell(Spell)),
+%%    LearnLevel1 is LearnLevel + 1,
+%%    \+ (between(LearnLevel1, Level, ForgetLevel),
+%%        chosen_trait(class(sorcerer:ForgetLevel), replace_spell, forget_sorcerer_spell(Spell))).
+%
+%spell_known(Spell, sorcerer, cha, always_available, at_will) :-
+%    trait(learn_spell(sorcerer, Spell)),
+%    cantrip(Spell).
+%spell_known(Spell, sorcerer, cha, always_available, spell_slot) :-
+%    level(Level),
+%    sorcerer_proper_spell_known_at_level(Level, Spell).
+%    %trait(learn_sorcerer_spell(Spell)).
+%
+%class_trait_options(sorcerer:1, spell, wrap(learn_sorcerer_spell), 2 from Spells) :-
+%    list_learnable_proper_sorcerer_spells(Spells).
+%class_trait_options(sorcerer:Level, spell, wrap(learn_sorcerer_spell), 1 from Spells) :-
+%    member(Level, [2,3,4,5,6,7,8,9,10,11,13,15,17]),
+%    list_learnable_proper_sorcerer_spells(Spells).
+%
+%class_trait_options(sorcerer:Level, replace_spell, wrap_replace_spell,
+%                    2 from [1 from Forget, 1 from New]) :-
+%    between(2, 20, Level),
+%    Level1 is Level - 1,
+%    findall(forget(Spell),
+%            sorcerer_proper_spell_known_at_level(Level1, Spell),
+%            Forget),
+%    list_learnable_proper_sorcerer_spells(New_),
+%    maplist(wrap(learn), New_, New).
+%wrap_replace_spell(forget(S), forget_sorcerer_spell(S)).
+%wrap_replace_spell(learn(S), learn_sorcerer_spell(S)).
+%
+%:- table list_learnable_proper_sorcerer_spells/1.
+%list_learnable_proper_sorcerer_spells(Spells) :-
+%    findall(Spell,
+%            (spell_learnable(sorcerer, Spell), spell(Spell, level, N), N > 0),
+%            Spells).
