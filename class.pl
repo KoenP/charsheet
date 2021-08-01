@@ -20,6 +20,7 @@
 
        subclass_trait/3,
        subclass_trait_options/4,
+       wrap_subclass_trait_option/5,
 
 
        hd_per_level/2,
@@ -95,15 +96,15 @@ choose_traits(class(Class:Level), subclass, [subclass(Class, Subclass)]) :-
 % Query traits that originate from your class, directly or indirectly.
 trait_from_class(Class, Origin, Trait) :-
     trait(Origin, Trait),
-    class_origin(Class, Origin).
-class_origin(Class, class(Class)).
+    class_origin(Class, Origin), !.
 class_origin(Class, class(Class:_)).
-class_origin(Class, subclass(Class, _)).
+class_origin(Class, class(Class)).
 class_origin(Class, subclass(Class:_, _)).
-class_origin(Class, choose_traits(class(Class), _)).
+class_origin(Class, subclass(Class, _)).
 class_origin(Class, choose_traits(class(Class:_), _)).
-class_origin(Class, choose_traits(subclass(Class, _), _)).
+class_origin(Class, choose_traits(class(Class), _)).
 class_origin(Class, choose_traits(subclass(Class:_, _), _)).
+class_origin(Class, choose_traits(subclass(Class, _), _)).
 
 % Generate a class trait option for each subclass.
 class_trait_options(Class:Level, subclass, 1 from Subclasses) :-
@@ -135,6 +136,8 @@ trait_options(subclass(Class:Level, Subclass), Name, Spec) :-
 
 wrap_trait_option(class(C), Name, X, Y) :-
     wrap_class_trait_option(C, Name, X, Y).
+wrap_trait_option(subclass(Class, Subclass), Name, X, Y) :-
+    wrap_subclass_trait_option(Class, Subclass, Name, X, Y).
     
 % PC is proficient in the saving throws of their initial class.
 saving_throw_prof(Ability) :-

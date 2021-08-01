@@ -178,8 +178,9 @@ Starting at 6th level, you can transform into a beast with a challenge rating as
 % Subclass: Circle of the Land
 subclass_option(druid, land).
 
+wrap_subclass_trait_option(druid:2, land, extra_cantrip, X, learn_spell(druid, X)).
 subclass_trait_options(druid:2, land, extra_cantrip, 1 from Cantrips) :-
-    findall(learn_spell(druid, Cantrip), class_cantrip(druid, Cantrip), Cantrips).
+    findall(Cantrip, class_cantrip(druid, Cantrip), Cantrips).
 
 % TODO add short rest effect.
 subclass_trait(druid:2, land, 'natural recovery').
@@ -188,9 +189,11 @@ subclass_trait(druid:2, land, 'natural recovery').
 For example, when you are a 4th-level druid, you can recover up to two levels worth of spell slots. You can recover either a 2nd-level slot or two 1st-level slots.".
 
 % Learn circle spells.
+wrap_subclass_trait_option(druid:3, land, land_type, X, druid_land_type(X)).
 subclass_trait_options(druid:3, land, land_type, 1 from Types) :-
-    findall(druid_land_type(Type), druid_land_type_option(Type), Types).
+    findall(Type, druid_land_type_option(Type), Types).
 
+wrap_subclass_trait_option(druid:_, land, circle_spell, X, learn_circle_spell(X)).
 subclass_trait_options(druid:Level, land, circle_spell, 1 from Spells) :-
     member(Level, [3,5,7,9]),
     druid_land_type(Type),
@@ -222,11 +225,7 @@ druid_land_type_option(grassland).
 druid_land_type_option(mountain).
 druid_land_type_option(swamp).
 
-druid_circle_spells_at_level(arctic, 3, [learn_circle_spell('hold person'),
-                                         learn_circle_spell('spike growth')]).
-druid_circle_spells_at_level(arctic, 5, [learn_circle_spell('sleet storm'),
-                                         learn_circle_spell(slow)]).
-druid_circle_spells_at_level(arctic, 7, [learn_circle_spell('freedom of movement'),
-                                         learn_circle_spell('ice storm')]).
-druid_circle_spells_at_level(arctic, 9, [learn_circle_spell('commune with nature'),
-                                         learn_circle_spell('cone of cold')]).
+druid_circle_spells_at_level(arctic, 3, ['hold person', 'spike growth']).
+druid_circle_spells_at_level(arctic, 5, ['sleet storm', slow]).
+druid_circle_spells_at_level(arctic, 7, ['freedom of movement', 'ice storm']).
+druid_circle_spells_at_level(arctic, 9, ['commune with nature', 'cone of cold']).

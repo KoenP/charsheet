@@ -106,8 +106,8 @@ class_trait_options(sorcerer:Level, cantrip, 1 from Cantrips) :-
     member(Level, [4, 10]),
     list_class_cantrips(sorcerer, Cantrips).
     
-
-% Learning new spells.
+% Determine which proper spells are known (cantrips are handle in a
+% way that is not specific to this class).
 spell_known(Spell, sorcerer, cha, always_available, spell_slot) :-
     class_level(sorcerer:Level),
     sorcerer_proper_spell_known_at_level(sorcerer:Level, Spell).
@@ -115,21 +115,35 @@ spell_known(Spell, sorcerer, cha, always_available, spell_slot) :-
 :- table sorcerer_proper_spell_known_at_level/2.
 sorcerer_proper_spell_known_at_level(sorcerer:SorcLevel, Spell) :-
     between(1, 20, SorcLevel),
-    reached_class_level_on_char_level(sorcerer:SorcLevel, Level),
-    gain_trait(LearnLevel, choose_traits(class(sorcerer:_), spell), learn_proper_sorcerer_spell(Spell)),
-    LearnLevel =< Level,
-    L is LearnLevel - 1,
-    \+ (between(2,L,ForgetLevel),
-        gain_trait(ForgetLevel,
-                   choose_traits(class(sorcerer:_), spell),
-                   forget_sorcerer_spell(Spell))).
+    chosen_trait(class(sorcerer:LearnLevel), _, learn_proper_sorcerer_spell(Spell)),
+    LearnLevel =< SorcLevel,
+    \+ (chosen_trait(class(sorcerer:ForgetLevel), forget_spell, forget_proper_sorcerer_spell(Spell)),
+        ForgetLevel > LearnLevel,
+        ForgetLevel =< SorcLevel).
 
 % Learn new spells.
+wrap_class_trait_option(sorcerer:_, spell, X, learn_proper_sorcerer_spell(X)).
 class_trait_options(sorcerer:1, spell, 2 from Spells) :-
     list_learnable_proper_spells(sorcerer, Spells).
-
 class_trait_options(sorcerer:Level, spell, 1 from Spells) :-
     member(Level, [2,3,4,5,6,7,8,9,10,11,13,15,17]),
+    list_new_learnable_proper_sorcerer_spells(Level, Spells).
+
+% Replace forgotten spells.
+wrap_class_trait_option(sorcerer:_, replace_spell, X, learn_proper_sorcerer_spell(X)).
+class_trait_options(sorcerer:Level, replace_spell(ReplacedSpell), 1 from Spells) :-
+    trait_from_class(sorcerer:Level, _, forget_proper_sorcerer_spell(ReplacedSpell)),
+    list_new_learnable_proper_sorcerer_spells(Level, Spells).
+
+% Forget spells.
+wrap_class_trait_option(sorcerer:_, forget_spell, X, forget_proper_sorcerer_spell(X)).
+class_trait_options(sorcerer:Level, forget_spell, 1 from Spells) :-
+    between(2, 20, Level),
+    PrevLevel is Level - 1,
+    findall(Spell, sorcerer_proper_spell_known_at_level(sorcerer:PrevLevel, Spell), Spells).
+
+% Learnable spells.
+list_new_learnable_proper_sorcerer_spells(Level, Spells) :-
     list_learnable_proper_spells(sorcerer, AllLearnable),
     sort(AllLearnable, AllLearnableSorted),
     PrevLevel is Level - 1,
@@ -137,11 +151,6 @@ class_trait_options(sorcerer:Level, spell, 1 from Spells) :-
             sorcerer_proper_spell_known_at_level(sorcerer:PrevLevel, Spell),
             AlreadyKnown),
     subtract(AllLearnableSorted, AlreadyKnown, Spells).
-
-wrap_trait_option(class(sorcerer:_), spell, X, learn_proper_sorcerer_spell(X)).
-
-
-
 
 %:- table sorcerer_proper_spell_known_at_level/2.
 %sorcerer_proper_spell_known_at_level(Level, Spell) :- false.

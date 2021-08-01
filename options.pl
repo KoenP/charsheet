@@ -126,6 +126,16 @@ problem(choose_traits(Origin, Name, Choice), picked_more_than_once(Trait)) :-
     append(_, [Trait|Tail], Choice),
     append(_, [Trait|_], Tail).
 
+% User declared they will forego a trait option, but then they pick anyway.
+problem(choose_traits(Origin, Name, Choice), chosen_traits_for_foregone_choice) :-
+    choose_traits(Origin, Name, Choice),
+    forego(Origin, Name).
+
+% User foregoes a trait option they're not eligible for.
+problem(forego(Origin, Name), not_eligible(Origin, Name)) :-
+    forego(Origin, Name),
+    \+ trait_options(Origin, Name, _).
+
 % Generate a todo when the user has not yet picked any options for a trait they are eligible for.
 todo(choose_traits(Origin, Name)) :-
     trait_options(Origin, Name, _),
