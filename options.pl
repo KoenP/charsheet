@@ -20,6 +20,9 @@
        choose_traits/3,
        choose_trait/3,
 
+       % TODO
+       replace_traits/4,
+
        % The player can use this to not pick a trait option so it won't show up
        % in their todo anymore (for example for the replace_spell
        % option for sorcerers).
@@ -30,12 +33,21 @@ chosen_trait(Origin, Name, Trait) :-
     trait(choose_traits(Origin, Name), Trait).
 
 gain_trait(Level, choose_traits(Origin, Name), Trait) :-
-    %valid_trait_choice(Origin, Name, Choice),
     choose_traits(Origin, Name, Choice),
     trait_origin_level(Origin, Level),
     member(Option, Choice),
-    %trait_options(Origin, Name, Wrap, _),
     wrapped_trait_option(Origin, Name, Option, Trait).
+gain_trait(Level, replace_traits(Origin, Name, Old, New), Trait) :-
+    replace_traits(Origin, Name, Old, New),
+    trait_origin_level(Origin, Level),
+    member(Option, New),
+    wrapped_trait_option(Origin, Name, Option, Trait).
+lose_trait(Level, replace_traits(Origin, Name, Old, New), Trait) :-
+    replace_traits(Origin, Name, Old, New),
+    trait_origin_level(Origin, Level),
+    member(Option, New),
+    wrapped_trait_option(Origin, Name, Option, Trait).
+
 wrapped_trait_option(Origin, Name, Option, Trait) :-
     wrap_trait_option(Origin, Name, Option, Trait),
     !.

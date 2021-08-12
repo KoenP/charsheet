@@ -27,7 +27,8 @@ transform_dict(In, spell(Name, properties{ level:Level,
                                            casting_time:In.casting_time,
                                            duration:In.duration,
                                            ritual:Ritual,
-                                           desc:In.desc
+                                           desc:In.desc,
+                                           classes:Classes
                                          })) :-
     to_lowercase_atom(In.name, Name),
     parse_level(In.level, Level),
@@ -36,7 +37,8 @@ transform_dict(In, spell(Name, properties{ level:Level,
     get_or_default(In, material, "err: no material", Material),
     parse_components(In.components, Material, Components),
     parse_range(In.range, Range),
-    string_to_atom(In.ritual, Ritual).
+    string_to_atom(In.ritual, Ritual),
+    parse_classes(In.class, Classes).
 
 to_lowercase_atom(Str, Atom) :-
     string_lower(Str, Lower),
@@ -79,6 +81,12 @@ parse_range(Str, miles(Miles)) :-
     !.
 parse_range(Str, Atom) :-
     to_lowercase_atom(Str, Atom).
+
+parse_classes(Str, Classes) :-
+    string_chars(Str, Chars),
+    split_on([',', ' '], Chars, Lists),
+    maplist(atomic_list_concat, Lists, UCClasses),
+    maplist(to_lowercase_atom, UCClasses, Classes).
 
 split_on(Sep, List, [List]) :-
     \+ (append(_, Rest, List), append(Sep, _, Rest)).

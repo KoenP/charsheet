@@ -97,6 +97,10 @@ choose_traits(class(Class:Level), subclass, [subclass(Class, Subclass)]) :-
 trait_from_class(Class, Origin, Trait) :-
     trait(Origin, Trait),
     class_origin(Class, Origin), !.
+trait_from_class_level(Class:Level, Origin, Trait) :-
+    trait(Origin, Trait),
+    class_level_origin(Class:Level, Origin).
+
 class_origin(Class, class(Class:_)).
 class_origin(Class, class(Class)).
 class_origin(Class, subclass(Class:_, _)).
@@ -105,6 +109,11 @@ class_origin(Class, choose_traits(class(Class:_), _)).
 class_origin(Class, choose_traits(class(Class), _)).
 class_origin(Class, choose_traits(subclass(Class:_, _), _)).
 class_origin(Class, choose_traits(subclass(Class, _), _)).
+
+class_level_origin(Class:Level, class(Class:Level)).
+class_level_origin(Class:Level, subclass(Class:Level, _)).
+class_level_origin(Class:Level, choose_traits(class(Class:Level), _)).
+class_level_origin(Class:Level, choose_traits(subclass(Class:Level, _), _)).
 
 % Generate a class trait option for each subclass.
 class_trait_options(Class:Level, subclass, 1 from Subclasses) :-
@@ -154,10 +163,3 @@ class_cantrip(Class, Cantrip) :-
 
 list_class_cantrips(Class, Cantrips) :-
     findall(Cantrip, class_cantrip(Class, Cantrip), Cantrips).
-
-% PC knows all cantrips that you explicitly selected.
-spell_known(Spell, Class, Ability, always_available, at_will) :-
-    class(Class),
-    trait(learn_spell(Class, Spell)),
-    spellcasting_ability(Class, Ability),
-    spell(Spell, level, 0).

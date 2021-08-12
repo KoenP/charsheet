@@ -24,3 +24,11 @@
 - ergens een lijst van talen toevoegen; of meer algemeen: omgaan met het idee "kies van deze lijst, of vul gewoon zelf iets in"
 
 - onderscheid tussen initial class exclusive traits en reguliere level 1 traits (zie https://5thsrd.org/rules/multiclassing/#proficiencies)
+
+  
+* huidige todo
+Bezig met warlock class.
+Deze class heeft identieke functionaliteit nodig als sorcerers voor het leren van spells.
+Dit moet dus veralgemeend worden.
+Ik wil een algemeen idee van "novel spells" -> learnable spells die niet al gekend zijn.
+Ik wil ook een algemeen systeem voor het vergeten en vervangen van spells.

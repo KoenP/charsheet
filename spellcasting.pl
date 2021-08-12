@@ -14,10 +14,7 @@
        % more specific cases).
        spell_known/5,
 
-       % spell_single_roll_damage_bonus(Spell, Origin, Bonus)
-       % Register a damage bonus to be added to a single roll of a spell.
-       % When the 
-       spell_single_roll_damage_bonus/3.
+       spell_single_roll_damage_bonus/4.
 
 % The table that stores all "static" information about spells (ie
 % mostly independent of your character, although some things like
@@ -196,6 +193,18 @@ learnable_spell_level(Class, SpellLevel) :-
 spell_known(Spell) :-
     spell_known(Spell, _, _, _, _).
 
+% PC knows all cantrips that you explicitly selected.
+spell_known(Spell, Class, Ability, always_available, at_will) :-
+    class(Class),
+    trait(learn_spell(Class, Spell)),
+    spellcasting_ability(Class, Ability),
+    spell(Spell, level, 0).
+
+
+%spell_known(Spell, OriginClass, Ability, PrepStatus, Resource) :-
+%    trait_from_class_level(OriginClass:Level, _, learn_spell(OriginClass, Spell)),
+%    learn_spell_at_class_level(OriginClass:Level, ),
+
 % The damage done by a spell you know doesn't have to be the same
 % as the amount listed in the spell description; you might have other
 % factors influencing it. These factors are taken into account in
@@ -216,7 +225,7 @@ spell_known(Spell) :-
 % note in the spell table to add the damage to a roll of choice.
 % TODO: how to deal with multiturn damage (spells that work like
 % moonbeam); probably we should also add a note, but then the damage
-% should be somehow 'marked' as multi-turm.
+% should be somehow 'marked' as multi-turn.
 spell_known_damage(Spell, Origin, Ability, Upcast, FinalRolls) :-
     spell_known(Spell, Origin, Ability, _, _),
     in_upcast_range(Spell, Upcast), % ground Upcast
@@ -242,6 +251,10 @@ spell_known_effect(Spell, Origin, Effect) :-
     sumlist(Bonuses, TotalBonus),
     TotalBonus \= 0,
     atomic_list_concat(['+', TotalBonus, ' to one damage roll'], Effect).
+
+% Novel spells are spells that are both learnable and not already known.
+%novel_spell(Class:Level, Spell) :-
+%    spell_learnable(Class, Spell),
     
     
 

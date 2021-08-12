@@ -20,6 +20,7 @@ trait_at_level(Level, Trait, Effect) :-
     trait_at_level(Level, _, Trait).
 
 trait_at_class_level(Class:Level, Origin, Trait) :-
+    matching_class_level(Class:Level), % to ground
     reached_class_level_on_char_level(Class:Level, CharLevel),
     trait_at_level(CharLevel, Origin, Trait).
 

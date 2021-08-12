@@ -47,6 +47,7 @@
        (?=)/2.
 
 :- use_module(library(list_util)).
+:- [util].
 :- [dice].
 :- [format].
 :- [traits].
@@ -61,6 +62,7 @@
 :- [items].
 :- [shorthands].
 :- [html].
+:- [fishy].
 
 %traits_at_level(Level, Traits) :-
 %    between(1, 20, Level),
