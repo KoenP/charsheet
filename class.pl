@@ -16,6 +16,7 @@
 
        class_trait/2,
        class_trait_options/3,
+       class_trait_replacement_options/4,
        wrap_class_trait_option/4,
 
        subclass_trait/3,
@@ -59,6 +60,11 @@ class_level(CharLevel, Class:ClassLevel) :-
 matching_class_level(Class:ClassLevel) :-
     class_level(Class:CharClassLevel),
     between(1, CharClassLevel, ClassLevel).
+
+matching_class_or_class_level(Class) :-
+    class(Class).
+matching_class_or_class_level(Class:Level) :-
+    matching_class_level(Class:Level).
 
 class_levels(Classes) :- findall(Class, class_level(Class), Classes).
 
@@ -126,12 +132,13 @@ gain_trait(Level, class(ClassLevel), Trait) :-
     class_trait(ClassLevel, Trait),
     reached_class_level_on_char_level(ClassLevel, Level).
 
-trait_options(class(Class), Name, Spec) :-
-    class(Class),
-    class_trait_options(Class, Name, Spec).
-trait_options(class(ClassLevel), Name, Spec) :-
-    matching_class_level(ClassLevel),
-    class_trait_options(ClassLevel, Name, Spec).
+% Class trait options.
+trait_options(class(C), Name, Spec) :-
+    matching_class_or_class_level(C),
+    class_trait_options(C, Name, Spec).
+trait_replacement_options(class(C), Name, OldSpec, NewSpec) :-
+    matching_class_or_class_level(C),
+    class_trait_replacement_options(C, Name, OldSpec, NewSpec).
 
 gain_trait(CharLevel, subclass(Class:Level, Subclass), Trait) :-
     matching_class_level(Class:Level),
@@ -147,6 +154,11 @@ wrap_trait_option(class(C), Name, X, Y) :-
     wrap_class_trait_option(C, Name, X, Y).
 wrap_trait_option(subclass(Class, Subclass), Name, X, Y) :-
     wrap_subclass_trait_option(Class, Subclass, Name, X, Y).
+
+wrap_trait_replacement_option(class(Class), Name, A, B, C, D) :-
+    wrap_class_trait_replacement_option(Class, Name, A, B, C, D).
+wrap_trait_replacement_option(subclass(Class, Subclass), Name, A, B, C, D) :-
+    wrap_subclass_trait_replacement_option(Class, Subclass, Name, A, B, C, D).
     
 % PC is proficient in the saving throws of their initial class.
 saving_throw_prof(Ability) :-

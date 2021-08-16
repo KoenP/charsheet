@@ -164,9 +164,15 @@ list_learnable_proper_spells(Class, Spells) :-
 :- table spell_learnable/2.
 spell_learnable(Class, SpellName) :-
     class(Class),
+    Class \= warlock,
     learnable_spell_level(Class, SpellLevel),
     spell_class(SpellName, Class),
     spell(SpellName, level, SpellLevel).
+spell_learnable(warlock, SpellName) :-
+    pact_magic_slot_level(SlotLevel),
+    spell_class(SpellName, warlock),
+    spell(SpellName, level, SpellLevel),
+    SpellLevel =< SlotLevel.
 
 learnable_spell_level(Class, 0) :-
     class(Class).

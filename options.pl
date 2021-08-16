@@ -33,6 +33,7 @@
 chosen_trait(Origin, Name, Trait) :-
     trait(choose_traits(Origin, Name), Trait).
 
+% Gain the chosen traits.
 gain_trait(Level, choose_traits(Origin, Name), Trait) :-
     choose_traits(Origin, Name, Choice),
     trait_origin_level(Origin, Level),
@@ -42,17 +43,21 @@ gain_trait(Level, replace_traits(Origin, Name, Old, New), Trait) :-
     replace_traits(Origin, Name, Old, New),
     trait_origin_level(Origin, Level),
     member(Option, New),
-    wrapped_trait_option(Origin, Name, Option, Trait).
+    wrapped_trait_replacement_option(Origin, Name, _, _, Option, Trait).
 lose_trait(Level, replace_traits(Origin, Name, Old, New), Trait) :-
     replace_traits(Origin, Name, Old, New),
     trait_origin_level(Origin, Level),
-    member(Option, New),
-    wrapped_trait_option(Origin, Name, Option, Trait).
+    member(Option, Old),
+    wrapped_trait_replacement_option(Origin, Name, Option, Trait, _, _).
 
 wrapped_trait_option(Origin, Name, Option, Trait) :-
     wrap_trait_option(Origin, Name, Option, Trait),
     !.
 wrapped_trait_option(_, _, Trait, Trait).
+wrapped_trait_replacement_option(Origin, Name, A, B, C, D) :-
+    wrap_trait_replacement_option(Origin, Name, A, B, C, D),
+    !.
+wrapped_trait_replacement_option(_, _, A, A, B, B).
 
 %valid_trait_choice(Origin, Name, Choice) :-
 %    choose_traits(Origin, Name, Choice),
@@ -92,7 +97,7 @@ problem(choose_traits(Origin, Name, Choice), doesnt_match_spec(Choice, Spec)) :-
     trait_options(Origin, Name, Spec),
     \+ bad_trait_choice(Origin, Name, Choice, _),
     \+ choice_matches_spec(Choice, Spec, match).
-problem(replace_traits(Origin, Name, Old, New), doesnt_match_spec(Old, Spec)) :-
+problem(replace_traits(Origin, Name, Old, New), doesnt_match_spec(Old, OldSpec)) :-
     replace_traits(Origin, Name, Old, New),
     is_list(Old),
     trait_replacement_options(Origin, Name, OldSpec, _),
@@ -128,6 +133,9 @@ count(X, L, N) :-
 problem(choose_traits(Origin, Name, Choice), bad_choice(Msg)) :-
     choose_traits(Origin, Name, Choice),
     bad_trait_choice(Origin, Name, Choice, Msg).
+problem(replace_traits(Origin, Name, Old, New), bad_choice(Msg)) :-
+    replace_traits(Origin, Name, Old, New),
+    bad_trait_choice(Origin, Name, New, Msg).
 
 % User has chosen an option that's not specified, and we don't have a more
 % specific error message.
@@ -138,6 +146,7 @@ problem(choose_traits(Origin, Name, Choice), invalid_option(Trait)) :-
     findall(Option, spec_option(Spec,Option), Options),
     member(Trait, Choice),
     \+ member(Trait, Options).
+% TODO: replace_trait variants
 
 % User picked multiple times for the same choice.
 problem(choose_traits(Origin, Name, Choice), double_dip) :-

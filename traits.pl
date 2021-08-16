@@ -1,4 +1,6 @@
 :- multifile
+       trait/1,
+       trait/2,
        gain_trait/3,
        lose_trait/3.
 
@@ -33,7 +35,7 @@ root_trait_at_level(Level, Origin, Trait) :-
     between(2, CurLevel, Level),
     PrevLevel is Level - 1,
     root_trait_at_level(PrevLevel, Origin, Trait),
-    \+ lose_trait(Level, Origin, Trait).
+    \+ lose_trait(Level, _, Trait).
 
 % From each trait origin, we can derive the character level on which
 % it was reached.

@@ -22,7 +22,7 @@ class_trait(sorcerer:1, weapon(quarterstaff)).
 class_trait(sorcerer:1, weapon('light crossbow')).
 class_trait(sorcerer:1, spellcasting_focus(arcane)).
 
-wrap_trait_option(sorcerer:1, skill, X, skill(X)).
+wrap_class_trait_option(sorcerer:1, skill, X, skill(X)).
 class_trait_options(sorcerer:1, skill,
                     2 from [arcana       ,
                             deception    ,
@@ -34,7 +34,7 @@ class_trait_options(sorcerer:1, skill,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generic levelup features.
 class_trait(sorcerer:2, 'font of magic').
-wrap_trait_option(sorcerer:3, metamagic, X, metamagic(X)).
+wrap_class_trait_option(sorcerer:3, metamagic, X, metamagic(X)).
 class_trait_options(sorcerer:3, metamagic, 2 from Metamagic) :-
     Metamagic = ['careful spell'   ,
                  'distand spell'   ,
@@ -99,7 +99,7 @@ Converting a Spell Slot to Sorcery Points. As a bonus action on your turn, you c
 % Spellcasting.
 
 % Cantrips.
-wrap_trait_option(class(sorcerer:_), cantrip, X, learn_spell(sorcerer,X)).
+wrap_class_trait_option(sorcerer:_, cantrip, X, learn_spell(sorcerer,X)).
 class_trait_options(sorcerer:1, cantrip, 4 from Cantrips) :-
     list_class_cantrips(sorcerer, Cantrips).
 class_trait_options(sorcerer:Level, cantrip, 1 from Cantrips) :-

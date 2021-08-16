@@ -37,19 +37,24 @@ wrap_class_trait_option(warlock:_, spell, X, learn_spell(warlock,X)).
 class_trait_options(warlock:L, spell, N from Spells) :-
     member(L, [1,2,3,4,5,6,7,8,9,11,13,15,17,19]),
     (L = 1 -> N = 2; L \= 1 -> N = 1),
-    findall(Spell,
-            (spell_learnable(warlock, Spell)),
-            Spells).
+    list_learnable_proper_spells(warlock, Spells).
 
+wrap_class_trait_replacement_option(warlock:_, spell,
+                                    Old, learn_spell(warlock, Old),
+                                    New, learn_spell(warlock, New)).
 class_trait_replacement_options(warlock:Level,
-                                replace_spell,
+                                spell,
                                 1 from KnownSpells,
                                 1 from NewSpells) :-
     between(2, 20, Level),
-    PrevLevel is Level - 1,
-    trait_at_class_level(warlock:PrevLevel, LearnSpell)
-    % TODO hier zat ik
+    findall(Spell, replaceable_spell_at_level(warlock:Level,Spell), KnownSpells),
+    list_learnable_proper_spells(warlock, NewSpells).
 
+replaceable_spell_at_level(Class:Level, Spell) :-
+    trait(Origin, learn_spell(Class, Spell)),
+    class_level_origin(Class:OriginLevel, Origin),
+    between(1, 20, Level), % ground Level
+    OriginLevel < Level.
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

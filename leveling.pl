@@ -75,5 +75,3 @@ origin_level(class(C), L) :-
 origin_level(Origin, CharLevel) :-
     class_level_origin(Class:ClassLevel, Origin),
     reached_class_level_on_char_level(Class:ClassLevel, CharLevel).
-
-
