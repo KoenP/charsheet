@@ -6,6 +6,7 @@
        % Set of options to pick for a trait.
        % See options.pl to understand the OptionSpec parameter.
        trait_options/3,
+       trait_replacement_options/4,
        wrap_trait_option/4,
 
        % problem/2 will automatically recognize when the user picked
@@ -79,6 +80,9 @@ problem(choose_traits(Origin, Name, Choice), not_eligible(Origin, Name)) :-
 problem(choose_traits(Origin, Name, Choice), not_a_list(Choice)) :-
     choose_traits(Origin, Name, Choice),
     \+ is_list(Choice).
+problem(replace_traits(Origin, Name, Old, New), not_a_list(X)) :-
+    replace_traits(Origin, Name, Old, New),
+    (\+ is_list(Old) -> X = Old; \+ is_list(New) -> X = New).
 
 % User's choice doesn't match the spec, and we don't have a more specific error message.
 % TODO: I think I can make more specific error messages than this.
@@ -88,6 +92,16 @@ problem(choose_traits(Origin, Name, Choice), doesnt_match_spec(Choice, Spec)) :-
     trait_options(Origin, Name, Spec),
     \+ bad_trait_choice(Origin, Name, Choice, _),
     \+ choice_matches_spec(Choice, Spec, match).
+problem(replace_traits(Origin, Name, Old, New), doesnt_match_spec(Old, Spec)) :-
+    replace_traits(Origin, Name, Old, New),
+    is_list(Old),
+    trait_replacement_options(Origin, Name, OldSpec, _),
+    \+ choice_matches_spec(Old, OldSpec, match).
+%problem(replace_traits(Origin, Name, Old, New), was_not_a_trait(Old, Spec)) :-
+%    replace_traits(Origin, Name, Old, New),
+%    is_list(Old),
+
+    
 choice_matches_spec(Choice, N from Spec, Result) :-
     findall(X, (member(SubSpec,Spec), choice_matches_spec(Choice,SubSpec,X)), Results),
     fold_matches(N, Results, Result).
@@ -153,69 +167,4 @@ todo(choose_traits(Origin, Name)) :-
     trait_options(Origin, Name, _),
     \+ forego(Origin, Name),
     \+ choose_traits(Origin, Name, _).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-wrap(Functor, X, Term) :-
-    Term =.. [Functor, X].
-
-
-%trait(character_options(Origin, Name), Trait) :-
-%    character_options(Origin, Name, Wrap, Spec),
-
-%options(Origin, Name, id, Spec) :-
-%    options(Origin, Name, Spec).
-%id(X,X).
-%    
-%bad_pick(Origin, Name, PickedOptions) :-
-%
-%% User's choice does not match the specification, and we have a
-%% case-specific error message for this case.
-%problem(pick_options(Origin, Name, PickedOptions), bad_pick(Msg)) :-
-%    pick_options(Origin, Name, PickedOptions),
-%    bad_pick(Origin, Name, PickedOptions, Msg).
-%
-%% User has chosen an option that's not specified, and we don't have a more
-%% specific error message.
-%problem(pick_options(Origin, Name, PickedOptions), invalid_option(Trait)) :-
-%    pick_options(Origin, Name, PickedOptions),
-%    \+ bad_pick(Origin, Name, PickedOptions, _),
-%    options(Origin, Name, Spec),
-%    findall(Option, spec_option(Spec,Option), Options),
-%    member(Trait, PickedOptions),
-%    \+ member(Trait, Options).
-%
-%% User picked multiple times for the same choice.
-%problem(pick_options(Origin, Name, PickedOptions), double_dip) :-
-%    pick_options(Origin, Name, PickedOptions),
-%    options(Origin, Name, _, _),
-%    findall(_, pick_options(Origin, Name, _), [_,_|_]).
-%
-%% User picked the same trait multiple times within a single given choice.
-%% We're assuming for now that this should never happen.
-%problem(pick_options(Origin, Name, PickedOptions), picked_more_than_once(Trait)) :-
-%    pick_options(Origin, Name, PickedOptions),
-%    append(_, [Trait|Tail], PickedOptions),
-%    append(_, [Trait|_], Tail).
-%
-%todo(pick_options(Origin, Name)) :-
-%    options(Origin, Name, _, _),
-%    \+ forego(Origin, Name),
-%    \+ pick_options(Origin, Name, _).
-
-
-
-% trait_options(level(4), test, 1 from [1 from Feats, 1 from [2 from AbiPlusOne, 1 from AbiPlusTwo]]) :-
-%     findall(Ability+1, ability(Ability), AbiPlusOne),
-%     findall(Ability+2, ability(Ability), AbiPlusTwo),
-%     findall(feat(Feat), feat_option(Feat), Feats).
-% bad_trait_choice(level(4), test, Asis, asis_sum_up_to(Sum)) :-
-%     forall(member(X,Asis), X = _+_),
-%     findall(X, member(_+X, Asis), Xs),
-%     sumlist(Xs, Sum),
-%     Sum \= 2.
-% 
-% choose_traits(level(4), test, [dex+3]).
-% choose_traits(level(4), test, [dex+1,str+1]).
-% choose_traits(level(4), test, [feat(alert)]).
 

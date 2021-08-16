@@ -66,3 +66,14 @@ bad_trait_choice(class(_), asi_or_feat, Choice, asis_dont_add_to_two) :-
     findall(Incr, member(_+Incr, Choice), Incrs),
     \+ sumlist(Incrs, 2).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+:- table origin_level/2.
+origin_level(race(_), 1).
+origin_level(class(C), L) :-
+    C \= _:_,
+    reached_class_level_on_char_level(C:1, L).
+origin_level(Origin, CharLevel) :-
+    class_level_origin(Class:ClassLevel, Origin),
+    reached_class_level_on_char_level(Class:ClassLevel, CharLevel).
+
+
