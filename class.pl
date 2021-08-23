@@ -5,9 +5,9 @@
        caster/2,
 
        spellcasting_ability/2,
+       spellcasting_availability/2,
 
        max_prepared_spells/2,
-       spell_class/2,
        choose_subclass_level/2,
        spell_available/1,
 
@@ -22,7 +22,6 @@
        subclass_trait/3,
        subclass_trait_options/4,
        wrap_subclass_trait_option/5,
-
 
        hd_per_level/2,
        initial_class_base_hp/2,
@@ -171,7 +170,7 @@ saving_throw_prof(Ability) :-
 % Query your class spells.
 class_cantrip(Class, Cantrip) :- 
     spell(Cantrip, level, 0),
-    spell_class(Cantrip, Class).
+    spell(Cantrip, class, Class).
 
 list_class_cantrips(Class, Cantrips) :-
     findall(Cantrip, class_cantrip(Class, Cantrip), Cantrips).

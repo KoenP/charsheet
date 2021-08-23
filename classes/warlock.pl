@@ -9,6 +9,9 @@ class_saving_throw(warlock, cha).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+spellcasting_ability(warlock, cha).
+spellcasting_availability(warlock, always_available).
+
 pact_magic_slots(N) :-
     class_level(warlock:L),
     ordered_lookup_largest_leq([1 -> 1, 2 -> 2, 11 -> 3, 17 -> 4], L, N).
@@ -47,15 +50,10 @@ class_trait_replacement_options(warlock:Level,
                                 1 from KnownSpells,
                                 1 from NewSpells) :-
     between(2, 20, Level),
-    findall(Spell, replaceable_spell_at_level(warlock:Level,Spell), KnownSpells),
+    PrevLevel is Level-1,
+    findall(Spell, trait_at_class_level(warlock:PrevLevel, _, learn_spell(warlock, Spell)), KnownSpells),
     list_learnable_proper_spells(warlock, NewSpells).
 
-replaceable_spell_at_level(Class:Level, Spell) :-
-    trait(Origin, learn_spell(Class, Spell)),
-    class_level_origin(Class:OriginLevel, Origin),
-    between(1, 20, Level), % ground Level
-    OriginLevel < Level.
-    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Eldritch invocations.
@@ -67,6 +65,7 @@ class_trait_options(warlock:L, 'eldritch invocation', N from Invocations) :-
 learnable_eldritch_invocation('agonizing blast') :-
     spell_known('eldritch blast', warlock, _, _, _).
 spell_single_roll_damage_bonus('eldritch blast', _, warlock, Mod) :-
+    trait('agonizing blast'),
     ability_mod(cha, Mod).
-
+source('agonizing blast', phb(110)).
 

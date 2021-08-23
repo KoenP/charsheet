@@ -23,6 +23,9 @@
 spell(Name, Field, Value) :-
     spell(Name, Properties),
     Value = Properties.get(Field).
+spell(Name, class, Class) :-
+    spell(Name, classes, Classes),
+    member(Class, Classes).
 
 cantrip(Spell) :-
     spell(Spell, level, 0).
@@ -34,7 +37,7 @@ on_long_rest('spell slots', restore) :-
     spellcaster.
 
 % Calculate the number of available spell slots.
-full_caster_spell_slot_table(1, [1,1,2,3]).
+full_caster_spell_slot_table(1, [1,1,2,3]). % gain two spell slots on level 1, 1 on level 2, 1 on level 3
 full_caster_spell_slot_table(2, [3,3,4]).
 full_caster_spell_slot_table(3, [5,5,6]).
 full_caster_spell_slot_table(4, [7,8,9]).
@@ -109,12 +112,13 @@ spell_attack_modifier(Abil, Mod) :-
 % (usually a cantrip) that in some way lets the PC attack at will
 % (directly, as with fire bolt, or indirectly, as with shillelagh).
 % This code will then make sure this shows up on the list of attacks.
-attack(Spell, Range, ToHit, Damage, [Note]) :-
+attack(Spell, Range, ToHit, Damage, [Note|Notes]) :-
     spell_known(Spell, Origin, Ability, always_available, at_will),
     spell(Spell, range, Range),
     spell_to_hit(Spell, Origin, ToHit),
     spell_known_damage(Spell, Origin, Ability, 0, Damage),
-    atom_concat(Origin, ' cantrip', Note).
+    atom_concat(Origin, ' cantrip', Note),
+    findall(Effect, spell_other_effect(Spell,Effect), Notes).
 %attack(Spell, Range, DamageType, ToHit, Damage, Notes) :-
 %    spell_at_will_attack(Spell, Range, DamageType, DamageDice, Notes),
 %    (spell_known(Spell, _, Ability, always_available, at_will)
@@ -166,11 +170,11 @@ spell_learnable(Class, SpellName) :-
     class(Class),
     Class \= warlock,
     learnable_spell_level(Class, SpellLevel),
-    spell_class(SpellName, Class),
+    spell(SpellName, class, Class),
     spell(SpellName, level, SpellLevel).
 spell_learnable(warlock, SpellName) :-
     pact_magic_slot_level(SlotLevel),
-    spell_class(SpellName, warlock),
+    spell(SpellName, class, warlock),
     spell(SpellName, level, SpellLevel),
     SpellLevel =< SlotLevel.
 
@@ -180,12 +184,6 @@ learnable_spell_level(Class, SpellLevel) :-
     spell_slots_single_class(SpellLevel, Class, N),
     N > 0.
     
-%spell_learnable(Class, SpellName) :-
-%    class(Class),
-%    spell(SpellName, level, SpellLevel),
-%    spell_slots(Class, spell_level(SpellLevel), N),
-%    N > 0.
-
 % Known spells are those spells which can be prepared by the PC.
 % Whether a spell is known or not is mostly decided by a PC's class and
 % leveling up options (but other factors like race may teach spells too).
@@ -198,14 +196,41 @@ learnable_spell_level(Class, SpellLevel) :-
 % by external factors (TODO: elemental affinity, archdruid, evoker...)
 spell_known(Spell) :-
     spell_known(Spell, _, _, _, _).
+spell_known(Spell, Class, Ability, Availability, Resource) :-
+    class_level(Class:Level),
+    spell_known_at_class_level(Spell, Class:Level, Ability, Availability, Resource).
 
 % PC knows all cantrips that you explicitly selected.
-spell_known(Spell, Class, Ability, always_available, at_will) :-
+spell_known_at_class_level(Spell, Class:Level, Ability, always_available, at_will) :-
     class(Class),
-    trait(learn_spell(Class, Spell)),
+    trait_at_class_level(Class:Level, _, learn_spell(Class, Spell)),
     spellcasting_ability(Class, Ability),
     spell(Spell, level, 0).
 
+% PC knows all proper spells that you explicitly selected.
+spell_known_at_class_level(Spell, Class:Level, Ability, Availability, Resource) :-
+    class(Class),
+    trait_at_class_level(Class:Level, _, learn_spell(Class, Spell)),
+    spell(Spell, level, SpellLevel),
+    SpellLevel > 0,
+    spellcasting_ability(Class, Ability),
+    spellcasting_availability(Class, Availability),
+    (Class =  warlock -> Resource = pact_magic_slot;
+     Class \= warlock -> Resource = spell_slot).
+
+% "Novel" spells are those spells which can be learned but are not
+% already known.  We make no effort to keep track of which spells are
+% learnable per class level, if the user builds their character
+% level-by-level and checks for errors every time, all errors will be
+% detected.
+spell_novel_at_class_level(Class:1, Spell) :-
+    !,
+    spell_learnable(Class, Spell).
+spell_novel_at_class_level(Class:Level, Spell) :-
+    between(2, 20, Level), % ground Level
+    spell_learnable(Class, Spell),
+    PrevLevel is Level-1,
+    \+ spell_known_at_class_level(Spell, Class:PrevLevel, _, _, _).
 
 %spell_known(Spell, OriginClass, Ability, PrepStatus, Resource) :-
 %    trait_from_class_level(OriginClass:Level, _, learn_spell(OriginClass, Spell)),

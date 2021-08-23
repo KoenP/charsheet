@@ -32,6 +32,14 @@ background_trait(acolyte, 'shelter of the faithful').
 You might also have ties to a specific temple dedicated to your chosen deity or pantheon, and you have a residence there. This could be the temple where you used to serve, if you remain on good terms with it, or a temple where you have found a new home. While near your temple, you can call upon the priests for assistance, provided the assistance you ask for is not hazardous and you remain in good standing with your temple.".
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+background_option(hermit).
+background_trait(hermit, skill(medicine)).
+background_trait(hermit, skill(religion)).
+background_trait(hermit, tool('herbalism kit')).
+background_trait(hermit, discovery). % TODO
+background_trait_options(hermit, language, 1 from [language(_)]). % TODO
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 background_option(noble).
 background_trait(noble, skill(history)).
 background_trait(noble, skill(persuasion)).

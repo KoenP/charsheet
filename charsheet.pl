@@ -28,6 +28,9 @@
        on_long_rest/2,
        on_short_rest/2,
 
+       % Refer to source material.
+       source/2,
+
        trait_effect/2,
 
        custom_display_rule/2,

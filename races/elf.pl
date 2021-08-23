@@ -24,7 +24,7 @@ racial_trait('high elf', weapon(longbow)).
 
 racial_trait_options('high elf', cantrip, 1 from Cantrips) :-
     findall(learn_spell('high elf', Cantrip),
-            (spell_class(Cantrip, wizard), spell(Cantrip, level, 0)),
+            (spell(Cantrip, class, wizard), spell(Cantrip, level, 0)),
             Cantrips).
 
     

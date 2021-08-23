@@ -73,6 +73,14 @@ spell_damage_rolls('burning hands', Upcast, [fire(N d 6)]) :-
 spell_other_effect(counterspell, "interrupt spell").
 
 %%%%%
+spell_makes_spell_attack('eldritch blast').
+spell_damage_rolls('eldritch blast', [force(1 d 10)]).
+spell_other_effect('eldritch blast', Str) :-
+    cantrip_scale(Scale),
+    Scale > 1,
+    atomics_to_string([Scale, " beams"], Str).
+
+%%%%%
 spell_makes_spell_attack(fireball).
 spell_damage_rolls(fireball, Upcast, [fire(N d 6)]) :-
     N is 8 + Upcast.

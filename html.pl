@@ -78,8 +78,8 @@ ability_table(Table) :-
     Contents = [tr([th([]), th('Score'), th('Mod'), th('ST')])|Rows],
     findall(Row, ability_table_row(_, Row), Rows).
 ability_table_row(Abil, tr([th(AbilHdr), td(Score), td(Mf), td(ST)])) :-
-    ability(Abil, Score),
     ability_hdr(Abil, AbilHdr),
+    ability(Abil, Score),
     ability_mod(Abil, MfVal), format_bonus(MfVal, Mf, []),
     saving_throw(Abil, STVal), format_bonus(STVal, ST, []).
 ability_hdr(str, 'STR').
@@ -130,6 +130,10 @@ proficiency_category(CatHdr, CatFunctor, li([b(CatHdr) | Profs])) :-
 maybe_tooltip(Subject, Text, WithTooltip) :-
     (Subject ?= Tooltip),
     tooltip(Text, Tooltip, WithTooltip).
+maybe_tooltip(Subject, Text, WithTooltip) :-
+    source(Subject, Source),
+    phrase(format_source(Source), Tooltip),
+    tooltip(Text, Tooltip, WithTooltip).
 maybe_tooltip(Subject, Text, Text) :-
     \+ (Subject ?= _).
 
@@ -141,8 +145,9 @@ trait_list_entry(div(class=tooltip, [Trait, span(class=tooltiptext, Desc)])) :-
     \+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_)]),
     fmt(format_trait(TraitVal), Trait),
     %format_trait(TraitVal, Trait),
-    TraitVal ?= Desc.
+    ((TraitVal ?= Desc), !; source(TraitVal,Src), format_source(Src,Desc,[])).
 
+format_trait(feat(Feat)) --> !, ['feat: '], format_term(Feat).
 format_trait(T) --> format_term(T), [' ('], summary(T), !, [')'].
 format_trait(T) --> format_term(T).
 
@@ -214,22 +219,18 @@ spell_table(Table) :-
 
 spell_table_rows(Rows) :-
     findall((Level,Name)-Row, spell_table_row(Name, Level, Row), LRows),
-    sort(1, @=<, LRows, SortedLRows),
-    maplist([_-R,R] >> true, SortedLRows, Rows).
+    partition([(_,N)-_] >> highlight_spell(N),
+              LRows, Highlighted, Unhighlighted),
+    sort(1, @=<, Highlighted, SortedHighlighted),
+    sort(1, @=<, Unhighlighted, SortedUnhighlighted),
+    maplist([_-R,R] >> true, SortedHighlighted, RowsHl),
+    maplist([_-R,R] >> true, SortedUnhighlighted, RowsUhl),
+    append(RowsHl, RowsUhl, Rows).
 
-spell_table_row(Name, SpellLevel, tr([td(Prepared),
-                                      td(SpellLevel),
-                                      td(Source),
-                                      td(div(class=tooltip,
-                                             [Name, span(class=tooltiptext, Desc)])),
-                                      td(CastingTime),
-                                      td(Range),
-                                      td(Components),
-                                      td(Duration),
-                                      td(ToHitOrDC),
-                                      td(Effects),
-                                      td(Resource)
-                                      ])) :-
+    %sort(1, @=<, LRows, SortedLRows),
+    %maplist([_-R,R] >> true, SortedLRows, Rows).
+
+spell_table_row(Name, SpellLevel, tr(Row)) :-
     spell_known(Name, Source, _Ability, PrepVal, ResourceVal),
     spell(Name, level, SpellLevel),
     spell(Name, desc, Desc),
@@ -240,7 +241,20 @@ spell_table_row(Name, SpellLevel, tr([td(Prepared),
     spell_to_hit_or_dc(Name, Source, ToHitOrDC),
     findall(Effect, spell_known_effect(Name,Source,Effect), EffectsVal), fmt(format_terms(EffectsVal), Effects),
     format_prepared(PrepVal, Prepared),
-    format_resource(ResourceVal, Resource).
+    format_resource(ResourceVal, Resource),
+    Data = [Prepared, SpellLevel, Source,
+            div(class=tooltip, [Name, span(class=tooltiptext, Desc)]),
+            CastingTime, Range, Components, Duration, ToHitOrDC, Effects, Resource
+           ],
+    (highlight_spell(Name) -> phrase(spell_table_row_entries_highlighted(Data), Row)
+     ; \+ highlight_spell(Name) -> phrase(spell_table_row_entries_unhighlighted(Data), Row)
+    ).
+
+spell_table_row_entries_unhighlighted([]) --> [].
+spell_table_row_entries_unhighlighted([X|Xs]) --> [td(X)], spell_table_row_entries_unhighlighted(Xs).
+spell_table_row_entries_highlighted([]) --> [].
+spell_table_row_entries_highlighted([X|Xs]) --> [td(i(X))], spell_table_row_entries_highlighted(Xs).
+
 spell_to_hit_or_dc(Name, Source, [+, ToHit]) :-
     spell_to_hit(Name, Source, ToHit), !.
 spell_to_hit_or_dc(Name, Source, ['DC ', DC, ' ', Ability]) :-
@@ -262,6 +276,9 @@ format_prepared(always_available, 'always').
 
 format_resource(at_will, 'at will').
 format_resource(spell_slot, slot).
+format_resource(pact_magic_slot, 'pact slot').
+
+format_source(phb(Page)) --> ["See Player's Handbook, page "], [Page].
 
 tooltip(Text, Tooltip, div(class=tooltip, [Text, span(class=tooltiptext, Tooltip)])).
 
@@ -270,6 +287,7 @@ table(Id, Caption, Contents, table(id=Id, [caption(h3(Caption))|Contents])).
 
 checkboxes(N, Boxes) :-    
     repl(input(type=checkbox, []), N, Boxes).
+
 
 % Clever little predicate, taken from
 % http://stackoverflow.com/questions/23176840/easily-replicate-an-element-in-prolog
