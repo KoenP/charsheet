@@ -2,7 +2,8 @@
        trait/1,
        trait/2,
        gain_trait/3,
-       lose_trait/3.
+       lose_trait/3,
+       trait_origin_level/2.
 
 table gain_trait/3, lose_trait/3.
 
@@ -50,3 +51,4 @@ trait_origin_level(subclass(Class,_), CharLevel) :-
     Class \= _:_,
     reached_class_level_on_char_level(Class:1, CharLevel).
 trait_origin_level(background(_), 1).
+trait_origin_level(race(_), 1).

@@ -274,9 +274,15 @@ format_component(C, C) :- C \= m(_).
 format_prepared(when_prepared, input(type=checkbox,[])).
 format_prepared(always_available, 'always').
 
+% TODO this is horrible and needs cleanup
 format_resource(at_will, 'at will').
 format_resource(spell_slot, slot).
 format_resource(pact_magic_slot, 'pact slot').
+format_resource('ritual only', 'ritual only').
+format_resource(per_long_rest(N), div(['per long rest: '|Boxes])) :-
+    checkboxes(N, Boxes).
+format_resource(List, FormattedList) :-
+    maplist(format_resource, List, FormattedList).
 
 format_source(phb(Page)) --> ["See Player's Handbook, page "], [Page].
 

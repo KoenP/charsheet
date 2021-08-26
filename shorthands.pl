@@ -12,6 +12,10 @@ todo :-
     setof(T, todo(T), Todos),
     maplist(writeln, Todos).
 
+fishy :-
+    setof(A:B, fishy(A,B), L),
+    maplist(writeln, L).
+
 scores :-
     findall(Ability:Score, ability(Ability, Score), Scores),
     maplist(writeln, Scores).

@@ -24,9 +24,14 @@ choose_traits(class(warlock:1), spell, ['hellish rebuke', 'burning hands']).
 gain_level(2, warlock, hp_avg).
 choose_traits(class(warlock:2), spell, [sleep]).
 replace_traits(class(warlock:2), spell, ['hellish rebuke'], [hex]).
-choose_traits(class(warlock:2), 'eldritch invocation', ['agonizing blast']).
+choose_traits(class(warlock:2), 'eldritch invocation', ['agonizing blast', 'beguiling influence']).
 
 
 gain_level(3, warlock, hp_avg).
+choose_traits(class(warlock:3), 'pact boon', [tome]).
+choose_traits(pact_boon(tome), cantrip, ['poison spray', 'fire bolt', 'minor illusion']).
 %gain_level(4, warlock, hp_avg).
 %gain_level(5, warlock, hp_avg).
+
+
+%trait(eldritch_invocation('beguiling influence')).

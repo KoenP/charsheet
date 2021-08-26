@@ -14,6 +14,7 @@
        % more specific cases).
        spell_known/5,
 
+       spell_known_effect/3,
        spell_single_roll_damage_bonus/4.
 
 % The table that stores all "static" information about spells (ie

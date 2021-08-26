@@ -64,10 +64,10 @@
 <tr><td>investigation</td><td>+2</td></tr>
 <tr><td>nature</td><td>+2</td></tr>
 <tr><td>religion</td><td>+2</td></tr>
-<tr><td rowspan="4"><b>CHA</b></td><td>deception</td><td>+4</td></tr>
+<tr><td rowspan="4"><b>CHA</b></td><td>deception</td><td>+6</td></tr>
 <tr><td>intimidation</td><td>+4</td></tr>
 <tr><td>performance</td><td>+4</td></tr>
-<tr><td>persuasion</td><td>+4</td></tr>
+<tr><td>persuasion</td><td>+6</td></tr>
 </table>
 
 <p>
@@ -91,7 +91,8 @@
 <div id="traits">
 <ul>
 <li>
-<div class="tooltip">agonizing blast<span class="tooltiptext">See Player's Handbook, page 110</span></div>
+<div class="tooltip">pact of the tome<span class="tooltiptext">Your patron gives you a grimoire called a Book of Shadows. When you gain this feature, choose three cantrips from any class's spell list (the three needn't be from the same list). While the book is on your person, you can cast those cantrips at will. They don't count against your number of cantrips known. If they don't appear on the warlock spell list, they are nonetheless warlock spells for you.
+If you lose your Book of Shadows, you can perform a 1-hour ceremony to receive a replacement from your patron. This ceremony can be performed during a short or long rest, and it destroys the previous book. The book turns to ash when you die.</span></div>
 </li>
 </ul>
 </div>
@@ -116,6 +117,7 @@
 </caption>
 <tr><th></th><th>Range</th><th>To Hit</th><th>Damage</th><th>Notes</th></tr>
 <tr><td>eldritch blast</td><td><feet>120</feet></td><td>+6</td><td>1d10+4 force</td><td>warlock cantrip</td></tr>
+<tr><td>fire bolt</td><td><feet>120</feet></td><td>+6</td><td>1d10 fire</td><td>warlock cantrip</td></tr>
 </table>
 
 <table id="spell_slots">
@@ -142,6 +144,15 @@
 <tr><td>always</td><td>0</td><td>warlock</td><td>
 <div class="tooltip">eldritch blast<span class="tooltiptext">A beam of crackling energy streaks toward a creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 force damage.The spell creates more than one beam when you reach higher levels: two beams at 5th level, three beams at 11th level, and four beams at 17th level. You can direct the beams at the same target or at different ones. Make a separate attack roll for each beam.</span></div>
 </td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>+6</td><td>force (1d10+4)</td><td>at will</td></tr>
+<tr><td>always</td><td>0</td><td>warlock</td><td>
+<div class="tooltip">fire bolt<span class="tooltiptext">You hurl a mote of fire at a creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 fire damage. A flammable object hit by this spell ignites if it isn’t being worn or carried.This spell’s damage increases by 1d10 when you reach 5th level (2d10), 11th level (3d10), and 17th level (4d10).</span></div>
+</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>+6</td><td>fire (1d10), from the book of shadows</td><td>at will</td></tr>
+<tr><td>always</td><td>0</td><td>warlock</td><td>
+<div class="tooltip">minor illusion<span class="tooltiptext">You create a sound or an image of an object within range that lasts for the duration. The illusion also ends if you dismiss it as an action or cast this spell again.If you create a sound, its volume can range from a whisper to a scream. It can be your voice, someone else’s voice, a lion’s roar, a beating of drums, or any other sound you choose. The sound continues unabated throughout the duration, or you can make discrete sounds at different times before the spell ends.If you create an image of an object—such as a chair, muddy footprints, or a small chest—it must be no larger than a 5-foot cube. The image can’t create sound, light, smell, or any other sensory effect. Physical interaction with the image reveals it to be an illusion, because things can pass through it.If a creature uses its action to examine the sound or image, the creature can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the illusion becomes faint to the creature.</span></div>
+</td><td>1 action</td><td>30 ft</td><td>s<span class="tooltip">m<span class="tooltiptext">A bit of fleece.</span></span></td><td>1 minute</td><td>-</td><td>from the book of shadows</td><td>at will</td></tr>
+<tr><td>always</td><td>0</td><td>warlock</td><td>
+<div class="tooltip">poison spray<span class="tooltiptext">You extend your hand toward a creature you can see within range and project a puff of noxious gas from your palm. The creature must succeed on a constitution saving throw or take 1d12 poison damage.This spell’s damage increases by 1d12 when you reach 5th level (2d12), 11th level (3d12), and 17th level (4d12).</span></div>
+</td><td>1 action</td><td>10 ft</td><td>vs</td><td>Instantaneous</td><td>-</td><td>from the book of shadows</td><td>at will</td></tr>
 <tr><td>always</td><td>1</td><td>warlock</td><td>
 <div class="tooltip">burning hands<span class="tooltiptext">As you hold your hands with thumbs touching and fingers spread, a thin sheet of flames shoots forth from your outstretched fingertips. Each creature in a 15-foot cone must make a dexterity saving throw. A creature takes 3d6 fire damage on a failed save, or half as much damage on a successful one.The fire ignites any flammable objects in the area that aren’t being worn or carried.</span></div>
 </td><td>1 action</td><td>self</td><td>vs</td><td>Instantaneous</td><td>DC 14 dex</td><td>fire (3d6)</td><td>pact slot</td></tr>
