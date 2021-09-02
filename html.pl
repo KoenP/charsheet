@@ -232,12 +232,12 @@ spell_table_rows(Rows) :-
 
 spell_table_row(Name, SpellLevel, tr(Row)) :-
     spell_known(Name, Source, _Ability, PrepVal, ResourceVal),
-    spell(Name, level, SpellLevel),
-    spell(Name, desc, Desc),
-    spell(Name, casting_time, CastingTime),
-    spell(Name, range, RangeVal), format_range(RangeVal, Range),
-    spell(Name, components, ComponentsVal), format_components(ComponentsVal, Components),
-    spell(Name, duration, Duration),
+    spell_known_property(Name, Origin, level, SpellLevel),
+    spell_known_property(Name, Origin, desc, Desc),
+    spell_known_property(Name, Origin, casting_time, CastingTime),
+    spell_known_property(Name, Origin, range, RangeVal), format_range(RangeVal, Range),
+    spell_known_property(Name, Origin, components, ComponentsVal), format_components(ComponentsVal, Components),
+    spell_known_property(Name, Origin, duration, Duration),
     spell_to_hit_or_dc(Name, Source, ToHitOrDC),
     findall(Effect, spell_known_effect(Name,Source,Effect), EffectsVal), fmt(format_terms(EffectsVal), Effects),
     format_prepared(PrepVal, Prepared),

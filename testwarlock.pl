@@ -30,8 +30,20 @@ choose_traits(class(warlock:2), 'eldritch invocation', ['agonizing blast', 'begu
 gain_level(3, warlock, hp_avg).
 choose_traits(class(warlock:3), 'pact boon', [tome]).
 choose_traits(pact_boon(tome), cantrip, ['poison spray', 'fire bolt', 'minor illusion']).
-%gain_level(4, warlock, hp_avg).
-%gain_level(5, warlock, hp_avg).
+
+gain_level(4, warlock, hp_avg).
+gain_level(5, warlock, hp_avg).
+gain_level(6, warlock, hp_avg).
+gain_level(7, warlock, hp_avg).
+gain_level(8, warlock, hp_avg).
+gain_level(9, warlock, hp_avg).
+
+choose_traits(class(warlock:7), 'eldritch invocation', ['book of ancient secrets']).
+choose_traits(eldritch_invocation('book of ancient secrets'),
+              spell,
+              ['detect magic', identify]).
+
+choose_traits(class(warlock:9), 'eldritch invocation', ['ascendant step']).
 
 
 %trait(eldritch_invocation('beguiling influence')).

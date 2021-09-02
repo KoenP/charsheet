@@ -1,22 +1,16 @@
 - spellcasting
   - druid spell_known/5 logic veralgemenen
   - gekende spells filteren uit learn_spell lijstjes
-  - spell effects tonen
-  - spell targeting tonen
   - oorsprong van spells tonen
   - warlock eldritch invocation spells ondersteunen
   - spell effects terug introduceren
   - simpele DC based spells zoals sacred flame toevoegen aan attack table
-  - spell_learnable is nu kapot
-- html genereren
+  - archdruid correct implementeren
 
 - alternatief voor trait_options: een waarbij je niet rechtstreeks je traits kiest maar opties die expanded worden naar traits, om af te raken van "trait pollution", zoals het learn_spell trait
 
 - leesbare error messages
-- armor class  
 - effecten van short en long rests registreren
-- trait predicate niet-recursief maken
-- spell_damage predicaat -> support voor draconic ancestry
 - "asserted"/GM fiat traits toevoegen
 - manuele overrides toevoegen
 - beast json

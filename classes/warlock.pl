@@ -113,18 +113,55 @@ source('agonizing blast', phb(110)).
 learnable_eldritch_invocation('armor of shadows').
 spell_known('mage armor', warlock, cha, always_available, at_will) :-
     trait(eldritch_invocation('armor of shadows')).
+source('armor of shadows', phb(110)).
+
+learnable_eldritch_invocation('ascendant step') :-
+    matching_class_level(warlock:9).
+spell_known(levitate, warlock, cha, always_available, at_will) :-
+    trait(eldritch_invocation('ascendant step')).
+override_spell_known_property(levitate, warlock, range, self) :-
+    trait(eldritch_invocation('ascendant step')).
+spell_known_lose_component(levitate, warlock, m(_)) :-
+    trait(eldritch_invocation('ascendant step')).
 
 learnable_eldritch_invocation('beast speech').
 spell_known('speak with animals', warlock, cha, always_available, at_will) :-
     trait(eldritch_invocation('beast speech')).
+source('speak with animals', phb(110)).
 
 learnable_eldritch_invocation('beguiling influence').
 trait_effect(eldritch_invocation('beguiling influence'), skill(deception)).
 trait_effect(eldritch_invocation('beguiling influence'), skill(persuasion)).
+source('beguiling influence', phb(110)).
 
 learnable_eldritch_invocation('bewitching whispers') :-
     matching_class_level(warlock:7).
 spell_known(compulsion, warlock, cha, always_available, [pact_magic_slot, per_long_rest(1)]) :-
     trait(eldritch_invocation('bewitching whispers')).
+source('bewitching whispers', phb(110)).
+
+%TODO: wizard-style spell learning
+learnable_eldritch_invocation('book of ancient secrets') :-
+    trait(pact_boon(tome)).
+wrap_trait_option(eldritch_invocation('book of ancient secrets'), spell,
+                  X, book_of_ancient_secrets_spell(X)).
+trait_origin_level(eldritch_invocation('book of ancient secrets'), Level) :-
+    chosen_trait(Origin, 'eldritch invocation', eldritch_invocation('book of ancient secrets')),
+    trait_origin_level(Origin, Level).
+trait_options(eldritch_invocation('book of ancient secrets'), spell, 2 from Spells) :-
+    trait(eldritch_invocation('book of ancient secrets')),
+    findall(Spell,
+            (spell(Spell, level, 1),
+             spell(Spell, ritual, yes)),
+            Spells).
+%TODO: not sure about the "warlock" tag here
+spell_known(Spell, warlock, cha, always_available, 'ritual only') :-
+    trait(book_of_ancient_secrets_spell(Spell)).
+eldritch_invocation('book of ancient secrets') ?= " You can now inscribe magical rituals in your Book of Shadows. Choose two 1st-level spells that have the ritual tag from any class's spell list; these rituals needn’t be from the same spell list. The spells appear in the book and don't count against the number of spells you know. With your Book of Shadows in hand, you can cast the chosen spells as rituals. You can't cast the spells except as rituals, unless you've learned them by some other means. You can also cast a warlock spell you know as a ritual if it has the ritual tag.
+
+On your adventures, you can add other ritual spells to your Book of Shadows. When you find such a spell, you can add it to the book if the spell's level is equal to or less than half your warlock level (rounded up) and if you can spare the time to transcribe the spell. For each level of the spell, the transcription process takes 2 hours and costs 50 gp for the rare inks needed to inscribe it.".
+%spell_known()
+    
+
 
 %learnable_eldritch_invocation

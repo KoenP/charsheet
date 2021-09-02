@@ -15,7 +15,15 @@
        spell_known/5,
 
        spell_known_effect/3,
+
+       % override_spell_known_property(Spell, Origin, Property, Value)
+       % Overrides a specific property of a spell for your character.
+       override_spell_known_property/4,
+       spell_known_lose_component/3,
        spell_single_roll_damage_bonus/4.
+
+override_spell_known_property(_,_,_) :- false.
+spell_known_lose_component(_,_,_,_) :- false.
 
 % The table that stores all "static" information about spells (ie
 % mostly independent of your character, although some things like
@@ -27,6 +35,24 @@ spell(Name, Field, Value) :-
 spell(Name, class, Class) :-
     spell(Name, classes, Classes),
     member(Class, Classes).
+
+% Collect information from the spell/3 predicate, unless we have a
+% specific override for a known spell.
+spell_known_property(Name, Origin, Field, Value) :-
+    override_spell_known_property(Name, Origin, Field, Value),
+    spell_known(Name, Origin, _, _, _).
+spell_known_property(Name, Origin, components, Components) :-
+    spell_known(Name, Origin, _, _, _),
+    spell(Name, components, OrigComponents),
+    findall(Component,
+            (member(Component, OrigComponents),
+             \+ spell_known_lose_component(Name, Origin, Component)),
+            Components).
+spell_known_property(Name, Origin, Field, Value) :-
+    \+ override_spell_known_property(Name, Origin, Field, _),
+    Field \= components,
+    spell_known(Name, Origin, _, _, _),
+    spell(Name, Field, Value).
 
 cantrip(Spell) :-
     spell(Spell, level, 0).
