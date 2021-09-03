@@ -1,0 +1,58 @@
+
+
+* Core predicates
+** trait/2, trait(Origin, Trait)  
+   Traits are (most of) the idempotent properties (ie the properties
+   that don't stack) of your character.
+   Learning spells doesn't fall into that category though.
+
+   Examples
+   - trait(race(elf), 'fey ancestry')
+   - trait(race(elf), darkvision)
+   - trait(choice(class(_:4), abi_or_feat), feat(alert))
+  
+** bonus/2, bonus(Origin, Bonus)
+   Bonuses are similar to traits, but unlike traits, bonuses do stack.
+   Examples:
+   - bonus(choice(class(_:4), abi_or_feat), dex+2)
+   - bonus(feat(alert), init+5)
+   - bonus(race('high elf'), int+1)
+
+** options/3, options(Origin, Id, Spec)
+   - options(class(wizard:1), spell, 2 from learnable_spell(wizard))
+   - options(class(_:4), asi_or_feat, asi_or_feat))
+     asi_or_feat(Abi+2) :- ability(Abi).
+     asi_or_feat([Abi1+1, Abi2+1]) :- ability(Abi1), ability(Abi2), Abi1 \= Abi2.
+     asi_or_feat(feat(Feat)) :- feat_option(Feat).
+   - options(warlock:3, 'pact boon', from_list([chain, blade, tome])).
+
+** choice/3, choice(OptionsOrigin, OptionsId, Choice)
+   The user should add a choice clause for every corresponding options/3 clause.
+
+   valid_choice(Origin, Id, Choice) :-
+     options(Origin, Id, Spec),
+     call(Spec, Choice).
+   
+* Classes
+  There are several notions of class and class levels that need to be distinguished clearly.
+  There is the notion of "which class(es) the PC is", for instance the PC is a wizard and a fighter.
+  Then there's the notion of which levels the PC has in each class, for instance the PC is a wizard:4 and a fighter:1.
+  We want to have predicates that express both these ideas exactly.
+  Furthermore, we also want to keep track of what a character's base class is. This is relevant when multiclassing.
+
+  Then we also have subclasses. These have different names for different classes in the handbook ("circles" for druids, "patrons" for warlocks, etc), but we call them all "subclasses" in the program.
+  Again we want a predicate that matches which subclasses we are and another predicate which matches the exact levels we have in each subclass.
+  We write the "circle of the moon" subclass of druid as druid(moon).
+  We write level 4 "circle of the moon" druid as druid(moon):4.
+
+  But the most commonly used predicate on all this information is probably one that checks whether you match a class or subclass requirement. So if the PC is a wizard:4, we should have a predicate that matches on wizard:4, wizard:3, wizard:2, wizard:1, and just plain wizard. And if the player is specialized in school of conjuration, this also matches wizard(conjuration):4, wizard(conjuration):3, ...
+
+  - class(C) is true if C matches a class the PC has at least one level in.
+  - class_level(C:L) is true if L is the highest level the PC has reached in class C.
+  - subclass(C(SC)) is true if class(C) is true and the PC has selected subclass SC.
+  - subclass_level(C(SC):L) is true if subclass(C(SC)) is true and L is the highest level the PC has reached in class C.
+  - match_class(X) is true if any of the following are true:
+    * class(X) is true
+    * X = C:L1 and class_level(C:L2) is true, and L1 is not greater than L2.
+    * subclass(X) is true
+    * X = C:L1 and subclass_level(C:L2) is true, and L1 is not greater than L2.
