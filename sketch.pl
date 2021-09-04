@@ -1,24 +1,30 @@
+:- use_module(library(pldoc)).
+
 :- multifile
        gain_level/3,
        todo/1,
-       problem/1,
-       options/3,
-       options_source/3,
-       choice/3,
-       trait/2,
-       trait_source/2,
-       traits_from_source/2,
-       bonus/2,
-       bonus_source/2,
-       bonuses_from_source/2.
+       meta_todo/2,
+       problem/1.
 
 :- op(650, xfx, from).
 :- op(650, xfx, unique_from).
 :- op(1000, xfx, ?=).
 :- op(1000, xfx, ?=).
 
+:- [dice].
+:- [options].
+:- [trait].
+:- [bonus].
 :- [spells].
 :- [class].
+
+%! meta_todo(Source, Todo)
+%
+%  Predicate for helping find incomplete code.
+%  For instance, we have declared a class_option(Class),
+%  but there is no correspoinding hd_per_level(Class, HD),
+%  then we should generate a meta_todo/2.
+meta_todo(_,_) :- false.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 traits_from_source(race(elf), [darkvision, 
@@ -35,8 +41,8 @@ traits_from_source(race('high elf'), [weapon(longsword),
                                       weapon(shortsword),
                                       weapon(shortbow),
                                       weapon(longbow)]).
-options_source(race('high elf'), cantrip, learnable_cantrip(wizard)).
-options_source(race('high elf'), language, language).
+%options_source(race('high elf'), cantrip, learnable_cantrip(wizard)).
+%options_source(race('high elf'), language, language).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % TODO!!
@@ -96,65 +102,6 @@ sequence([Pred|Preds], X, Z) :-
     call(Pred, X, Y),
     sequence(Preds, Y, Z).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Traits and bonuses.
-trait(Trait) :- trait(_, Trait).
-trait(Source, Trait) :-
-    trait_source(Source, Trait),
-    call(Source).
-trait_source(Source, Trait) :-
-    traits_from_source(Source, Traits),
-    member(Trait, Traits).
-
-bonus(Source, Bonus) :-
-    bonus_source(Source, Bonus),
-    call(Source).
-bonus_source(Source, Bonus) :-
-    bonuses_from_source(Source, Bonuses),
-    member(Bonus, Bonuses).
-bonuses_from_source(_,_) :- false.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Options and choices.
-options(Source, Id, Spec) :-
-    options_source(Source, Id, Spec),
-    call(Source).
-choice_member(Origin, Id, Choice) :-
-    choice(Origin, Id, C),
-    (member(Choice, C); \+ is_list(C), Choice = C).
-valid_choice(Origin, Id, Choice) :-
-    options(Origin, Id, Spec),
-    call(Spec, Choice).
-todo(options(Origin, Id)) :-
-    options(Origin, Id, _),
-    \+ choice(Origin, Id, _).
-problem(invalid_choice(Origin, Id, Choice)) :-
-    choice(Origin, Id, Choice),
-    \+ valid_choice(Origin, Id, Choice).
-problem(not_eligible(Origin, Id, Choice)) :-
-    choice(Origin, Id, Choice),
-    \+ options(Origin, Id, _).
-
-% Helper predicates
-from(N, Pred, Choices) :-
-    length(Choices, N),
-    maplist(call(Pred), Choices).
-unique_from(N, Pred, Choices) :-
-    from(N, Pred, Choices),
-    is_set(Choices).
-         
-from_list(L, X) :- member(X, L).
-
-inspect_options(Origin, Id, List) :-
-    options(Origin, Id, Spec), % ground
-    inspect_spec(Spec, List).
-inspect_spec(N from Pred, N from List) :-
-    inspect_spec(Pred, List).
-inspect_spec(N unique_from Pred, N unique_from List) :-
-    inspect_spec(Pred, List).
-inspect_spec(Pred, List) :-
-    \+ member(Pred, [_ from _, _ unique_from _]),
-    findall(X, call(Pred, X), List).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Leveling up.
@@ -168,15 +115,18 @@ problem(gain_level_not_contiguous(Levels)) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Character initialization.
 
-% Pick your base class.
-options(init, 'base class', class_option).
-base_class(Class) :- choice(init, 'base class', Class).
+% Pick your initial class.
+options(init, 'initial class', class_option).
+initial_class(Class) :- choice(init, 'initial class', Class).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Shorthands.
 todo :-
     forall(todo(T), writeln_quoted_term(T)).
+
+mtodo :-
+    forall(meta_todo(S,T), writeln_quoted_term(S->T)).
 
 problems :-
     forall(problem(P), writeln_quoted_term(P)).
