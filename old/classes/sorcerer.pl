@@ -37,7 +37,7 @@ class_trait(sorcerer:2, 'font of magic').
 wrap_class_trait_option(sorcerer:3, metamagic, X, metamagic(X)).
 class_trait_options(sorcerer:3, metamagic, 2 from Metamagic) :-
     Metamagic = ['careful spell'   ,
-                 'distand spell'   ,
+                 'distant spell'   ,
                  'empowered spell' ,
                  'extended spell'  ,
                  'heightened spell',

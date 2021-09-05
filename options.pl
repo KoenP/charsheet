@@ -76,6 +76,25 @@ choice_member(Origin, Id, Choice) :-
     choice(Origin, Id, C),
     (member(Choice, C); \+ is_list(C), Choice = C).
 
+%! selected_at_class_level(?ClassLevel, ?Id, ?Choice)
+%
+%  Some choices can be replaced at a later moment.
+%  For example, a sorcerer may choose to forget one spell
+%  to gain another every level starting from level 2.
+%  This predicate helps keep track of what is selected
+%  at which class level by looking at the current and past
+%  class levels.
+selected_at_class_level(Class:Level, Id, Choice) :-
+    class_origin_to_class_level(Origin, Class:Level),
+    (choice_member(Origin, Id, Choice) ; choice_member(Origin, replacing(Id,_), Choice)).
+selected_at_class_level(Class:Level, Id, Choice) :-
+    class_level(Class:CurLevel),
+    between(2, CurLevel, Level), % ground Level
+    PrevLevel is Level-1,
+    selected_at_class_level(Class:PrevLevel, Id, Choice),
+    \+ (class_origin_to_class_level(Origin, Class:Level),
+        choice_member(Origin, replace(Id), Choice)).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Helper predicates
 
@@ -87,7 +106,7 @@ from(N, Pred, Choices) :-
     maplist(call(Pred), Choices).
 
 %! unique_from(+N:int, :Pred, ?Choices)
-%  Like from/3, but also checks
+%  Like from/3, but only true if each choice in Choices is unique.
 unique_from(N, Pred, Choices) :-
     from(N, Pred, Choices),
     is_set(Choices).

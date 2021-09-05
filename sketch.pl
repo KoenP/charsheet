@@ -2,9 +2,11 @@
 
 :- multifile
        gain_level/3,
+       on_rest/3,
        todo/1,
        meta_todo/2,
-       problem/1.
+       problem/1,
+       resource/2.
 
 :- op(650, xfx, from).
 :- op(650, xfx, unique_from).
@@ -16,6 +18,7 @@
 :- [trait].
 :- [bonus].
 :- [spells].
+:- [spellcasting].
 :- [class].
 
 %! meta_todo(Source, Todo)
@@ -59,52 +62,53 @@ traits_from_source(race('high elf'), [weapon(longsword),
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Spells.
-learnable_spell(Class, Name) :-
-    spell_prop(Name, classes, Classes),
-    member(Class, Classes).
 
-options_source(class(sorcerer:_), spell, learnable_spell(sorcerer)).
-options_source(class(sorcerer:N), replace_spell, spell_known_at_class_level(sorcerer:Prev)) :-
-    between(2, 20, N),
-    Prev is N-1.
-%options_source(choice())
-
-known_spell_at_class_level(Class:Level, Name) :-
-    choice_member(class(Class:Level), spell, Name).
-known_spell_at_class_level(Class:Level, Name) :-
-    between(2, 20, Level),
-    PrevLevel is Level-1,
-    known_spell_at_class_level(Class:PrevLevel, Name),
-    \+ choice(class(Class:Level), replace_spell, Name).
-
-spell_prop(Name, Prop, Val) :-
-    spell(Name, Data),
-    Val = Data.Prop.
-known_spell_prop(Name, Prop, Val) :-
-    known_spell(Name, Data, _, _, _),
-    Val = Data.Prop.
-
-learn_spell(Class, Name, SpellData, always, [slot]) :-
-    current_class_level(Class:Level),
-    known_spell_at_class_level(Class:Level, Name),
-    spell(Name, SpellData).
-    
-known_spell(Source, Name, SpellData, Availability, Resources) :-
-    learn_spell(Source, Name, GenericSpellData, Availability, Resources),
-    findall(Mod, commutative_spell_modifier(Source, Name, Mod), Mods),
-    sequence(Mods, GenericSpellData, SpellData).
-
-commutative_spell_modifier(_,_,_) :- false.
-current_class_level(_) :- false.
-
-sequence([], X, X).
-sequence([Pred|Preds], X, Z) :-
-    call(Pred, X, Y),
-    sequence(Preds, Y, Z).
+%options_source(class(sorcerer:_), spell, learnable_spell(sorcerer)).
+%options_source(class(sorcerer:N), replace_spell, spell_known_at_class_level(sorcerer:Prev)) :-
+%    between(2, 20, N),
+%    Prev is N-1.
+%%options_source(choice())
+%
+%known_spell_at_class_level(Class:Level, Name) :-
+%    choice_member(class(Class:Level), spell, Name).
+%known_spell_at_class_level(Class:Level, Name) :-
+%    between(2, 20, Level),
+%    PrevLevel is Level-1,
+%    known_spell_at_class_level(Class:PrevLevel, Name),
+%    \+ choice(class(Class:Level), replace_spell, Name).
+%
+%spell_prop(Name, Prop, Val) :-
+%    spell(Name, Data),
+%    Val = Data.Prop.
+%known_spell_prop(Name, Prop, Val) :-
+%    known_spell(Name, Data, _, _, _),
+%    Val = Data.Prop.
+%
+%learn_spell(Class, Name, SpellData, always, [slot]) :-
+%    current_class_level(Class:Level),
+%    known_spell_at_class_level(Class:Level, Name),
+%    spell(Name, SpellData).
+%    
+%known_spell(Source, Name, SpellData, Availability, Resources) :-
+%    learn_spell(Source, Name, GenericSpellData, Availability, Resources),
+%    findall(Mod, commutative_spell_modifier(Source, Name, Mod), Mods),
+%    sequence(Mods, GenericSpellData, SpellData).
+%
+%commutative_spell_modifier(_,_,_) :- false.
+%current_class_level(_) :- false.
+%
+%sequence([], X, X).
+%sequence([Pred|Preds], X, Z) :-
+%    call(Pred, X, Y),
+%    sequence(Preds, Y, Z).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Leveling up.
+level(Level) :-
+    findall(L, gain_level(L, _, _), Levels),
+    max_member(Level, Levels).
+
 gain_level(_,_,_) :- false.
 problem(gain_level_not_contiguous(Levels)) :-
     findall(L, gain_level(L,_,_), Levels),
@@ -117,13 +121,69 @@ problem(gain_level_not_contiguous(Levels)) :-
 
 % Pick your initial class.
 options(init, 'initial class', class_option).
-initial_class(Class) :- choice(init, 'initial class', Class).
+initial_class(Class) :- choice(init, 'initial class', Class), !.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Todo.
+todo(problem:P) :- problem(P).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Resources. TODO: need to rethink resources
+% * needs new name (clashes with builtin)
+% * good hard think about arcane recovery needed: it can restore a
+%   finite resource in a short rest, but only once per long rest, and
+%   you get to pick which slots get restored.
+
+%! resource(?Origin, ?Name, ?Max)
+%
+%  Name is a finite resource your character has, such as sorcery
+%  points, second wind, ...
+resource(_,_,_).
+
+%! resource(?Name, ?Max)
+%
+%  Shorthand for resource/3, for when you're not interested in the
+%  origin of a resource.
+resource(Name, Max) :- resource(_, Name, Max).
+
+%! on_rest(?Duration, ?ResourceName, ?Goal)
+%
+%  Documents the effects of long and short rests on resources.
+%  Duration is either `short` or `long`.
+%  ResourceName is the name of a resource such that resource(_,
+%  ResourceName, _) is true.
+%  Goal is a trinary predicate such that call(Goal, Max, Cur, New) is true when
+%  Cur is the current value of a resource before resting (TODO:
+%  current values aren't implemented right now), and New is the value
+%  after resting.
+on_rest(_,_,_) :- false.
+meta_todo(resource(Resource), 'rest for nonexistant resource') :-
+    on_rest(_, Resource, _),
+    \+ resource(_, Resource, _).
+
+%! full_restore(?Max, ?Cur, ?New)
+%
+%  Helper predicate to fully restore a resource. Usually used as third
+%  argument to on_rest/3.
+full_restore(Max, _, Max).
+
+%! restore(?Max, ?Cur, ?New)
+%
+%  Helper predicate to partially restore a resource. Usually used as third
+%  argument to on_rest/3, by partially applying the first argument
+%  (for instance, writing restore(4) to restore a resource by 4
+%  points).
+restore(N, Max, Cur, New) :-
+    New is min(Cur+N, Max).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Shorthands.
 todo :-
     forall(todo(T), writeln_quoted_term(T)).
+
+spells :-
+    forall(learned_spell(Origin, Name), writeln_quoted_term(Origin:Name)).
+    
 
 mtodo :-
     forall(meta_todo(S,T), writeln_quoted_term(S->T)).
