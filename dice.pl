@@ -1,8 +1,46 @@
 % TODO: documentation and cleanup
 :- op(400, xfx, d).
 
-die_avg(X d Y, Avg) :- Avg is ceiling(X * (Y+1) / 2).
+%! roll_avg(?Roll, ?Avg:int)
+%
+%  The average value of a die, rounded up.
+roll_avg(X d Y, Avg) :- Avg is ceiling(X * (Y+1) / 2).
 
+%! simplify_dice_sum(?Sum, ?Simplified)
+%
+%  Simplify a sum of dice. For example, `1 d 4 + 3 + 2 d 4 + 1` is
+%  simplified to `3 d 4 + 4`.
+%  Makes sure the dice are ordered in descending number of eyes, with
+%  the constant term at the very end.
+simplify_dice_sum(Sum, Simplified) :-
+    sum_to_list(Sum, List),
+    add_up_dice(List, SumList),
+    sort(2, @<, SumList, SumListSorted),
+    list_to_sum(SumListSorted, Simplified).
+
+%! normalize_dice_formula(?Sum, ?Normalized)
+%
+%  Normalized is a sum of dice equivalent to Sum, but always ending in
+%  `+0`. If Sum already ends in `+0`, then Normalized = Sum,
+%  otherwise, Normalized is the same Sum but with an addition `+0`
+%  term.
+normalize_dice_formula(Dice + N, Dice + N) :-
+    number(N),
+    N \= 0,
+    !.
+normalize_dice_formula(Dice , Dice + 0).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Internal representations for this file.
+sum_to_list(X    , [DX]      ) :-
+    X \= _ + _,
+    normalize_dice_sum_term(X,DX).
+sum_to_list(X + Y, [DY|List]) :-
+    normalize_dice_sum_term(Y,DY),
+    sum_to_list(X, List).
+
+normalize_dice_sum_term(N d X, N d X) :- X \= 1.
+normalize_dice_sum_term(N    , N d 1) :- number(N).
 add_up_dice([D|Ds], Dice) :-
     add_up_dice(Ds, RestDice),
     add_die_to_list(D, RestDice, Dice).
@@ -14,19 +52,9 @@ add_die_to_list(N d X, OldList, NewList) :-
 add_die_to_list(N d X, List, [N d X | List]) :-
     \+ member(_ d X, List).
 
-sum_to_list(X + Y, [Y|List]) :- sum_to_list(X, List).
-sum_to_list(X, [X]) :- X \= _ + _.
-    
-list_to_sum([X], X).
-list_to_sum([X|Xs], Sum + X) :- list_to_sum(Xs, Sum).
+list_to_sum([DX], X) :-
+    normalize_dice_sum_term(X, DX).
+list_to_sum([DX|Xs], Sum + X) :-
+    list_to_sum(Xs, Sum),
+    normalize_dice_sum_term(X, DX).
 
-simplify_dice_sum(Dice, NewDs) :-
-    sum_to_list(Dice, List),
-    add_up_dice(List, SumList),
-    list_to_sum(SumList, NewDs).
-
-normalize_dice_formula(Dice + N, Dice + N) :-
-    number(N),
-    N \= 0,
-    !.
-normalize_dice_formula(Dice , Dice + 0).

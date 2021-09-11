@@ -1,6 +1,6 @@
 % Auto generated, do not edit directly.
 
-spell('abi-dalzim\'s horrid wilting',
+spell_auto_data('abi-dalzim\'s horrid wilting',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A bit of sponge.")],
@@ -12,7 +12,7 @@ spell('abi-dalzim\'s horrid wilting',
                  ritual:no,
                  school:necromancy}).
 
-spell('absorb elements',
+spell_auto_data('absorb elements',
       properties{casting_time:"1 action",
                  classes:[druid,ranger,wizard],
                  components:[s],
@@ -24,7 +24,7 @@ spell('absorb elements',
                  ritual:no,
                  school:abjuration}).
 
-spell('acid splash',
+spell_auto_data('acid splash',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s],
@@ -36,7 +36,7 @@ spell('acid splash',
                  ritual:no,
                  school:conjuration}).
 
-spell('aganazzar\'s scorcher',
+spell_auto_data('aganazzar\'s scorcher',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A red dragon's scale.")],
@@ -48,7 +48,7 @@ spell('aganazzar\'s scorcher',
                  ritual:no,
                  school:evocation}).
 
-spell(aid,
+spell_auto_data(aid,
       properties{casting_time:"1 action",
                  classes:[cleric,paladin],
                  components:[v,s,m("A tiny strip of white cloth.")],
@@ -60,7 +60,7 @@ spell(aid,
                  ritual:no,
                  school:abjuration}).
 
-spell(alarm,
+spell_auto_data(alarm,
       properties{casting_time:"1 minute",
                  classes:[ranger,'ritual caster',wizard],
                  components:[v,s,m("A tiny bell and a piece of fine silver wire.")],
@@ -72,7 +72,7 @@ spell(alarm,
                  ritual:yes,
                  school:abjuration}).
 
-spell('alter self',
+spell_auto_data('alter self',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s],
@@ -84,7 +84,7 @@ spell('alter self',
                  ritual:no,
                  school:transmutation}).
 
-spell('animal friendship',
+spell_auto_data('animal friendship',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,ranger],
                  components:[v,s,m("A morsel of food.")],
@@ -96,7 +96,7 @@ spell('animal friendship',
                  ritual:no,
                  school:enchantment}).
 
-spell('animal messenger',
+spell_auto_data('animal messenger',
       properties{casting_time:"1 action",
                  classes:[bard,druid,ranger,'ritual caster'],
                  components:[v,s,m("A morsel of food.")],
@@ -108,7 +108,7 @@ spell('animal messenger',
                  ritual:yes,
                  school:enchantment}).
 
-spell('animal shapes',
+spell_auto_data('animal shapes',
       properties{casting_time:"1 action",
                  classes:[druid],
                  components:[v,s],
@@ -120,7 +120,7 @@ spell('animal shapes',
                  ritual:no,
                  school:transmutation}).
 
-spell('animate dead',
+spell_auto_data('animate dead',
       properties{casting_time:"1 minute",
                  classes:[cleric,wizard],
                  components:[v,s,m("A drop of blood, a piece of flesh, and a pinch of bone dust.")],
@@ -132,7 +132,7 @@ spell('animate dead',
                  ritual:no,
                  school:necromancy}).
 
-spell('animate objects',
+spell_auto_data('animate objects',
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,wizard],
                  components:[v,s],
@@ -144,7 +144,7 @@ spell('animate objects',
                  ritual:no,
                  school:transmutation}).
 
-spell('antilife shell',
+spell_auto_data('antilife shell',
       properties{casting_time:"1 action",
                  classes:[druid],
                  components:[v,s],
@@ -156,7 +156,7 @@ spell('antilife shell',
                  ritual:no,
                  school:abjuration}).
 
-spell('antimagic field',
+spell_auto_data('antimagic field',
       properties{casting_time:"1 action",
                  classes:[cleric,wizard],
                  components:[v,s,m("A pinch of powdered iron or iron filings.")],
@@ -168,7 +168,7 @@ spell('antimagic field',
                  ritual:no,
                  school:abjuration}).
 
-spell('antipathy/sympathy',
+spell_auto_data('antipathy/sympathy',
       properties{casting_time:"1 hour",
                  classes:[druid,wizard],
                  components:[v,s,m("Either a lump of alum soaked in vinegar for the antipathy effect or a drop of honey for the sympathy effect.")],
@@ -180,7 +180,7 @@ spell('antipathy/sympathy',
                  ritual:no,
                  school:enchantment}).
 
-spell('arcane eye',
+spell_auto_data('arcane eye',
       properties{casting_time:"1 action",
                  classes:[cleric,wizard],
                  components:[v,s,m("A bit of bat fur.")],
@@ -192,7 +192,7 @@ spell('arcane eye',
                  ritual:no,
                  school:divination}).
 
-spell('arcane gate',
+spell_auto_data('arcane gate',
       properties{casting_time:"1 action",
                  classes:[sorcerer,warlock,wizard],
                  components:[v,s],
@@ -204,7 +204,7 @@ spell('arcane gate',
                  ritual:no,
                  school:conjuration}).
 
-spell('arcane lock',
+spell_auto_data('arcane lock',
       properties{casting_time:"1 action",
                  classes:[wizard],
                  components:[v,s,m("Gold dust worth at least 25gp, which the spell consumes.")],
@@ -216,7 +216,7 @@ spell('arcane lock',
                  ritual:no,
                  school:abjuration}).
 
-spell('armor of agathys',
+spell_auto_data('armor of agathys',
       properties{casting_time:"1 action",
                  classes:[warlock],
                  components:[v,s,m("A cup of water.")],
@@ -228,7 +228,7 @@ spell('armor of agathys',
                  ritual:no,
                  school:abjuration}).
 
-spell('arms of hadar',
+spell_auto_data('arms of hadar',
       properties{casting_time:"1 action",
                  classes:[warlock],
                  components:[v,s],
@@ -240,7 +240,7 @@ spell('arms of hadar',
                  ritual:no,
                  school:conjuration}).
 
-spell('astral projection',
+spell_auto_data('astral projection',
       properties{casting_time:"1 hour",
                  classes:[cleric,warlock,wizard],
                  components:[v,s,m("For each creature you affect with this spell, you must provide one jacinth worth at least 1,000gp and one ornately carved bar of silver worth at least 100gp, all of which the spell consumes.")],
@@ -252,7 +252,7 @@ spell('astral projection',
                  ritual:no,
                  school:necromancy}).
 
-spell(augury,
+spell_auto_data(augury,
       properties{casting_time:"1 minute",
                  classes:[cleric,'ritual caster'],
                  components:[v,s,m("Specially marked sticks, bones, or similar tokens worth at least 25gp.")],
@@ -264,7 +264,7 @@ spell(augury,
                  ritual:yes,
                  school:divination}).
 
-spell('aura of life',
+spell_auto_data('aura of life',
       properties{casting_time:"1 action",
                  classes:[paladin],
                  components:[v],
@@ -276,7 +276,7 @@ spell('aura of life',
                  ritual:no,
                  school:abjuration}).
 
-spell('aura of purity',
+spell_auto_data('aura of purity',
       properties{casting_time:"1 action",
                  classes:[paladin],
                  components:[v],
@@ -288,7 +288,7 @@ spell('aura of purity',
                  ritual:no,
                  school:abjuration}).
 
-spell('aura of vitality',
+spell_auto_data('aura of vitality',
       properties{casting_time:"1 action",
                  classes:[paladin],
                  components:[v],
@@ -300,7 +300,7 @@ spell('aura of vitality',
                  ritual:no,
                  school:evocation}).
 
-spell(awaken,
+spell_auto_data(awaken,
       properties{casting_time:"8 hours",
                  classes:[bard,druid],
                  components:[v,s,m("An agate worth at least 1,000 gp, which the spell consumes.")],
@@ -312,7 +312,7 @@ spell(awaken,
                  ritual:no,
                  school:transmutation}).
 
-spell(bane,
+spell_auto_data(bane,
       properties{casting_time:"1 action",
                  classes:[bard,cleric,paladin],
                  components:[v,s,m("A drop of blood.")],
@@ -324,7 +324,7 @@ spell(bane,
                  ritual:no,
                  school:enchantment}).
 
-spell('banishing smite',
+spell_auto_data('banishing smite',
       properties{casting_time:"1 bonus action",
                  classes:[paladin],
                  components:[v],
@@ -336,7 +336,7 @@ spell('banishing smite',
                  ritual:no,
                  school:abjuration}).
 
-spell(banishment,
+spell_auto_data(banishment,
       properties{casting_time:"1 action",
                  classes:[cleric,paladin,sorcerer,warlock,wizard],
                  components:[v,s,m("An item distasteful to the target.")],
@@ -348,7 +348,7 @@ spell(banishment,
                  ritual:no,
                  school:abjuration}).
 
-spell(barkskin,
+spell_auto_data(barkskin,
       properties{casting_time:"1 action",
                  classes:[cleric,druid,ranger],
                  components:[v,s,m("A handful of oak bark.")],
@@ -360,7 +360,7 @@ spell(barkskin,
                  ritual:no,
                  school:transmutation}).
 
-spell('beacon of hope',
+spell_auto_data('beacon of hope',
       properties{casting_time:"1 action",
                  classes:[cleric,paladin],
                  components:[v,s],
@@ -372,7 +372,7 @@ spell('beacon of hope',
                  ritual:no,
                  school:abjuration}).
 
-spell('beast bond',
+spell_auto_data('beast bond',
       properties{casting_time:"1 action",
                  classes:[druid,ranger,wizard],
                  components:[v,s,m("A bit of fur wrapped in a cloth.")],
@@ -384,7 +384,7 @@ spell('beast bond',
                  ritual:no,
                  school:divination}).
 
-spell('beast sense',
+spell_auto_data('beast sense',
       properties{casting_time:"1 action",
                  classes:[druid,ranger,'ritual caster'],
                  components:[s],
@@ -396,7 +396,7 @@ spell('beast sense',
                  ritual:yes,
                  school:divination}).
 
-spell('bestow curse',
+spell_auto_data('bestow curse',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,wizard],
                  components:[v,s],
@@ -408,7 +408,7 @@ spell('bestow curse',
                  ritual:no,
                  school:necromancy}).
 
-spell('bigby\'s hand',
+spell_auto_data('bigby\'s hand',
       properties{casting_time:"1 action",
                  classes:[wizard],
                  components:[v,s,m("An eggshell and a snakeskin glove.")],
@@ -420,7 +420,7 @@ spell('bigby\'s hand',
                  ritual:no,
                  school:evocation}).
 
-spell('blade barrier',
+spell_auto_data('blade barrier',
       properties{casting_time:"1 action",
                  classes:[cleric],
                  components:[v,s],
@@ -432,7 +432,7 @@ spell('blade barrier',
                  ritual:no,
                  school:evocation}).
 
-spell('blade ward',
+spell_auto_data('blade ward',
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -444,7 +444,7 @@ spell('blade ward',
                  ritual:no,
                  school:abjuration}).
 
-spell(bless,
+spell_auto_data(bless,
       properties{casting_time:"1 action",
                  classes:[cleric,paladin],
                  components:[v,s,m("A sprinkling of holy water.")],
@@ -456,7 +456,7 @@ spell(bless,
                  ritual:no,
                  school:enchantment}).
 
-spell(blight,
+spell_auto_data(blight,
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -468,7 +468,7 @@ spell(blight,
                  ritual:no,
                  school:necromancy}).
 
-spell('blinding smite',
+spell_auto_data('blinding smite',
       properties{casting_time:"1 bonus action",
                  classes:[paladin],
                  components:[v],
@@ -480,7 +480,7 @@ spell('blinding smite',
                  ritual:no,
                  school:evocation}).
 
-spell('blindness/deafness',
+spell_auto_data('blindness/deafness',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,sorcerer,warlock,wizard],
                  components:[v],
@@ -492,7 +492,7 @@ spell('blindness/deafness',
                  ritual:no,
                  school:necromancy}).
 
-spell(blink,
+spell_auto_data(blink,
       properties{casting_time:"1 action",
                  classes:[cleric,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -504,7 +504,7 @@ spell(blink,
                  ritual:no,
                  school:transmutation}).
 
-spell(blur,
+spell_auto_data(blur,
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,wizard],
                  components:[v],
@@ -516,7 +516,7 @@ spell(blur,
                  ritual:no,
                  school:illusion}).
 
-spell('bones of the earth',
+spell_auto_data('bones of the earth',
       properties{casting_time:"1 action",
                  classes:[druid],
                  components:[v,s],
@@ -528,7 +528,7 @@ spell('bones of the earth',
                  ritual:no,
                  school:transmutation}).
 
-spell('booming blade',
+spell_auto_data('booming blade',
       properties{casting_time:"1 action",
                  classes:[sorcerer,warlock,wizard],
                  components:[v,m("A weapon.")],
@@ -540,7 +540,7 @@ spell('booming blade',
                  ritual:no,
                  school:evocation}).
 
-spell('branding smite',
+spell_auto_data('branding smite',
       properties{casting_time:"1 bonus action",
                  classes:[paladin],
                  components:[v],
@@ -552,7 +552,7 @@ spell('branding smite',
                  ritual:no,
                  school:evocation}).
 
-spell('burning hands',
+spell_auto_data('burning hands',
       properties{casting_time:"1 action",
                  classes:[cleric,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -564,7 +564,7 @@ spell('burning hands',
                  ritual:no,
                  school:evocation}).
 
-spell('call lightning',
+spell_auto_data('call lightning',
       properties{casting_time:"1 action",
                  classes:[cleric,druid],
                  components:[v,s],
@@ -576,7 +576,7 @@ spell('call lightning',
                  ritual:no,
                  school:conjuration}).
 
-spell('calm emotions',
+spell_auto_data('calm emotions',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,warlock],
                  components:[v,s],
@@ -588,7 +588,7 @@ spell('calm emotions',
                  ritual:no,
                  school:enchantment}).
 
-spell(catapult,
+spell_auto_data(catapult,
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[s],
@@ -600,7 +600,7 @@ spell(catapult,
                  ritual:no,
                  school:transmutation}).
 
-spell('chain lightning',
+spell_auto_data('chain lightning',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A bit of fur; a piece of amber, glass, or a crystal rod; and three silver pins.")],
@@ -612,7 +612,7 @@ spell('chain lightning',
                  ritual:no,
                  school:evocation}).
 
-spell('charm person',
+spell_auto_data('charm person',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -624,7 +624,7 @@ spell('charm person',
                  ritual:no,
                  school:enchantment}).
 
-spell('chill touch',
+spell_auto_data('chill touch',
       properties{casting_time:"1 action",
                  classes:[sorcerer,warlock,wizard],
                  components:[v,s],
@@ -636,7 +636,7 @@ spell('chill touch',
                  ritual:no,
                  school:necromancy}).
 
-spell('chromatic orb',
+spell_auto_data('chromatic orb',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A diamond worth at least 50gp.")],
@@ -648,9 +648,9 @@ spell('chromatic orb',
                  ritual:no,
                  school:evocation}).
 
-spell('circle of death',properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v,s,m("The powder of a crushed black pearl worth at least 500 gp.")],desc:"A sphere of negative energy ripples out in a 60-footradius sphere from a point within range. Each creature in that area must make a constitution saving throw. A target takes 8d6 necrotic damage on a failed save, or half as much damage on a successful one.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 7th level or higher, the damage increases by 2d6 for each slot level above 6th.",level:6,range:feet(150),ritual:no,school:necromancy}).
+spell_auto_data('circle of death',properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v,s,m("The powder of a crushed black pearl worth at least 500 gp.")],desc:"A sphere of negative energy ripples out in a 60-footradius sphere from a point within range. Each creature in that area must make a constitution saving throw. A target takes 8d6 necrotic damage on a failed save, or half as much damage on a successful one.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 7th level or higher, the damage increases by 2d6 for each slot level above 6th.",level:6,range:feet(150),ritual:no,school:necromancy}).
 
-spell('circle of power',
+spell_auto_data('circle of power',
       properties{casting_time:"1 action",
                  classes:[paladin],
                  components:[v],
@@ -662,7 +662,7 @@ spell('circle of power',
                  ritual:no,
                  school:abjuration}).
 
-spell(clairvoyance,
+spell_auto_data(clairvoyance,
       properties{casting_time:"10 minutes",
                  classes:[bard,cleric,sorcerer,warlock,wizard],
                  components:[v,s,m("A focus worth at least 100gp, either a jeweled horn for hearing or a glass eye for seeing.")],
@@ -674,7 +674,7 @@ spell(clairvoyance,
                  ritual:no,
                  school:divination}).
 
-spell(clone,
+spell_auto_data(clone,
       properties{casting_time:"1 hour",
                  classes:[wizard],
                  components:[v,s,m("A diamond worth at least 1,000 gp and at least 1 cubic inch of flesh of the creature that is to be cloned, which the spell consumes, and a vessel worth at least 2,000 gp that has a sealable lid and is large enough to hold a Medium creature, such as a huge urn, coffin, mud-filled cyst in the ground, or crystal container filled with salt water.")],
@@ -686,7 +686,7 @@ spell(clone,
                  ritual:no,
                  school:necromancy}).
 
-spell('cloud of daggers',
+spell_auto_data('cloud of daggers',
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,warlock,wizard],
                  components:[v,s,m("A sliver of glass.")],
@@ -698,7 +698,7 @@ spell('cloud of daggers',
                  ritual:no,
                  school:conjuration}).
 
-spell(cloudkill,
+spell_auto_data(cloudkill,
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,wizard],
                  components:[v,s],
@@ -710,7 +710,7 @@ spell(cloudkill,
                  ritual:no,
                  school:conjuration}).
 
-spell('color spray',
+spell_auto_data('color spray',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A pinch of powder or sand that is colored red, yellow, and blue.")],
@@ -722,7 +722,7 @@ spell('color spray',
                  ritual:no,
                  school:illusion}).
 
-spell(command,
+spell_auto_data(command,
       properties{casting_time:"1 action",
                  classes:[cleric,paladin,warlock],
                  components:[v],
@@ -734,7 +734,7 @@ spell(command,
                  ritual:no,
                  school:enchantment}).
 
-spell(commune,
+spell_auto_data(commune,
       properties{casting_time:"1 minute",
                  classes:[cleric,paladin,'ritual caster'],
                  components:[v,s,m("Incense and a vial of holy or unholy water.")],
@@ -746,7 +746,7 @@ spell(commune,
                  ritual:yes,
                  school:divination}).
 
-spell('commune with nature',
+spell_auto_data('commune with nature',
       properties{casting_time:"1 minute",
                  classes:[druid,paladin,ranger,'ritual caster'],
                  components:[v,s],
@@ -758,7 +758,7 @@ spell('commune with nature',
                  ritual:yes,
                  school:divination}).
 
-spell('compelled duel',
+spell_auto_data('compelled duel',
       properties{casting_time:"1 bonus action",
                  classes:[paladin],
                  components:[v],
@@ -770,7 +770,7 @@ spell('compelled duel',
                  ritual:no,
                  school:enchantment}).
 
-spell('comprehend languages',
+spell_auto_data('comprehend languages',
       properties{casting_time:"1 action",
                  classes:[bard,'ritual caster',sorcerer,warlock,wizard],
                  components:[v,s,m("A pinch of soot and salt.")],
@@ -782,7 +782,7 @@ spell('comprehend languages',
                  ritual:yes,
                  school:divination}).
 
-spell(compulsion,
+spell_auto_data(compulsion,
       properties{casting_time:"1 action",
                  classes:[bard],
                  components:[v,s],
@@ -794,7 +794,7 @@ spell(compulsion,
                  ritual:no,
                  school:enchantment}).
 
-spell('cone of cold',
+spell_auto_data('cone of cold',
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,wizard],
                  components:[v,s,m("A small crystal or glass cone.")],
@@ -806,7 +806,7 @@ spell('cone of cold',
                  ritual:no,
                  school:evocation}).
 
-spell(confusion,
+spell_auto_data(confusion,
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,sorcerer,wizard],
                  components:[v,s,m("Three walnut shells.")],
@@ -818,7 +818,7 @@ spell(confusion,
                  ritual:no,
                  school:enchantment}).
 
-spell('conjure animals',
+spell_auto_data('conjure animals',
       properties{casting_time:"1 action",
                  classes:[druid,ranger],
                  components:[v,s],
@@ -830,7 +830,7 @@ spell('conjure animals',
                  ritual:no,
                  school:conjuration}).
 
-spell('conjure barrage',
+spell_auto_data('conjure barrage',
       properties{casting_time:"1 action",
                  classes:[ranger],
                  components:[v,s,m("One piece of ammunition or a thrown weapon.")],
@@ -842,7 +842,7 @@ spell('conjure barrage',
                  ritual:no,
                  school:conjuration}).
 
-spell('conjure celestial',
+spell_auto_data('conjure celestial',
       properties{casting_time:"1 minute",
                  classes:[cleric],
                  components:[v,s],
@@ -854,7 +854,7 @@ spell('conjure celestial',
                  ritual:no,
                  school:conjuration}).
 
-spell('conjure elemental',
+spell_auto_data('conjure elemental',
       properties{casting_time:"1 minute",
                  classes:[druid,wizard],
                  components:[v,s,m("Burning incense for air, soft clay for earth, sulfur and phosphorus for fire, or water and sand for water.")],
@@ -866,7 +866,7 @@ spell('conjure elemental',
                  ritual:no,
                  school:conjuration}).
 
-spell('conjure fey',
+spell_auto_data('conjure fey',
       properties{casting_time:"1 minute",
                  classes:[druid,warlock],
                  components:[v,s],
@@ -878,7 +878,7 @@ spell('conjure fey',
                  ritual:no,
                  school:conjuration}).
 
-spell('conjure minor elementals',
+spell_auto_data('conjure minor elementals',
       properties{casting_time:"1 minute",
                  classes:[druid,wizard],
                  components:[v,s],
@@ -890,7 +890,7 @@ spell('conjure minor elementals',
                  ritual:no,
                  school:conjuration}).
 
-spell('conjure volley',
+spell_auto_data('conjure volley',
       properties{casting_time:"1 action",
                  classes:[ranger],
                  components:[v,s,m("One piece of ammunition or one thrown weapon.")],
@@ -902,7 +902,7 @@ spell('conjure volley',
                  ritual:no,
                  school:conjuration}).
 
-spell('conjure woodland beings',
+spell_auto_data('conjure woodland beings',
       properties{casting_time:"1 action",
                  classes:[druid,ranger],
                  components:[v,s,m("One holly berry per creature summoned.")],
@@ -914,7 +914,7 @@ spell('conjure woodland beings',
                  ritual:no,
                  school:conjuration}).
 
-spell('contact other plane',
+spell_auto_data('contact other plane',
       properties{casting_time:"1 minute",
                  classes:['ritual caster',warlock,wizard],
                  components:[v],
@@ -926,7 +926,7 @@ spell('contact other plane',
                  ritual:yes,
                  school:divination}).
 
-spell(contagion,
+spell_auto_data(contagion,
       properties{casting_time:"1 action",
                  classes:[cleric,druid],
                  components:[v,s],
@@ -938,7 +938,7 @@ spell(contagion,
                  ritual:no,
                  school:necromancy}).
 
-spell(contingency,
+spell_auto_data(contingency,
       properties{casting_time:"10 minutes",
                  classes:[wizard],
                  components:[v,s,m("A statuette of yourself carved from ivory and decorated with gems worth at least 1,500 gp.")],
@@ -950,7 +950,7 @@ spell(contingency,
                  ritual:no,
                  school:evocation}).
 
-spell('continual flame',
+spell_auto_data('continual flame',
       properties{casting_time:"1 action",
                  classes:[cleric,wizard],
                  components:[v,s,m("Ruby dust worth 50 gp, which the spell consumes.")],
@@ -962,7 +962,7 @@ spell('continual flame',
                  ritual:no,
                  school:evocation}).
 
-spell('control flames',
+spell_auto_data('control flames',
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,wizard],
                  components:[s],
@@ -974,7 +974,7 @@ spell('control flames',
                  ritual:no,
                  school:transmutation}).
 
-spell('control water',
+spell_auto_data('control water',
       properties{casting_time:"1 action",
                  classes:[cleric,druid,wizard],
                  components:[v,s,m("A drop of water and a pinch of dust.")],
@@ -986,7 +986,7 @@ spell('control water',
                  ritual:no,
                  school:transmutation}).
 
-spell('control weather',
+spell_auto_data('control weather',
       properties{casting_time:"10 minutes",
                  classes:[cleric,druid,wizard],
                  components:[v,s,m("Burning incense and bits of earth and wood mixed in water.")],
@@ -998,7 +998,7 @@ spell('control weather',
                  ritual:no,
                  school:transmutation}).
 
-spell('control winds',
+spell_auto_data('control winds',
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,wizard],
                  components:[v,s],
@@ -1010,7 +1010,7 @@ spell('control winds',
                  ritual:no,
                  school:transmutation}).
 
-spell('cordon of arrows',
+spell_auto_data('cordon of arrows',
       properties{casting_time:"1 action",
                  classes:[ranger],
                  components:[v,s,m("Four or more arrows or bolts.")],
@@ -1022,7 +1022,7 @@ spell('cordon of arrows',
                  ritual:no,
                  school:transmutation}).
 
-spell(counterspell,
+spell_auto_data(counterspell,
       properties{casting_time:"1 reaction",
                  classes:[sorcerer,warlock,wizard],
                  components:[s],
@@ -1034,7 +1034,7 @@ spell(counterspell,
                  ritual:no,
                  school:abjuration}).
 
-spell('create bonfire',
+spell_auto_data('create bonfire',
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -1046,7 +1046,7 @@ spell('create bonfire',
                  ritual:no,
                  school:conjuration}).
 
-spell('create food and water',
+spell_auto_data('create food and water',
       properties{casting_time:"1 action",
                  classes:[cleric,druid,paladin],
                  components:[v,s],
@@ -1058,7 +1058,7 @@ spell('create food and water',
                  ritual:no,
                  school:conjuration}).
 
-spell('create or destroy water',
+spell_auto_data('create or destroy water',
       properties{casting_time:"1 action",
                  classes:[cleric,druid],
                  components:[v,s,m("A drop of water if creating water, or a few grains of sand if destroying it.")],
@@ -1070,7 +1070,7 @@ spell('create or destroy water',
                  ritual:no,
                  school:transmutation}).
 
-spell('create undead',
+spell_auto_data('create undead',
       properties{casting_time:"1 minute",
                  classes:[cleric,warlock,wizard],
                  components:[v,s,m("One clay pot filled with grave dirt, one clay pot filled with brackish water, and one 150 gp black onyx stone for each corpse.")],
@@ -1082,7 +1082,7 @@ spell('create undead',
                  ritual:no,
                  school:necromancy}).
 
-spell(creation,
+spell_auto_data(creation,
       properties{casting_time:"1 minute",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A tiny piece of matter of the same type of the item you plan to create.")],
@@ -1094,7 +1094,7 @@ spell(creation,
                  ritual:no,
                  school:illusion}).
 
-spell('crown of madness',
+spell_auto_data('crown of madness',
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -1106,7 +1106,7 @@ spell('crown of madness',
                  ritual:no,
                  school:enchantment}).
 
-spell('crusader\'s mantle',
+spell_auto_data('crusader\'s mantle',
       properties{casting_time:"1 action",
                  classes:[cleric,paladin],
                  components:[v],
@@ -1118,7 +1118,7 @@ spell('crusader\'s mantle',
                  ritual:no,
                  school:evocation}).
 
-spell('cure wounds',
+spell_auto_data('cure wounds',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,paladin,ranger],
                  components:[v,s],
@@ -1130,7 +1130,7 @@ spell('cure wounds',
                  ritual:no,
                  school:evocation}).
 
-spell('dancing lights',
+spell_auto_data('dancing lights',
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,wizard],
                  components:[v,s,m("A bit of phosphorus or wychwood, or a glowworm.")],
@@ -1142,7 +1142,7 @@ spell('dancing lights',
                  ritual:no,
                  school:evocation}).
 
-spell(darkness,
+spell_auto_data(darkness,
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,warlock,wizard],
                  components:[v,m("Bat fur and a drop of pitch or piece of coal.")],
@@ -1154,7 +1154,7 @@ spell(darkness,
                  ritual:no,
                  school:evocation}).
 
-spell(darkvision,
+spell_auto_data(darkvision,
       properties{casting_time:"1 action",
                  classes:[druid,ranger,sorcerer,wizard],
                  components:[v,s,m("Either a pinch of dried carrot or an agate.")],
@@ -1166,7 +1166,7 @@ spell(darkvision,
                  ritual:no,
                  school:transmutation}).
 
-spell(daylight,
+spell_auto_data(daylight,
       properties{casting_time:"1 action",
                  classes:[cleric,druid,paladin,ranger,sorcerer],
                  components:[v,s],
@@ -1178,7 +1178,7 @@ spell(daylight,
                  ritual:no,
                  school:evocation}).
 
-spell('death ward',
+spell_auto_data('death ward',
       properties{casting_time:"1 action",
                  classes:[cleric,paladin],
                  components:[v,s],
@@ -1190,7 +1190,7 @@ spell('death ward',
                  ritual:no,
                  school:abjuration}).
 
-spell('delayed blast fireball',
+spell_auto_data('delayed blast fireball',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A tiny ball of bat guano and sulfur.")],
@@ -1202,7 +1202,7 @@ spell('delayed blast fireball',
                  ritual:no,
                  school:evocation}).
 
-spell(demiplane,
+spell_auto_data(demiplane,
       properties{casting_time:"1 action",
                  classes:[warlock,wizard],
                  components:[s],
@@ -1214,7 +1214,7 @@ spell(demiplane,
                  ritual:no,
                  school:conjuration}).
 
-spell('destructive wave',
+spell_auto_data('destructive wave',
       properties{casting_time:"1 action",
                  classes:[cleric,paladin],
                  components:[v],
@@ -1226,7 +1226,7 @@ spell('destructive wave',
                  ritual:no,
                  school:evocation}).
 
-spell('detect evil and good',
+spell_auto_data('detect evil and good',
       properties{casting_time:"1 action",
                  classes:[cleric,paladin],
                  components:[v,s],
@@ -1238,7 +1238,7 @@ spell('detect evil and good',
                  ritual:no,
                  school:divination}).
 
-spell('detect magic',
+spell_auto_data('detect magic',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,paladin,ranger,'ritual caster',sorcerer,wizard],
                  components:[v,s],
@@ -1250,7 +1250,7 @@ spell('detect magic',
                  ritual:yes,
                  school:divination}).
 
-spell('detect poison and disease',
+spell_auto_data('detect poison and disease',
       properties{casting_time:"1 action",
                  classes:[cleric,druid,paladin,ranger,'ritual caster'],
                  components:[v,s,m("A yew leaf.")],
@@ -1262,7 +1262,7 @@ spell('detect poison and disease',
                  ritual:yes,
                  school:divination}).
 
-spell('detect thoughts',
+spell_auto_data('detect thoughts',
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,warlock,wizard],
                  components:[v,s,m("A copper coin.")],
@@ -1274,7 +1274,7 @@ spell('detect thoughts',
                  ritual:no,
                  school:divination}).
 
-spell('dimension door',
+spell_auto_data('dimension door',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,paladin,sorcerer,warlock,wizard],
                  components:[v],
@@ -1286,7 +1286,7 @@ spell('dimension door',
                  ritual:no,
                  school:conjuration}).
 
-spell('disguise self',
+spell_auto_data('disguise self',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,sorcerer,wizard],
                  components:[v,s],
@@ -1298,7 +1298,7 @@ spell('disguise self',
                  ritual:no,
                  school:illusion}).
 
-spell(disintegrate,
+spell_auto_data(disintegrate,
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A lodestone and a pinch of dust.")],
@@ -1310,7 +1310,7 @@ spell(disintegrate,
                  ritual:no,
                  school:transmutation}).
 
-spell('dispel evil and good',
+spell_auto_data('dispel evil and good',
       properties{casting_time:"1 action",
                  classes:[cleric,paladin],
                  components:[v,s,m("Holy water or powdered silver and iron.")],
@@ -1322,7 +1322,7 @@ spell('dispel evil and good',
                  ritual:no,
                  school:abjuration}).
 
-spell('dispel magic',
+spell_auto_data('dispel magic',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,paladin,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -1334,7 +1334,7 @@ spell('dispel magic',
                  ritual:no,
                  school:abjuration}).
 
-spell('dissonant whispers',
+spell_auto_data('dissonant whispers',
       properties{casting_time:"1 action",
                  classes:[bard,warlock],
                  components:[v],
@@ -1346,7 +1346,7 @@ spell('dissonant whispers',
                  ritual:no,
                  school:enchantment}).
 
-spell(divination,
+spell_auto_data(divination,
       properties{casting_time:"1 action",
                  classes:[cleric,druid,'ritual caster'],
                  components:[v,s,m("Incense and a sacrificial offering appropriate to your religion, together worth at least 25gp, which the spell consumes.")],
@@ -1358,7 +1358,7 @@ spell(divination,
                  ritual:yes,
                  school:divination}).
 
-spell('divine favor',
+spell_auto_data('divine favor',
       properties{casting_time:"1 bonus action",
                  classes:[cleric,paladin],
                  components:[v,s],
@@ -1370,7 +1370,7 @@ spell('divine favor',
                  ritual:no,
                  school:evocation}).
 
-spell('divine word',
+spell_auto_data('divine word',
       properties{casting_time:"1 bonus action",
                  classes:[cleric],
                  components:[v],
@@ -1382,7 +1382,7 @@ spell('divine word',
                  ritual:no,
                  school:evocation}).
 
-spell('dominate beast',
+spell_auto_data('dominate beast',
       properties{casting_time:"1 action",
                  classes:[cleric,druid,sorcerer,warlock],
                  components:[v,s],
@@ -1394,7 +1394,7 @@ spell('dominate beast',
                  ritual:no,
                  school:enchantment}).
 
-spell('drawmij\'s instant summons',
+spell_auto_data('drawmij\'s instant summons',
       properties{casting_time:"1 minute",
                  classes:['ritual caster',wizard],
                  components:[v,s,m("A sapphire worth 1,000 gp.")],
@@ -1406,7 +1406,7 @@ spell('drawmij\'s instant summons',
                  ritual:yes,
                  school:conjuration}).
 
-spell('dominate monster',
+spell_auto_data('dominate monster',
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -1418,7 +1418,7 @@ spell('dominate monster',
                  ritual:no,
                  school:enchantment}).
 
-spell('dominate person',
+spell_auto_data('dominate person',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -1430,7 +1430,7 @@ spell('dominate person',
                  ritual:no,
                  school:enchantment}).
 
-spell(dream,
+spell_auto_data(dream,
       properties{casting_time:"1 minute",
                  classes:[bard,druid,warlock,wizard],
                  components:[v,s,m("A handful of sand, a dab of ink, and a writing quill plucked from a sleeping bird.")],
@@ -1442,7 +1442,7 @@ spell(dream,
                  ritual:no,
                  school:illusion}).
 
-spell(druidcraft,
+spell_auto_data(druidcraft,
       properties{casting_time:"1 action",
                  classes:[druid],
                  components:[v,s],
@@ -1454,7 +1454,7 @@ spell(druidcraft,
                  ritual:no,
                  school:transmutation}).
 
-spell('dust devil',
+spell_auto_data('dust devil',
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,wizard],
                  components:[v,s,m("A pinch of dust.")],
@@ -1466,7 +1466,7 @@ spell('dust devil',
                  ritual:no,
                  school:conjuration}).
 
-spell('earth tremor',
+spell_auto_data('earth tremor',
       properties{casting_time:"1 action",
                  classes:[bard,druid,sorcerer,wizard],
                  components:[v,s],
@@ -1478,7 +1478,7 @@ spell('earth tremor',
                  ritual:no,
                  school:evocation}).
 
-spell(earthbind,
+spell_auto_data(earthbind,
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,warlock,wizard],
                  components:[v],
@@ -1490,7 +1490,7 @@ spell(earthbind,
                  ritual:no,
                  school:transmutation}).
 
-spell(earthquake,
+spell_auto_data(earthquake,
       properties{casting_time:"1 action",
                  classes:[cleric,druid,sorcerer],
                  components:[v,s,m("A pinch of dirt, a piece of rock, and a lump of clay.")],
@@ -1502,7 +1502,7 @@ spell(earthquake,
                  ritual:no,
                  school:evocation}).
 
-spell('eldritch blast',
+spell_auto_data('eldritch blast',
       properties{casting_time:"1 action",
                  classes:[warlock],
                  components:[v,s],
@@ -1514,7 +1514,7 @@ spell('eldritch blast',
                  ritual:no,
                  school:evocation}).
 
-spell('elemental bane',
+spell_auto_data('elemental bane',
       properties{casting_time:"1 action",
                  classes:[druid,warlock,wizard],
                  components:[v,s],
@@ -1526,7 +1526,7 @@ spell('elemental bane',
                  ritual:no,
                  school:transmutation}).
 
-spell('elemental weapon',
+spell_auto_data('elemental weapon',
       properties{casting_time:"1 action",
                  classes:[paladin],
                  components:[v,s],
@@ -1538,7 +1538,7 @@ spell('elemental weapon',
                  ritual:no,
                  school:transmutation}).
 
-spell('enhance ability',
+spell_auto_data('enhance ability',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,sorcerer],
                  components:[v,s,m("Fur or a feather from a beast.")],
@@ -1550,7 +1550,7 @@ spell('enhance ability',
                  ritual:no,
                  school:transmutation}).
 
-spell('enlarge/reduce',
+spell_auto_data('enlarge/reduce',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A pinch iron powder.")],
@@ -1562,7 +1562,7 @@ spell('enlarge/reduce',
                  ritual:no,
                  school:transmutation}).
 
-spell('ensnaring strike',
+spell_auto_data('ensnaring strike',
       properties{casting_time:"1 bonus action",
                  classes:[paladin,ranger],
                  components:[v],
@@ -1574,7 +1574,7 @@ spell('ensnaring strike',
                  ritual:no,
                  school:conjuration}).
 
-spell(entangle,
+spell_auto_data(entangle,
       properties{casting_time:"1 action",
                  classes:[druid],
                  components:[v,s],
@@ -1586,7 +1586,7 @@ spell(entangle,
                  ritual:no,
                  school:conjuration}).
 
-spell(enthrall,
+spell_auto_data(enthrall,
       properties{casting_time:"1 action",
                  classes:[bard,warlock],
                  components:[v,s],
@@ -1598,7 +1598,7 @@ spell(enthrall,
                  ritual:no,
                  school:enchantment}).
 
-spell('erupting earth',
+spell_auto_data('erupting earth',
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,wizard],
                  components:[v,s,m("A piece of obsidian.")],
@@ -1610,7 +1610,7 @@ spell('erupting earth',
                  ritual:no,
                  school:transmutation}).
 
-spell(etherealness,
+spell_auto_data(etherealness,
       properties{casting_time:"1 action",
                  classes:[bard,cleric,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -1622,7 +1622,7 @@ spell(etherealness,
                  ritual:no,
                  school:transmutation}).
 
-spell('evard\'s black tentacles',
+spell_auto_data('evard\'s black tentacles',
       properties{casting_time:"1 action",
                  classes:[warlock,wizard],
                  components:[v,s,m("A piece of tentacle of an octopus or a giant squid.")],
@@ -1634,7 +1634,7 @@ spell('evard\'s black tentacles',
                  ritual:no,
                  school:conjuration}).
 
-spell('expeditious retreat',
+spell_auto_data('expeditious retreat',
       properties{casting_time:"1 bonus action",
                  classes:[sorcerer,warlock,wizard],
                  components:[v,s],
@@ -1646,7 +1646,7 @@ spell('expeditious retreat',
                  ritual:no,
                  school:transmutation}).
 
-spell(eyebite,
+spell_auto_data(eyebite,
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -1658,7 +1658,7 @@ spell(eyebite,
                  ritual:no,
                  school:necromancy}).
 
-spell(fabricate,
+spell_auto_data(fabricate,
       properties{casting_time:"10 minutes",
                  classes:[wizard],
                  components:[v,s],
@@ -1670,7 +1670,7 @@ spell(fabricate,
                  ritual:no,
                  school:transmutation}).
 
-spell('faerie fire',
+spell_auto_data('faerie fire',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,warlock],
                  components:[v],
@@ -1682,7 +1682,7 @@ spell('faerie fire',
                  ritual:no,
                  school:evocation}).
 
-spell('false life',
+spell_auto_data('false life',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A small amount of alcohol or distilled spirits.")],
@@ -1694,7 +1694,7 @@ spell('false life',
                  ritual:no,
                  school:necromancy}).
 
-spell(fear,
+spell_auto_data(fear,
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,warlock,wizard],
                  components:[v,s,m("A white feather or the heart of a hen.")],
@@ -1706,7 +1706,7 @@ spell(fear,
                  ritual:no,
                  school:illusion}).
 
-spell('feather fall',
+spell_auto_data('feather fall',
       properties{casting_time:"1 reaction",
                  classes:[bard,sorcerer,wizard],
                  components:[v,m("A small feather or a piece of down.")],
@@ -1718,7 +1718,7 @@ spell('feather fall',
                  ritual:no,
                  school:transmutation}).
 
-spell(feeblemind,
+spell_auto_data(feeblemind,
       properties{casting_time:"1 action",
                  classes:[bard,druid,warlock,wizard],
                  components:[v,s,m("A handful of clay, crystal, glass, or mineral spheres.")],
@@ -1730,7 +1730,7 @@ spell(feeblemind,
                  ritual:no,
                  school:enchantment}).
 
-spell('feign death',
+spell_auto_data('feign death',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,'ritual caster',wizard],
                  components:[v,s,m("A pinch of graveyard dirt.")],
@@ -1742,7 +1742,7 @@ spell('feign death',
                  ritual:yes,
                  school:necromancy}).
 
-spell('find familiar',
+spell_auto_data('find familiar',
       properties{casting_time:"1 hour",
                  classes:['ritual caster',wizard],
                  components:[v,s,m("10gp worth of charcoal, incense, and herbs that must be consumed by fire in a brass brazier.You gain the service of a familiar, a spirit that takes an animal form you choose: bat, cat, crab, frog (toad), hawk, lizard, octopus, owl, poisonous snake, fish (quipper), rat, raven, sea horse, spider, or weasel. Appearing in an unoccupied space within range, the familiar has the statistics of the chosen form, though it is a celestial, fey, or fiend (your choice) instead of a beast.")],
@@ -1754,7 +1754,7 @@ spell('find familiar',
                  ritual:yes,
                  school:conjuration}).
 
-spell('find steed',
+spell_auto_data('find steed',
       properties{casting_time:"10 minutes",
                  classes:[paladin],
                  components:[v,s],
@@ -1766,7 +1766,7 @@ spell('find steed',
                  ritual:no,
                  school:conjuration}).
 
-spell('find the path',
+spell_auto_data('find the path',
       properties{casting_time:"1 minute",
                  classes:[bard,cleric,druid],
                  components:[v,s,m("A set of divinatory tools—such as bones, ivory sticks, cards, teeth, or carved runes—worth 100gp and an object from the location you wish to find.")],
@@ -1778,7 +1778,7 @@ spell('find the path',
                  ritual:no,
                  school:divination}).
 
-spell('find traps',
+spell_auto_data('find traps',
       properties{casting_time:"1 action",
                  classes:[cleric,druid,ranger],
                  components:[v,s],
@@ -1790,7 +1790,7 @@ spell('find traps',
                  ritual:no,
                  school:divination}).
 
-spell('finger of death',
+spell_auto_data('finger of death',
       properties{casting_time:"1 action",
                  classes:[sorcerer,warlock,wizard],
                  components:[v,s],
@@ -1802,7 +1802,7 @@ spell('finger of death',
                  ritual:no,
                  school:necromancy}).
 
-spell(fireball,
+spell_auto_data(fireball,
       properties{casting_time:"1 action",
                  classes:[cleric,sorcerer,warlock,wizard],
                  components:[v,s,m("A tiny ball of bat guano and sulfur.")],
@@ -1814,7 +1814,7 @@ spell(fireball,
                  ritual:no,
                  school:evocation}).
 
-spell('fire bolt',
+spell_auto_data('fire bolt',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s],
@@ -1826,7 +1826,7 @@ spell('fire bolt',
                  ritual:no,
                  school:evocation}).
 
-spell('fire shield',
+spell_auto_data('fire shield',
       properties{casting_time:"1 action",
                  classes:[warlock,wizard],
                  components:[v,s,m("A little phosphorus or a firefly.")],
@@ -1838,7 +1838,7 @@ spell('fire shield',
                  ritual:no,
                  school:evocation}).
 
-spell('fire storm',
+spell_auto_data('fire storm',
       properties{casting_time:"1 action",
                  classes:[cleric,druid,sorcerer],
                  components:[v,s],
@@ -1850,7 +1850,7 @@ spell('fire storm',
                  ritual:no,
                  school:evocation}).
 
-spell('flame arrows',
+spell_auto_data('flame arrows',
       properties{casting_time:"1 action",
                  classes:[druid,ranger,sorcerer,wizard],
                  components:[v,s],
@@ -1862,7 +1862,7 @@ spell('flame arrows',
                  ritual:no,
                  school:transmutation}).
 
-spell('flame blade',
+spell_auto_data('flame blade',
       properties{casting_time:"1 bonus action",
                  classes:[druid],
                  components:[v,s,m("Leaf of sumac.")],
@@ -1874,7 +1874,7 @@ spell('flame blade',
                  ritual:no,
                  school:evocation}).
 
-spell('flame strike',
+spell_auto_data('flame strike',
       properties{casting_time:"1 action",
                  classes:[cleric,paladin,warlock],
                  components:[v,s,m("Pinch of sulfur.")],
@@ -1886,7 +1886,7 @@ spell('flame strike',
                  ritual:no,
                  school:evocation}).
 
-spell('flaming sphere',
+spell_auto_data('flaming sphere',
       properties{casting_time:"1 action",
                  classes:[cleric,druid,wizard],
                  components:[v,s,m("A bit of tallow, a pinch of brimstone, and a dusting of powdered iron.")],
@@ -1898,7 +1898,7 @@ spell('flaming sphere',
                  ritual:no,
                  school:conjuration}).
 
-spell('flesh to stone',
+spell_auto_data('flesh to stone',
       properties{casting_time:"1 action",
                  classes:[warlock,wizard],
                  components:[v,s,m("A pinch of lime, water, and earth.")],
@@ -1910,7 +1910,7 @@ spell('flesh to stone',
                  ritual:no,
                  school:transmutation}).
 
-spell(fly,
+spell_auto_data(fly,
       properties{casting_time:"1 action",
                  classes:[sorcerer,warlock,wizard],
                  components:[v,s,m("A wing feather from any bird.")],
@@ -1922,7 +1922,7 @@ spell(fly,
                  ritual:no,
                  school:transmutation}).
 
-spell('fog cloud',
+spell_auto_data('fog cloud',
       properties{casting_time:"1 action",
                  classes:[cleric,druid,ranger,sorcerer,wizard],
                  components:[v,s],
@@ -1934,7 +1934,7 @@ spell('fog cloud',
                  ritual:no,
                  school:conjuration}).
 
-spell(forbiddance,
+spell_auto_data(forbiddance,
       properties{casting_time:"10 minutes",
                  classes:[cleric,'ritual caster'],
                  components:[v,s,m("A sprinkling of holy water, rare incense, and powdered ruby worth at least 1,000 gp.")],
@@ -1946,7 +1946,7 @@ spell(forbiddance,
                  ritual:yes,
                  school:abjuration}).
 
-spell(forcecage,
+spell_auto_data(forcecage,
       properties{casting_time:"1 action",
                  classes:[bard,warlock,wizard],
                  components:[v,s,m("Ruby dust worth 1,500 gp.")],
@@ -1958,7 +1958,7 @@ spell(forcecage,
                  ritual:no,
                  school:evocation}).
 
-spell(foresight,
+spell_auto_data(foresight,
       properties{casting_time:"1 minute",
                  classes:[bard,druid,warlock,wizard],
                  components:[v,s,m("A hummingbird feather.")],
@@ -1970,7 +1970,7 @@ spell(foresight,
                  ritual:no,
                  school:divination}).
 
-spell('freedom of movement',
+spell_auto_data('freedom of movement',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,paladin,ranger],
                  components:[v,s,m("A leather strap, bound around the arm or a similar appendage.")],
@@ -1982,7 +1982,7 @@ spell('freedom of movement',
                  ritual:no,
                  school:abjuration}).
 
-spell(friends,
+spell_auto_data(friends,
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,warlock,wizard],
                  components:[s,m("A small amount of makeup applied to the face as this spell is cast.")],
@@ -1994,7 +1994,7 @@ spell(friends,
                  ritual:no,
                  school:enchantment}).
 
-spell(frostbite,
+spell_auto_data(frostbite,
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -2006,7 +2006,7 @@ spell(frostbite,
                  ritual:no,
                  school:evocation}).
 
-spell('gaseous form',
+spell_auto_data('gaseous form',
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,warlock,wizard],
                  components:[v,s,m("A bit of gauze and a wisp of smoke.")],
@@ -2018,7 +2018,7 @@ spell('gaseous form',
                  ritual:no,
                  school:transmutation}).
 
-spell(gate,
+spell_auto_data(gate,
       properties{casting_time:"1 action",
                  classes:[cleric,sorcerer,wizard],
                  components:[v,s,m("A diamond worth at least 5,000gp.")],
@@ -2030,7 +2030,7 @@ spell(gate,
                  ritual:no,
                  school:conjuration}).
 
-spell(geas,
+spell_auto_data(geas,
       properties{casting_time:"1 minute",
                  classes:[bard,cleric,druid,paladin,wizard],
                  components:[v],
@@ -2042,7 +2042,7 @@ spell(geas,
                  ritual:no,
                  school:enchantment}).
 
-spell('gentle repose',
+spell_auto_data('gentle repose',
       properties{casting_time:"1 action",
                  classes:[cleric,'ritual caster',wizard],
                  components:[v,s,m("A pinch of salt and one copper piece placed on each of the corpse’s eyes, which must remain there for the duration.")],
@@ -2054,7 +2054,7 @@ spell('gentle repose',
                  ritual:yes,
                  school:necromancy}).
 
-spell('giant insect',
+spell_auto_data('giant insect',
       properties{casting_time:"1 action",
                  classes:[druid],
                  components:[v,s],
@@ -2066,7 +2066,7 @@ spell('giant insect',
                  ritual:no,
                  school:transmutation}).
 
-spell(glibness,
+spell_auto_data(glibness,
       properties{casting_time:"1 action",
                  classes:[bard,warlock],
                  components:[v],
@@ -2078,7 +2078,7 @@ spell(glibness,
                  ritual:no,
                  school:transmutation}).
 
-spell('globe of invulnerability',
+spell_auto_data('globe of invulnerability',
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v,s,m("A glass or crystal bead that shatters when the spell ends.")],
@@ -2090,7 +2090,7 @@ spell('globe of invulnerability',
                  ritual:no,
                  school:abjuration}).
 
-spell('glyph of warding',
+spell_auto_data('glyph of warding',
       properties{casting_time:"1 hour",
                  classes:[bard,cleric,wizard],
                  components:[v,s,m("Incense and powdered diamond worth at least 200 gp, the spell consumes.")],
@@ -2102,7 +2102,7 @@ spell('glyph of warding',
                  ritual:no,
                  school:abjuration}).
 
-spell(goodberry,
+spell_auto_data(goodberry,
       properties{casting_time:"1 action",
                  classes:[druid,ranger],
                  components:[v,s,m("A sprig of mistletoe.")],
@@ -2114,7 +2114,7 @@ spell(goodberry,
                  ritual:no,
                  school:transmutation}).
 
-spell('grasping vine',
+spell_auto_data('grasping vine',
       properties{casting_time:"1 bonus action",
                  classes:[cleric,druid,ranger],
                  components:[v,s],
@@ -2126,7 +2126,7 @@ spell('grasping vine',
                  ritual:no,
                  school:conjuration}).
 
-spell(grease,
+spell_auto_data(grease,
       properties{casting_time:"1 action",
                  classes:[wizard],
                  components:[v,s,m("A bit of pork rind or butter.")],
@@ -2138,7 +2138,7 @@ spell(grease,
                  ritual:no,
                  school:conjuration}).
 
-spell('greater invisibility',
+spell_auto_data('greater invisibility',
       properties{casting_time:"1 action",
                  classes:[bard,druid,sorcerer,warlock,wizard],
                  components:[v,s],
@@ -2150,7 +2150,7 @@ spell('greater invisibility',
                  ritual:no,
                  school:illusion}).
 
-spell('greater restoration',
+spell_auto_data('greater restoration',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid],
                  components:[v,s,m("Diamond dust worth at least 100gp, which the spell consumes.")],
@@ -2162,7 +2162,7 @@ spell('greater restoration',
                  ritual:no,
                  school:abjuration}).
 
-spell('green-flame blade',
+spell_auto_data('green-flame blade',
       properties{casting_time:"1 action",
                  classes:[sorcerer,warlock,wizard],
                  components:[v,m("A weapon.")],
@@ -2174,7 +2174,7 @@ spell('green-flame blade',
                  ritual:no,
                  school:evocation}).
 
-spell('guardian of faith',
+spell_auto_data('guardian of faith',
       properties{casting_time:"1 action",
                  classes:[cleric,paladin],
                  components:[v],
@@ -2186,7 +2186,7 @@ spell('guardian of faith',
                  ritual:no,
                  school:conjuration}).
 
-spell('guards and wards',
+spell_auto_data('guards and wards',
       properties{casting_time:"10 minutes",
                  classes:[bard,wizard],
                  components:[v,s,m("Burning incense, a small measure of brimstone and oil, a knotted string, a small amount of umber hulk blood, and a small silver rod worth at least 10 gp.")],
@@ -2198,7 +2198,7 @@ spell('guards and wards',
                  ritual:no,
                  school:abjuration}).
 
-spell(guidance,
+spell_auto_data(guidance,
       properties{casting_time:"1 action",
                  classes:[cleric,druid],
                  components:[v,s],
@@ -2210,7 +2210,7 @@ spell(guidance,
                  ritual:no,
                  school:divination}).
 
-spell('guiding bolt',
+spell_auto_data('guiding bolt',
       properties{casting_time:"1 action",
                  classes:[cleric],
                  components:[v,s],
@@ -2222,7 +2222,7 @@ spell('guiding bolt',
                  ritual:no,
                  school:evocation}).
 
-spell(gust,
+spell_auto_data(gust,
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,wizard],
                  components:[v,s],
@@ -2234,7 +2234,7 @@ spell(gust,
                  ritual:no,
                  school:transmutation}).
 
-spell('gust of wind',
+spell_auto_data('gust of wind',
       properties{casting_time:"1 action",
                  classes:[cleric,druid,sorcerer,wizard],
                  components:[v,s,m("A legume seed.")],
@@ -2246,7 +2246,7 @@ spell('gust of wind',
                  ritual:no,
                  school:evocation}).
 
-spell('hail of thorns',
+spell_auto_data('hail of thorns',
       properties{casting_time:"1 bonus action",
                  classes:[ranger],
                  components:[v],
@@ -2258,7 +2258,7 @@ spell('hail of thorns',
                  ritual:no,
                  school:conjuration}).
 
-spell(hallow,
+spell_auto_data(hallow,
       properties{casting_time:"24 hours",
                  classes:[cleric,warlock],
                  components:[v,s,m("Herbs, oils, and incense worth at least 1,000 gp, which the spell consumes.")],
@@ -2270,7 +2270,7 @@ spell(hallow,
                  ritual:no,
                  school:evocation}).
 
-spell('hallucinatory terrain',
+spell_auto_data('hallucinatory terrain',
       properties{casting_time:"10 minutes",
                  classes:[bard,druid,warlock,wizard],
                  components:[v,s,m("A stone, a twig, and a bit of green plant.You make natural terrain in a 150-foot cube in range look, sound, and smell like some other sort of natural terrain. Thus, open fields or a road can be made to resemble a swamp, hill, crevasse, or some other difficult or impassable terrain. A pond can be made to seem like a grassy meadow, a precipice like a gentle slope, or a rock-strewn gully like a wide and smooth road. Manufactured structures, equipment, and creatures within the area aren’t changed in appearance.")],
@@ -2282,7 +2282,7 @@ spell('hallucinatory terrain',
                  ritual:no,
                  school:illusion}).
 
-spell(harm,
+spell_auto_data(harm,
       properties{casting_time:"1 action",
                  classes:[cleric],
                  components:[v,s],
@@ -2294,7 +2294,7 @@ spell(harm,
                  ritual:no,
                  school:necromancy}).
 
-spell(haste,
+spell_auto_data(haste,
       properties{casting_time:"1 action",
                  classes:[druid,paladin,sorcerer,wizard],
                  components:[v,s,m("A shaving of licorice root.")],
@@ -2306,7 +2306,7 @@ spell(haste,
                  ritual:no,
                  school:transmutation}).
 
-spell(heal,
+spell_auto_data(heal,
       properties{casting_time:"1 action",
                  classes:[cleric,druid],
                  components:[v,s],
@@ -2318,7 +2318,7 @@ spell(heal,
                  ritual:no,
                  school:evocation}).
 
-spell('healing word',
+spell_auto_data('healing word',
       properties{casting_time:"1 bonus action",
                  classes:[bard,cleric,druid],
                  components:[v],
@@ -2330,7 +2330,7 @@ spell('healing word',
                  ritual:no,
                  school:evocation}).
 
-spell('heat metal',
+spell_auto_data('heat metal',
       properties{casting_time:"1 action",
                  classes:[bard,druid],
                  components:[v,s,m("A piece of iron and a flame.")],
@@ -2342,7 +2342,7 @@ spell('heat metal',
                  ritual:no,
                  school:transmutation}).
 
-spell('hellish rebuke',
+spell_auto_data('hellish rebuke',
       properties{casting_time:"1 reaction",
                  classes:[warlock],
                  components:[v,s],
@@ -2354,7 +2354,7 @@ spell('hellish rebuke',
                  ritual:no,
                  school:evocation}).
 
-spell('heroes\' feast',
+spell_auto_data('heroes\' feast',
       properties{casting_time:"10 minutes",
                  classes:[cleric,druid],
                  components:[v,s,m("A gem-encrusted bowl worth at least 1,000gp, which the spell consumes.")],
@@ -2366,7 +2366,7 @@ spell('heroes\' feast',
                  ritual:no,
                  school:conjuration}).
 
-spell(heroism,
+spell_auto_data(heroism,
       properties{casting_time:"1 action",
                  classes:[bard,paladin],
                  components:[v,s],
@@ -2378,7 +2378,7 @@ spell(heroism,
                  ritual:no,
                  school:enchantment}).
 
-spell(hex,
+spell_auto_data(hex,
       properties{casting_time:"1 bonus action",
                  classes:[warlock],
                  components:[v,s,m("The petrified eye of a newt.")],
@@ -2390,7 +2390,7 @@ spell(hex,
                  ritual:no,
                  school:enchantment}).
 
-spell('hold monster',
+spell_auto_data('hold monster',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,paladin,sorcerer,warlock,wizard],
                  components:[v,s,m("A small piece of iron.")],
@@ -2402,7 +2402,7 @@ spell('hold monster',
                  ritual:no,
                  school:enchantment}).
 
-spell('hold person',
+spell_auto_data('hold person',
       properties{casting_time:"1 action",
                  classes:[bard,cleric,druid,paladin,sorcerer,warlock,wizard],
                  components:[v,s,m("A small, straight piece of iron.")],
@@ -2414,7 +2414,7 @@ spell('hold person',
                  ritual:no,
                  school:enchantment}).
 
-spell('holy aura',
+spell_auto_data('holy aura',
       properties{casting_time:"1 action",
                  classes:[cleric],
                  components:[v,s,m("A tiny reliquary worth at least 1,000gp containing a sacred relic, such as a scrap of cloth from a saint’s robe or a piece of parchment from a religious text.")],
@@ -2426,7 +2426,7 @@ spell('holy aura',
                  ritual:no,
                  school:abjuration}).
 
-spell('hunger of hadar',
+spell_auto_data('hunger of hadar',
       properties{casting_time:"1 action",
                  classes:[warlock],
                  components:[v,s,m("A pickled octopus tentacle.")],
@@ -2438,7 +2438,7 @@ spell('hunger of hadar',
                  ritual:no,
                  school:conjuration}).
 
-spell('hunter\'s mark',
+spell_auto_data('hunter\'s mark',
       properties{casting_time:"1 bonus action",
                  classes:[paladin,ranger],
                  components:[v],
@@ -2450,7 +2450,7 @@ spell('hunter\'s mark',
                  ritual:no,
                  school:divination}).
 
-spell('hypnotic pattern',
+spell_auto_data('hypnotic pattern',
       properties{casting_time:"1 action",
                  classes:[bard,sorcerer,warlock,wizard],
                  components:[s,m("A glowing stick of incense or a crystal vial filled with phosphorescent material.")],
@@ -2462,7 +2462,7 @@ spell('hypnotic pattern',
                  ritual:no,
                  school:illusion}).
 
-spell('ice knife',
+spell_auto_data('ice knife',
       properties{casting_time:"1 action",
                  classes:[druid,sorcerer,wizard],
                  components:[s,m("A drop of water or piece of ice.")],
@@ -2474,7 +2474,7 @@ spell('ice knife',
                  ritual:no,
                  school:conjuration}).
 
-spell('ice storm',
+spell_auto_data('ice storm',
       properties{casting_time:"1 action",
                  classes:[cleric,druid,paladin,sorcerer,wizard],
                  components:[v,s,m("A pinch of dust and a few drops of water.")],
@@ -2486,7 +2486,7 @@ spell('ice storm',
                  ritual:no,
                  school:evocation}).
 
-spell(identify,
+spell_auto_data(identify,
       properties{casting_time:"1 minute",
                  classes:[bard,cleric,'ritual caster',wizard],
                  components:[v,s,m("A pearl worth at least 100gp and an owl feather.")],
@@ -2498,7 +2498,7 @@ spell(identify,
                  ritual:yes,
                  school:divination}).
 
-spell('illusory script',
+spell_auto_data('illusory script',
       properties{casting_time:"1 minute",
                  classes:[bard,'ritual caster',warlock,wizard],
                  components:[s,m("A lead-based ink worth at least 10gp, which this spell consumes.")],
@@ -2510,7 +2510,7 @@ spell('illusory script',
                  ritual:yes,
                  school:illusion}).
 
-spell(immolation,
+spell_auto_data(immolation,
       properties{casting_time:"1 action",
                  classes:[sorcerer,wizard],
                  components:[v],
@@ -2522,401 +2522,401 @@ spell(immolation,
                  ritual:no,
                  school:evocation}).
 
-spell(imprisonment,properties{casting_time:"1 minute",classes:[warlock,wizard],components:[v,s,m("A vellum depiction or a carved statuette in the likeness of the target, and a special component that varies according to the version of the spell you choose, worth at least 500gp per Hit Die of the target.")],desc:"You create a magical restraint to hold a creature that you can see within range. The target must succeed on a wisdom saving throw or be bound by the spell; if it succeeds, it is immune to this spell if you cast it again. While affected by this spell, the creature doesn’t need to breathe, eat, or drink, and it doesn’t age. Divination spells can’t locate or perceive the target.When you cast the spell, you choose one of the following forms of imprisonment.Burial. The target is entombed far beneath the earth in a sphere of magical force that is just large enough to contain the target. Nothing can pass through the sphere, nor can any creature teleport or use planar travel to get into or out of it.The special component for this version of the spell is a small mithral orb.Chaining. Heavy chains, firmly rooted in the ground, hold the target in place. The target is restrained until the spell ends, and it can’t move or be moved by any means until then.The special component for this version of the spell is a fine chain of precious metal.Hedged Prison. The spell transports the target into a tiny demiplane that is warded against teleportation and planar travel. The demiplane can be a labyrinth, a cage, a tower, or any similar confined structure or area of your choice.The special component for this version of the spell is a miniature representation of the prison made from jade.Minimus Containment. The target shrinks to a height of 1 inch and is imprisoned inside a gemstone or similar object. Light can pass through the gemstone normally (allowing the target to see out and other creatures to see in), but nothing else can pass through, even by means of teleportation or planar travel. The gemstone can’t be cut or broken while the spell remains in effect.The special component for this version of the spell is a large, transparent gemstone, such as a corundum, diamond, or ruby.Slumber. The target falls asleep and can’t be awoken.The special component for this version of the spell consists of rare soporific herbs.Ending the Spell. During the casting of the spell, in any of its versions, you can specify a condition that will cause the spell to end and release the target. The condition can be as specific or as elaborate as you choose, but the DM must agree that the condition is reasonable and has a likelihood of coming to pass. The conditions can be based on a creature’s name, identity, or deity but otherwise must be based on observable actions or qualities and not based on intangibles such as level, class, or hit points.A dispel magic spell can end the spell only if it is cast as a 9th-level spell, targeting either the prison or the special component used to create it.You can use a particular special component to create only one prison at a time. If you cast the spell again using the same component, the target of the first casting is immediately freed from its binding.",duration:"Until dispelled",higher_level:no,level:9,range:feet(30),ritual:no,school:abjuration}).
+spell_auto_data(imprisonment,properties{casting_time:"1 minute",classes:[warlock,wizard],components:[v,s,m("A vellum depiction or a carved statuette in the likeness of the target, and a special component that varies according to the version of the spell you choose, worth at least 500gp per Hit Die of the target.")],desc:"You create a magical restraint to hold a creature that you can see within range. The target must succeed on a wisdom saving throw or be bound by the spell; if it succeeds, it is immune to this spell if you cast it again. While affected by this spell, the creature doesn’t need to breathe, eat, or drink, and it doesn’t age. Divination spells can’t locate or perceive the target.When you cast the spell, you choose one of the following forms of imprisonment.Burial. The target is entombed far beneath the earth in a sphere of magical force that is just large enough to contain the target. Nothing can pass through the sphere, nor can any creature teleport or use planar travel to get into or out of it.The special component for this version of the spell is a small mithral orb.Chaining. Heavy chains, firmly rooted in the ground, hold the target in place. The target is restrained until the spell ends, and it can’t move or be moved by any means until then.The special component for this version of the spell is a fine chain of precious metal.Hedged Prison. The spell transports the target into a tiny demiplane that is warded against teleportation and planar travel. The demiplane can be a labyrinth, a cage, a tower, or any similar confined structure or area of your choice.The special component for this version of the spell is a miniature representation of the prison made from jade.Minimus Containment. The target shrinks to a height of 1 inch and is imprisoned inside a gemstone or similar object. Light can pass through the gemstone normally (allowing the target to see out and other creatures to see in), but nothing else can pass through, even by means of teleportation or planar travel. The gemstone can’t be cut or broken while the spell remains in effect.The special component for this version of the spell is a large, transparent gemstone, such as a corundum, diamond, or ruby.Slumber. The target falls asleep and can’t be awoken.The special component for this version of the spell consists of rare soporific herbs.Ending the Spell. During the casting of the spell, in any of its versions, you can specify a condition that will cause the spell to end and release the target. The condition can be as specific or as elaborate as you choose, but the DM must agree that the condition is reasonable and has a likelihood of coming to pass. The conditions can be based on a creature’s name, identity, or deity but otherwise must be based on observable actions or qualities and not based on intangibles such as level, class, or hit points.A dispel magic spell can end the spell only if it is cast as a 9th-level spell, targeting either the prison or the special component used to create it.You can use a particular special component to create only one prison at a time. If you cast the spell again using the same component, the target of the first casting is immediately freed from its binding.",duration:"Until dispelled",higher_level:no,level:9,range:feet(30),ritual:no,school:abjuration}).
 
-spell('incendiary cloud',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"A swirling cloud of smoke shot through with white-hot embers appears in a 20-foot-radius sphere centered on a point within range. The cloud spreads around corners and is heavily obscured. It lasts for the duration or until a wind of moderate or greater speed (at least 10 miles per hour) disperses it.When the cloud appears, each creature in it must make a dexterity saving throw. A creature takes 10d8 fire damage on a failed save, or half as much damage on a successful one. A creature must also make this saving throw when it enters the spell’s area for the first time on a turn or ends its turn there.The cloud moves 10 feet directly away from you in a direction that you choose at the start of each of your turns.",duration:"Up to 1 minute",higher_level:no,level:8,range:feet(150),ritual:no,school:conjuration}).
+spell_auto_data('incendiary cloud',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"A swirling cloud of smoke shot through with white-hot embers appears in a 20-foot-radius sphere centered on a point within range. The cloud spreads around corners and is heavily obscured. It lasts for the duration or until a wind of moderate or greater speed (at least 10 miles per hour) disperses it.When the cloud appears, each creature in it must make a dexterity saving throw. A creature takes 10d8 fire damage on a failed save, or half as much damage on a successful one. A creature must also make this saving throw when it enters the spell’s area for the first time on a turn or ends its turn there.The cloud moves 10 feet directly away from you in a direction that you choose at the start of each of your turns.",duration:"Up to 1 minute",higher_level:no,level:8,range:feet(150),ritual:no,school:conjuration}).
 
-spell('inflict wounds',properties{casting_time:"1 action",classes:[cleric],components:[v,s],desc:"Make a melee spell attack against a creature you can reach. On a hit, the target takes 3d10 necrotic damage.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d10 for each slot level above 1st.",level:1,range:touch,ritual:no,school:necromancy}).
+spell_auto_data('inflict wounds',properties{casting_time:"1 action",classes:[cleric],components:[v,s],desc:"Make a melee spell attack against a creature you can reach. On a hit, the target takes 3d10 necrotic damage.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d10 for each slot level above 1st.",level:1,range:touch,ritual:no,school:necromancy}).
 
-spell('insect plague',properties{casting_time:"1 action",classes:[cleric,druid,sorcerer],components:[v,s,m("A few grains of sugar, some kernels of grain, and a smear of fat.")],desc:"Swarming, biting locusts fill a 20-foot-radius sphere centered on a point you choose within range. The sphere spreads around corners. The sphere remains for the duration, and its area is lightly obscured. The sphere's area is difficult terrain.When the area appears, each creature in it must make a constitution saving throw. A creature takes 4d10 piercing damage on a failed save, or half as much damage on a successful one. A creature must also make this saving throw when it enters the spell's area for the first time on a turn or ends its turn there.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 6th level or higher, the damage increases by 1d10 for each slot level above 5th.",level:5,range:feet(300),ritual:no,school:conjuration}).
+spell_auto_data('insect plague',properties{casting_time:"1 action",classes:[cleric,druid,sorcerer],components:[v,s,m("A few grains of sugar, some kernels of grain, and a smear of fat.")],desc:"Swarming, biting locusts fill a 20-foot-radius sphere centered on a point you choose within range. The sphere spreads around corners. The sphere remains for the duration, and its area is lightly obscured. The sphere's area is difficult terrain.When the area appears, each creature in it must make a constitution saving throw. A creature takes 4d10 piercing damage on a failed save, or half as much damage on a successful one. A creature must also make this saving throw when it enters the spell's area for the first time on a turn or ends its turn there.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 6th level or higher, the damage increases by 1d10 for each slot level above 5th.",level:5,range:feet(300),ritual:no,school:conjuration}).
 
-spell('investiture of flame',properties{casting_time:"1 action",classes:[druid,sorcerer,warlock,wizard],components:[v,s],desc:"Flames race across your body, shedding bright light in a 30-foot radius and dim light for an additional 30 feet for the spell's duration. The flames don't harm you. Until the spell ends, you gain the following benefits:- You are immune to fire damage and have resistance to cold damage.- Any creature that moves within 5 feet of you for the first time on a turn or ends its turn there takes 1d10 fire damage.- You can use your action to create a line of fire 15 feet long and 5 feet wide extending from you in a direction you choose. Each creature in the line must make a Dexterity saving throw. A creature takes 4d8 fire damage on a failed save, or half as much damage on a successful one.",duration:"Up to 10 minutes",higher_level:no,level:6,range:self,ritual:no,school:transmutation}).
+spell_auto_data('investiture of flame',properties{casting_time:"1 action",classes:[druid,sorcerer,warlock,wizard],components:[v,s],desc:"Flames race across your body, shedding bright light in a 30-foot radius and dim light for an additional 30 feet for the spell's duration. The flames don't harm you. Until the spell ends, you gain the following benefits:- You are immune to fire damage and have resistance to cold damage.- Any creature that moves within 5 feet of you for the first time on a turn or ends its turn there takes 1d10 fire damage.- You can use your action to create a line of fire 15 feet long and 5 feet wide extending from you in a direction you choose. Each creature in the line must make a Dexterity saving throw. A creature takes 4d8 fire damage on a failed save, or half as much damage on a successful one.",duration:"Up to 10 minutes",higher_level:no,level:6,range:self,ritual:no,school:transmutation}).
 
-spell('investiture of ice',properties{casting_time:"1 action",classes:[druid,sorcerer,warlock,wizard],components:[v,s],desc:"Until the spell ends, ice rimes your body, and you gain the following benefits:- You are immune to cold damage and have resistance to fire damage.- You can move across difficult terrain created by ice or snow without spending extra movement.- The ground in a 10-foot radius around you is icy and is difficult terrain for creatures other than you. The radius moves with you.- You can use your action to create a 15-foot cone of freezing wind extending from your outstretched hand in a direction you choose. Each creature in the cone must make a Constitution saving throw. A creature takes 4d6 cold damage on a failed save, or half as much damage on a successful one. A creature that fails its save against this effect has its speed halved until the start of your next turn.",duration:"Up to 10 minutes",higher_level:no,level:6,range:self,ritual:no,school:transmutation}).
+spell_auto_data('investiture of ice',properties{casting_time:"1 action",classes:[druid,sorcerer,warlock,wizard],components:[v,s],desc:"Until the spell ends, ice rimes your body, and you gain the following benefits:- You are immune to cold damage and have resistance to fire damage.- You can move across difficult terrain created by ice or snow without spending extra movement.- The ground in a 10-foot radius around you is icy and is difficult terrain for creatures other than you. The radius moves with you.- You can use your action to create a 15-foot cone of freezing wind extending from your outstretched hand in a direction you choose. Each creature in the cone must make a Constitution saving throw. A creature takes 4d6 cold damage on a failed save, or half as much damage on a successful one. A creature that fails its save against this effect has its speed halved until the start of your next turn.",duration:"Up to 10 minutes",higher_level:no,level:6,range:self,ritual:no,school:transmutation}).
 
-spell('investiture of stone',properties{casting_time:"1 action",classes:[druid,sorcerer,warlock,wizard],components:[v,s],desc:"Until the spell ends, bits of rock spread across your body, and you gain the following benefits:- You have resistance to bludgeoning, piercing, and slashing damage from nonmagical weapons.- You can use your action to create a small earthquake on the ground in a 15-foot radius centered on you. Other creatures on that ground must succeed on a Dexterity saving throw or be knocked prone.- You can move across difficult terrain made of earth or stone without spending extra movement. You can move through solid earth or stone as if it was air and without destabilizing it, but you can't end your movement there. If you do so, you are ejected to the nearest unoccupied space, this spell ends, and you are stunned until the end of your next turn.",duration:"Up to 10 minutes",higher_level:no,level:6,range:self,ritual:no,school:transmutation}).
+spell_auto_data('investiture of stone',properties{casting_time:"1 action",classes:[druid,sorcerer,warlock,wizard],components:[v,s],desc:"Until the spell ends, bits of rock spread across your body, and you gain the following benefits:- You have resistance to bludgeoning, piercing, and slashing damage from nonmagical weapons.- You can use your action to create a small earthquake on the ground in a 15-foot radius centered on you. Other creatures on that ground must succeed on a Dexterity saving throw or be knocked prone.- You can move across difficult terrain made of earth or stone without spending extra movement. You can move through solid earth or stone as if it was air and without destabilizing it, but you can't end your movement there. If you do so, you are ejected to the nearest unoccupied space, this spell ends, and you are stunned until the end of your next turn.",duration:"Up to 10 minutes",higher_level:no,level:6,range:self,ritual:no,school:transmutation}).
 
-spell('investiture of wind',properties{casting_time:"1 action",classes:[druid,sorcerer,warlock,wizard],components:[v,s],desc:"Until the spell ends, wind whirls around you, and you gain the following benefits:- Ranged weapon attacks made against you have disadvantage on the attack roll.- You gain a flying speed of 60 feet. If you are still flying when the spell ends, you fall, unless you can somehow prevent it.- You can use your action to create a 15-foot cube of swirling wind centered on a point you can see within 60 feet of you. Each creature in that area must make a Constitution saving throw. A creature takes 2d10 bludgeoning damage on a failed save, or half as much damage on a successful one. If a Large or smaller creature fails the save, that creature is also pushed up to 10 feet away from the center of the cube.",duration:"Up to 10 minutes",higher_level:no,level:6,range:self,ritual:no,school:transmutation}).
+spell_auto_data('investiture of wind',properties{casting_time:"1 action",classes:[druid,sorcerer,warlock,wizard],components:[v,s],desc:"Until the spell ends, wind whirls around you, and you gain the following benefits:- Ranged weapon attacks made against you have disadvantage on the attack roll.- You gain a flying speed of 60 feet. If you are still flying when the spell ends, you fall, unless you can somehow prevent it.- You can use your action to create a 15-foot cube of swirling wind centered on a point you can see within 60 feet of you. Each creature in that area must make a Constitution saving throw. A creature takes 2d10 bludgeoning damage on a failed save, or half as much damage on a successful one. If a Large or smaller creature fails the save, that creature is also pushed up to 10 feet away from the center of the cube.",duration:"Up to 10 minutes",higher_level:no,level:6,range:self,ritual:no,school:transmutation}).
 
-spell(invisibility,properties{casting_time:"1 action",classes:[bard,druid,sorcerer,warlock,wizard],components:[v,s,m("An eyelash encased in gum arabic.")],desc:"A creature you touch becomes invisible until the spell ends. Anything the target is wearing or carrying is invisible as long as it is on the target’s person. The spell ends for a target that attacks or casts a spell.",duration:"Up to 1 hour",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, you can target one additional creature for each slot level above 2nd.",level:2,range:touch,ritual:no,school:illusion}).
+spell_auto_data(invisibility,properties{casting_time:"1 action",classes:[bard,druid,sorcerer,warlock,wizard],components:[v,s,m("An eyelash encased in gum arabic.")],desc:"A creature you touch becomes invisible until the spell ends. Anything the target is wearing or carrying is invisible as long as it is on the target’s person. The spell ends for a target that attacks or casts a spell.",duration:"Up to 1 hour",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, you can target one additional creature for each slot level above 2nd.",level:2,range:touch,ritual:no,school:illusion}).
 
-spell(jump,properties{casting_time:"1 action",classes:[druid,ranger,sorcerer,wizard],components:[v,s,m("A grasshopper’s hind leg.")],desc:"You touch a creature. The creature’s jump distance is tripled until the spell ends.",duration:"1 minute",higher_level:no,level:1,range:touch,ritual:no,school:transmutation}).
+spell_auto_data(jump,properties{casting_time:"1 action",classes:[druid,ranger,sorcerer,wizard],components:[v,s,m("A grasshopper’s hind leg.")],desc:"You touch a creature. The creature’s jump distance is tripled until the spell ends.",duration:"1 minute",higher_level:no,level:1,range:touch,ritual:no,school:transmutation}).
 
-spell(knock,properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v],desc:"Choose an object that you can see within range. The object can be a door, a box, a chest, a set of manacles, a padlock, or another object that contains a mundane or magical means that prevents access.A target that is held shut by a mundane lock or that is stuck or barred becomes unlocked, unstuck, or unbarred. If the object has multiple locks, only one of them is unlocked.If you choose a target that is held shut with arcane lock, that spell is suppressed for 10 minutes, during which time the target can be opened and shut normally.When you cast the spell, a loud knock, audible from as far away as 300 feet, emanates from the target object.",duration:"Instantaneous",higher_level:no,level:2,range:feet(60),ritual:no,school:transmutation}).
+spell_auto_data(knock,properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v],desc:"Choose an object that you can see within range. The object can be a door, a box, a chest, a set of manacles, a padlock, or another object that contains a mundane or magical means that prevents access.A target that is held shut by a mundane lock or that is stuck or barred becomes unlocked, unstuck, or unbarred. If the object has multiple locks, only one of them is unlocked.If you choose a target that is held shut with arcane lock, that spell is suppressed for 10 minutes, during which time the target can be opened and shut normally.When you cast the spell, a loud knock, audible from as far away as 300 feet, emanates from the target object.",duration:"Instantaneous",higher_level:no,level:2,range:feet(60),ritual:no,school:transmutation}).
 
-spell('legend lore',properties{casting_time:"10 minutes",classes:[bard,cleric,wizard],components:[v,s,m("Incense worth 250 inches that fate consumes and four sticks of ivory worth 50 gp each.")],desc:"Name or describe a person, place or object. The fate brings to mind a brief and summary information about the thing you named. Information can be presented as tales of forgotten history or even secret information that have never been revealed. If the thing you named is not legendary resonance, you get no information. More information you already have about the thing, more precise and detailed the information you will receive.What you learn is accurate but can be hidden in figurative language. For example, if you have a mysterious magical ax in your hand, the spell can reveal this information: \"Woe to the wicked that affects his hands the ax because the handle decide those of malignant Only a true child of the stone magnet. and loved Moradin could awaken the true power of this ax, and only with the sacred Rudnogg word on the lips.\"",duration:"Instantaneous",higher_level:no,level:5,range:self,ritual:no,school:divination}).
+spell_auto_data('legend lore',properties{casting_time:"10 minutes",classes:[bard,cleric,wizard],components:[v,s,m("Incense worth 250 inches that fate consumes and four sticks of ivory worth 50 gp each.")],desc:"Name or describe a person, place or object. The fate brings to mind a brief and summary information about the thing you named. Information can be presented as tales of forgotten history or even secret information that have never been revealed. If the thing you named is not legendary resonance, you get no information. More information you already have about the thing, more precise and detailed the information you will receive.What you learn is accurate but can be hidden in figurative language. For example, if you have a mysterious magical ax in your hand, the spell can reveal this information: \"Woe to the wicked that affects his hands the ax because the handle decide those of malignant Only a true child of the stone magnet. and loved Moradin could awaken the true power of this ax, and only with the sacred Rudnogg word on the lips.\"",duration:"Instantaneous",higher_level:no,level:5,range:self,ritual:no,school:divination}).
 
-spell('leomund\'s secret chest',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("An exquisite chest, 3 feet by 2 feet by 2 feet, constructed from rare materials worth at least 5,000 gp, and a Tiny replica made from the same materials worth at least 50 gp.")],desc:"You hide a chest, and all its contents, on the Ethereal Plane. You must touch the chest and the miniature replica that serves as a material component for the spell. The chest can contain up to 12 cubic feet of nonliving material (3 feet by 2 feet by 2 feet).While the chest remains on the Ethereal Plane, you can use an action and touch the replica to recall the chest. It appears in an unoccupied space on the ground within 5 feet of you. You can send the chest back to the Ethereal Plane by using an action and touching both the chest and the replica.After 60 days, there is a cumulative 5 percent chance per day that the spell's effect ends. This effect ends if you cast this spell again, if the smaller replica chest is destroyed, or if you choose to end the spell as an action. If the spell ends and the larger chest is on the Ethereal Plane, it is irretrievably lost.",duration:"Instantaneous",higher_level:no,level:4,range:touch,ritual:no,school:conjuration}).
+spell_auto_data('leomund\'s secret chest',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("An exquisite chest, 3 feet by 2 feet by 2 feet, constructed from rare materials worth at least 5,000 gp, and a Tiny replica made from the same materials worth at least 50 gp.")],desc:"You hide a chest, and all its contents, on the Ethereal Plane. You must touch the chest and the miniature replica that serves as a material component for the spell. The chest can contain up to 12 cubic feet of nonliving material (3 feet by 2 feet by 2 feet).While the chest remains on the Ethereal Plane, you can use an action and touch the replica to recall the chest. It appears in an unoccupied space on the ground within 5 feet of you. You can send the chest back to the Ethereal Plane by using an action and touching both the chest and the replica.After 60 days, there is a cumulative 5 percent chance per day that the spell's effect ends. This effect ends if you cast this spell again, if the smaller replica chest is destroyed, or if you choose to end the spell as an action. If the spell ends and the larger chest is on the Ethereal Plane, it is irretrievably lost.",duration:"Instantaneous",higher_level:no,level:4,range:touch,ritual:no,school:conjuration}).
 
-spell('leomund\'s tiny hut',properties{casting_time:"1 minute",classes:[bard,'ritual caster',wizard],components:[v,s,m("A small crystal bead.")],desc:"A 10-foot-radius immobile dome of force springs into existence around and above you and remains stationary for the duration. The spell ends if you leave its area.Nine creatures of Medium size or smaller can fit inside the dome with you. The spell fails if its area includes a larger creature or more than nine creatures. Creatures and objects within the dome when you cast this spell can move through it freely. All other creatures and objects are barred from passing through it. Spells and other magical effects can’t extend through the dome or be cast through it. The atmosphere inside the space is comfortable and dry, regardless of the weather outside.Until the spell ends, you can command the interior to become dimly lit or dark. The dome is opaque from the outside, of any color you choose, but it is transparent from the inside.",duration:"8 hours",higher_level:no,level:3,range:self,ritual:yes,school:evocation}).
+spell_auto_data('leomund\'s tiny hut',properties{casting_time:"1 minute",classes:[bard,'ritual caster',wizard],components:[v,s,m("A small crystal bead.")],desc:"A 10-foot-radius immobile dome of force springs into existence around and above you and remains stationary for the duration. The spell ends if you leave its area.Nine creatures of Medium size or smaller can fit inside the dome with you. The spell fails if its area includes a larger creature or more than nine creatures. Creatures and objects within the dome when you cast this spell can move through it freely. All other creatures and objects are barred from passing through it. Spells and other magical effects can’t extend through the dome or be cast through it. The atmosphere inside the space is comfortable and dry, regardless of the weather outside.Until the spell ends, you can command the interior to become dimly lit or dark. The dome is opaque from the outside, of any color you choose, but it is transparent from the inside.",duration:"8 hours",higher_level:no,level:3,range:self,ritual:yes,school:evocation}).
 
-spell('lesser restoration',properties{casting_time:"1 action",classes:[bard,cleric,druid,paladin,ranger],components:[v,s],desc:"You touch a creature and can end either one disease or one condition afflicting it. The condition can be blinded, deafened, paralyzed, or poisoned.",duration:"Instantaneous",higher_level:no,level:2,range:touch,ritual:no,school:abjuration}).
+spell_auto_data('lesser restoration',properties{casting_time:"1 action",classes:[bard,cleric,druid,paladin,ranger],components:[v,s],desc:"You touch a creature and can end either one disease or one condition afflicting it. The condition can be blinded, deafened, paralyzed, or poisoned.",duration:"Instantaneous",higher_level:no,level:2,range:touch,ritual:no,school:abjuration}).
 
-spell(levitate,properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("Either a small leather loop or a piece of golden wire bent into a cup shape with a long shank on one end.")],desc:"One creature or object of your choice that you can see within range rises vertically, up to 20 feet, and remains suspended there for the duration. The spell can levitate a target that weighs up to 500 pounds. An unwilling creature that succeeds on a constitution saving throw is unaffected.The target can move only by pushing or pulling against a fixed object or surface within reach (such as a wall or a ceiling), which allows it to move as if it were climbing. You can change the target’s altitude by up to 20 feet in either direction on your turn. If you are the target, you can move up or down as part of your move. Otherwise, you can use your action to move the target, which must remain within the spell’s range.When the spell ends, the target floats gently to the ground if it is still aloft.",duration:"Up to 10 minutes",higher_level:no,level:2,range:feet(60),ritual:no,school:transmutation}).
+spell_auto_data(levitate,properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("Either a small leather loop or a piece of golden wire bent into a cup shape with a long shank on one end.")],desc:"One creature or object of your choice that you can see within range rises vertically, up to 20 feet, and remains suspended there for the duration. The spell can levitate a target that weighs up to 500 pounds. An unwilling creature that succeeds on a constitution saving throw is unaffected.The target can move only by pushing or pulling against a fixed object or surface within reach (such as a wall or a ceiling), which allows it to move as if it were climbing. You can change the target’s altitude by up to 20 feet in either direction on your turn. If you are the target, you can move up or down as part of your move. Otherwise, you can use your action to move the target, which must remain within the spell’s range.When the spell ends, the target floats gently to the ground if it is still aloft.",duration:"Up to 10 minutes",higher_level:no,level:2,range:feet(60),ritual:no,school:transmutation}).
 
-spell(light,properties{casting_time:"1 action",classes:[bard,cleric,sorcerer,wizard],components:[v,m("A firefly or phosphorescent moss.")],desc:"You touch one object that is no larger than 10 feet in any dimension. Until the spell ends, the object sheds bright light in a 20-foot radius and dim light for an additional 20 feet. The light can be colored as you like. Completely covering the object with something opaque blocks the light. The spell ends if you cast it again or dismiss it as an action.If you target an object held or worn by a hostile creature, that creature must succeed on a dexterity saving throw to avoid the spell.",duration:"1 hour",higher_level:no,level:0,range:touch,ritual:no,school:evocation}).
+spell_auto_data(light,properties{casting_time:"1 action",classes:[bard,cleric,sorcerer,wizard],components:[v,m("A firefly or phosphorescent moss.")],desc:"You touch one object that is no larger than 10 feet in any dimension. Until the spell ends, the object sheds bright light in a 20-foot radius and dim light for an additional 20 feet. The light can be colored as you like. Completely covering the object with something opaque blocks the light. The spell ends if you cast it again or dismiss it as an action.If you target an object held or worn by a hostile creature, that creature must succeed on a dexterity saving throw to avoid the spell.",duration:"1 hour",higher_level:no,level:0,range:touch,ritual:no,school:evocation}).
 
-spell('lightning arrow',properties{casting_time:"1 bonus action",classes:[ranger],components:[v,s],desc:"The next time you make a ranged weapon attack during the spell’s duration, the weapon’s ammunition, or the weapon itself if it’s a thrown weapon, transforms into a bolt of lightning. Make the attack roll as normal. The target takes 4d8 lightning damage on a hit, or half as much damage on a miss, instead of the weapon’s normal damage.Whether you hit or miss, each creature within 10 feet of the target must make a dexterity saving throw. Each of these creatures takes 2d8 lightning damage on a failed save, or half as much damage on a successful one.The piece of ammunition or weapon then returns to its normal form.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the damage for both effects of the spell increases by 1d8 for each slot level above 3rd.",level:3,range:self,ritual:no,school:transmutation}).
+spell_auto_data('lightning arrow',properties{casting_time:"1 bonus action",classes:[ranger],components:[v,s],desc:"The next time you make a ranged weapon attack during the spell’s duration, the weapon’s ammunition, or the weapon itself if it’s a thrown weapon, transforms into a bolt of lightning. Make the attack roll as normal. The target takes 4d8 lightning damage on a hit, or half as much damage on a miss, instead of the weapon’s normal damage.Whether you hit or miss, each creature within 10 feet of the target must make a dexterity saving throw. Each of these creatures takes 2d8 lightning damage on a failed save, or half as much damage on a successful one.The piece of ammunition or weapon then returns to its normal form.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the damage for both effects of the spell increases by 1d8 for each slot level above 3rd.",level:3,range:self,ritual:no,school:transmutation}).
 
-spell('lightning bolt',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A bit of fur and a rod of amber, crystal, or glass.")],desc:"A stroke of lightning forming a line 100 feet long and 5 feet wide blasts out from you in a direction you choose. Each creature in the line must make a dexterity saving throw. A creature takes 8d6 lightning damage on a failed save, or half as much damage on a successful one.The lightning ignites flammable objects in the area that aren’t being worn or carried.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d6 for each slot level above 3rd.",level:3,range:self,ritual:no,school:evocation}).
+spell_auto_data('lightning bolt',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A bit of fur and a rod of amber, crystal, or glass.")],desc:"A stroke of lightning forming a line 100 feet long and 5 feet wide blasts out from you in a direction you choose. Each creature in the line must make a dexterity saving throw. A creature takes 8d6 lightning damage on a failed save, or half as much damage on a successful one.The lightning ignites flammable objects in the area that aren’t being worn or carried.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d6 for each slot level above 3rd.",level:3,range:self,ritual:no,school:evocation}).
 
-spell('lightning lure',properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v],desc:"You create a lash of lightning energy that strikes at one creature of your choice that you can see within range. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.This spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",duration:"Instantaneous",higher_level:no,level:0,range:feet(15),ritual:no,school:evocation}).
+spell_auto_data('lightning lure',properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v],desc:"You create a lash of lightning energy that strikes at one creature of your choice that you can see within range. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.This spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",duration:"Instantaneous",higher_level:no,level:0,range:feet(15),ritual:no,school:evocation}).
 
-spell('locate animals or plants',properties{casting_time:"1 action",classes:[bard,druid,ranger,'ritual caster'],components:[v,s,m("A bit of fur from a bloodhound.")],desc:"Describe or name a specific kind of beast or plant. Concentrating on the voice of nature in your surroundings, you learn the direction and distance to the closest creature or plant of that kind within 5 miles, if any are present.",duration:"Instantaneous",higher_level:no,level:2,range:self,ritual:yes,school:divination}).
+spell_auto_data('locate animals or plants',properties{casting_time:"1 action",classes:[bard,druid,ranger,'ritual caster'],components:[v,s,m("A bit of fur from a bloodhound.")],desc:"Describe or name a specific kind of beast or plant. Concentrating on the voice of nature in your surroundings, you learn the direction and distance to the closest creature or plant of that kind within 5 miles, if any are present.",duration:"Instantaneous",higher_level:no,level:2,range:self,ritual:yes,school:divination}).
 
-spell('locate creature',properties{casting_time:"1 action",classes:[bard,cleric,druid,paladin,ranger,wizard],components:[v,s,m("A bit of fur from a bloodhound.")],desc:"Describe or name a creature that is familiar to you. You sense the direction to the creature’s location, as long as that creature is within 1,000 feet of you. If the creature is moving, you know the direction of its movement.The spell can locate a specific creature known to you, or the nearest creature of a specific kind (such as a human or a unicorn), so long as you have seen such a creature up close—within 30 feet—at least once. If the creature you described or named is in a different form, such as being under the effects of a polymorph spell, this spell doesn’t locate the creature.This spell can’t locate a creature if running water at least 10 feet wide blocks a direct path between you and the creature.",duration:"Up to 1 hour",higher_level:no,level:4,range:self,ritual:no,school:divination}).
+spell_auto_data('locate creature',properties{casting_time:"1 action",classes:[bard,cleric,druid,paladin,ranger,wizard],components:[v,s,m("A bit of fur from a bloodhound.")],desc:"Describe or name a creature that is familiar to you. You sense the direction to the creature’s location, as long as that creature is within 1,000 feet of you. If the creature is moving, you know the direction of its movement.The spell can locate a specific creature known to you, or the nearest creature of a specific kind (such as a human or a unicorn), so long as you have seen such a creature up close—within 30 feet—at least once. If the creature you described or named is in a different form, such as being under the effects of a polymorph spell, this spell doesn’t locate the creature.This spell can’t locate a creature if running water at least 10 feet wide blocks a direct path between you and the creature.",duration:"Up to 1 hour",higher_level:no,level:4,range:self,ritual:no,school:divination}).
 
-spell('locate object',properties{casting_time:"1 action",classes:[bard,cleric,druid,paladin,ranger,wizard],components:[v,s,m("A forked twig.")],desc:"Describe or name an object that is familiar to you. You sense the direction to the object’s location, as long as that object is within 1,000 feet of you. If the object is in motion, you know the direction of its movement.The spell can locate a specific object known to you, as long as you have seen it up close—within 30 feet—at least once. Alternatively, the spell can locate the nearest object of a particular kind, such as a certain kind of apparel, jewelry, furniture, tool, or weapon.This spell can’t locate an object if any thickness of lead, even a thin sheet, blocks a direct path between you and the object.",duration:"Up to 10 minutes",higher_level:no,level:2,range:self,ritual:no,school:divination}).
+spell_auto_data('locate object',properties{casting_time:"1 action",classes:[bard,cleric,druid,paladin,ranger,wizard],components:[v,s,m("A forked twig.")],desc:"Describe or name an object that is familiar to you. You sense the direction to the object’s location, as long as that object is within 1,000 feet of you. If the object is in motion, you know the direction of its movement.The spell can locate a specific object known to you, as long as you have seen it up close—within 30 feet—at least once. Alternatively, the spell can locate the nearest object of a particular kind, such as a certain kind of apparel, jewelry, furniture, tool, or weapon.This spell can’t locate an object if any thickness of lead, even a thin sheet, blocks a direct path between you and the object.",duration:"Up to 10 minutes",higher_level:no,level:2,range:self,ritual:no,school:divination}).
 
-spell(longstrider,properties{casting_time:"1 action",classes:[bard,druid,ranger,wizard],components:[v,s,m("A pinch of dirt.")],desc:"You touch a creature. The target’s speed increases by 10 feet until the spell ends.",duration:"1 hour",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature for each spell slot above 1st.",level:1,range:touch,ritual:no,school:transmutation}).
+spell_auto_data(longstrider,properties{casting_time:"1 action",classes:[bard,druid,ranger,wizard],components:[v,s,m("A pinch of dirt.")],desc:"You touch a creature. The target’s speed increases by 10 feet until the spell ends.",duration:"1 hour",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature for each spell slot above 1st.",level:1,range:touch,ritual:no,school:transmutation}).
 
-spell(maelstrom,properties{casting_time:"1 action",classes:[druid],components:[v,s,m("Paper or leaf in the shape of a funnel.")],desc:"A mass of 5-foot-deep water appears and swirls in a 30-foot radius centered on a point you can see within range. The point must be on ground or in a body of water. Until the spell ends, that area is difficult terrain, and any creature that starts its turn there must succeed on a Strength saving throw or take 6d6 bludgeoning damage and be pulled 10 feet toward the center.",duration:"Up to 1 minute",higher_level:no,level:5,range:feet(120),ritual:no,school:evocation}).
+spell_auto_data(maelstrom,properties{casting_time:"1 action",classes:[druid],components:[v,s,m("Paper or leaf in the shape of a funnel.")],desc:"A mass of 5-foot-deep water appears and swirls in a 30-foot radius centered on a point you can see within range. The point must be on ground or in a body of water. Until the spell ends, that area is difficult terrain, and any creature that starts its turn there must succeed on a Strength saving throw or take 6d6 bludgeoning damage and be pulled 10 feet toward the center.",duration:"Up to 1 minute",higher_level:no,level:5,range:feet(120),ritual:no,school:evocation}).
 
-spell('mage armor',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("A piece of cured leather.")],desc:"You touch a willing creature who isn’t wearing armor, and a protective magical force surrounds it until the spell ends. The target’s base AC becomes 13 + its Dexterity modifier. The spell ends if the target dons armor or if you dismiss the spell as an action.",duration:"8 hours",higher_level:no,level:1,range:touch,ritual:no,school:abjuration}).
+spell_auto_data('mage armor',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("A piece of cured leather.")],desc:"You touch a willing creature who isn’t wearing armor, and a protective magical force surrounds it until the spell ends. The target’s base AC becomes 13 + its Dexterity modifier. The spell ends if the target dons armor or if you dismiss the spell as an action.",duration:"8 hours",higher_level:no,level:1,range:touch,ritual:no,school:abjuration}).
 
-spell('mage hand',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s],desc:"A spectral, floating hand appears at a point you choose within range. The hand lasts for the duration or until you dismiss it as an action. The hand vanishes if it is ever more than 30 feet away from you or if you cast this spell again.You can use your action to control the hand. You can use the hand to manipulate an object, open an unlocked door or container, stow or retrieve an item from an open container, or pour the contents out of a vial. You can move the hand up to 30 feet each time you use it.The hand can’t attack, activate magic items, or carry more than 10 pounds.",duration:"1 minute",higher_level:no,level:0,range:feet(30),ritual:no,school:conjuration}).
+spell_auto_data('mage hand',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s],desc:"A spectral, floating hand appears at a point you choose within range. The hand lasts for the duration or until you dismiss it as an action. The hand vanishes if it is ever more than 30 feet away from you or if you cast this spell again.You can use your action to control the hand. You can use the hand to manipulate an object, open an unlocked door or container, stow or retrieve an item from an open container, or pour the contents out of a vial. You can move the hand up to 30 feet each time you use it.The hand can’t attack, activate magic items, or carry more than 10 pounds.",duration:"1 minute",higher_level:no,level:0,range:feet(30),ritual:no,school:conjuration}).
 
-spell('magic circle',properties{casting_time:"1 minute",classes:[cleric,paladin,warlock,wizard],components:[v,s,m("Holy water or powdered silver and iron worth at least 100 gp, which the spell consumes.")],desc:"Choose one or more of the following types of creatures: celestials, elementals, fey, fiends, or undead. The circle affects a creature of the chosen type in the following ways:- The creature can’t willingly enter the cylinder by nonmagical means. If the creature tries to use teleportation or interplanar travel to do so, it must first succeed on a charisma saving throw.- The creature has disadvantage on attack rolls against targets within the cylinder.- Targets within the cylinder can’t be charmed, frightened, or possessed by the creature.When you cast this spell, you can elect to cause its magic to operate in the reverse direction, preventing a creature of the specified type from leaving the cylinder and protecting targets outside it.",duration:"1 hour",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the duration increases by 1 hour for each slot level above 3rd.",level:3,range:feet(10),ritual:no,school:abjuration}).
+spell_auto_data('magic circle',properties{casting_time:"1 minute",classes:[cleric,paladin,warlock,wizard],components:[v,s,m("Holy water or powdered silver and iron worth at least 100 gp, which the spell consumes.")],desc:"Choose one or more of the following types of creatures: celestials, elementals, fey, fiends, or undead. The circle affects a creature of the chosen type in the following ways:- The creature can’t willingly enter the cylinder by nonmagical means. If the creature tries to use teleportation or interplanar travel to do so, it must first succeed on a charisma saving throw.- The creature has disadvantage on attack rolls against targets within the cylinder.- Targets within the cylinder can’t be charmed, frightened, or possessed by the creature.When you cast this spell, you can elect to cause its magic to operate in the reverse direction, preventing a creature of the specified type from leaving the cylinder and protecting targets outside it.",duration:"1 hour",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the duration increases by 1 hour for each slot level above 3rd.",level:3,range:feet(10),ritual:no,school:abjuration}).
 
-spell('magic jar',properties{casting_time:"1 minute",classes:[wizard],components:[v,s,m("A gem, crystal, reliquary, or some other ornamental container worth at least 500 gp.")],desc:"Your body falls into a catatonic state as your soul leaves it and enters the container you used for the spell's material component. While your soul inhabits the container, you are aware of your surroundings as if you were in the container's space. You can't move or use reactions. The only action you can take is to project your soul up to 100 feet out of the container, either returning to your living body (and ending the spell) or attempting to possess a humanoids body.You can attempt to possess any humanoid within 100 feet of you that you can see (creatures warded by a protection from evil and good or magic circle spell can't be possessed). The target must make a charisma saving throw. On a failure, your soul moves into the target's body, and the target's soul becomes trapped in the container. On a success, the target resists your efforts to possess it, and you can't attempt to possess it again for 24 hours.Once you possess a creature's body, you control it. Your game statistics are replaced by the statistics of the creature, though you retain your alignment and your Intelligence, Wisdom, and Charisma scores. You retain the benefit of your own class features. If the target has any class levels, you can't use any of its class features.Meanwhile, the possessed creature's soul can perceive from the container using its own senses, but it can't move or take actions at all.While possessing a body, you can use your action to return from the host body to the container if it is within 100 feet of you, returning the host creature's soul to its body. If the host body dies while you're in it, the creature dies, and you must make a charisma saving throw against your own spellcasting DC. On a success, you return to the container if it is within 100 feet of you. Otherwise, you die.If the container is destroyed or the spell ends, your soul immediately returns to your body. If your body is more than 100 feet away from you or if your body is dead when you attempt to return to it, you die. If another creature's soul is in the container when it is destroyed, the creature's soul returns to its body if the body is alive and within 100 feet. Otherwise, that creature dies.When the spell ends, the container is destroyed.",duration:"Until dispelled",higher_level:no,level:6,range:self,ritual:no,school:necromancy}).
+spell_auto_data('magic jar',properties{casting_time:"1 minute",classes:[wizard],components:[v,s,m("A gem, crystal, reliquary, or some other ornamental container worth at least 500 gp.")],desc:"Your body falls into a catatonic state as your soul leaves it and enters the container you used for the spell's material component. While your soul inhabits the container, you are aware of your surroundings as if you were in the container's space. You can't move or use reactions. The only action you can take is to project your soul up to 100 feet out of the container, either returning to your living body (and ending the spell) or attempting to possess a humanoids body.You can attempt to possess any humanoid within 100 feet of you that you can see (creatures warded by a protection from evil and good or magic circle spell can't be possessed). The target must make a charisma saving throw. On a failure, your soul moves into the target's body, and the target's soul becomes trapped in the container. On a success, the target resists your efforts to possess it, and you can't attempt to possess it again for 24 hours.Once you possess a creature's body, you control it. Your game statistics are replaced by the statistics of the creature, though you retain your alignment and your Intelligence, Wisdom, and Charisma scores. You retain the benefit of your own class features. If the target has any class levels, you can't use any of its class features.Meanwhile, the possessed creature's soul can perceive from the container using its own senses, but it can't move or take actions at all.While possessing a body, you can use your action to return from the host body to the container if it is within 100 feet of you, returning the host creature's soul to its body. If the host body dies while you're in it, the creature dies, and you must make a charisma saving throw against your own spellcasting DC. On a success, you return to the container if it is within 100 feet of you. Otherwise, you die.If the container is destroyed or the spell ends, your soul immediately returns to your body. If your body is more than 100 feet away from you or if your body is dead when you attempt to return to it, you die. If another creature's soul is in the container when it is destroyed, the creature's soul returns to its body if the body is alive and within 100 feet. Otherwise, that creature dies.When the spell ends, the container is destroyed.",duration:"Until dispelled",higher_level:no,level:6,range:self,ritual:no,school:necromancy}).
 
-spell('magic missile',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"You create three glowing darts of magical force. Each dart hits a creature of your choice that you can see within range. A dart deals 1d4 + 1 force damage to its target. The darts all strike simultaneously, and you can direct them to hit one creature or several.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the spell creates one more dart for each slot level above 1st.",level:1,range:feet(120),ritual:no,school:evocation}).
+spell_auto_data('magic missile',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"You create three glowing darts of magical force. Each dart hits a creature of your choice that you can see within range. A dart deals 1d4 + 1 force damage to its target. The darts all strike simultaneously, and you can direct them to hit one creature or several.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the spell creates one more dart for each slot level above 1st.",level:1,range:feet(120),ritual:no,school:evocation}).
 
-spell('magic mouth',properties{casting_time:"1 minute",classes:[bard,'ritual caster',wizard],components:[v,s,m("A honeycomb and jade dust of at least 10 inches, the spell consumes.")],desc:"You plant a message to an object in the range of the spell. The message is verbalized when the trigger conditions are met. Choose an object that you see, and that is not worn or carried by another creature. Then say the message, which should not exceed 25 words but listening can take up to 10 minutes. Finally, establish the circumstances that trigger the spell to deliver your message.When these conditions are satisfied, a magical mouth appears on the object and it articulates the message imitating your voice, the same tone used during implantation of the message. If the selected object has a mouth or something that approaches such as the mouth of a statue, the magic mouth come alive at this point, giving the illusion that the words come from the mouth of the object.When you cast this spell, you may decide that the spell ends when the message is delivered or it can persist and repeat the message whenever circumstances occur.The triggering circumstance can be as general or as detailed as you like, though it must be based on visual or audible conditions that occur within 30 feet of the object. For example, you could instruct the mouth to speak when any creature moves within 30 feet of the object or when a silver bell rings within 30 feet of it.",duration:"Until dispelled",higher_level:no,level:2,range:feet(30),ritual:yes,school:illusion}).
+spell_auto_data('magic mouth',properties{casting_time:"1 minute",classes:[bard,'ritual caster',wizard],components:[v,s,m("A honeycomb and jade dust of at least 10 inches, the spell consumes.")],desc:"You plant a message to an object in the range of the spell. The message is verbalized when the trigger conditions are met. Choose an object that you see, and that is not worn or carried by another creature. Then say the message, which should not exceed 25 words but listening can take up to 10 minutes. Finally, establish the circumstances that trigger the spell to deliver your message.When these conditions are satisfied, a magical mouth appears on the object and it articulates the message imitating your voice, the same tone used during implantation of the message. If the selected object has a mouth or something that approaches such as the mouth of a statue, the magic mouth come alive at this point, giving the illusion that the words come from the mouth of the object.When you cast this spell, you may decide that the spell ends when the message is delivered or it can persist and repeat the message whenever circumstances occur.The triggering circumstance can be as general or as detailed as you like, though it must be based on visual or audible conditions that occur within 30 feet of the object. For example, you could instruct the mouth to speak when any creature moves within 30 feet of the object or when a silver bell rings within 30 feet of it.",duration:"Until dispelled",higher_level:no,level:2,range:feet(30),ritual:yes,school:illusion}).
 
-spell('magic stone',properties{casting_time:"1 bonus action",classes:[druid,warlock],components:[v,s],desc:"You touch one to three pebbles and imbue them with magic. You or someone else can make a ranged spell attack with one of the pebbles by throwing it or hurling it with a sling. If thrown, it has a range of 60 feet. If someone else attacks with the pebble, that attacker adds your spellcasting ability modifier, not the attacker's, to the attack roll. On a hit, the target takes bludgeoning damage equal to 1d6 + your spellcasting ability modifier. Hit or miss, the spell then ends on the stone.If you cast this spell again, the spell ends early on any pebbles still affected by it.",duration:"1 minute",higher_level:no,level:0,range:touch,ritual:no,school:transmutation}).
+spell_auto_data('magic stone',properties{casting_time:"1 bonus action",classes:[druid,warlock],components:[v,s],desc:"You touch one to three pebbles and imbue them with magic. You or someone else can make a ranged spell attack with one of the pebbles by throwing it or hurling it with a sling. If thrown, it has a range of 60 feet. If someone else attacks with the pebble, that attacker adds your spellcasting ability modifier, not the attacker's, to the attack roll. On a hit, the target takes bludgeoning damage equal to 1d6 + your spellcasting ability modifier. Hit or miss, the spell then ends on the stone.If you cast this spell again, the spell ends early on any pebbles still affected by it.",duration:"1 minute",higher_level:no,level:0,range:touch,ritual:no,school:transmutation}).
 
-spell('magic weapon',properties{casting_time:"1 bonus action",classes:[cleric,paladin,wizard],components:[v,s],desc:"You touch a nonmagical weapon. Until the spell ends, that weapon becomes a magic weapon with a +1 bonus to attack rolls and damage rolls.",duration:"Up to 1 hour",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the bonus increases to +2. When you use a spell slot of 6th level or higher, the bonus increases to +3.",level:2,range:touch,ritual:no,school:transmutation}).
+spell_auto_data('magic weapon',properties{casting_time:"1 bonus action",classes:[cleric,paladin,wizard],components:[v,s],desc:"You touch a nonmagical weapon. Until the spell ends, that weapon becomes a magic weapon with a +1 bonus to attack rolls and damage rolls.",duration:"Up to 1 hour",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the bonus increases to +2. When you use a spell slot of 6th level or higher, the bonus increases to +3.",level:2,range:touch,ritual:no,school:transmutation}).
 
-spell('major image',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s,m("A bit of fleece.")],desc:"You create the image of an object, a creature, or some other visible phenomenon that is no larger than a 20-foot cube. The image appears at a spot that you can see within range and lasts for the duration. It seems completely real, including sounds, smells, and temperature appropriate to the thing depicted. You can’t create sufficient heat or cold to cause damage, a sound loud enough to deal thunder damage or deafen a creature, or a smell that might sicken a creature (like a troglodyte’s stench).As long as you are within range of the illusion, you can use your action to cause the image to move to any other spot within range. As the image changes location, you can alter its appearance so that its movements appear natural for the image. For example, if you create an image of a creature and move it, you can alter the image so that it appears to be walking. Similarly, you can cause the illusion to make different sounds at different times, even making it carry on a conversation, for example.Physical interaction with the image reveals it to be an illusion, because things can pass through it. A creature that uses its action to examine the image can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the creature can see through the image, and its other sensory qualities become faint to the creature.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 6th level or higher, the spell lasts until dispelled, without requiring your concentration.",level:3,range:feet(120),ritual:no,school:illusion}).
+spell_auto_data('major image',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s,m("A bit of fleece.")],desc:"You create the image of an object, a creature, or some other visible phenomenon that is no larger than a 20-foot cube. The image appears at a spot that you can see within range and lasts for the duration. It seems completely real, including sounds, smells, and temperature appropriate to the thing depicted. You can’t create sufficient heat or cold to cause damage, a sound loud enough to deal thunder damage or deafen a creature, or a smell that might sicken a creature (like a troglodyte’s stench).As long as you are within range of the illusion, you can use your action to cause the image to move to any other spot within range. As the image changes location, you can alter its appearance so that its movements appear natural for the image. For example, if you create an image of a creature and move it, you can alter the image so that it appears to be walking. Similarly, you can cause the illusion to make different sounds at different times, even making it carry on a conversation, for example.Physical interaction with the image reveals it to be an illusion, because things can pass through it. A creature that uses its action to examine the image can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the creature can see through the image, and its other sensory qualities become faint to the creature.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 6th level or higher, the spell lasts until dispelled, without requiring your concentration.",level:3,range:feet(120),ritual:no,school:illusion}).
 
-spell('mass cure wounds',properties{casting_time:"1 action",classes:[bard,cleric,druid],components:[v,s],desc:"A wave of healing energy washes out from a point of your choice within range. Choose up to six creatures in a 30-foot-radius sphere centered on that point. Each target regains hit points equal to 3d8 + your spellcasting ability modifier. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 6th level or higher, the healing increases by 1d8 for each slot level above 5th.",level:5,range:feet(60),ritual:no,school:conjuration}).
+spell_auto_data('mass cure wounds',properties{casting_time:"1 action",classes:[bard,cleric,druid],components:[v,s],desc:"A wave of healing energy washes out from a point of your choice within range. Choose up to six creatures in a 30-foot-radius sphere centered on that point. Each target regains hit points equal to 3d8 + your spellcasting ability modifier. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 6th level or higher, the healing increases by 1d8 for each slot level above 5th.",level:5,range:feet(60),ritual:no,school:conjuration}).
 
-spell('mass heal',properties{casting_time:"1 action",classes:[cleric],components:[v,s],desc:"A flood of healing energy flows from you into injured creatures around you. You restore up to 700 hit points, divided as you choose among any number of creatures that you can see within range. Creatures healed by this spell are also cured of all diseases and any effect making them blinded or deafened. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:no,level:9,range:feet(60),ritual:no,school:conjuration}).
+spell_auto_data('mass heal',properties{casting_time:"1 action",classes:[cleric],components:[v,s],desc:"A flood of healing energy flows from you into injured creatures around you. You restore up to 700 hit points, divided as you choose among any number of creatures that you can see within range. Creatures healed by this spell are also cured of all diseases and any effect making them blinded or deafened. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:no,level:9,range:feet(60),ritual:no,school:conjuration}).
 
-spell('mass healing word',properties{casting_time:"1 bonus action",classes:[cleric],components:[v],desc:"As you call out words of restoration, up to six creatures of your choice that you can see within range regain hit points equal to 1d4 + your spellcasting ability modifier. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the healing increases by 1d4 for each slot level above 3rd.",level:3,range:feet(60),ritual:no,school:evocation}).
+spell_auto_data('mass healing word',properties{casting_time:"1 bonus action",classes:[cleric],components:[v],desc:"As you call out words of restoration, up to six creatures of your choice that you can see within range regain hit points equal to 1d4 + your spellcasting ability modifier. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the healing increases by 1d4 for each slot level above 3rd.",level:3,range:feet(60),ritual:no,school:evocation}).
 
-spell('mass suggestion',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,m("A snake’s tongue and either a bit of honeycomb or a drop of sweet oil.")],desc:"You suggest a course of activity (limited to a sentence or two) and magically influence up to twelve creatures of your choice that you can see within range and that can hear and understand you. Creatures that can’t be charmed are immune to this effect. The suggestion must be worded in such a manner as to make the course of action sound reasonable. Asking the creature to stab itself, throw itself onto a spear, immolate itself, or do some other obviously harmful act automatically negates the effect of the spell.Each target must make a wisdom saving throw. On a failed save, it pursues the course of action you described to the best of its ability. The suggested course of action can continue for the entire duration. If the suggested activity can be completed in a shorter time, the spell ends when the subject finishes what it was asked to do.You can also specify conditions that will trigger a special activity during the duration. For example, you might suggest that a group of soldiers give all their money to the first beggar they meet. If the condition isn’t met before the spell ends, the activity isn’t performed.If you or any of your companions damage a creature affected by this spell, the spell ends for that creature.",duration:"24 hours",higher_level:"When you cast this spell using a 7th-level spell slot, the duration is 10 days. When you use an 8th-level spell slot, the duration is 30 days. When you use a 9th-level spell slot, the duration is a year and a day.",level:6,range:feet(60),ritual:no,school:enchantment}).
+spell_auto_data('mass suggestion',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,m("A snake’s tongue and either a bit of honeycomb or a drop of sweet oil.")],desc:"You suggest a course of activity (limited to a sentence or two) and magically influence up to twelve creatures of your choice that you can see within range and that can hear and understand you. Creatures that can’t be charmed are immune to this effect. The suggestion must be worded in such a manner as to make the course of action sound reasonable. Asking the creature to stab itself, throw itself onto a spear, immolate itself, or do some other obviously harmful act automatically negates the effect of the spell.Each target must make a wisdom saving throw. On a failed save, it pursues the course of action you described to the best of its ability. The suggested course of action can continue for the entire duration. If the suggested activity can be completed in a shorter time, the spell ends when the subject finishes what it was asked to do.You can also specify conditions that will trigger a special activity during the duration. For example, you might suggest that a group of soldiers give all their money to the first beggar they meet. If the condition isn’t met before the spell ends, the activity isn’t performed.If you or any of your companions damage a creature affected by this spell, the spell ends for that creature.",duration:"24 hours",higher_level:"When you cast this spell using a 7th-level spell slot, the duration is 10 days. When you use an 8th-level spell slot, the duration is 30 days. When you use a 9th-level spell slot, the duration is a year and a day.",level:6,range:feet(60),ritual:no,school:enchantment}).
 
-spell('maximilian\'s earthen grasp',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("A miniature hand sculpted from clay.")],desc:"You choose a 5-foot-square unoccupied space on the ground that you can see within range. A Medium hand made from compacted soil rises there and reaches for one creature you can see within 5 feet of it. The target must make a Strength saving throw. On a failed save, the target takes 2d6 bludgeoning damage and is restrained for the spell's duration.As an action, you can cause the hand to crush the restrained target, who must make a Strength saving throw. It takes 2d6 bludgeoning damage on a failed save, or half as much damage on a successful one. To break out, the restrained target can make a Strength check against your spell save DC. On a success, the target escapes and is no longer restrained by the hand.As an action, you can cause the hand to reach for a different creature or to move to a different unoccupied space within range. The hand releases a restrained target if you do either.",duration:"Up to 1 minute",higher_level:no,level:2,range:feet(30),ritual:no,school:transmutation}).
+spell_auto_data('maximilian\'s earthen grasp',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("A miniature hand sculpted from clay.")],desc:"You choose a 5-foot-square unoccupied space on the ground that you can see within range. A Medium hand made from compacted soil rises there and reaches for one creature you can see within 5 feet of it. The target must make a Strength saving throw. On a failed save, the target takes 2d6 bludgeoning damage and is restrained for the spell's duration.As an action, you can cause the hand to crush the restrained target, who must make a Strength saving throw. It takes 2d6 bludgeoning damage on a failed save, or half as much damage on a successful one. To break out, the restrained target can make a Strength check against your spell save DC. On a success, the target escapes and is no longer restrained by the hand.As an action, you can cause the hand to reach for a different creature or to move to a different unoccupied space within range. The hand releases a restrained target if you do either.",duration:"Up to 1 minute",higher_level:no,level:2,range:feet(30),ritual:no,school:transmutation}).
 
-spell(maze,properties{casting_time:"1 action",classes:[wizard],components:[v,s],desc:"You banish a creature that you can see within range into a labyrinthine demiplane. The target remains there for the duration or until it escapes the maze.The target can use its action to attempt to escape. When it does so, it makes a DC 20 Intelligence check. If it succeeds, it escapes, and the spell ends (a minotaur or goristro demon automatically succeeds).When the spell ends, the target reappears in the space it left or, if that space is occupied, in the nearest unoccupied space.",duration:"Up to 10 minutes",higher_level:no,level:8,range:feet(60),ritual:no,school:conjuration}).
+spell_auto_data(maze,properties{casting_time:"1 action",classes:[wizard],components:[v,s],desc:"You banish a creature that you can see within range into a labyrinthine demiplane. The target remains there for the duration or until it escapes the maze.The target can use its action to attempt to escape. When it does so, it makes a DC 20 Intelligence check. If it succeeds, it escapes, and the spell ends (a minotaur or goristro demon automatically succeeds).When the spell ends, the target reappears in the space it left or, if that space is occupied, in the nearest unoccupied space.",duration:"Up to 10 minutes",higher_level:no,level:8,range:feet(60),ritual:no,school:conjuration}).
 
-spell('meld into stone',properties{casting_time:"1 action",classes:[cleric,druid,'ritual caster'],components:[v,s],desc:"You step into a stone object or surface large enough to fully contain your body, melding yourself and all the equipment you carry with the stone for the duration. Using your movement, you step into the stone at a point you can touch. Nothing of your presence remains visible or otherwise detectable by nonmagical senses.While merged with the stone, you can’t see what occurs outside it, and any Wisdom (Perception) checks you make to hear sounds outside it are made with disadvantage. You remain aware of the passage of time and can cast spells on yourself while merged in the stone. You can use your movement to leave the stone where you entered it, which ends the spell. You otherwise can’t move.Minor physical damage to the stone doesn’t harm you, but its partial destruction or a change in its shape (to the extent that you no longer fit within it) expels you and deals 6d6 bludgeoning damage to you. The stone’s complete destruction (or transmutation into a different substance) expels you and deals 50 bludgeoning damage to you. If expelled, you fall prone in an unoccupied space closest to where you first entered.",duration:"8 hours",higher_level:no,level:3,range:touch,ritual:yes,school:transmutation}).
+spell_auto_data('meld into stone',properties{casting_time:"1 action",classes:[cleric,druid,'ritual caster'],components:[v,s],desc:"You step into a stone object or surface large enough to fully contain your body, melding yourself and all the equipment you carry with the stone for the duration. Using your movement, you step into the stone at a point you can touch. Nothing of your presence remains visible or otherwise detectable by nonmagical senses.While merged with the stone, you can’t see what occurs outside it, and any Wisdom (Perception) checks you make to hear sounds outside it are made with disadvantage. You remain aware of the passage of time and can cast spells on yourself while merged in the stone. You can use your movement to leave the stone where you entered it, which ends the spell. You otherwise can’t move.Minor physical damage to the stone doesn’t harm you, but its partial destruction or a change in its shape (to the extent that you no longer fit within it) expels you and deals 6d6 bludgeoning damage to you. The stone’s complete destruction (or transmutation into a different substance) expels you and deals 50 bludgeoning damage to you. If expelled, you fall prone in an unoccupied space closest to where you first entered.",duration:"8 hours",higher_level:no,level:3,range:touch,ritual:yes,school:transmutation}).
 
-spell('melf\'s acid arrow',properties{casting_time:"1 action",classes:[druid,wizard],components:[v,s,m("Powdered rhubarb leaf and an adder’s stomach.")],desc:"A shimmering green arrow streaks toward a target within range and bursts in a spray of acid. Make a ranged spell attack against the target. On a hit, the target takes 4d4 acid damage immediately and 2d4 acid damage at the end of its next turn. On a miss, the arrow splashes the target with acid for half as much of the initial damage and no damage at the end of its next turn.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, the damage (both initial and later) increases by 1d4 for each slot level above 2nd.",level:2,range:feet(90),ritual:no,school:evocation}).
+spell_auto_data('melf\'s acid arrow',properties{casting_time:"1 action",classes:[druid,wizard],components:[v,s,m("Powdered rhubarb leaf and an adder’s stomach.")],desc:"A shimmering green arrow streaks toward a target within range and bursts in a spray of acid. Make a ranged spell attack against the target. On a hit, the target takes 4d4 acid damage immediately and 2d4 acid damage at the end of its next turn. On a miss, the arrow splashes the target with acid for half as much of the initial damage and no damage at the end of its next turn.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, the damage (both initial and later) increases by 1d4 for each slot level above 2nd.",level:2,range:feet(90),ritual:no,school:evocation}).
 
-spell('melf\'s minute meteors',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("Niter, sulfur, and pine tar formed into a bead.")],desc:"You create six tiny meteors in your space. They float in the air and orbit you for the spell's duration. When you cast the spell - and as a bonus action on each of your turns thereafter-you can expend one or two of the meteors, sending them streaking toward a point or points you choose within 120 feet of you. Once a meteor reaches its destination or impacts against a solid surface, the meteor explodes. Each creature within 5 feet of the point where the meteor explodes must make a Dexterity saving throw. A creature takes 2d6 fire damage on a failed save, or half as much damage on a successful one.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the number of meteors created increases by two for each slot level above 3rd.",level:3,range:self,ritual:no,school:transmutation}).
+spell_auto_data('melf\'s minute meteors',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("Niter, sulfur, and pine tar formed into a bead.")],desc:"You create six tiny meteors in your space. They float in the air and orbit you for the spell's duration. When you cast the spell - and as a bonus action on each of your turns thereafter-you can expend one or two of the meteors, sending them streaking toward a point or points you choose within 120 feet of you. Once a meteor reaches its destination or impacts against a solid surface, the meteor explodes. Each creature within 5 feet of the point where the meteor explodes must make a Dexterity saving throw. A creature takes 2d6 fire damage on a failed save, or half as much damage on a successful one.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the number of meteors created increases by two for each slot level above 3rd.",level:3,range:self,ritual:no,school:transmutation}).
 
-spell(mending,properties{casting_time:"1 minute",classes:[cleric,bard,druid,sorcerer,wizard],components:[v,s,m("Two lodestones.")],desc:"This spell repairs a single break or tear in an object you touch, such as a broken key, a torn cloak, or a leaking wineskin. As long as the break or tear is no longer than 1 foot in any dimension, you mend it, leaving no trace of the former damage.This spell can physically repair a magic item or construct, but the spell can’t restore magic to such an object.",duration:"Instantaneous",higher_level:no,level:0,range:touch,ritual:no,school:transmutation}).
+spell_auto_data(mending,properties{casting_time:"1 minute",classes:[cleric,bard,druid,sorcerer,wizard],components:[v,s,m("Two lodestones.")],desc:"This spell repairs a single break or tear in an object you touch, such as a broken key, a torn cloak, or a leaking wineskin. As long as the break or tear is no longer than 1 foot in any dimension, you mend it, leaving no trace of the former damage.This spell can physically repair a magic item or construct, but the spell can’t restore magic to such an object.",duration:"Instantaneous",higher_level:no,level:0,range:touch,ritual:no,school:transmutation}).
 
-spell(message,properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v,s,m("A short piece of copper wire.")],desc:"You point your finger toward a creature within range and whisper a message. The target (and only the target) hears the message and can reply in a whisper that only you can hear.You can cast this spell through solid objects if you are familiar with the target and know it is beyond the barrier. Magical silence, 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood blocks the spell. The spell doesn’t have to follow a straight line and can travel freely around corners or through openings.",duration:"1 round",higher_level:no,level:0,range:feet(120),ritual:no,school:transmutation}).
+spell_auto_data(message,properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v,s,m("A short piece of copper wire.")],desc:"You point your finger toward a creature within range and whisper a message. The target (and only the target) hears the message and can reply in a whisper that only you can hear.You can cast this spell through solid objects if you are familiar with the target and know it is beyond the barrier. Magical silence, 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood blocks the spell. The spell doesn’t have to follow a straight line and can travel freely around corners or through openings.",duration:"1 round",higher_level:no,level:0,range:feet(120),ritual:no,school:transmutation}).
 
-spell('meteor swarm',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"Blazing orbs of fire plummet to the ground at four different points you can see within range. Each creature in a 40-foot-radius sphere centered on each point you choose must make a dexterity saving throw. The sphere spreads around corners. A creature takes 20d6 fire damage and 20d6 bludgeoning damage on a failed save, or half as much damage on a successful one. A creature in the area of more than one fiery burst is affected only once.The spell damages objects in the area and ignites flammable objects that aren’t being worn or carried.",duration:"Instantaneous",higher_level:no,level:9,range:miles(1),ritual:no,school:evocation}).
+spell_auto_data('meteor swarm',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"Blazing orbs of fire plummet to the ground at four different points you can see within range. Each creature in a 40-foot-radius sphere centered on each point you choose must make a dexterity saving throw. The sphere spreads around corners. A creature takes 20d6 fire damage and 20d6 bludgeoning damage on a failed save, or half as much damage on a successful one. A creature in the area of more than one fiery burst is affected only once.The spell damages objects in the area and ignites flammable objects that aren’t being worn or carried.",duration:"Instantaneous",higher_level:no,level:9,range:miles(1),ritual:no,school:evocation}).
 
-spell('mind blank',properties{casting_time:"1 action",classes:[bard,wizard],components:[v,s],desc:"Until the spell ends, one willing creature you touch is immune to psychic damage, any effect that would sense its emotions or read its thoughts, divination spells, and the charmed condition. The spell even foils wish spells and spells or effects of similar power used to affect the target’s mind or to gain information about the target.",duration:"24 hours",higher_level:no,level:8,range:touch,ritual:no,school:abjuration}).
+spell_auto_data('mind blank',properties{casting_time:"1 action",classes:[bard,wizard],components:[v,s],desc:"Until the spell ends, one willing creature you touch is immune to psychic damage, any effect that would sense its emotions or read its thoughts, divination spells, and the charmed condition. The spell even foils wish spells and spells or effects of similar power used to affect the target’s mind or to gain information about the target.",duration:"24 hours",higher_level:no,level:8,range:touch,ritual:no,school:abjuration}).
 
-spell('minor illusion',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[s,m("A bit of fleece.")],desc:"You create a sound or an image of an object within range that lasts for the duration. The illusion also ends if you dismiss it as an action or cast this spell again.If you create a sound, its volume can range from a whisper to a scream. It can be your voice, someone else’s voice, a lion’s roar, a beating of drums, or any other sound you choose. The sound continues unabated throughout the duration, or you can make discrete sounds at different times before the spell ends.If you create an image of an object—such as a chair, muddy footprints, or a small chest—it must be no larger than a 5-foot cube. The image can’t create sound, light, smell, or any other sensory effect. Physical interaction with the image reveals it to be an illusion, because things can pass through it.If a creature uses its action to examine the sound or image, the creature can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the illusion becomes faint to the creature.",duration:"1 minute",higher_level:no,level:0,range:feet(30),ritual:no,school:illusion}).
+spell_auto_data('minor illusion',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[s,m("A bit of fleece.")],desc:"You create a sound or an image of an object within range that lasts for the duration. The illusion also ends if you dismiss it as an action or cast this spell again.If you create a sound, its volume can range from a whisper to a scream. It can be your voice, someone else’s voice, a lion’s roar, a beating of drums, or any other sound you choose. The sound continues unabated throughout the duration, or you can make discrete sounds at different times before the spell ends.If you create an image of an object—such as a chair, muddy footprints, or a small chest—it must be no larger than a 5-foot cube. The image can’t create sound, light, smell, or any other sensory effect. Physical interaction with the image reveals it to be an illusion, because things can pass through it.If a creature uses its action to examine the sound or image, the creature can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the illusion becomes faint to the creature.",duration:"1 minute",higher_level:no,level:0,range:feet(30),ritual:no,school:illusion}).
 
-spell('mirage arcane',properties{casting_time:"10 minutes",classes:[bard,druid,wizard],components:[v,s],desc:"You make terrain in an area up to 1 mile square look, sound, smell, and even feel like some other sort of terrain. The terrain’s general shape remains the same, however. Open fields or a road could be made to resemble a swamp, hill, crevasse, or some other difficult or impassable terrain. A pond can be made to seem like a grassy meadow, a precipice like a gentle slope, or a rock-strewn gully like a wide and smooth road.Similarly, you can alter the appearance of structures, or add them where none are present. The spell doesn’t disguise, conceal, or add creatures.The illusion includes audible, visual, tactile, and olfactory elements, so it can turn clear ground into difficult terrain (or vice versa) or otherwise impede movement through the area. Any piece of the illusory terrain (such as a rock or stick) that is removed from the spell’s area disappears immediately.Creatures with truesight can see through the illusion to the terrain’s true form; however, all other elements of the illusion remain, so while the creature is aware of the illusion’s presence, the creature can still physically interact with the illusion.",duration:"10 days",higher_level:no,level:7,range:sight,ritual:no,school:illusion}).
+spell_auto_data('mirage arcane',properties{casting_time:"10 minutes",classes:[bard,druid,wizard],components:[v,s],desc:"You make terrain in an area up to 1 mile square look, sound, smell, and even feel like some other sort of terrain. The terrain’s general shape remains the same, however. Open fields or a road could be made to resemble a swamp, hill, crevasse, or some other difficult or impassable terrain. A pond can be made to seem like a grassy meadow, a precipice like a gentle slope, or a rock-strewn gully like a wide and smooth road.Similarly, you can alter the appearance of structures, or add them where none are present. The spell doesn’t disguise, conceal, or add creatures.The illusion includes audible, visual, tactile, and olfactory elements, so it can turn clear ground into difficult terrain (or vice versa) or otherwise impede movement through the area. Any piece of the illusory terrain (such as a rock or stick) that is removed from the spell’s area disappears immediately.Creatures with truesight can see through the illusion to the terrain’s true form; however, all other elements of the illusion remain, so while the creature is aware of the illusion’s presence, the creature can still physically interact with the illusion.",duration:"10 days",higher_level:no,level:7,range:sight,ritual:no,school:illusion}).
 
-spell('mirror image',properties{casting_time:"1 action",classes:[cleric,druid,sorcerer,warlock,wizard],components:[v,s],desc:"Three illusionary duplicates of yourself appear in your space. Until the end of the spell, duplicates move with you and imitate your actions, swapping their position so that it is impossible to determine which image is real. You can use your action to dispel the illusory duplicates.Whenever a creature is targeting you with an attack during the duration of the spell, roll 1d20 to determine if the attack does not target rather one of your duplicates.If you have three duplicates, you need 6 or more on your throw to lead the target of the attack to a duplicate. With two duplicates, you need 8 or more. With one duplicate, you need 11 or more.The CA of a duplicate is 10 + your Dexterity modifier. If an attack hits a duplicate, it is destroyed. A duplicate may be destroyed not just an attack on key. It ignores other damage and effects. The spell ends if the three duplicates are destroyed.A creature is unaffected by this fate if she can not see if it relies on a different meaning as vision, such as blind vision, or if it can perceive illusions as false, as with clear vision.",duration:"1 minute",higher_level:no,level:2,range:self,ritual:no,school:illusion}).
+spell_auto_data('mirror image',properties{casting_time:"1 action",classes:[cleric,druid,sorcerer,warlock,wizard],components:[v,s],desc:"Three illusionary duplicates of yourself appear in your space. Until the end of the spell, duplicates move with you and imitate your actions, swapping their position so that it is impossible to determine which image is real. You can use your action to dispel the illusory duplicates.Whenever a creature is targeting you with an attack during the duration of the spell, roll 1d20 to determine if the attack does not target rather one of your duplicates.If you have three duplicates, you need 6 or more on your throw to lead the target of the attack to a duplicate. With two duplicates, you need 8 or more. With one duplicate, you need 11 or more.The CA of a duplicate is 10 + your Dexterity modifier. If an attack hits a duplicate, it is destroyed. A duplicate may be destroyed not just an attack on key. It ignores other damage and effects. The spell ends if the three duplicates are destroyed.A creature is unaffected by this fate if she can not see if it relies on a different meaning as vision, such as blind vision, or if it can perceive illusions as false, as with clear vision.",duration:"1 minute",higher_level:no,level:2,range:self,ritual:no,school:illusion}).
 
-spell(mislead,properties{casting_time:"1 action",classes:[bard,wizard],components:[s],desc:"You become invisible at the same time that an illusory double of you appears where you are standing. The double lasts for the duration, but the invisibility ends if you attack or cast a spell.You can use your action to move your illusory double up to twice your speed and make it gesture, speak, and behave in whatever way you choose.You can see through its eyes and hear through its ears as if you were located where it is. On each of your turns as a bonus action, you can switch from using its senses to using your own, or back again. While you are using its senses, you are blinded and deafened in regard to your own surroundings.",duration:"Up to 1 hour",higher_level:no,level:5,range:self,ritual:no,school:illusion}).
+spell_auto_data(mislead,properties{casting_time:"1 action",classes:[bard,wizard],components:[s],desc:"You become invisible at the same time that an illusory double of you appears where you are standing. The double lasts for the duration, but the invisibility ends if you attack or cast a spell.You can use your action to move your illusory double up to twice your speed and make it gesture, speak, and behave in whatever way you choose.You can see through its eyes and hear through its ears as if you were located where it is. On each of your turns as a bonus action, you can switch from using its senses to using your own, or back again. While you are using its senses, you are blinded and deafened in regard to your own surroundings.",duration:"Up to 1 hour",higher_level:no,level:5,range:self,ritual:no,school:illusion}).
 
-spell('misty step',properties{casting_time:"1 bonus action",classes:[druid,paladin,sorcerer,warlock,wizard],components:[v],desc:"Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space that you can see.",duration:"Instantaneous",higher_level:no,level:2,range:self,ritual:no,school:conjuration}).
+spell_auto_data('misty step',properties{casting_time:"1 bonus action",classes:[druid,paladin,sorcerer,warlock,wizard],components:[v],desc:"Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space that you can see.",duration:"Instantaneous",higher_level:no,level:2,range:self,ritual:no,school:conjuration}).
 
-spell('modify memory',properties{casting_time:"1 action",classes:[bard,cleric,wizard],components:[v,s],desc:"You attempt to reshape another creature’s memories. One creature that you can see must make a wisdom saving throw. If you are fighting the creature, it has advantage on the saving throw. On a failed save, the target becomes charmed by you for the duration. The charmed target is incapacitated and unaware of its surroundings, though it can still hear you. If it takes any damage or is targeted by another spell, this spell ends, and none of the target’s memories are modified.While this charm lasts, you can affect the target’s memory of an event that it experienced within the last 24 hours and that lasted no more than 10 minutes. You can permanently eliminate all memory of the event, allow the target to recall the event with perfect clarity and exacting detail, change its memory of the details of the event, or create a memory of some other event.You must speak to the target to describe how its memories are affected, and it must be able to understand your language for the modified memories to take root. Its mind fills in any gaps in the details of your description. If the spell ends before you have finished describing the modified memories, the creature’s memory isn’t altered. Otherwise, the modified memories take hold when the spell ends.A modified memory doesn’t necessarily affect how a creature behaves, particularly if the memory contradicts the creature’s natural inclinations, alignment, or beliefs. An illogical modified memory, such as implanting a memory of how much the creature enjoyed dousing itself in acid, is dismissed, perhaps as a bad dream. The DM might deem a modified memory too nonsensical to affect a creature in a significant manner.A remove curse or greater restoration spell cast on the target restores the creature’s true memory.",duration:"Up to 1 minute",higher_level:"If you cast this spell using a spell slot of 6th level or higher, you can alter the target’s memories of an event that took place up to 7 days ago (6th level), 30 days ago (7th level), 1 year ago (8th level), or any time in the creature’s past (9th level).",level:5,range:feet(30),ritual:no,school:enchantment}).
+spell_auto_data('modify memory',properties{casting_time:"1 action",classes:[bard,cleric,wizard],components:[v,s],desc:"You attempt to reshape another creature’s memories. One creature that you can see must make a wisdom saving throw. If you are fighting the creature, it has advantage on the saving throw. On a failed save, the target becomes charmed by you for the duration. The charmed target is incapacitated and unaware of its surroundings, though it can still hear you. If it takes any damage or is targeted by another spell, this spell ends, and none of the target’s memories are modified.While this charm lasts, you can affect the target’s memory of an event that it experienced within the last 24 hours and that lasted no more than 10 minutes. You can permanently eliminate all memory of the event, allow the target to recall the event with perfect clarity and exacting detail, change its memory of the details of the event, or create a memory of some other event.You must speak to the target to describe how its memories are affected, and it must be able to understand your language for the modified memories to take root. Its mind fills in any gaps in the details of your description. If the spell ends before you have finished describing the modified memories, the creature’s memory isn’t altered. Otherwise, the modified memories take hold when the spell ends.A modified memory doesn’t necessarily affect how a creature behaves, particularly if the memory contradicts the creature’s natural inclinations, alignment, or beliefs. An illogical modified memory, such as implanting a memory of how much the creature enjoyed dousing itself in acid, is dismissed, perhaps as a bad dream. The DM might deem a modified memory too nonsensical to affect a creature in a significant manner.A remove curse or greater restoration spell cast on the target restores the creature’s true memory.",duration:"Up to 1 minute",higher_level:"If you cast this spell using a spell slot of 6th level or higher, you can alter the target’s memories of an event that took place up to 7 days ago (6th level), 30 days ago (7th level), 1 year ago (8th level), or any time in the creature’s past (9th level).",level:5,range:feet(30),ritual:no,school:enchantment}).
 
-spell('mold earth',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[s],desc:"You choose a portion of dirt or stone that you can see within range and that fits within a 5-foot cube. You manipulate it in one of the following ways:- If you target an area of loose earth, you can instantaneously excavate it, move it along the ground, and deposit it up to 5 feet away. This movement doesn't have enough force to cause damage.- You cause shapes, colors, or both to appear on the dirt or stone, spelling out words, creating images, or shaping patterns. The changes last for 1 hour.- If the dirt or stone you target is on the ground, you cause it to become difficult terrain. Alternatively, you can cause the ground to become normal terrain if it is already difficult terrain. This change lasts for 1 hour. If you cast this spell multiple times, you can have no more than two of its non-instantaneous effects active at a time, and you can dismiss such an effect as an action.",duration:"Instantaneous/1 hour",higher_level:no,level:0,range:feet(30),ritual:no,school:transmutation}).
+spell_auto_data('mold earth',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[s],desc:"You choose a portion of dirt or stone that you can see within range and that fits within a 5-foot cube. You manipulate it in one of the following ways:- If you target an area of loose earth, you can instantaneously excavate it, move it along the ground, and deposit it up to 5 feet away. This movement doesn't have enough force to cause damage.- You cause shapes, colors, or both to appear on the dirt or stone, spelling out words, creating images, or shaping patterns. The changes last for 1 hour.- If the dirt or stone you target is on the ground, you cause it to become difficult terrain. Alternatively, you can cause the ground to become normal terrain if it is already difficult terrain. This change lasts for 1 hour. If you cast this spell multiple times, you can have no more than two of its non-instantaneous effects active at a time, and you can dismiss such an effect as an action.",duration:"Instantaneous/1 hour",higher_level:no,level:0,range:feet(30),ritual:no,school:transmutation}).
 
-spell(moonbeam,properties{casting_time:"1 action",classes:[druid,paladin],components:[v,s,m("Several seeds of any moonseed plant and a piece of opalescent feldspar.")],desc:"A silvery beam of pale light shines down in a 5-footradius, 40-foot-high cylinder centered on a point within range. Until the spell ends, dim light fills the cylinder.When a creature enters the spell’s area for the first time on a turn or starts its turn there, it is engulfed in ghostly flames that cause searing pain, and it must make a constitution saving throw. It takes 2d10 radiant damage on a failed save, or half as much damage on a successful one.A shapechanger makes its saving throw with disadvantage. If it fails, it also instantly reverts to its original form and can’t assume a different form until it leaves the spell’s light.On each of your turns after you cast this spell, you can use an action to move the beam 60 feet in any direction.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1dlO for each slot level above 2nd.",level:2,range:feet(120),ritual:no,school:evocation}).
+spell_auto_data(moonbeam,properties{casting_time:"1 action",classes:[druid,paladin],components:[v,s,m("Several seeds of any moonseed plant and a piece of opalescent feldspar.")],desc:"A silvery beam of pale light shines down in a 5-footradius, 40-foot-high cylinder centered on a point within range. Until the spell ends, dim light fills the cylinder.When a creature enters the spell’s area for the first time on a turn or starts its turn there, it is engulfed in ghostly flames that cause searing pain, and it must make a constitution saving throw. It takes 2d10 radiant damage on a failed save, or half as much damage on a successful one.A shapechanger makes its saving throw with disadvantage. If it fails, it also instantly reverts to its original form and can’t assume a different form until it leaves the spell’s light.On each of your turns after you cast this spell, you can use an action to move the beam 60 feet in any direction.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1dlO for each slot level above 2nd.",level:2,range:feet(120),ritual:no,school:evocation}).
 
-spell('mordenkainen\'s faithful hound',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A miniature platinum sword with a grip and pommel of copper and zinc, worth 250gp.")],desc:"You create a sword-shaped plane of force that hovers within range. It lasts for the duration.When the sword appears, you make a melee spell attack against a target of your choice within 5 feet of the sword. On a hit, the target takes 3d10 force damage. Until the spell ends, you can use a bonus action on each of your turns to move the sword up to 20 feet to a spot you can see and repeat this attack against the same target or a different one.",duration:"8 hours",higher_level:no,level:4,range:feet(30),ritual:no,school:conjuration}).
+spell_auto_data('mordenkainen\'s faithful hound',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A miniature platinum sword with a grip and pommel of copper and zinc, worth 250gp.")],desc:"You create a sword-shaped plane of force that hovers within range. It lasts for the duration.When the sword appears, you make a melee spell attack against a target of your choice within 5 feet of the sword. On a hit, the target takes 3d10 force damage. Until the spell ends, you can use a bonus action on each of your turns to move the sword up to 20 feet to a spot you can see and repeat this attack against the same target or a different one.",duration:"8 hours",higher_level:no,level:4,range:feet(30),ritual:no,school:conjuration}).
 
-spell('mordenkainen\'s magnificent mansion',properties{casting_time:"1 minute",classes:[bard,wizard],components:[v,s,m("A miniature portal carved from ivory, a small piece of polished marble, and a tiny silver spoon, each item worth at least 5 gp.")],desc:"You conjure an extradimensional dwelling in range that lasts for the duration. You choose where its one entrance is located. The entrance shimmers faintly and is 5 feet wide and 10 feet tall. You and any creature you designate when you cast the spell can enter the extradimensional dwelling as long as the portal remains open. You can open or close the portal if you are within 30 feet of it. While closed, the portal is invisible.Beyond the portal is a magnificent foyer with numerous chambers beyond. The atmosphere is clean, fresh, and warm.You can create any floor plan you like, but the space can’t exceed 50 cubes, each cube being 10 feet on each side. The place is furnished and decorated as you choose. It contains sufficient food to serve a nine course banquet for up to 100 people. A staff of 100 near-transparent servants attends all who enter. You decide the visual appearance of these servants and their attire. They are completely obedient to your orders. Each servant can perform any task a normal human servant could perform, but they can’t attack or take any action that would directly harm another creature. Thus the servants can fetch things, clean, mend, fold clothes, light fires, serve food, pour wine, and so on. The servants can go anywhere in the mansion but can’t leave it. Furnishings and other objects created by this spell dissipate into smoke if removed from the mansion. When the spell ends, any creatures inside the extradimensional space are expelled into the open spaces nearest to the entrance.",duration:"24 hours",higher_level:no,level:7,range:feet(300),ritual:no,school:conjuration}).
+spell_auto_data('mordenkainen\'s magnificent mansion',properties{casting_time:"1 minute",classes:[bard,wizard],components:[v,s,m("A miniature portal carved from ivory, a small piece of polished marble, and a tiny silver spoon, each item worth at least 5 gp.")],desc:"You conjure an extradimensional dwelling in range that lasts for the duration. You choose where its one entrance is located. The entrance shimmers faintly and is 5 feet wide and 10 feet tall. You and any creature you designate when you cast the spell can enter the extradimensional dwelling as long as the portal remains open. You can open or close the portal if you are within 30 feet of it. While closed, the portal is invisible.Beyond the portal is a magnificent foyer with numerous chambers beyond. The atmosphere is clean, fresh, and warm.You can create any floor plan you like, but the space can’t exceed 50 cubes, each cube being 10 feet on each side. The place is furnished and decorated as you choose. It contains sufficient food to serve a nine course banquet for up to 100 people. A staff of 100 near-transparent servants attends all who enter. You decide the visual appearance of these servants and their attire. They are completely obedient to your orders. Each servant can perform any task a normal human servant could perform, but they can’t attack or take any action that would directly harm another creature. Thus the servants can fetch things, clean, mend, fold clothes, light fires, serve food, pour wine, and so on. The servants can go anywhere in the mansion but can’t leave it. Furnishings and other objects created by this spell dissipate into smoke if removed from the mansion. When the spell ends, any creatures inside the extradimensional space are expelled into the open spaces nearest to the entrance.",duration:"24 hours",higher_level:no,level:7,range:feet(300),ritual:no,school:conjuration}).
 
-spell('mordenkainen\'s private sanctum',properties{casting_time:"10 minutes",classes:[wizard],components:[v,s,m("A thin sheet of lead, a piece of opaque glass, a wad of cotton or cloth, and powdered chrysolite.")],desc:"You make an area within range magically secure. The area is a cube that can be as small as 5 feet to as large as 100 feet on each side. The spell lasts for the duration or until you use an action to dismiss it.until you use an action to dismiss it. When you cast the spell, you decide what sort of security the spell provides, choosing any or all of the following properties:- Sound can't pass through the barrier at the edge of the warded area.- The barrier of the warded area appears dark and foggy, preventing vision (including darkvision) through it.- Sensors created by divination spells can’t appear inside the protected area or pass through the barrier at its perimeter.- Creatures in the area can’t be targeted by divination spells.- Nothing can teleport into or out of the warded area.- Planar travel is blocked within the warded area.Casting this spell on the same spot every day for a year makes this effect permanent.",duration:"24 hours",higher_level:"When you cast this spell using a spell slot of 5th level or higher, you can increase the size of the cube by 100 feet for each slot level beyond 4th. Thus you could protect a cube that can be up to 200 feet on one side by using a spell slot of 5th level.",level:4,range:feet(120),ritual:no,school:abjuration}).
+spell_auto_data('mordenkainen\'s private sanctum',properties{casting_time:"10 minutes",classes:[wizard],components:[v,s,m("A thin sheet of lead, a piece of opaque glass, a wad of cotton or cloth, and powdered chrysolite.")],desc:"You make an area within range magically secure. The area is a cube that can be as small as 5 feet to as large as 100 feet on each side. The spell lasts for the duration or until you use an action to dismiss it.until you use an action to dismiss it. When you cast the spell, you decide what sort of security the spell provides, choosing any or all of the following properties:- Sound can't pass through the barrier at the edge of the warded area.- The barrier of the warded area appears dark and foggy, preventing vision (including darkvision) through it.- Sensors created by divination spells can’t appear inside the protected area or pass through the barrier at its perimeter.- Creatures in the area can’t be targeted by divination spells.- Nothing can teleport into or out of the warded area.- Planar travel is blocked within the warded area.Casting this spell on the same spot every day for a year makes this effect permanent.",duration:"24 hours",higher_level:"When you cast this spell using a spell slot of 5th level or higher, you can increase the size of the cube by 100 feet for each slot level beyond 4th. Thus you could protect a cube that can be up to 200 feet on one side by using a spell slot of 5th level.",level:4,range:feet(120),ritual:no,school:abjuration}).
 
-spell('mordenkainen\'s sword',properties{casting_time:"1 action",classes:[bard,wizard],components:[v,s,m("A miniature platinum sword with a grip and pommel of copper and zinc, worth 250 gp.")],desc:"You create a sword-shaped plane of force that hovers within range. It lasts for the duration.When the sword appears, you make a melee spell attack against a target of your choice within 5 feet of the sword. On a hit, the target takes 3d10 force damage. Until the spell ends, you can use a bonus action on each of your turns to move the sword up to 20 feet to a spot you can see and repeat this attack against the same target or a different one.",duration:"Up to 1 minute",higher_level:no,level:7,range:feet(60),ritual:no,school:evocation}).
+spell_auto_data('mordenkainen\'s sword',properties{casting_time:"1 action",classes:[bard,wizard],components:[v,s,m("A miniature platinum sword with a grip and pommel of copper and zinc, worth 250 gp.")],desc:"You create a sword-shaped plane of force that hovers within range. It lasts for the duration.When the sword appears, you make a melee spell attack against a target of your choice within 5 feet of the sword. On a hit, the target takes 3d10 force damage. Until the spell ends, you can use a bonus action on each of your turns to move the sword up to 20 feet to a spot you can see and repeat this attack against the same target or a different one.",duration:"Up to 1 minute",higher_level:no,level:7,range:feet(60),ritual:no,school:evocation}).
 
-spell('move earth',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("An iron blade and a small bag containing a mixture of soils—clay, loam, and sand.")],desc:"Choose an area of terrain no larger than 40 feet on a side within range. You can reshape dirt, sand, or clay in the area in any manner you choose for the duration. You can raise or lower the area's elevation, create or fill in a trench, erect or flatten a wall, or form a pillar. The extent of any such changes can't exceed half the area's largest dimension. So, if you affect a 40-foot square, you can create a pillar up to 20 feet high, raise or lower the square's elevation by up to 20 feet, dig a trench up to 20 feet deep, and so on. It takes 10 minutes for these changes to complete.At the end of every 10 minutes you spend concentrating on the spell, you can choose a new area of terrain to affect.Because the terrain's transformation occurs slowly, creatures in the area can't usually be trapped or injured by the ground's movement.This spell can't manipulate natural stone or stone construction. Rocks and structures shift to accommodate the new terrain. If the way you shape the terrain would make a structure unstable, it might collapse.Similarly, this spell doesn't directly affect plant growth. The moved earth carries any plants along with it.",duration:"Up to 2 hours",higher_level:no,level:6,range:feet(120),ritual:no,school:transmutation}).
+spell_auto_data('move earth',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("An iron blade and a small bag containing a mixture of soils—clay, loam, and sand.")],desc:"Choose an area of terrain no larger than 40 feet on a side within range. You can reshape dirt, sand, or clay in the area in any manner you choose for the duration. You can raise or lower the area's elevation, create or fill in a trench, erect or flatten a wall, or form a pillar. The extent of any such changes can't exceed half the area's largest dimension. So, if you affect a 40-foot square, you can create a pillar up to 20 feet high, raise or lower the square's elevation by up to 20 feet, dig a trench up to 20 feet deep, and so on. It takes 10 minutes for these changes to complete.At the end of every 10 minutes you spend concentrating on the spell, you can choose a new area of terrain to affect.Because the terrain's transformation occurs slowly, creatures in the area can't usually be trapped or injured by the ground's movement.This spell can't manipulate natural stone or stone construction. Rocks and structures shift to accommodate the new terrain. If the way you shape the terrain would make a structure unstable, it might collapse.Similarly, this spell doesn't directly affect plant growth. The moved earth carries any plants along with it.",duration:"Up to 2 hours",higher_level:no,level:6,range:feet(120),ritual:no,school:transmutation}).
 
-spell(nondetection,properties{casting_time:"1 action",classes:[bard,cleric,ranger,wizard],components:[v,s,m("A pinch of diamond dust worth 25 gp sprinkled over the target, which the spell consumes.")],desc:"For the duration, you hide a target that you touch from divination magic. The target can be a willing creature or a place or an object no larger than 10 feet in any dimension. The target can’t be targeted by any divination magic or perceived through magical scrying sensors.",duration:"8 hours",higher_level:no,level:3,range:touch,ritual:no,school:abjuration}).
+spell_auto_data(nondetection,properties{casting_time:"1 action",classes:[bard,cleric,ranger,wizard],components:[v,s,m("A pinch of diamond dust worth 25 gp sprinkled over the target, which the spell consumes.")],desc:"For the duration, you hide a target that you touch from divination magic. The target can be a willing creature or a place or an object no larger than 10 feet in any dimension. The target can’t be targeted by any divination magic or perceived through magical scrying sensors.",duration:"8 hours",higher_level:no,level:3,range:touch,ritual:no,school:abjuration}).
 
-spell('nystul\'s magic aura',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A small square of silk.")],desc:"You place an illusion on a creature or an object you touch so that divination spells reveal false information about it. The target can be a willing creature or an object that isn’t being carried or worn by another creature.When you cast the spell, choose one or both of the following effects. The effect lasts for the duration. If you cast this spell on the same creature or object every day for 30 days, placing the same effect on it each time, the illusion lasts until it is dispelled.False Aura. You change the way the target appears to spells and magical effects, such as detect magic, that detect magical auras. You can make a nonmagical object appear magical, a magical object appear nonmagical, or change the object’s magical aura so that it appears to belong to a specific school of magic that you choose. When you use this effect on an object, you can make the false magic apparent to any creature that handles the item.Mask. You change the way the target appears to spells and magical effects that detect creature types, such as a paladin’s Divine Sense or the trigger of a symbol spell. You choose a creature type and other spells and magical effects treat the target as if it were a creature of that type or of that alignment.",duration:"24 hours",higher_level:no,level:2,range:touch,ritual:no,school:illusion}).
+spell_auto_data('nystul\'s magic aura',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A small square of silk.")],desc:"You place an illusion on a creature or an object you touch so that divination spells reveal false information about it. The target can be a willing creature or an object that isn’t being carried or worn by another creature.When you cast the spell, choose one or both of the following effects. The effect lasts for the duration. If you cast this spell on the same creature or object every day for 30 days, placing the same effect on it each time, the illusion lasts until it is dispelled.False Aura. You change the way the target appears to spells and magical effects, such as detect magic, that detect magical auras. You can make a nonmagical object appear magical, a magical object appear nonmagical, or change the object’s magical aura so that it appears to belong to a specific school of magic that you choose. When you use this effect on an object, you can make the false magic apparent to any creature that handles the item.Mask. You change the way the target appears to spells and magical effects that detect creature types, such as a paladin’s Divine Sense or the trigger of a symbol spell. You choose a creature type and other spells and magical effects treat the target as if it were a creature of that type or of that alignment.",duration:"24 hours",higher_level:no,level:2,range:touch,ritual:no,school:illusion}).
 
-spell('otiluke\'s freezing sphere',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A small crystal sphere.")],desc:"A frigid globe of cold energy streaks from your fingertips to a point of your choice within range, where it explodes in a 60-foot-radius sphere. Each creature within the area must make a constitution saving throw. On a failed save, a creature takes 10d6 cold damage. On a successful save, it takes half as much damage.If the globe strikes a body of water or a liquid that is principally water (not including water-based creatures), it freezes the liquid to a depth of 6 inches over an area 30 feet square. This ice lasts for 1 minute. Creatures that were swimming on the surface of frozen water are trapped in the ice. A trapped creature can use an action to make a Strength check against your spell save DC to break free.You can refrain from firing the globe after completing the spell, if you wish. A small globe about the size of a sling stone, cool to the touch, appears in your hand. At any time, you or a creature you give the globe to can throw the globe (to a range of 40 feet) or hurl it with a sling (to the sling’s normal range). It shatters on impact, with the same effect as the normal casting of the spell. You can also set the globe down without shattering it. After 1 minute, if the globe hasn’t already shattered, it explodes.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 7th level or higher, the damage increases by 1d6 for each slot level above 6th.",level:6,range:feet(300),ritual:no,school:evocation}).
+spell_auto_data('otiluke\'s freezing sphere',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A small crystal sphere.")],desc:"A frigid globe of cold energy streaks from your fingertips to a point of your choice within range, where it explodes in a 60-foot-radius sphere. Each creature within the area must make a constitution saving throw. On a failed save, a creature takes 10d6 cold damage. On a successful save, it takes half as much damage.If the globe strikes a body of water or a liquid that is principally water (not including water-based creatures), it freezes the liquid to a depth of 6 inches over an area 30 feet square. This ice lasts for 1 minute. Creatures that were swimming on the surface of frozen water are trapped in the ice. A trapped creature can use an action to make a Strength check against your spell save DC to break free.You can refrain from firing the globe after completing the spell, if you wish. A small globe about the size of a sling stone, cool to the touch, appears in your hand. At any time, you or a creature you give the globe to can throw the globe (to a range of 40 feet) or hurl it with a sling (to the sling’s normal range). It shatters on impact, with the same effect as the normal casting of the spell. You can also set the globe down without shattering it. After 1 minute, if the globe hasn’t already shattered, it explodes.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 7th level or higher, the damage increases by 1d6 for each slot level above 6th.",level:6,range:feet(300),ritual:no,school:evocation}).
 
-spell('otiluke\'s resilient sphere',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A hemispherical piece of clear crystal and a matching hemispherical piece of gum arabic.")],desc:"A sphere of shimmering force encloses a creature or object of Large size or smaller within range. An unwilling creature must make a dexterity saving throw. On a failed save, the creature is enclosed for the duration.Nothing—not physical objects, energy, or other spell effects—can pass through the barrier, in or out, though a creature in the sphere can breathe there. The sphere is immune to all damage, and a creature or object inside can’t be damaged by attacks or effects originating from outside, nor can a creature inside the sphere damage anything outside it.The sphere is weightless and just large enough to contain the creature or object inside. An enclosed creature can use its action to push against the sphere’s walls and thus roll the sphere at up to half the creature’s speed. Similarly, the globe can be picked up and moved by other creatures.A disintegrate spell targeting the globe destroys it without harming anything inside it.",duration:"Up to 1 minute",higher_level:no,level:4,range:feet(30),ritual:no,school:evocation}).
+spell_auto_data('otiluke\'s resilient sphere',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A hemispherical piece of clear crystal and a matching hemispherical piece of gum arabic.")],desc:"A sphere of shimmering force encloses a creature or object of Large size or smaller within range. An unwilling creature must make a dexterity saving throw. On a failed save, the creature is enclosed for the duration.Nothing—not physical objects, energy, or other spell effects—can pass through the barrier, in or out, though a creature in the sphere can breathe there. The sphere is immune to all damage, and a creature or object inside can’t be damaged by attacks or effects originating from outside, nor can a creature inside the sphere damage anything outside it.The sphere is weightless and just large enough to contain the creature or object inside. An enclosed creature can use its action to push against the sphere’s walls and thus roll the sphere at up to half the creature’s speed. Similarly, the globe can be picked up and moved by other creatures.A disintegrate spell targeting the globe destroys it without harming anything inside it.",duration:"Up to 1 minute",higher_level:no,level:4,range:feet(30),ritual:no,school:evocation}).
 
-spell('otto\'s irresistible dance',properties{casting_time:"1 action",classes:[bard,wizard],components:[v],desc:"Choose one creature that you can see within range. The target begins a comic dance in place: shuffling, tapping its feet, and capering for the duration. Creatures that can’t be charmed are immune to this spell.A dancing creature must use all its movement to dance without leaving its space and has disadvantage on dexterity saving throws and attack rolls. While the target is affected by this spell, other creatures have advantage on attack rolls against it. As an action, a dancing creature makes a wisdom saving throw to regain control of itself. On a successful save, the spell ends.",duration:"Up to 1 minute",higher_level:no,level:6,range:feet(30),ritual:no,school:enchantment}).
+spell_auto_data('otto\'s irresistible dance',properties{casting_time:"1 action",classes:[bard,wizard],components:[v],desc:"Choose one creature that you can see within range. The target begins a comic dance in place: shuffling, tapping its feet, and capering for the duration. Creatures that can’t be charmed are immune to this spell.A dancing creature must use all its movement to dance without leaving its space and has disadvantage on dexterity saving throws and attack rolls. While the target is affected by this spell, other creatures have advantage on attack rolls against it. As an action, a dancing creature makes a wisdom saving throw to regain control of itself. On a successful save, the spell ends.",duration:"Up to 1 minute",higher_level:no,level:6,range:feet(30),ritual:no,school:enchantment}).
 
-spell('pass without trace',properties{casting_time:"1 action",classes:[cleric,druid,ranger],components:[v,s,m("Ashes from a burned leaf of mistletoe and a sprig of spruce.")],desc:"A veil of shadows and silence radiates from you, masking you and your companions from detection. For the duration, each creature you choose within 30 feet of you (including you) has a +10 bonus to Dexterity (Stealth) checks and can’t be tracked except by magical means. A creature that receives this bonus leaves behind no tracks or other traces of its passage.",duration:"Up to 1 hour",higher_level:no,level:2,range:self,ritual:no,school:abjuration}).
+spell_auto_data('pass without trace',properties{casting_time:"1 action",classes:[cleric,druid,ranger],components:[v,s,m("Ashes from a burned leaf of mistletoe and a sprig of spruce.")],desc:"A veil of shadows and silence radiates from you, masking you and your companions from detection. For the duration, each creature you choose within 30 feet of you (including you) has a +10 bonus to Dexterity (Stealth) checks and can’t be tracked except by magical means. A creature that receives this bonus leaves behind no tracks or other traces of its passage.",duration:"Up to 1 hour",higher_level:no,level:2,range:self,ritual:no,school:abjuration}).
 
-spell(passwall,properties{casting_time:"1 action",classes:[druid,wizard],components:[v,s,m("A pinch of sesame seeds.")],desc:"A passage appears at a point of your choice that you can see on a wooden, plaster, or stone surface (such as a wall, a ceiling, or a floor) within range, and lasts for the duration. You choose the opening’s dimensions: up to 5 feet wide, 8 feet tall, and 20 feet deep. The passage creates no instability in a structure surrounding it.When the opening disappears, any creatures or objects still in the passage created by the spell are safely ejected to an unoccupied space nearest to the surface on which you cast the spell.",duration:"1 hour",higher_level:no,level:5,range:feet(30),ritual:no,school:transmutation}).
+spell_auto_data(passwall,properties{casting_time:"1 action",classes:[druid,wizard],components:[v,s,m("A pinch of sesame seeds.")],desc:"A passage appears at a point of your choice that you can see on a wooden, plaster, or stone surface (such as a wall, a ceiling, or a floor) within range, and lasts for the duration. You choose the opening’s dimensions: up to 5 feet wide, 8 feet tall, and 20 feet deep. The passage creates no instability in a structure surrounding it.When the opening disappears, any creatures or objects still in the passage created by the spell are safely ejected to an unoccupied space nearest to the surface on which you cast the spell.",duration:"1 hour",higher_level:no,level:5,range:feet(30),ritual:no,school:transmutation}).
 
-spell('permanent image',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s,m("A bit of fleece.")],desc:"You create the image of an object, a creature, or some other visible phenomenon that is no larger than a 20-foot cube. The image appears at a spot that you can see within range and lasts until dispelled. It seems completely real, including sounds, smells, and temperature appropriate to the thing depicted. You can’t create sufficient heat or cold to cause damage, a sound loud enough to deal thunder damage or deafen a creature, or a smell that might sicken a creature (like a troglodyte’s stench).As long as you are within range of the illusion, you can use your action to cause the image to move to any other spot within range. As the image changes location, you can alter its appearance so that its movements appear natural for the image. For example, if you create an image of a creature and move it, you can alter the image so that it appears to be walking. Similarly, you can cause the illusion to make different sounds at different times, even making it carry on a conversation, for example.Physical interaction with the image reveals it to be an illusion, because things can pass through it. A creature that uses its action to examine the image can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the creature can see through the image, and its other sensory qualities become faint to the creature.",duration:"Until dispelled",higher_level:no,level:6,range:feet(120),ritual:no,school:illusion}).
+spell_auto_data('permanent image',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s,m("A bit of fleece.")],desc:"You create the image of an object, a creature, or some other visible phenomenon that is no larger than a 20-foot cube. The image appears at a spot that you can see within range and lasts until dispelled. It seems completely real, including sounds, smells, and temperature appropriate to the thing depicted. You can’t create sufficient heat or cold to cause damage, a sound loud enough to deal thunder damage or deafen a creature, or a smell that might sicken a creature (like a troglodyte’s stench).As long as you are within range of the illusion, you can use your action to cause the image to move to any other spot within range. As the image changes location, you can alter its appearance so that its movements appear natural for the image. For example, if you create an image of a creature and move it, you can alter the image so that it appears to be walking. Similarly, you can cause the illusion to make different sounds at different times, even making it carry on a conversation, for example.Physical interaction with the image reveals it to be an illusion, because things can pass through it. A creature that uses its action to examine the image can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the creature can see through the image, and its other sensory qualities become faint to the creature.",duration:"Until dispelled",higher_level:no,level:6,range:feet(120),ritual:no,school:illusion}).
 
-spell('phantasmal force',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s,m("A bit of fleece.")],desc:"You craft an illusion that takes root in the mind of a creature that you can see within range. The target must make an intelligence saving throw. On a failed save, you create a phantasmal object, creature, or other visible phenomenon of your choice that is no larger than a 10-foot cube and that is perceivable only to the target for the duration. This spell has no effect on undead or constructs.The phantasm includes sound, temperature, and other stimuli, also evident only to the creature.The target can use its action to examine the phantasm with an Intelligence (Investigation) check against your spell save DC. If the check succeeds, the target realizes that the phantasm is an illusion, and the spell ends.While a target is affected by the spell, the target treats the phantasm as if it were real. The target rationalizes any illogical outcomes from interacting with the phantasm. For example, a target attempting to walk across a phantasmal bridge that spans a chasm falls once it steps onto the bridge. If the target survives the fall, it still believes that the bridge exists and comes up with some other explanation for its fall—it was pushed, it slipped, or a strong wind might have knocked it off.An affected target is so convinced of the phantasm's reality that it can even take damage from the illusion. A phantasm created to appear as a creature can attack the target. Similarly, a phantasm created to appear as fire, a pool of acid, or lava can burn the target. Each round on your turn, the phantasm can deal 1d6 psychic damage to the target if it is in the phantasm's area or within 5 feet of the phantasm, provided that the illusion is of a creature or hazard that could logically deal damage, such as by attacking. The target perceives the damage as a type appropriate to the illusion.",duration:"Up to 1 minute",higher_level:no,level:2,range:feet(60),ritual:no,school:illusion}).
+spell_auto_data('phantasmal force',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s,m("A bit of fleece.")],desc:"You craft an illusion that takes root in the mind of a creature that you can see within range. The target must make an intelligence saving throw. On a failed save, you create a phantasmal object, creature, or other visible phenomenon of your choice that is no larger than a 10-foot cube and that is perceivable only to the target for the duration. This spell has no effect on undead or constructs.The phantasm includes sound, temperature, and other stimuli, also evident only to the creature.The target can use its action to examine the phantasm with an Intelligence (Investigation) check against your spell save DC. If the check succeeds, the target realizes that the phantasm is an illusion, and the spell ends.While a target is affected by the spell, the target treats the phantasm as if it were real. The target rationalizes any illogical outcomes from interacting with the phantasm. For example, a target attempting to walk across a phantasmal bridge that spans a chasm falls once it steps onto the bridge. If the target survives the fall, it still believes that the bridge exists and comes up with some other explanation for its fall—it was pushed, it slipped, or a strong wind might have knocked it off.An affected target is so convinced of the phantasm's reality that it can even take damage from the illusion. A phantasm created to appear as a creature can attack the target. Similarly, a phantasm created to appear as fire, a pool of acid, or lava can burn the target. Each round on your turn, the phantasm can deal 1d6 psychic damage to the target if it is in the phantasm's area or within 5 feet of the phantasm, provided that the illusion is of a creature or hazard that could logically deal damage, such as by attacking. The target perceives the damage as a type appropriate to the illusion.",duration:"Up to 1 minute",higher_level:no,level:2,range:feet(60),ritual:no,school:illusion}).
 
-spell('phantasmal killer',properties{casting_time:"1 action",classes:[wizard],components:[v,s],desc:"You tap into the nightmares of a creature you can see within range and create an illusory manifestation of its deepest fears, visible only to that creature. The target must make a wisdom saving throw. On a failed save, the target becomes frightened for the duration. At the start of each of the target’s turns before the spell ends, the target must succeed on a wisdom saving throw or take 4 d10 psychic damage. On a successful save, the spell ends.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 5th level or higher, the damage increases by 1dlO for each slot level above 4th.",level:4,range:feet(120),ritual:no,school:illusion}).
+spell_auto_data('phantasmal killer',properties{casting_time:"1 action",classes:[wizard],components:[v,s],desc:"You tap into the nightmares of a creature you can see within range and create an illusory manifestation of its deepest fears, visible only to that creature. The target must make a wisdom saving throw. On a failed save, the target becomes frightened for the duration. At the start of each of the target’s turns before the spell ends, the target must succeed on a wisdom saving throw or take 4 d10 psychic damage. On a successful save, the spell ends.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 5th level or higher, the damage increases by 1dlO for each slot level above 4th.",level:4,range:feet(120),ritual:no,school:illusion}).
 
-spell('phantom steed',properties{casting_time:"1 minute",classes:['ritual caster',wizard],components:[v,s],desc:"A Large quasi-real, horselike creature appears on the ground in an unoccupied space of your choice within range. You decide the creature’s appearance, but it is equipped with a saddle, bit, and bridle. Any of the equipment created by the spell vanishes in a puff of smoke if it is carried more than 10 feet away from the steed.For the duration, you or a creature you choose can ride the steed. The creature uses the statistics for a riding horse, except it has a speed of 100 feet and can travel 10 miles in an hour, or 13 miles at a fast pace. When the spell ends, the steed gradually fades, giving the rider 1 minute to dismount. The spell ends if you use an action to dismiss it or if the steed takes any damage.",duration:"1 hour",higher_level:no,level:3,range:feet(30),ritual:yes,school:illusion}).
+spell_auto_data('phantom steed',properties{casting_time:"1 minute",classes:['ritual caster',wizard],components:[v,s],desc:"A Large quasi-real, horselike creature appears on the ground in an unoccupied space of your choice within range. You decide the creature’s appearance, but it is equipped with a saddle, bit, and bridle. Any of the equipment created by the spell vanishes in a puff of smoke if it is carried more than 10 feet away from the steed.For the duration, you or a creature you choose can ride the steed. The creature uses the statistics for a riding horse, except it has a speed of 100 feet and can travel 10 miles in an hour, or 13 miles at a fast pace. When the spell ends, the steed gradually fades, giving the rider 1 minute to dismount. The spell ends if you use an action to dismiss it or if the steed takes any damage.",duration:"1 hour",higher_level:no,level:3,range:feet(30),ritual:yes,school:illusion}).
 
-spell('planar ally',properties{casting_time:"10 minutes",classes:[cleric],components:[v,s],desc:"You beseech an otherworldly entity for aid. The being must be known to you: a god, a primordial, a demon prince, or some other being of cosmic power. That entity sends a celestial, an elemental, or a fiend loyal to it to aid you, making the creature appear in an unoccupied space within range. If you know a specific creature’s name, you can speak that name when you cast this spell to request that creature, though you might get a different creature anyway (DM’s choice).When the creature appears, it is under no compulsion to behave in any particular way. You can ask the creature to perform a service in exchange for payment, but it isn’t obliged to do so. The requested task could range from simple (fly us across the chasm, or help us fight a battle) to complex (spy on our enemies, or protect us during our foray into the dungeon). You must be able to communicate with the creature to bargain for its services.Payment can take a variety of forms. A celestial might require a sizable donation of gold or magic items to an allied temple, while a fiend might demand a living sacrifice or a gift of treasure. Some creatures might exchange their service for a quest undertaken by you.As a rule of thumb, a task that can be measured in minutes requires a payment worth 100 gp per minute. A task measured in hours requires 1,000 gp per hour. And a task measured in days (up to 10 days) requires 10,000 gp per day. The DM can adjust these payments based on the circumstances under which you cast the spell. If the task is aligned with the creature’s ethos, the payment might be halved or even waived. Nonhazardous tasks typically require only half the suggested payment, while especially dangerous tasks might require a greater gift. Creatures rarely accept tasks that seem suicidal.After the creature completes the task, or when the agreed-upon duration of service expires, the creature returns to its home plane after reporting back to you, if appropriate to the task and if possible. If you are unable to agree on a price for the creature’s service, the creature immediately returns to its home plane.A creature enlisted to join your group counts as a member of it, receiving a full share of experience points awarded.",duration:"Instantaneous",higher_level:no,level:6,range:feet(60),ritual:no,school:conjuration}).
+spell_auto_data('planar ally',properties{casting_time:"10 minutes",classes:[cleric],components:[v,s],desc:"You beseech an otherworldly entity for aid. The being must be known to you: a god, a primordial, a demon prince, or some other being of cosmic power. That entity sends a celestial, an elemental, or a fiend loyal to it to aid you, making the creature appear in an unoccupied space within range. If you know a specific creature’s name, you can speak that name when you cast this spell to request that creature, though you might get a different creature anyway (DM’s choice).When the creature appears, it is under no compulsion to behave in any particular way. You can ask the creature to perform a service in exchange for payment, but it isn’t obliged to do so. The requested task could range from simple (fly us across the chasm, or help us fight a battle) to complex (spy on our enemies, or protect us during our foray into the dungeon). You must be able to communicate with the creature to bargain for its services.Payment can take a variety of forms. A celestial might require a sizable donation of gold or magic items to an allied temple, while a fiend might demand a living sacrifice or a gift of treasure. Some creatures might exchange their service for a quest undertaken by you.As a rule of thumb, a task that can be measured in minutes requires a payment worth 100 gp per minute. A task measured in hours requires 1,000 gp per hour. And a task measured in days (up to 10 days) requires 10,000 gp per day. The DM can adjust these payments based on the circumstances under which you cast the spell. If the task is aligned with the creature’s ethos, the payment might be halved or even waived. Nonhazardous tasks typically require only half the suggested payment, while especially dangerous tasks might require a greater gift. Creatures rarely accept tasks that seem suicidal.After the creature completes the task, or when the agreed-upon duration of service expires, the creature returns to its home plane after reporting back to you, if appropriate to the task and if possible. If you are unable to agree on a price for the creature’s service, the creature immediately returns to its home plane.A creature enlisted to join your group counts as a member of it, receiving a full share of experience points awarded.",duration:"Instantaneous",higher_level:no,level:6,range:feet(60),ritual:no,school:conjuration}).
 
-spell('planar binding',properties{casting_time:"1 hour",classes:[bard,cleric,druid,wizard],components:[v,s,m("A jewel worth at least 1,000 gp, which the spell consumes.")],desc:"With this spell, you attempt to bind a celestial, an elemental, a fey, or a fiend to your service. The creature must be within range for the entire casting of the spell. (Typically, the creature is first summoned into the center of an inverted magic circle in order to keep it trapped while this spell is cast.) At the completion of the casting, the target must make a charisma saving throw. On a failed save, it is bound to serve you for the duration. If the creature was summoned or created by another spell, that spell’s duration is extended to match the duration of this spell.A bound creature must follow your instructions to the best of its ability. You might command the creature to accompany you on an adventure, to guard a location, or to deliver a message. The creature obeys the letter of your instructions, but if the creature is hostile to you, it strives to twist your words to achieve its own objectives. If the creature carries out your instructions completely before the spell ends, it travels to you to report this fact if you are on the same plane of existence. If you are on a different plane of existence, it returns to the place where you bound it and remains there until the spell ends.",duration:"24 hours",higher_level:"When you cast this spell using a spell slot of a higher level, the duration increases to 10 days with a 6th-level slot, to 30 days with a 7th-level slot, to 180 days with an 8th-level slot, and to a year and a day with a 9th-level spell slot.",level:5,range:feet(60),ritual:no,school:abjuration}).
+spell_auto_data('planar binding',properties{casting_time:"1 hour",classes:[bard,cleric,druid,wizard],components:[v,s,m("A jewel worth at least 1,000 gp, which the spell consumes.")],desc:"With this spell, you attempt to bind a celestial, an elemental, a fey, or a fiend to your service. The creature must be within range for the entire casting of the spell. (Typically, the creature is first summoned into the center of an inverted magic circle in order to keep it trapped while this spell is cast.) At the completion of the casting, the target must make a charisma saving throw. On a failed save, it is bound to serve you for the duration. If the creature was summoned or created by another spell, that spell’s duration is extended to match the duration of this spell.A bound creature must follow your instructions to the best of its ability. You might command the creature to accompany you on an adventure, to guard a location, or to deliver a message. The creature obeys the letter of your instructions, but if the creature is hostile to you, it strives to twist your words to achieve its own objectives. If the creature carries out your instructions completely before the spell ends, it travels to you to report this fact if you are on the same plane of existence. If you are on a different plane of existence, it returns to the place where you bound it and remains there until the spell ends.",duration:"24 hours",higher_level:"When you cast this spell using a spell slot of a higher level, the duration increases to 10 days with a 6th-level slot, to 30 days with a 7th-level slot, to 180 days with an 8th-level slot, and to a year and a day with a 9th-level spell slot.",level:5,range:feet(60),ritual:no,school:abjuration}).
 
-spell('plane shift',properties{casting_time:"1 action",classes:[cleric,sorcerer,warlock,wizard],components:[v,s,m("A forked, metal rod worth at least 250 gp, attuned to a particular plane of existence.")],desc:"You and up to eight willing creatures who link hands in a circle are transported to a different plane of existence. You can specify a target destination in general terms, such as the City of Brass on the Elemental Plane of Fire or the palace of Dispater on the second level of the Nine Hells, and you appear in or near that destination. If you are trying to reach the City of Brass, for example, you might arrive in its Street of Steel, before its Gate of Ashes, or looking at the city from across the Sea of Fire, at the DM’s discretion.Alternatively, if you know the sigil sequence of a teleportation circle on another plane of existence, this spell can take you to that circle. If the teleportation circle is too small to hold all the creatures you transported, they appear in the closest unoccupied spaces next to the circle.You can use this spell to banish an unwilling creature to another plane. Choose a creature within your reach and make a melee spell attack against it. On a hit, the creature must make a charisma saving throw. If the creature fails this save, it is transported to a random location on the plane of existence you specify. A creature so transported must find its own way back to your current plane of existence.",duration:"Instantaneous",higher_level:no,level:7,range:touch,ritual:no,school:conjuration}).
+spell_auto_data('plane shift',properties{casting_time:"1 action",classes:[cleric,sorcerer,warlock,wizard],components:[v,s,m("A forked, metal rod worth at least 250 gp, attuned to a particular plane of existence.")],desc:"You and up to eight willing creatures who link hands in a circle are transported to a different plane of existence. You can specify a target destination in general terms, such as the City of Brass on the Elemental Plane of Fire or the palace of Dispater on the second level of the Nine Hells, and you appear in or near that destination. If you are trying to reach the City of Brass, for example, you might arrive in its Street of Steel, before its Gate of Ashes, or looking at the city from across the Sea of Fire, at the DM’s discretion.Alternatively, if you know the sigil sequence of a teleportation circle on another plane of existence, this spell can take you to that circle. If the teleportation circle is too small to hold all the creatures you transported, they appear in the closest unoccupied spaces next to the circle.You can use this spell to banish an unwilling creature to another plane. Choose a creature within your reach and make a melee spell attack against it. On a hit, the creature must make a charisma saving throw. If the creature fails this save, it is transported to a random location on the plane of existence you specify. A creature so transported must find its own way back to your current plane of existence.",duration:"Instantaneous",higher_level:no,level:7,range:touch,ritual:no,school:conjuration}).
 
-spell('plant growth',properties{casting_time:"1 action",classes:[bard,cleric,druid,paladin,ranger,warlock],components:[v,s],desc:"This spell channels vitality into plants within a specific area. There are two possible uses for the spell, granting either immediate or long-term benefits.If you cast this spell using 1 action, choose a point within range. All normal plants in a 100-foot radius centered on that point become thick and overgrown. A creature moving through the area must spend 4 feet of movement for every 1 foot it moves.You can exclude one or more areas of any size within the spell’s area from being affected.If you cast this spell over 8 hours, you enrich the land. All plants in a half-mile radius centered on a point within range become enriched for 1 year. The plants yield twice the normal amount of food when harvested.",duration:"Instantaneous",higher_level:no,level:3,range:feet(150),ritual:no,school:transmutation}).
+spell_auto_data('plant growth',properties{casting_time:"1 action",classes:[bard,cleric,druid,paladin,ranger,warlock],components:[v,s],desc:"This spell channels vitality into plants within a specific area. There are two possible uses for the spell, granting either immediate or long-term benefits.If you cast this spell using 1 action, choose a point within range. All normal plants in a 100-foot radius centered on that point become thick and overgrown. A creature moving through the area must spend 4 feet of movement for every 1 foot it moves.You can exclude one or more areas of any size within the spell’s area from being affected.If you cast this spell over 8 hours, you enrich the land. All plants in a half-mile radius centered on a point within range become enriched for 1 year. The plants yield twice the normal amount of food when harvested.",duration:"Instantaneous",higher_level:no,level:3,range:feet(150),ritual:no,school:transmutation}).
 
-spell('poison spray',properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v,s],desc:"You extend your hand toward a creature you can see within range and project a puff of noxious gas from your palm. The creature must succeed on a constitution saving throw or take 1d12 poison damage.This spell’s damage increases by 1d12 when you reach 5th level (2d12), 11th level (3d12), and 17th level (4d12).",duration:"Instantaneous",higher_level:no,level:0,range:feet(10),ritual:no,school:conjuration}).
+spell_auto_data('poison spray',properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v,s],desc:"You extend your hand toward a creature you can see within range and project a puff of noxious gas from your palm. The creature must succeed on a constitution saving throw or take 1d12 poison damage.This spell’s damage increases by 1d12 when you reach 5th level (2d12), 11th level (3d12), and 17th level (4d12).",duration:"Instantaneous",higher_level:no,level:0,range:feet(10),ritual:no,school:conjuration}).
 
-spell(polymorph,properties{casting_time:"1 action",classes:[bard,cleric,druid,sorcerer,wizard],components:[v,s,m("A caterpillar cocoon.")],desc:"This spell transforms a creature that you can see within range into a new form. An unwilling creature must make a wisdom saving throw to avoid the effect. A shapechanger automatically succeeds on this saving throw.The transformation lasts for the duration, or until the target drops to 0 hit points or dies. The new form can be any beast whose challenge rating is equal to or less than the target’s (or the target’s level, if it doesn't have a challenge rating). The target’s game statistics, including mental ability scores, are replaced by the statistics of the chosen beast. It retains its alignment and personality.The target assumes the hit points of its new form. When it reverts to its normal form, the creature returns to the number of hit points it had before it transformed. If it reverts as a result of dropping to 0 hit points, any excess damage carries over to its normal form. As long as the excess damage doesn’t reduce the creature’s normal form to 0 hit points, it isn’t knocked unconscious.The creature is limited in the actions it can perform by the nature of its new form, and it can’t speak, cast spells, or take any other action that requires hands or speech.The target’s gear melds into the new form. The creature can’t activate, use, wield, or otherwise benefit from any of its equipment.",duration:"Up to 1 hour",higher_level:no,level:4,range:feet(60),ritual:no,school:transmutation}).
+spell_auto_data(polymorph,properties{casting_time:"1 action",classes:[bard,cleric,druid,sorcerer,wizard],components:[v,s,m("A caterpillar cocoon.")],desc:"This spell transforms a creature that you can see within range into a new form. An unwilling creature must make a wisdom saving throw to avoid the effect. A shapechanger automatically succeeds on this saving throw.The transformation lasts for the duration, or until the target drops to 0 hit points or dies. The new form can be any beast whose challenge rating is equal to or less than the target’s (or the target’s level, if it doesn't have a challenge rating). The target’s game statistics, including mental ability scores, are replaced by the statistics of the chosen beast. It retains its alignment and personality.The target assumes the hit points of its new form. When it reverts to its normal form, the creature returns to the number of hit points it had before it transformed. If it reverts as a result of dropping to 0 hit points, any excess damage carries over to its normal form. As long as the excess damage doesn’t reduce the creature’s normal form to 0 hit points, it isn’t knocked unconscious.The creature is limited in the actions it can perform by the nature of its new form, and it can’t speak, cast spells, or take any other action that requires hands or speech.The target’s gear melds into the new form. The creature can’t activate, use, wield, or otherwise benefit from any of its equipment.",duration:"Up to 1 hour",higher_level:no,level:4,range:feet(60),ritual:no,school:transmutation}).
 
-spell('power word heal',properties{casting_time:"1 action",classes:[bard],components:[v,s],desc:"A wave of healing energy washes over the creature you touch. The target regains all its hit points. If the creature is charmed, frightened, paralyzed, or stunned, the condition ends. If the creature is prone, it can use its reaction to stand up. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:no,level:9,range:touch,ritual:no,school:evocation}).
+spell_auto_data('power word heal',properties{casting_time:"1 action",classes:[bard],components:[v,s],desc:"A wave of healing energy washes over the creature you touch. The target regains all its hit points. If the creature is charmed, frightened, paralyzed, or stunned, the condition ends. If the creature is prone, it can use its reaction to stand up. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:no,level:9,range:touch,ritual:no,school:evocation}).
 
-spell('power word kill',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v],desc:"You utter a word of power that can compel one creature you can see within range to die instantly. If the creature you choose has 100 hit points or fewer, it dies. Otherwise, the spell has no effect.",duration:"Instantaneous",higher_level:no,level:9,range:feet(60),ritual:no,school:enchantment}).
+spell_auto_data('power word kill',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v],desc:"You utter a word of power that can compel one creature you can see within range to die instantly. If the creature you choose has 100 hit points or fewer, it dies. Otherwise, the spell has no effect.",duration:"Instantaneous",higher_level:no,level:9,range:feet(60),ritual:no,school:enchantment}).
 
-spell('power word stun',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v],desc:"You speak a word of power that can overwhelm the mind of one creature you can see within range, leaving it dumbfounded. If the target has 150 hit points or fewer, it is stunned. Otherwise, the spell has no effect.The stunned target must make a constitution saving throw at the end of each of its turns. On a successful save, this stunning effect ends.",duration:"Instantaneous",higher_level:no,level:8,range:feet(60),ritual:no,school:enchantment}).
+spell_auto_data('power word stun',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v],desc:"You speak a word of power that can overwhelm the mind of one creature you can see within range, leaving it dumbfounded. If the target has 150 hit points or fewer, it is stunned. Otherwise, the spell has no effect.The stunned target must make a constitution saving throw at the end of each of its turns. On a successful save, this stunning effect ends.",duration:"Instantaneous",higher_level:no,level:8,range:feet(60),ritual:no,school:enchantment}).
 
-spell('prayer of healing',properties{casting_time:"10 minutes",classes:[cleric],components:[v],desc:"Up to six creatures of your choice that you can see within range each regain hit points equal to 2d8 + your spellcasting ability modifier. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, the healing increases by 1d8 for each slot level above 2nd.",level:2,range:feet(30),ritual:no,school:evocation}).
+spell_auto_data('prayer of healing',properties{casting_time:"10 minutes",classes:[cleric],components:[v],desc:"Up to six creatures of your choice that you can see within range each regain hit points equal to 2d8 + your spellcasting ability modifier. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, the healing increases by 1d8 for each slot level above 2nd.",level:2,range:feet(30),ritual:no,school:evocation}).
 
-spell(prestidigitation,properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s],desc:"This spell is a minor magical trick that novice spellcasters use for practice. You create one of the following magical effects within 'range':You create an instantaneous, harmless sensory effect, such as a shower of sparks, a puff of wind, faint musical notes, or an odd odor.You instantaneously light or snuff out a candle, a torch, or a small campfire.You instantaneously clean or soil an object no larger than 1 cubic foot.You chill, warm, or flavor up to 1 cubic foot of nonliving material for 1 hour.You make a color, a small mark, or a symbol appear on an object or a surface for 1 hour.You create a nonmagical trinket or an illusory image that can fit in your hand and that lasts until the end of your next turn.If you cast this spell multiple times, you can have up to three of its non-instantaneous effects active at a time, and you can dismiss such an effect as an action.",duration:"1 hour",higher_level:no,level:0,range:feet(10),ritual:no,school:transmutation}).
+spell_auto_data(prestidigitation,properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s],desc:"This spell is a minor magical trick that novice spellcasters use for practice. You create one of the following magical effects within 'range':You create an instantaneous, harmless sensory effect, such as a shower of sparks, a puff of wind, faint musical notes, or an odd odor.You instantaneously light or snuff out a candle, a torch, or a small campfire.You instantaneously clean or soil an object no larger than 1 cubic foot.You chill, warm, or flavor up to 1 cubic foot of nonliving material for 1 hour.You make a color, a small mark, or a symbol appear on an object or a surface for 1 hour.You create a nonmagical trinket or an illusory image that can fit in your hand and that lasts until the end of your next turn.If you cast this spell multiple times, you can have up to three of its non-instantaneous effects active at a time, and you can dismiss such an effect as an action.",duration:"1 hour",higher_level:no,level:0,range:feet(10),ritual:no,school:transmutation}).
 
-spell('primordial ward',properties{casting_time:"1 action",classes:[druid],components:[v,s],desc:"You have resistance to acid, cold, fire, lightning, and thunder damage for the spell's duration.When you take damage of one of those types, you can use your reaction to gain immunity to that type of damage, including against the triggering damage. If you do so, the resistances end, and you have the immunity until the end of your next turn, at which time the spell ends.",duration:"Up to 1 minute",higher_level:no,level:6,range:self,ritual:no,school:abjuration}).
+spell_auto_data('primordial ward',properties{casting_time:"1 action",classes:[druid],components:[v,s],desc:"You have resistance to acid, cold, fire, lightning, and thunder damage for the spell's duration.When you take damage of one of those types, you can use your reaction to gain immunity to that type of damage, including against the triggering damage. If you do so, the resistances end, and you have the immunity until the end of your next turn, at which time the spell ends.",duration:"Up to 1 minute",higher_level:no,level:6,range:self,ritual:no,school:abjuration}).
 
-spell('prismatic spray',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"Eight multicolored rays of light flash from your hand. Each ray is a different color and has a different power and purpose. Each creature in a 60-foot cone must make a dexterity saving throw. For each target, roll a d8 to determine which color ray affects it.1. Red. The target takes 10d6 fire damage on a failed save, or half as much damage on a successful one.2. Orange. The target takes 10d6 acid damage on a failed save, or half as much damage on a successful one.3. Yellow. The target takes 10d6 lightning damage on a failed save, or half as much damage on a successful one.4. Green. The target takes 10d6 poison damage on a failed save, or half as much damage on a successful one.5. Blue. The target takes 10d6 cold damage on a failed save, or half as much damage on a successful one.6. Indigo. On a failed save, the target is restrained. It must then make a constitution saving throw at the end of each of its turns. If it successfully saves three times, the spell ends. If it fails its save three times, it permanently turns to stone and is subjected to the petrified condition. The successes and failures don’t need to be consecutive; keep track of both until the target collects three of a kind.7. Violet. On a failed save, the target is blinded. It must then make a wisdom saving throw at the start of your next turn. A successful save ends the blindness. If it fails that save, the creature is transported to another plane of existence of the DM’s choosing and is no longer blinded. (Typically, a creature that is on a plane that isn’t its home plane is banished home, while other creatures are usually cast into the Astral or Ethereal planes.)8. Special. The target is struck by two rays. Roll twice more, rerolling any 8.",duration:"Instantaneous",higher_level:no,level:7,range:self,ritual:no,school:evocation}).
+spell_auto_data('prismatic spray',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"Eight multicolored rays of light flash from your hand. Each ray is a different color and has a different power and purpose. Each creature in a 60-foot cone must make a dexterity saving throw. For each target, roll a d8 to determine which color ray affects it.1. Red. The target takes 10d6 fire damage on a failed save, or half as much damage on a successful one.2. Orange. The target takes 10d6 acid damage on a failed save, or half as much damage on a successful one.3. Yellow. The target takes 10d6 lightning damage on a failed save, or half as much damage on a successful one.4. Green. The target takes 10d6 poison damage on a failed save, or half as much damage on a successful one.5. Blue. The target takes 10d6 cold damage on a failed save, or half as much damage on a successful one.6. Indigo. On a failed save, the target is restrained. It must then make a constitution saving throw at the end of each of its turns. If it successfully saves three times, the spell ends. If it fails its save three times, it permanently turns to stone and is subjected to the petrified condition. The successes and failures don’t need to be consecutive; keep track of both until the target collects three of a kind.7. Violet. On a failed save, the target is blinded. It must then make a wisdom saving throw at the start of your next turn. A successful save ends the blindness. If it fails that save, the creature is transported to another plane of existence of the DM’s choosing and is no longer blinded. (Typically, a creature that is on a plane that isn’t its home plane is banished home, while other creatures are usually cast into the Astral or Ethereal planes.)8. Special. The target is struck by two rays. Roll twice more, rerolling any 8.",duration:"Instantaneous",higher_level:no,level:7,range:self,ritual:no,school:evocation}).
 
-spell('prismatic wall',properties{casting_time:"1 action",classes:[wizard],components:[v,s],desc:"A shimmering, multicolored plane of light forms a vertical opaque wall—up to 90 feet long, 30 feet high, and 1 inch thick—centered on a point you can see within range. Alternatively, you can shape the wall into a sphere up to 30 feet in diameter centered on a point you choose within range. The wall remains in place for the duration. If you position the wall so that it passes through a space occupied by a creature, the spell fails, and your action and the spell slot are wasted.The wall sheds bright light out to a range of 100 feet and dim light for an additional 100 feet. You and creatures you designate at the time you cast the spell can pass through and remain near the wall without harm. If another creature that can see the wall moves to within 20 feet of it or starts its turn there, the creature must succeed on a constitution saving throw or become blinded for 1 minute.The wall consists of seven layers, each with a different color. When a creature attempts to reach into or pass through the wall, it does so one layer at a time through all the wall’s layers. As it passes or reaches through each layer, the creature must make a dexterity saving throw or be affected by that layer’s properties as described below.The wall can be destroyed, also one layer at a time, in order from red to violet, by means specific to each layer. Once a layer is destroyed, it remains so for the duration of the spell. A rod of cancellation destroys a prismatic wall, but an antimagic field has no effect on it.1. Red. The creature takes 10d6 fire damage on a failed save, or half as much damage on a successful one. While this layer is in place, nonmagical ranged attacks can’t pass through the wall. The layer can be destroyed by dealing at least 25 cold damage to it.2. Orange. The creature takes 10d6 acid damage on a failed save, or half as much damage on a successful one. While this layer is in place, magical ranged attacks can’t pass through the wall. The layer is destroyed by a strong wind.3. Yellow. The creature takes 10d6 lightning damage on a failed save, or half as much damage on a successful one. This layer can be destroyed by dealing at least 60 force damage to it.4. Green. The creature takes 10d6 poison damage on a failed save, or half as much damage on a successful one. A passwall spell, or another spell of equal or greater level that can open a portal on a solid surface, destroys this layer.5. Blue. The creature takes 10d6 cold damage on a failed save, or half as much damage on a successful one. This layer can be destroyed by dealing at least 25 fire damage to it.6. Indigo. On a failed save, the creature is restrained. It must then make a constitution saving throw at the end of each of its turns. If it successfully saves three times, the spell ends. If it fails its save three times, it permanently turns to stone and is subjected to the petrified condition. The successes and failures don’t need to be consecutive; keep track of both until the creature collects three of a kind.While this layer is in place, spells can’t be cast through the wall. The layer is destroyed by bright light shed by a daylight spell or a similar spell of equal or higher level.7. Violet. On a failed save, the creature is blinded. It must then make a wisdom saving throw at the start of your next turn. A successful save ends the blindness. If it fails that save, the creature is transported to another plane of the DM’s choosing and is no longer blinded. (Typically, a creature that is on a plane that isn’t its home plane is banished home, while other creatures are usually cast into the Astral or Ethereal planes.) This layer is destroyed by a dispel magic spell or a similar spell of equal or higher level that can end spells and magical effects.",duration:"10 minutes",higher_level:no,level:9,range:feet(60),ritual:no,school:abjuration}).
+spell_auto_data('prismatic wall',properties{casting_time:"1 action",classes:[wizard],components:[v,s],desc:"A shimmering, multicolored plane of light forms a vertical opaque wall—up to 90 feet long, 30 feet high, and 1 inch thick—centered on a point you can see within range. Alternatively, you can shape the wall into a sphere up to 30 feet in diameter centered on a point you choose within range. The wall remains in place for the duration. If you position the wall so that it passes through a space occupied by a creature, the spell fails, and your action and the spell slot are wasted.The wall sheds bright light out to a range of 100 feet and dim light for an additional 100 feet. You and creatures you designate at the time you cast the spell can pass through and remain near the wall without harm. If another creature that can see the wall moves to within 20 feet of it or starts its turn there, the creature must succeed on a constitution saving throw or become blinded for 1 minute.The wall consists of seven layers, each with a different color. When a creature attempts to reach into or pass through the wall, it does so one layer at a time through all the wall’s layers. As it passes or reaches through each layer, the creature must make a dexterity saving throw or be affected by that layer’s properties as described below.The wall can be destroyed, also one layer at a time, in order from red to violet, by means specific to each layer. Once a layer is destroyed, it remains so for the duration of the spell. A rod of cancellation destroys a prismatic wall, but an antimagic field has no effect on it.1. Red. The creature takes 10d6 fire damage on a failed save, or half as much damage on a successful one. While this layer is in place, nonmagical ranged attacks can’t pass through the wall. The layer can be destroyed by dealing at least 25 cold damage to it.2. Orange. The creature takes 10d6 acid damage on a failed save, or half as much damage on a successful one. While this layer is in place, magical ranged attacks can’t pass through the wall. The layer is destroyed by a strong wind.3. Yellow. The creature takes 10d6 lightning damage on a failed save, or half as much damage on a successful one. This layer can be destroyed by dealing at least 60 force damage to it.4. Green. The creature takes 10d6 poison damage on a failed save, or half as much damage on a successful one. A passwall spell, or another spell of equal or greater level that can open a portal on a solid surface, destroys this layer.5. Blue. The creature takes 10d6 cold damage on a failed save, or half as much damage on a successful one. This layer can be destroyed by dealing at least 25 fire damage to it.6. Indigo. On a failed save, the creature is restrained. It must then make a constitution saving throw at the end of each of its turns. If it successfully saves three times, the spell ends. If it fails its save three times, it permanently turns to stone and is subjected to the petrified condition. The successes and failures don’t need to be consecutive; keep track of both until the creature collects three of a kind.While this layer is in place, spells can’t be cast through the wall. The layer is destroyed by bright light shed by a daylight spell or a similar spell of equal or higher level.7. Violet. On a failed save, the creature is blinded. It must then make a wisdom saving throw at the start of your next turn. A successful save ends the blindness. If it fails that save, the creature is transported to another plane of the DM’s choosing and is no longer blinded. (Typically, a creature that is on a plane that isn’t its home plane is banished home, while other creatures are usually cast into the Astral or Ethereal planes.) This layer is destroyed by a dispel magic spell or a similar spell of equal or higher level that can end spells and magical effects.",duration:"10 minutes",higher_level:no,level:9,range:feet(60),ritual:no,school:abjuration}).
 
-spell('produce flame',properties{casting_time:"1 action",classes:[druid],components:[v,s],desc:"A flickering flame appears in your hand. The flame remains there for the duration and harms neither you nor your equipment. The flame sheds bright light in a 10-foot radius and dim light for an additional 10 feet. The spell ends if you dismiss it as an action or if you cast it again.You can also attack with the flame, although doing so ends the spell. When you cast this spell, or as an action on a later turn, you can hurl the flame at a creature within 30 feet of you. Make a ranged spell attack. On a hit, the target takes 1d8 fire damage.This spell’s damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",duration:"10 minutes",higher_level:no,level:0,range:self,ritual:no,school:conjuration}).
+spell_auto_data('produce flame',properties{casting_time:"1 action",classes:[druid],components:[v,s],desc:"A flickering flame appears in your hand. The flame remains there for the duration and harms neither you nor your equipment. The flame sheds bright light in a 10-foot radius and dim light for an additional 10 feet. The spell ends if you dismiss it as an action or if you cast it again.You can also attack with the flame, although doing so ends the spell. When you cast this spell, or as an action on a later turn, you can hurl the flame at a creature within 30 feet of you. Make a ranged spell attack. On a hit, the target takes 1d8 fire damage.This spell’s damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",duration:"10 minutes",higher_level:no,level:0,range:self,ritual:no,school:conjuration}).
 
-spell('programmed illusion',properties{casting_time:"1 action",classes:[bard,wizard],components:[v,s,m("A bit of fleece and jade dust worth at least 25 gp.")],desc:"You create an illusion of an object, a creature, or some other visible phenomenon within range that activates when a specific condition occurs. The illusion is imperceptible until then. It must be no larger than a 30-foot cube, and you decide when you cast the spell how the illusion behaves and what sounds it makes. This scripted performance can last up to 5 minutes.When the condition you specify occurs, the illusion springs into existence and performs in the manner you described. Once the illusion finishes performing, it disappears and remains dormant for 10 minutes. After this time, the illusion can be activated again.The triggering condition can be as general or as detailed as you like, though it must be based on visual or audible conditions that occur within 30 feet of the area. For example, you could create an illusion of yourself to appear and warn off others who attempt to open a trapped door, or you could set the illusion to trigger only when a creature says the correct word or phrase.Physical interaction with the image reveals it to be an illusion, because things can pass through it. A creature that uses its action to examine the image can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the creature can see through the image, and any noise it makes sounds hollow to the creature.",duration:"Until dispelled",higher_level:no,level:6,range:feet(120),ritual:no,school:illusion}).
+spell_auto_data('programmed illusion',properties{casting_time:"1 action",classes:[bard,wizard],components:[v,s,m("A bit of fleece and jade dust worth at least 25 gp.")],desc:"You create an illusion of an object, a creature, or some other visible phenomenon within range that activates when a specific condition occurs. The illusion is imperceptible until then. It must be no larger than a 30-foot cube, and you decide when you cast the spell how the illusion behaves and what sounds it makes. This scripted performance can last up to 5 minutes.When the condition you specify occurs, the illusion springs into existence and performs in the manner you described. Once the illusion finishes performing, it disappears and remains dormant for 10 minutes. After this time, the illusion can be activated again.The triggering condition can be as general or as detailed as you like, though it must be based on visual or audible conditions that occur within 30 feet of the area. For example, you could create an illusion of yourself to appear and warn off others who attempt to open a trapped door, or you could set the illusion to trigger only when a creature says the correct word or phrase.Physical interaction with the image reveals it to be an illusion, because things can pass through it. A creature that uses its action to examine the image can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the creature can see through the image, and any noise it makes sounds hollow to the creature.",duration:"Until dispelled",higher_level:no,level:6,range:feet(120),ritual:no,school:illusion}).
 
-spell('project image',properties{casting_time:"1 action",classes:[bard,wizard],components:[v,s,m("A small replica of you made from materials worth at least 5 gp.")],desc:"You create an illusory copy of yourself that lasts for the duration. The copy can appear at any location within range that you have seen before, regardless of intervening obstacles. The illusion looks and sounds like you but is intangible. If the illusion takes any damage, it disappears, and the spell ends.You can use your action to move this illusion up to twice your speed, and make it gesture, speak, and behave in whatever way you choose. It mimics your mannerisms perfectly.You can see through its eyes and hear through its ears as if you were in its space. On your turn as a bonus action, you can switch from using its senses to using your own, or back again. While you are using its senses, you are blinded and deafened in regard to your own surroundings.Physical interaction with the image reveals it to be an illusion, because things can pass through it. A creature that uses its action to examine the image can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the creature can see through the image, and any noise it makes sounds hollow to the creature.",duration:"Up to 24 hours",higher_level:no,level:7,range:miles(500),ritual:no,school:illusion}).
+spell_auto_data('project image',properties{casting_time:"1 action",classes:[bard,wizard],components:[v,s,m("A small replica of you made from materials worth at least 5 gp.")],desc:"You create an illusory copy of yourself that lasts for the duration. The copy can appear at any location within range that you have seen before, regardless of intervening obstacles. The illusion looks and sounds like you but is intangible. If the illusion takes any damage, it disappears, and the spell ends.You can use your action to move this illusion up to twice your speed, and make it gesture, speak, and behave in whatever way you choose. It mimics your mannerisms perfectly.You can see through its eyes and hear through its ears as if you were in its space. On your turn as a bonus action, you can switch from using its senses to using your own, or back again. While you are using its senses, you are blinded and deafened in regard to your own surroundings.Physical interaction with the image reveals it to be an illusion, because things can pass through it. A creature that uses its action to examine the image can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the creature can see through the image, and any noise it makes sounds hollow to the creature.",duration:"Up to 24 hours",higher_level:no,level:7,range:miles(500),ritual:no,school:illusion}).
 
-spell('protection from energy',properties{casting_time:"1 action",classes:[cleric,druid,paladin,ranger,sorcerer,wizard],components:[v,s],desc:"For the duration, the willing creature you touch has resistance to one damage type of your choice: acid, cold, fire, lightning, or thunder.",duration:"Up to 1 hour",higher_level:no,level:3,range:touch,ritual:no,school:abjuration}).
+spell_auto_data('protection from energy',properties{casting_time:"1 action",classes:[cleric,druid,paladin,ranger,sorcerer,wizard],components:[v,s],desc:"For the duration, the willing creature you touch has resistance to one damage type of your choice: acid, cold, fire, lightning, or thunder.",duration:"Up to 1 hour",higher_level:no,level:3,range:touch,ritual:no,school:abjuration}).
 
-spell('protection from evil and good',properties{casting_time:"1 action",classes:[cleric,paladin,warlock,wizard],components:[v,s,m("Holy water or powdered silver and iron, which the spell consumes.")],desc:"Until the spell ends, one willing creature you touch is protected against certain types of creatures: aberrations, celestials, elementals, fey, fiends, and undead.The protection grants several benefits. Creatures of those types have disadvantage on attack rolls against the target. The target also can’t be charmed, frightened, or possessed by them. If the target is already charmed, frightened, or possessed by such a creature, the target has advantage on any new saving throw against the relevant effect.",duration:"Up to 10 minutes",higher_level:no,level:1,range:touch,ritual:no,school:abjuration}).
+spell_auto_data('protection from evil and good',properties{casting_time:"1 action",classes:[cleric,paladin,warlock,wizard],components:[v,s,m("Holy water or powdered silver and iron, which the spell consumes.")],desc:"Until the spell ends, one willing creature you touch is protected against certain types of creatures: aberrations, celestials, elementals, fey, fiends, and undead.The protection grants several benefits. Creatures of those types have disadvantage on attack rolls against the target. The target also can’t be charmed, frightened, or possessed by them. If the target is already charmed, frightened, or possessed by such a creature, the target has advantage on any new saving throw against the relevant effect.",duration:"Up to 10 minutes",higher_level:no,level:1,range:touch,ritual:no,school:abjuration}).
 
-spell('protection from poison',properties{casting_time:"1 action",classes:[cleric,druid,paladin,ranger],components:[v,s],desc:"You touch a creature. If it is poisoned, you neutralize the poison. If more than one poison afflicts the target, you neutralize one poison that you know is present, or you neutralize one at random.For the duration, the target has advantage on saving throws against being poisoned, and it has resistance to poison damage.",duration:"1 hour",higher_level:no,level:2,range:touch,ritual:no,school:abjuration}).
+spell_auto_data('protection from poison',properties{casting_time:"1 action",classes:[cleric,druid,paladin,ranger],components:[v,s],desc:"You touch a creature. If it is poisoned, you neutralize the poison. If more than one poison afflicts the target, you neutralize one poison that you know is present, or you neutralize one at random.For the duration, the target has advantage on saving throws against being poisoned, and it has resistance to poison damage.",duration:"1 hour",higher_level:no,level:2,range:touch,ritual:no,school:abjuration}).
 
-spell('purify food and drink',properties{casting_time:"1 action",classes:[cleric,druid,paladin,'ritual caster'],components:[v,s],desc:"All nonmagical food and drink within a 5-foot radius sphere centered on a point of your choice within range is purified and rendered free of poison and disease.",duration:"Instantaneous",higher_level:no,level:1,range:feet(10),ritual:yes,school:transmutation}).
+spell_auto_data('purify food and drink',properties{casting_time:"1 action",classes:[cleric,druid,paladin,'ritual caster'],components:[v,s],desc:"All nonmagical food and drink within a 5-foot radius sphere centered on a point of your choice within range is purified and rendered free of poison and disease.",duration:"Instantaneous",higher_level:no,level:1,range:feet(10),ritual:yes,school:transmutation}).
 
-spell(pyrotechnics,properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v,s],desc:"Choose an area of flame that you can see and that can fit within a 5-foot cube within range. You can extinguish the fire in that area, and you create either fireworks or smoke.Fireworks. The target explodes with a dazzling display of colors. Each creature within 10 feet of the target must succeed on a Constitution saving throw or become blinded until the end of your next turn.Smoke. Thick black smoke spreads out from the target in a 20-foot radius, moving around corners. The area of the smoke is heavily obscured. The smoke persists for 1 minute or until a strong wind disperses it.",duration:"Instantaneous",higher_level:no,level:2,range:feet(60),ritual:no,school:transmutation}).
+spell_auto_data(pyrotechnics,properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v,s],desc:"Choose an area of flame that you can see and that can fit within a 5-foot cube within range. You can extinguish the fire in that area, and you create either fireworks or smoke.Fireworks. The target explodes with a dazzling display of colors. Each creature within 10 feet of the target must succeed on a Constitution saving throw or become blinded until the end of your next turn.Smoke. Thick black smoke spreads out from the target in a 20-foot radius, moving around corners. The area of the smoke is heavily obscured. The smoke persists for 1 minute or until a strong wind disperses it.",duration:"Instantaneous",higher_level:no,level:2,range:feet(60),ritual:no,school:transmutation}).
 
-spell('raise dead',properties{casting_time:"1 hour",classes:[bard,cleric,paladin],components:[v,s,m("A diamond worth at least 500gp, which the spell consumes.")],desc:"You return a dead creature you touch to life, provided that it has been dead no longer than 10 days. If the creature’s soul is both willing and at liberty to rejoin the body, the creature returns to life with 1 hit point.This spell also neutralizes any poisons and cures nonmagical diseases that affected the creature at the time it died. This spell doesn’t, however, remove magical diseases, curses, or similar effects; if these aren’t first removed prior to casting the spell, they take effect when the creature returns to life. The spell can’t return an undead creature to life.This spell closes all mortal wounds, but it doesn’t restore missing body parts. If the creature is lacking body parts or organs integral for its survival—its head, for instance—the spell automatically fails.Coming back from the dead is an ordeal. The target takes a -4 penalty to all attack rolls, saving throws, and ability checks. Every time the target finishes a long rest, the penalty is reduced by 1 until it disappears.",duration:"Instantaneous",higher_level:no,level:5,range:touch,ritual:no,school:necromancy}).
+spell_auto_data('raise dead',properties{casting_time:"1 hour",classes:[bard,cleric,paladin],components:[v,s,m("A diamond worth at least 500gp, which the spell consumes.")],desc:"You return a dead creature you touch to life, provided that it has been dead no longer than 10 days. If the creature’s soul is both willing and at liberty to rejoin the body, the creature returns to life with 1 hit point.This spell also neutralizes any poisons and cures nonmagical diseases that affected the creature at the time it died. This spell doesn’t, however, remove magical diseases, curses, or similar effects; if these aren’t first removed prior to casting the spell, they take effect when the creature returns to life. The spell can’t return an undead creature to life.This spell closes all mortal wounds, but it doesn’t restore missing body parts. If the creature is lacking body parts or organs integral for its survival—its head, for instance—the spell automatically fails.Coming back from the dead is an ordeal. The target takes a -4 penalty to all attack rolls, saving throws, and ability checks. Every time the target finishes a long rest, the penalty is reduced by 1 until it disappears.",duration:"Instantaneous",higher_level:no,level:5,range:touch,ritual:no,school:necromancy}).
 
-spell('rary\'s telepathic bond',properties{casting_time:"1 action",classes:['ritual caster',wizard],components:[v,s,m("Pieces of eggshell from two different kinds of creatures.")],desc:"You forge a telepathic link among up to eight willing creatures of your choice within range, psychically linking each creature to all the others for the duration. Creatures with Intelligence scores of 2 or less aren’t affected by this spell.Until the spell ends, the targets can communicate telepathically through the bond whether or not they have a common language. The communication is possible over any distance, though it can’t extend to other planes of existence.",duration:"1 hour",higher_level:no,level:5,range:feet(30),ritual:yes,school:divination}).
+spell_auto_data('rary\'s telepathic bond',properties{casting_time:"1 action",classes:['ritual caster',wizard],components:[v,s,m("Pieces of eggshell from two different kinds of creatures.")],desc:"You forge a telepathic link among up to eight willing creatures of your choice within range, psychically linking each creature to all the others for the duration. Creatures with Intelligence scores of 2 or less aren’t affected by this spell.Until the spell ends, the targets can communicate telepathically through the bond whether or not they have a common language. The communication is possible over any distance, though it can’t extend to other planes of existence.",duration:"1 hour",higher_level:no,level:5,range:feet(30),ritual:yes,school:divination}).
 
-spell('ray of enfeeblement',properties{casting_time:"1 action",classes:[warlock,wizard],components:[v,s],desc:"A black beam of enervating energy springs from your finger toward a creature within range. Make a ranged spell attack against the target. On a hit, the target deals only half damage with weapon attacks that use Strength until the spell ends.At the end of each of the target’s turns, it can make a constitution saving throw against the spell. On a success, the spell ends.",duration:"Up to 1 minute",higher_level:no,level:2,range:feet(60),ritual:no,school:necromancy}).
+spell_auto_data('ray of enfeeblement',properties{casting_time:"1 action",classes:[warlock,wizard],components:[v,s],desc:"A black beam of enervating energy springs from your finger toward a creature within range. Make a ranged spell attack against the target. On a hit, the target deals only half damage with weapon attacks that use Strength until the spell ends.At the end of each of the target’s turns, it can make a constitution saving throw against the spell. On a success, the spell ends.",duration:"Up to 1 minute",higher_level:no,level:2,range:feet(60),ritual:no,school:necromancy}).
 
-spell('ray of frost',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"A frigid beam of blue-white light streaks toward a creature within range. Make a ranged spell attack against the target. On a hit, it takes 1d8 cold damage, and its speed is reduced by 10 feet until the start of your next turn.The spell’s damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",duration:"Instantaneous",higher_level:no,level:0,range:feet(60),ritual:no,school:evocation}).
+spell_auto_data('ray of frost',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"A frigid beam of blue-white light streaks toward a creature within range. Make a ranged spell attack against the target. On a hit, it takes 1d8 cold damage, and its speed is reduced by 10 feet until the start of your next turn.The spell’s damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",duration:"Instantaneous",higher_level:no,level:0,range:feet(60),ritual:no,school:evocation}).
 
-spell('ray of sickness',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"A ray of sickening greenish energy lashes out toward a creature within range. Make a ranged spell attack against the target. On a hit, the target takes 2d8 poison damage and must make a constitution saving throw. On a failed save, it is also poisoned until the end of your next turn.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d8 for each slot level above 1st.",level:1,range:feet(60),ritual:no,school:necromancy}).
+spell_auto_data('ray of sickness',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"A ray of sickening greenish energy lashes out toward a creature within range. Make a ranged spell attack against the target. On a hit, the target takes 2d8 poison damage and must make a constitution saving throw. On a failed save, it is also poisoned until the end of your next turn.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d8 for each slot level above 1st.",level:1,range:feet(60),ritual:no,school:necromancy}).
 
-spell(regenerate,properties{casting_time:"1 minute",classes:[bard,cleric,druid],components:[v,s,m("A prayer wheel and holy water.")],desc:"You touch a creature and stimulate its natural healing ability. The target regains 4d8 + 15 hit points. For the duration of the spell, the target regains 1 hit point at the start of each of its turns (10 hit points each minute).The target’s severed body members (fingers, legs, tails, and so on), if any, are restored after 2 minutes. If you have the severed part and hold it to the stump, the spell instantaneously causes the limb to knit to the stump.",duration:"1 hour",higher_level:no,level:7,range:touch,ritual:no,school:transmutation}).
+spell_auto_data(regenerate,properties{casting_time:"1 minute",classes:[bard,cleric,druid],components:[v,s,m("A prayer wheel and holy water.")],desc:"You touch a creature and stimulate its natural healing ability. The target regains 4d8 + 15 hit points. For the duration of the spell, the target regains 1 hit point at the start of each of its turns (10 hit points each minute).The target’s severed body members (fingers, legs, tails, and so on), if any, are restored after 2 minutes. If you have the severed part and hold it to the stump, the spell instantaneously causes the limb to knit to the stump.",duration:"1 hour",higher_level:no,level:7,range:touch,ritual:no,school:transmutation}).
 
-spell(reincarnate,properties{casting_time:"1 hour",classes:[druid],components:[v,s,m("Rare oils and unguents worth at least 1,000 gp, which the spell consumes.")],desc:"You touch a dead humanoid or a piece of a dead humanoid. Provided that the creature has been dead no longer than 10 days, the spell forms a new adult body for it and then calls the soul to enter that body. If the target’s soul isn’t free or willing to do so, the spell fails.The magic fashions a new body for the creature to inhabit, which likely causes the creature’s race to change. The DM rolls a d 100 and consults the following table to determine what form the creature takes when restored to life, or the DM chooses a form.01-04 Dragonborn05-13 Dwarf, hill14-21 Dwarf, mountain22-25 Elf, dark26-34 Elf, high35-42 Elf, wood43-46 Gnome, forest47-52 Gnome, rock53-56 Half-elf57-60 Half-orc61-68 Halfling, lightfoot69-76 Halfling, stout77-96 Human97-00 TieflingThe reincarnated creature recalls its former life and experiences. It retains the capabilities it had in its original form, except it exchanges its original race for the new one and changes its racial traits accordingly.",duration:"Instantaneous",higher_level:no,level:5,range:touch,ritual:no,school:transmutation}).
+spell_auto_data(reincarnate,properties{casting_time:"1 hour",classes:[druid],components:[v,s,m("Rare oils and unguents worth at least 1,000 gp, which the spell consumes.")],desc:"You touch a dead humanoid or a piece of a dead humanoid. Provided that the creature has been dead no longer than 10 days, the spell forms a new adult body for it and then calls the soul to enter that body. If the target’s soul isn’t free or willing to do so, the spell fails.The magic fashions a new body for the creature to inhabit, which likely causes the creature’s race to change. The DM rolls a d 100 and consults the following table to determine what form the creature takes when restored to life, or the DM chooses a form.01-04 Dragonborn05-13 Dwarf, hill14-21 Dwarf, mountain22-25 Elf, dark26-34 Elf, high35-42 Elf, wood43-46 Gnome, forest47-52 Gnome, rock53-56 Half-elf57-60 Half-orc61-68 Halfling, lightfoot69-76 Halfling, stout77-96 Human97-00 TieflingThe reincarnated creature recalls its former life and experiences. It retains the capabilities it had in its original form, except it exchanges its original race for the new one and changes its racial traits accordingly.",duration:"Instantaneous",higher_level:no,level:5,range:touch,ritual:no,school:transmutation}).
 
-spell('remove curse',properties{casting_time:"1 action",classes:[cleric,paladin,warlock,wizard],components:[v,s],desc:"At your touch, all curses affecting one creature or object end. If the object is a cursed magic item, its curse remains, but the spell breaks its owner’s attunement to the object so it can be removed or discarded.",duration:"Instantaneous",higher_level:no,level:3,range:touch,ritual:no,school:abjuration}).
+spell_auto_data('remove curse',properties{casting_time:"1 action",classes:[cleric,paladin,warlock,wizard],components:[v,s],desc:"At your touch, all curses affecting one creature or object end. If the object is a cursed magic item, its curse remains, but the spell breaks its owner’s attunement to the object so it can be removed or discarded.",duration:"Instantaneous",higher_level:no,level:3,range:touch,ritual:no,school:abjuration}).
 
-spell(resistance,properties{casting_time:"1 action",classes:[cleric,druid],components:[v,s,m("A miniature cloak.")],desc:"You touch one willing creature. Once before the spell ends, the target can roll a d4 and add the number rolled to one saving throw of its choice. It can roll the die before or after making the saving throw. The spell then ends.",duration:"Up to 1 minute",higher_level:no,level:0,range:touch,ritual:no,school:abjuration}).
+spell_auto_data(resistance,properties{casting_time:"1 action",classes:[cleric,druid],components:[v,s,m("A miniature cloak.")],desc:"You touch one willing creature. Once before the spell ends, the target can roll a d4 and add the number rolled to one saving throw of its choice. It can roll the die before or after making the saving throw. The spell then ends.",duration:"Up to 1 minute",higher_level:no,level:0,range:touch,ritual:no,school:abjuration}).
 
-spell(resurrection,properties{casting_time:"1 hour",classes:[bard,cleric],components:[v,s,m("A diamond worth at least 1,000gp, which the spell consumes.")],desc:"You touch a dead creature that has been dead for no more than a century, that didn’t die of old age, and that isn’t undead. If its soul is free and willing, the target returns to life with all its hit points.This spell neutralizes any poisons and cures normal diseases afflicting the creature when it died. It doesn’t, however, remove magical diseases, curses, and the like; if such effects aren’t removed prior to casting the spell, they afflict the target on its return to life.This spell closes all mortal wounds and restores any missing body parts.Coming back from the dead is an ordeal. The target takes a -4 penalty to all attack rolls, saving throws, and ability checks. Every time the target finishes a long rest, the penalty is reduced by 1 until it disappears.Casting this spell to restore life to a creature that has been dead for one year or longer taxes you greatly. Until you finish a long rest, you can’t cast spells again, and you have disadvantage on all attack rolls, ability checks, and saving throws.",duration:"Instantaneous",higher_level:no,level:7,range:touch,ritual:no,school:necromancy}).
+spell_auto_data(resurrection,properties{casting_time:"1 hour",classes:[bard,cleric],components:[v,s,m("A diamond worth at least 1,000gp, which the spell consumes.")],desc:"You touch a dead creature that has been dead for no more than a century, that didn’t die of old age, and that isn’t undead. If its soul is free and willing, the target returns to life with all its hit points.This spell neutralizes any poisons and cures normal diseases afflicting the creature when it died. It doesn’t, however, remove magical diseases, curses, and the like; if such effects aren’t removed prior to casting the spell, they afflict the target on its return to life.This spell closes all mortal wounds and restores any missing body parts.Coming back from the dead is an ordeal. The target takes a -4 penalty to all attack rolls, saving throws, and ability checks. Every time the target finishes a long rest, the penalty is reduced by 1 until it disappears.Casting this spell to restore life to a creature that has been dead for one year or longer taxes you greatly. Until you finish a long rest, you can’t cast spells again, and you have disadvantage on all attack rolls, ability checks, and saving throws.",duration:"Instantaneous",higher_level:no,level:7,range:touch,ritual:no,school:necromancy}).
 
-spell('reverse gravity',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A lodestone and iron filings.")],desc:"This spell reverses gravity in a 50-foot-radius, 100-foot high cylinder centered on a point within range. All creatures and objects that aren’t somehow anchored to the ground in the area fall upward and reach the top of the area when you cast this spell. A creature can make a dexterity saving throw to grab onto a fixed object it can reach, thus avoiding the fall.If some solid object (such as a ceiling) is encountered in this fall, falling objects and creatures strike it just as they would during a normal downward fall. If an object or creature reaches the top of the area without striking anything, it remains there, oscillating slightly, for the duration.At the end of the duration, affected objects and creatures fall back down.",duration:"Up to 1 minute",higher_level:no,level:7,range:feet(100),ritual:no,school:transmutation}).
+spell_auto_data('reverse gravity',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A lodestone and iron filings.")],desc:"This spell reverses gravity in a 50-foot-radius, 100-foot high cylinder centered on a point within range. All creatures and objects that aren’t somehow anchored to the ground in the area fall upward and reach the top of the area when you cast this spell. A creature can make a dexterity saving throw to grab onto a fixed object it can reach, thus avoiding the fall.If some solid object (such as a ceiling) is encountered in this fall, falling objects and creatures strike it just as they would during a normal downward fall. If an object or creature reaches the top of the area without striking anything, it remains there, oscillating slightly, for the duration.At the end of the duration, affected objects and creatures fall back down.",duration:"Up to 1 minute",higher_level:no,level:7,range:feet(100),ritual:no,school:transmutation}).
 
-spell(revivify,properties{casting_time:"1 action",classes:[cleric,paladin],components:[v,s,m("Diamonds worth 300gp, which the spell consumes.")],desc:"You touch a creature that has died within the last minute. That creature returns to life with 1 hit point. This spell can’t return to life a creature that has died of old age, nor can it restore any missing body parts.",duration:"Instantaneous",higher_level:no,level:3,range:touch,ritual:no,school:conjuration}).
+spell_auto_data(revivify,properties{casting_time:"1 action",classes:[cleric,paladin],components:[v,s,m("Diamonds worth 300gp, which the spell consumes.")],desc:"You touch a creature that has died within the last minute. That creature returns to life with 1 hit point. This spell can’t return to life a creature that has died of old age, nor can it restore any missing body parts.",duration:"Instantaneous",higher_level:no,level:3,range:touch,ritual:no,school:conjuration}).
 
-spell('rope trick',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("Powdered corn extract and a twisted loop of parchment.")],desc:"You touch a length of rope that is up to 60 feet long. One end of the rope then rises into the air until the whole rope hangs perpendicular to the ground. At the upper end of the rope, an invisible entrance opens to an extradimensional space that lasts until the spell ends.The extradimensional space can be reached by climbing to the top of the rope. The space can hold as many as eight Medium or smaller creatures. The rope can be pulled into the space, making the rope disappear from view outside the space.Attacks and spells can’t cross through the entrance into or out of the extradimensional space, but those inside can see out of it as if through a 3-foot-by-5-foot window centered on the rope.Anything inside the extradimensional space drops out when the spell ends.",duration:"1 hour",higher_level:no,level:2,range:touch,ritual:no,school:transmutation}).
+spell_auto_data('rope trick',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("Powdered corn extract and a twisted loop of parchment.")],desc:"You touch a length of rope that is up to 60 feet long. One end of the rope then rises into the air until the whole rope hangs perpendicular to the ground. At the upper end of the rope, an invisible entrance opens to an extradimensional space that lasts until the spell ends.The extradimensional space can be reached by climbing to the top of the rope. The space can hold as many as eight Medium or smaller creatures. The rope can be pulled into the space, making the rope disappear from view outside the space.Attacks and spells can’t cross through the entrance into or out of the extradimensional space, but those inside can see out of it as if through a 3-foot-by-5-foot window centered on the rope.Anything inside the extradimensional space drops out when the spell ends.",duration:"1 hour",higher_level:no,level:2,range:touch,ritual:no,school:transmutation}).
 
-spell('sacred flame',properties{casting_time:"1 action",classes:[cleric],components:[v,s],desc:"Flame-like radiance descends on a creature that you can see within range. The target must succeed on a dexterity saving throw or take 1d8 radiant damage. The target gains no benefit from cover for this saving throw.The spell’s damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",duration:"Instantaneous",higher_level:no,level:0,range:feet(60),ritual:no,school:evocation}).
+spell_auto_data('sacred flame',properties{casting_time:"1 action",classes:[cleric],components:[v,s],desc:"Flame-like radiance descends on a creature that you can see within range. The target must succeed on a dexterity saving throw or take 1d8 radiant damage. The target gains no benefit from cover for this saving throw.The spell’s damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",duration:"Instantaneous",higher_level:no,level:0,range:feet(60),ritual:no,school:evocation}).
 
-spell(sanctuary,properties{casting_time:"1 bonus action",classes:[cleric,paladin],components:[v,s,m("A small silver mirror.")],desc:"You ward a creature within range against attack. Until the spell ends, any creature who targets the warded creature with an attack or a harmful spell must first make a wisdom saving throw. On a failed save, the creature must choose a new target or lose the attack or spell. This spell doesn’t protect the warded creature from area effects, such as the explosion of a fireball.If the warded creature makes an attack or casts a spell that affects an enemy creature, this spell ends.",duration:"1 minute",higher_level:no,level:1,range:feet(30),ritual:no,school:abjuration}).
+spell_auto_data(sanctuary,properties{casting_time:"1 bonus action",classes:[cleric,paladin],components:[v,s,m("A small silver mirror.")],desc:"You ward a creature within range against attack. Until the spell ends, any creature who targets the warded creature with an attack or a harmful spell must first make a wisdom saving throw. On a failed save, the creature must choose a new target or lose the attack or spell. This spell doesn’t protect the warded creature from area effects, such as the explosion of a fireball.If the warded creature makes an attack or casts a spell that affects an enemy creature, this spell ends.",duration:"1 minute",higher_level:no,level:1,range:feet(30),ritual:no,school:abjuration}).
 
-spell('scorching ray',properties{casting_time:"1 action",classes:[cleric,sorcerer,warlock,wizard],components:[v,s],desc:"You generate three rays of fire and will throw to targets in the range of the spell. You can project them on one or more targets.Perform a remote attack spell for each department. If it hits, the target takes 2d6 fire damage.",duration:"Instantaneous",higher_level:"When you cast this spell using a 3 or higher level spell slot, you generate an additional radius for each level of higher spell slot 2.",level:2,range:feet(120),ritual:no,school:evocation}).
+spell_auto_data('scorching ray',properties{casting_time:"1 action",classes:[cleric,sorcerer,warlock,wizard],components:[v,s],desc:"You generate three rays of fire and hurl them at targets in the range of the spell. You can hurl them at on one target or several.Perform a ranged attack spell for each ray. If it hits, the target takes 2d6 fire damage.",duration:"Instantaneous",higher_level:"When you cast this spell using a 3 or higher level spell slot, you generate an additional ray for each level of higher spell slot 2.",level:2,range:feet(120),ritual:no,school:evocation}).
 
-spell(scrying,properties{casting_time:"10 minutes",classes:[bard,cleric,druid,paladin,warlock,wizard],components:[v,s,m("A focus worth at least 1,000 gp, such as a crystal ball, a silver mirror, or a font filled with holy water.")],desc:"You can see and hear a particular creature you choose that is on the same plane of existence as you. The target must make a wisdom saving throw, which is modified by how well you know the target and the sort of physical connection you have to it. If a target knows you're casting this spell, it can fail the saving throw voluntarily if it wants to be observed.Knowledge &amp; Save ModifierSecondhand (you have heard of the target) +5Firsthand (you have met the target) +0Familiar (you know the target well) -5Connection &amp; Save ModifierLikeness or picture -2Possession or garment -4Body part, lock of hair, bit of nail, or the like -10On a successful save, the target isn’t affected, and you can’t use this spell against it again for 24 hours.On a failed save, the spell creates an invisible sensor within 10 feet of the target. You can see and hear through the sensor as if you were there. The sensor moves with the target, remaining within 10 feet of it for the duration. A creature that can see invisible objects sees the sensor as a luminous orb about the size of your fist.Instead of targeting a creature, you can choose a location you have seen before as the target of this spell. When you do, the sensor appears at that location and doesn’t move.",duration:"Up to 10 minutes",higher_level:no,level:5,range:self,ritual:no,school:divination}).
+spell_auto_data(scrying,properties{casting_time:"10 minutes",classes:[bard,cleric,druid,paladin,warlock,wizard],components:[v,s,m("A focus worth at least 1,000 gp, such as a crystal ball, a silver mirror, or a font filled with holy water.")],desc:"You can see and hear a particular creature you choose that is on the same plane of existence as you. The target must make a wisdom saving throw, which is modified by how well you know the target and the sort of physical connection you have to it. If a target knows you're casting this spell, it can fail the saving throw voluntarily if it wants to be observed.Knowledge &amp; Save ModifierSecondhand (you have heard of the target) +5Firsthand (you have met the target) +0Familiar (you know the target well) -5Connection &amp; Save ModifierLikeness or picture -2Possession or garment -4Body part, lock of hair, bit of nail, or the like -10On a successful save, the target isn’t affected, and you can’t use this spell against it again for 24 hours.On a failed save, the spell creates an invisible sensor within 10 feet of the target. You can see and hear through the sensor as if you were there. The sensor moves with the target, remaining within 10 feet of it for the duration. A creature that can see invisible objects sees the sensor as a luminous orb about the size of your fist.Instead of targeting a creature, you can choose a location you have seen before as the target of this spell. When you do, the sensor appears at that location and doesn’t move.",duration:"Up to 10 minutes",higher_level:no,level:5,range:self,ritual:no,school:divination}).
 
-spell('searing smite',properties{casting_time:"1 bonus action",classes:[paladin],components:[v],desc:"The next time you hit a creature with a melee weapon attack during the spell’s duration, your weapon flares with white-hot intensity, and the attack deals an extra 1d6 fire damage to the target and causes the target to ignite in flames. At the start of each of its turns until the spell ends, the target must make a constitution saving throw. On a failed save, it takes 1d6 fire damage. On a successful save, the spell ends. If the target or a creature within 5 feet of it uses an action to put out the flames, or if some other effect douses the flames (such as the target being submerged in water), the spell ends.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the initial extra damage dealt by the attack increases by 1d6 for each slot level above 1st.",level:1,range:self,ritual:no,school:evocation}).
+spell_auto_data('searing smite',properties{casting_time:"1 bonus action",classes:[paladin],components:[v],desc:"The next time you hit a creature with a melee weapon attack during the spell’s duration, your weapon flares with white-hot intensity, and the attack deals an extra 1d6 fire damage to the target and causes the target to ignite in flames. At the start of each of its turns until the spell ends, the target must make a constitution saving throw. On a failed save, it takes 1d6 fire damage. On a successful save, the spell ends. If the target or a creature within 5 feet of it uses an action to put out the flames, or if some other effect douses the flames (such as the target being submerged in water), the spell ends.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the initial extra damage dealt by the attack increases by 1d6 for each slot level above 1st.",level:1,range:self,ritual:no,school:evocation}).
 
-spell('see invisibility',properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v,s,m("A dash of talc and a small amount of silver powder.")],desc:"For the duration of the spell, you see invisible creatures and objects as if they were visible, and you can see through Ethereal. The ethereal objects and creatures appear ghostly translucent.",duration:"1 hour",higher_level:no,level:2,range:self,ritual:no,school:divination}).
+spell_auto_data('see invisibility',properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v,s,m("A dash of talc and a small amount of silver powder.")],desc:"For the duration of the spell, you see invisible creatures and objects as if they were visible, and you can see through Ethereal. The ethereal objects and creatures appear ghostly translucent.",duration:"1 hour",higher_level:no,level:2,range:self,ritual:no,school:divination}).
 
-spell(seeming,properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s],desc:"This spell allows you to change the appearance of any number of creatures that you can see within range. You give each target you choose a new, illusory appearance. An unwilling target can make a charisma saving throw, and if it succeeds, it is unaffected by this spell.The spell disguises physical appearance as well as clothing, armor, weapons, and equipment. You can make each creature seem 1 foot shorter or taller and appear thin, fat, or in between. You can't change a target's body type, so you must choose a form that has the same basic arrangement of limbs. Otherwise, the extent of the illusion is up to you. The spell lasts for the duration, unless you use your action to dismiss it sooner.The changes wrought by this spell fail to hold up to physical inspection. For example, if you use this spell to add a hat to a creature's outfit, objects pass through the hat, and anyone who touches it would feel nothing or would feel the creature's head and hair. If you use this spell to appear thinner than you are, the hand of someone who reaches out to touch you would bump into you while it was seemingly still in midair.A creature can use its action to inspect a target and make an Intelligence (Investigation) check against your spell save DC. If it succeeds, it becomes aware that the target is disguised.",duration:"8 hours",higher_level:no,level:5,range:feet(30),ritual:no,school:illusion}).
+spell_auto_data(seeming,properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s],desc:"This spell allows you to change the appearance of any number of creatures that you can see within range. You give each target you choose a new, illusory appearance. An unwilling target can make a charisma saving throw, and if it succeeds, it is unaffected by this spell.The spell disguises physical appearance as well as clothing, armor, weapons, and equipment. You can make each creature seem 1 foot shorter or taller and appear thin, fat, or in between. You can't change a target's body type, so you must choose a form that has the same basic arrangement of limbs. Otherwise, the extent of the illusion is up to you. The spell lasts for the duration, unless you use your action to dismiss it sooner.The changes wrought by this spell fail to hold up to physical inspection. For example, if you use this spell to add a hat to a creature's outfit, objects pass through the hat, and anyone who touches it would feel nothing or would feel the creature's head and hair. If you use this spell to appear thinner than you are, the hand of someone who reaches out to touch you would bump into you while it was seemingly still in midair.A creature can use its action to inspect a target and make an Intelligence (Investigation) check against your spell save DC. If it succeeds, it becomes aware that the target is disguised.",duration:"8 hours",higher_level:no,level:5,range:feet(30),ritual:no,school:illusion}).
 
-spell(sending,properties{casting_time:"1 action",classes:[bard,cleric,warlock,wizard],components:[v,s,m("A short piece of fine copper wire.")],desc:"You send a short message of twenty-five words or less to a creature with which you are familiar. The creature hears the message in its mind, recognizes you as the sender if it knows you, and can answer in a like manner immediately. The spell enables creatures with Intelligence scores of at least 1 to understand the meaning of your message.You can send the message across any distance and even to other planes of existence, but if the target is on a different plane than you, there is a 5 percent chance that the message doesn’t arrive.",duration:"1 round",higher_level:no,level:3,range:unlimited,ritual:no,school:evocation}).
+spell_auto_data(sending,properties{casting_time:"1 action",classes:[bard,cleric,warlock,wizard],components:[v,s,m("A short piece of fine copper wire.")],desc:"You send a short message of twenty-five words or less to a creature with which you are familiar. The creature hears the message in its mind, recognizes you as the sender if it knows you, and can answer in a like manner immediately. The spell enables creatures with Intelligence scores of at least 1 to understand the meaning of your message.You can send the message across any distance and even to other planes of existence, but if the target is on a different plane than you, there is a 5 percent chance that the message doesn’t arrive.",duration:"1 round",higher_level:no,level:3,range:unlimited,ritual:no,school:evocation}).
 
-spell(sequester,properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A powder composed of diamond, emerald, ruby, and sapphire dust worth at least 5,000 gp, which the spell consumes.")],desc:"By means of this spell, a willing creature or an object can be hidden away, safe from detection for the duration. When you cast the spell and touch the target, it becomes invisible and can’t be targeted by divination spells or perceived through scrying sensors created by divination spells.If the target is a creature, it falls into a state of suspended animation. Time ceases to flow for it, and it doesn’t grow older.You can set a condition for the spell to end early. The condition can be anything you choose, but it must occur or be visible within 1 mile of the target. Examples include “after 1,000 years” or “when the tarrasque awakens.” This spell also ends if the target takes any damage.",duration:"Until dispelled",higher_level:no,level:7,range:touch,ritual:no,school:transmutation}).
+spell_auto_data(sequester,properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A powder composed of diamond, emerald, ruby, and sapphire dust worth at least 5,000 gp, which the spell consumes.")],desc:"By means of this spell, a willing creature or an object can be hidden away, safe from detection for the duration. When you cast the spell and touch the target, it becomes invisible and can’t be targeted by divination spells or perceived through scrying sensors created by divination spells.If the target is a creature, it falls into a state of suspended animation. Time ceases to flow for it, and it doesn’t grow older.You can set a condition for the spell to end early. The condition can be anything you choose, but it must occur or be visible within 1 mile of the target. Examples include “after 1,000 years” or “when the tarrasque awakens.” This spell also ends if the target takes any damage.",duration:"Until dispelled",higher_level:no,level:7,range:touch,ritual:no,school:transmutation}).
 
-spell('shape water',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[s],desc:"You choose an area of water that you can see within range and that fits within a 5-foot cube. You manipulate it in one of the following ways:- You instantaneously move or otherwise change the flow of the water as you direct, up to 5 feet in any direction. This movement doesn't have enough force to cause damage.- You cause the water to form into simple shapes and animate at your direction. This change lasts for 1 hour.- You change the water's color or opacity. The water must be changed in the same way throughout. This change lasts for 1 hour.- You freeze the water, provided that there are no creatures in it. The water unfreezes in 1 hour. If you cast this spell multiple times, you can have no more than two of its non-instantaneous effects active at a time, and you can dismiss such an effect as an action.",duration:"Instantaneous/1 hour",higher_level:no,level:0,range:feet(30),ritual:no,school:transmutation}).
+spell_auto_data('shape water',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[s],desc:"You choose an area of water that you can see within range and that fits within a 5-foot cube. You manipulate it in one of the following ways:- You instantaneously move or otherwise change the flow of the water as you direct, up to 5 feet in any direction. This movement doesn't have enough force to cause damage.- You cause the water to form into simple shapes and animate at your direction. This change lasts for 1 hour.- You change the water's color or opacity. The water must be changed in the same way throughout. This change lasts for 1 hour.- You freeze the water, provided that there are no creatures in it. The water unfreezes in 1 hour. If you cast this spell multiple times, you can have no more than two of its non-instantaneous effects active at a time, and you can dismiss such an effect as an action.",duration:"Instantaneous/1 hour",higher_level:no,level:0,range:feet(30),ritual:no,school:transmutation}).
 
-spell(shapechange,properties{casting_time:"1 action",classes:[druid,wizard],components:[v,s,m("A jade circlet worth at least 1,500 gp, which you must place on your head before you cast the spell.")],desc:"You assume the form of a different creature for the duration. The new form can be of any creature with a challenge rating equal to your level or lower. The creature can’t be a construct or an undead, and you must have seen the sort of creature at least once. You transform into an average example of that creature, one without any class levels or the Spellcasting trait.Your game statistics are replaced by the statistics of the chosen creature, though you retain your alignment and Intelligence, Wisdom, and Charisma scores. You also retain all of your skill and saving throw proficiencies, in addition to gaining those of the creature. If the creature has the same proficiency as you and the bonus listed in its statistics is higher than yours, use the creature’s bonus in place of yours. You can’t use any legendary actions or lair actions of the new form.You assume the hit points and Hit Dice of the new form. When you revert to your normal form, you return to the number of hit points you had before you transformed. If you revert as a result of dropping to 0 hit points, any excess damage carries over to your normal form. As long as the excess damage doesn’t reduce your normal form to 0 hit points, you aren’t knocked unconscious.You retain the benefit of any features from your class, race, or other source and can use them, provided that your new form is physically capable of doing so. You can’t use any special senses you have (for example, darkvision) unless your new form also has that sense. You can only speak if the creature can normally speak.When you transform, you choose whether your equipment falls to the ground, merges into the new form, or is worn by it. Worn equipment functions as normal. The DM determines whether it is practical for the new form to wear a piece of equipment, based on the creature’s shape and size. Your equipment doesn’t change shape or size to match the new form, and any equipment that the new form can’t wear must either fall to the ground or merge into your new form. Equipment that merges has no effect in that state.During this spell’s duration, you can use your action to assume a different form following the same restrictions and rules for the original form, with one exception: if your new form has more hit points than your current one, your hit points remain at their current value.",duration:"Up to 1 hour",higher_level:no,level:9,range:self,ritual:no,school:transmutation}).
+spell_auto_data(shapechange,properties{casting_time:"1 action",classes:[druid,wizard],components:[v,s,m("A jade circlet worth at least 1,500 gp, which you must place on your head before you cast the spell.")],desc:"You assume the form of a different creature for the duration. The new form can be of any creature with a challenge rating equal to your level or lower. The creature can’t be a construct or an undead, and you must have seen the sort of creature at least once. You transform into an average example of that creature, one without any class levels or the Spellcasting trait.Your game statistics are replaced by the statistics of the chosen creature, though you retain your alignment and Intelligence, Wisdom, and Charisma scores. You also retain all of your skill and saving throw proficiencies, in addition to gaining those of the creature. If the creature has the same proficiency as you and the bonus listed in its statistics is higher than yours, use the creature’s bonus in place of yours. You can’t use any legendary actions or lair actions of the new form.You assume the hit points and Hit Dice of the new form. When you revert to your normal form, you return to the number of hit points you had before you transformed. If you revert as a result of dropping to 0 hit points, any excess damage carries over to your normal form. As long as the excess damage doesn’t reduce your normal form to 0 hit points, you aren’t knocked unconscious.You retain the benefit of any features from your class, race, or other source and can use them, provided that your new form is physically capable of doing so. You can’t use any special senses you have (for example, darkvision) unless your new form also has that sense. You can only speak if the creature can normally speak.When you transform, you choose whether your equipment falls to the ground, merges into the new form, or is worn by it. Worn equipment functions as normal. The DM determines whether it is practical for the new form to wear a piece of equipment, based on the creature’s shape and size. Your equipment doesn’t change shape or size to match the new form, and any equipment that the new form can’t wear must either fall to the ground or merge into your new form. Equipment that merges has no effect in that state.During this spell’s duration, you can use your action to assume a different form following the same restrictions and rules for the original form, with one exception: if your new form has more hit points than your current one, your hit points remain at their current value.",duration:"Up to 1 hour",higher_level:no,level:9,range:self,ritual:no,school:transmutation}).
 
-spell(shatter,properties{casting_time:"1 action",classes:[bard,cleric,sorcerer,warlock,wizard],components:[v,s,m("A burst of mica.")],desc:"A strong resonant sound painfully intense sounds of a desired point in the range of the spell. Each creature has a sphere with a 10-foot-radius sphere centered on that point must make a constitution saving throw or it suffers 3d8 thunder damage. If successful, the damage is halved. A creature made of inorganic materials such as stone, crystal or metal, makes its saving throw with a disadvantage.A non-magical item that is not worn or carried also suffers damage if it is in the area of ​​the spell.",duration:"Instantaneous",higher_level:"When you cast this spell using a 3 or higher level spell slot, the damage of the spell increases by 1d8 for each level of higher spell slot 2.",level:2,range:feet(60),ritual:no,school:evocation}).
+spell_auto_data(shatter,properties{casting_time:"1 action",classes:[bard,cleric,sorcerer,warlock,wizard],components:[v,s,m("A burst of mica.")],desc:"A strong resonant sound painfully intense sounds of a desired point in the range of the spell. Each creature has a sphere with a 10-foot-radius sphere centered on that point must make a constitution saving throw or it suffers 3d8 thunder damage. If successful, the damage is halved. A creature made of inorganic materials such as stone, crystal or metal, makes its saving throw with a disadvantage.A non-magical item that is not worn or carried also suffers damage if it is in the area of ​​the spell.",duration:"Instantaneous",higher_level:"When you cast this spell using a 3 or higher level spell slot, the damage of the spell increases by 1d8 for each level of higher spell slot 2.",level:2,range:feet(60),ritual:no,school:evocation}).
 
-spell(shield,properties{casting_time:"1 reaction",classes:[sorcerer,wizard],components:[v,s],desc:"An invisible barrier of magical force appears and protects you. Until the start of your next turn, you have a +5 bonus to AC, including against the triggering attack, and you take no damage from magic missile.",duration:"1 round",higher_level:no,level:1,range:self,ritual:no,school:abjuration}).
+spell_auto_data(shield,properties{casting_time:"1 reaction",classes:[sorcerer,wizard],components:[v,s],desc:"An invisible barrier of magical force appears and protects you. Until the start of your next turn, you have a +5 bonus to AC, including against the triggering attack, and you take no damage from magic missile.",duration:"1 round",higher_level:no,level:1,range:self,ritual:no,school:abjuration}).
 
-spell('shield of faith',properties{casting_time:"1 bonus action",classes:[cleric,paladin],components:[v,s,m("A small parchment with a bit of holy text written on it.")],desc:"A shimmering field appears and surrounds a creature of your choice within range, granting it a +2 bonus to AC for the duration.",duration:"Up to 10 minutes",higher_level:no,level:1,range:feet(60),ritual:no,school:abjuration}).
+spell_auto_data('shield of faith',properties{casting_time:"1 bonus action",classes:[cleric,paladin],components:[v,s,m("A small parchment with a bit of holy text written on it.")],desc:"A shimmering field appears and surrounds a creature of your choice within range, granting it a +2 bonus to AC for the duration.",duration:"Up to 10 minutes",higher_level:no,level:1,range:feet(60),ritual:no,school:abjuration}).
 
-spell(shillelagh,properties{casting_time:"1 bonus action",classes:[druid],components:[v,s,m("Mistletoe, a shamrock leaf, and a club or quarterstaff.")],desc:"The wood of a club or a quarterstaff you are holding is imbued with nature’s power. For the duration, you can use your spellcasting ability instead of Strength for the attack and damage rolls of melee attacks using that weapon, and the weapon’s damage die becomes a d8. The weapon also becomes magical, if it isn’t already. The spell ends if you cast it again or if you let go of the weapon.",duration:"1 minute",higher_level:no,level:0,range:touch,ritual:no,school:transmutation}).
+spell_auto_data(shillelagh,properties{casting_time:"1 bonus action",classes:[druid],components:[v,s,m("Mistletoe, a shamrock leaf, and a club or quarterstaff.")],desc:"The wood of a club or a quarterstaff you are holding is imbued with nature’s power. For the duration, you can use your spellcasting ability instead of Strength for the attack and damage rolls of melee attacks using that weapon, and the weapon’s damage die becomes a d8. The weapon also becomes magical, if it isn’t already. The spell ends if you cast it again or if you let go of the weapon.",duration:"1 minute",higher_level:no,level:0,range:touch,ritual:no,school:transmutation}).
 
-spell('shocking grasp',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"Lightning springs from your hand to deliver a shock to a creature you try to touch. Make a melee spell attack against the target. You have advantage on the attack roll if the target is wearing armor made of metal. On a hit, the target takes 1d8 lightning damage, and it can’t take reactions until the start of its next turn.The spell’s damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",duration:"Instantaneous",higher_level:no,level:0,range:touch,ritual:no,school:evocation}).
+spell_auto_data('shocking grasp',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"Lightning springs from your hand to deliver a shock to a creature you try to touch. Make a melee spell attack against the target. You have advantage on the attack roll if the target is wearing armor made of metal. On a hit, the target takes 1d8 lightning damage, and it can’t take reactions until the start of its next turn.The spell’s damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",duration:"Instantaneous",higher_level:no,level:0,range:touch,ritual:no,school:evocation}).
 
-spell(silence,properties{casting_time:"1 action",classes:[bard,cleric,druid,ranger,'ritual caster'],components:[v,s],desc:"For the duration, no sound can be created within or pass through a 20-foot-radius sphere centered on a point you choose within range. Any creature or object entirely inside the sphere is immune to thunder damage, and creatures are deafened while entirely inside it.Casting a spell that includes a verbal component is impossible there.",duration:"Up to 10 minutes",higher_level:no,level:2,range:feet(120),ritual:yes,school:illusion}).
+spell_auto_data(silence,properties{casting_time:"1 action",classes:[bard,cleric,druid,ranger,'ritual caster'],components:[v,s],desc:"For the duration, no sound can be created within or pass through a 20-foot-radius sphere centered on a point you choose within range. Any creature or object entirely inside the sphere is immune to thunder damage, and creatures are deafened while entirely inside it.Casting a spell that includes a verbal component is impossible there.",duration:"Up to 10 minutes",higher_level:no,level:2,range:feet(120),ritual:yes,school:illusion}).
 
-spell('silent image',properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v,s,m("A bit of fleece.")],desc:"You create the image of an object, a creature, or some other visible phenomenon that is no larger than a 15-foot cube. The image appears at a spot within range and lasts for the duration. The image is purely visual; it isn’t accompanied by sound, smell, or other sensory effects.You can use your action to cause the image to move to any spot within range. As the image changes location, you can alter its appearance so that its movements appear natural for the image. For example, if you create an image of a creature and move it, you can alter the image so that it appears to be walking.Physical interaction with the image reveals it to be an illusion, because things can pass through it. A creature that uses its action to examine the image can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the creature can see through the image.",duration:"Up to 10 minutes",higher_level:no,level:1,range:feet(60),ritual:no,school:illusion}).
+spell_auto_data('silent image',properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v,s,m("A bit of fleece.")],desc:"You create the image of an object, a creature, or some other visible phenomenon that is no larger than a 15-foot cube. The image appears at a spot within range and lasts for the duration. The image is purely visual; it isn’t accompanied by sound, smell, or other sensory effects.You can use your action to cause the image to move to any spot within range. As the image changes location, you can alter its appearance so that its movements appear natural for the image. For example, if you create an image of a creature and move it, you can alter the image so that it appears to be walking.Physical interaction with the image reveals it to be an illusion, because things can pass through it. A creature that uses its action to examine the image can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the creature can see through the image.",duration:"Up to 10 minutes",higher_level:no,level:1,range:feet(60),ritual:no,school:illusion}).
 
-spell(simulacrum,properties{casting_time:"12 hours",classes:[wizard],components:[v,s,m("Snow or ice in quantities sufficient to made a life-size copy of the duplicated creature; some hair, fingernail clippings, or other piece of that creature’s body placed inside the snow or ice; and powdered ruby worth 1,500 gp, sprinkled over the duplicate and consumed by the spell.")],desc:"You shape an illusory duplicate of one beast or humanoid that is within range for the entire casting time of the spell. The duplicate is a creature, partially real and formed from ice or snow, and it can take actions and otherwise be affected as a normal creature. It appears to be the same as the original, but it has half the creature’s hit point maximum and is formed without any equipment. Otherwise, the illusion uses all the statistics of the creature it duplicates.The simulacrum is friendly to you and creatures you designate. It obeys your spoken commands, moving and acting in accordance with your wishes and acting on your turn in combat. The simulacrum lacks the ability to learn or become more powerful, so it never increases its level or other abilities, nor can it regain expended spell slots.If the simulacrum is damaged, you can repair it in an alchemical laboratory, using rare herbs and minerals worth 100 gp per hit point it regains. The simulacrum lasts until it drops to 0 hit points, at which point it reverts to snow and melts instantly.If you cast this spell again, any currently active duplicates you created with this spell are instantly destroyed.",duration:"Until dispelled",higher_level:no,level:7,range:touch,ritual:no,school:illusion}).
+spell_auto_data(simulacrum,properties{casting_time:"12 hours",classes:[wizard],components:[v,s,m("Snow or ice in quantities sufficient to made a life-size copy of the duplicated creature; some hair, fingernail clippings, or other piece of that creature’s body placed inside the snow or ice; and powdered ruby worth 1,500 gp, sprinkled over the duplicate and consumed by the spell.")],desc:"You shape an illusory duplicate of one beast or humanoid that is within range for the entire casting time of the spell. The duplicate is a creature, partially real and formed from ice or snow, and it can take actions and otherwise be affected as a normal creature. It appears to be the same as the original, but it has half the creature’s hit point maximum and is formed without any equipment. Otherwise, the illusion uses all the statistics of the creature it duplicates.The simulacrum is friendly to you and creatures you designate. It obeys your spoken commands, moving and acting in accordance with your wishes and acting on your turn in combat. The simulacrum lacks the ability to learn or become more powerful, so it never increases its level or other abilities, nor can it regain expended spell slots.If the simulacrum is damaged, you can repair it in an alchemical laboratory, using rare herbs and minerals worth 100 gp per hit point it regains. The simulacrum lasts until it drops to 0 hit points, at which point it reverts to snow and melts instantly.If you cast this spell again, any currently active duplicates you created with this spell are instantly destroyed.",duration:"Until dispelled",higher_level:no,level:7,range:touch,ritual:no,school:illusion}).
 
-spell(skywrite,properties{casting_time:"1 action",classes:[bard,druid,'ritual caster',wizard],components:[v,s],desc:"You cause up to ten words to form in a part of the sky you can see. The words appear to be made of cloud and remain in place for the spell's duration. The words dissipate when the spell ends. A strong wind can disperse the clouds and end the spell early.",duration:"Up to 1 hour",higher_level:no,level:2,range:sight,ritual:yes,school:transmutation}).
+spell_auto_data(skywrite,properties{casting_time:"1 action",classes:[bard,druid,'ritual caster',wizard],components:[v,s],desc:"You cause up to ten words to form in a part of the sky you can see. The words appear to be made of cloud and remain in place for the spell's duration. The words dissipate when the spell ends. A strong wind can disperse the clouds and end the spell early.",duration:"Up to 1 hour",higher_level:no,level:2,range:sight,ritual:yes,school:transmutation}).
 
-spell(sleep,properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s,m("A pinch of fine sand, rose petals, or a cricket.")],desc:"This spell sends creatures into a magical slumber. Roll 5d8; the total is how many hit points of creatures this spell can affect. Creatures within 20 feet of a point you choose within range are affected in ascending order of their current hit points (ignoring unconscious creatures).Starting with the creature that has the lowest current hit points, each creature affected by this spell falls unconscious until the spell ends, the sleeper takes damage, or someone uses an action to shake or slap the sleeper awake. Subtract each creature’s hit points from the total before moving on to the creature with the next lowest hit points. A creature’s hit points must be equal to or less than the remaining total for that creature to be affected.Undead and creatures immune to being charmed aren’t affected by this spell.",duration:"1 minute",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, roll an additional 2d8 for each slot level above 1st.",level:1,range:feet(90),ritual:no,school:enchantment}).
+spell_auto_data(sleep,properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[v,s,m("A pinch of fine sand, rose petals, or a cricket.")],desc:"This spell sends creatures into a magical slumber. Roll 5d8; the total is how many hit points of creatures this spell can affect. Creatures within 20 feet of a point you choose within range are affected in ascending order of their current hit points (ignoring unconscious creatures).Starting with the creature that has the lowest current hit points, each creature affected by this spell falls unconscious until the spell ends, the sleeper takes damage, or someone uses an action to shake or slap the sleeper awake. Subtract each creature’s hit points from the total before moving on to the creature with the next lowest hit points. A creature’s hit points must be equal to or less than the remaining total for that creature to be affected.Undead and creatures immune to being charmed aren’t affected by this spell.",duration:"1 minute",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, roll an additional 2d8 for each slot level above 1st.",level:1,range:feet(90),ritual:no,school:enchantment}).
 
-spell('sleet storm',properties{casting_time:"1 action",classes:[cleric,druid,sorcerer,wizard],components:[v,s,m("A pinch of dust and a few drops of water.")],desc:"Until the spell ends, freezing rain and sleet fall in a 20-foot-tall cylinder with a 40-foot radius centered on a point you choose within range. The area is heavily obscured, and exposed flames in the area are doused.The ground in the area is covered with slick ice, making it difficult terrain. When a creature enters the spell’s area for the first time on a turn or starts its turn there, it must make a dexterity saving throw. On a failed save, it falls prone.If a creature is concentrating in the spell’s area, the creature must make a successful constitution saving throw against your spell save DC or lose concentration.",duration:"Up to 1 minute",higher_level:no,level:3,range:feet(150),ritual:no,school:conjuration}).
+spell_auto_data('sleet storm',properties{casting_time:"1 action",classes:[cleric,druid,sorcerer,wizard],components:[v,s,m("A pinch of dust and a few drops of water.")],desc:"Until the spell ends, freezing rain and sleet fall in a 20-foot-tall cylinder with a 40-foot radius centered on a point you choose within range. The area is heavily obscured, and exposed flames in the area are doused.The ground in the area is covered with slick ice, making it difficult terrain. When a creature enters the spell’s area for the first time on a turn or starts its turn there, it must make a dexterity saving throw. On a failed save, it falls prone.If a creature is concentrating in the spell’s area, the creature must make a successful constitution saving throw against your spell save DC or lose concentration.",duration:"Up to 1 minute",higher_level:no,level:3,range:feet(150),ritual:no,school:conjuration}).
 
-spell(slow,properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A drop of molasses.")],desc:"You alter time around up to six creatures of your choice in a 40-foot cube within range. Each target must succeed on a wisdom saving throw or be affected by this spell for the duration.An affected target’s speed is halved, it takes a -2 penalty to AC and dexterity saving throws, and it can’t use reactions. On its turn, it can use either an action or a bonus action, not both. Regardless of the creature’s abilities or magic items, it can’t make more than one melee or ranged attack during its turn.If the creature attempts to cast a spell with a casting time of 1 action, roll a d20. On an 11 or higher, the spell doesn’t take effect until the creature’s next turn, and the creature must use its action on that turn to complete the spell. If it can’t, the spell is wasted.A creature affected by this spell makes another wisdom saving throw at the end of its turn. On a successful save, the effect ends for it.",duration:"Up to 1 minute",higher_level:no,level:3,range:feet(120),ritual:no,school:transmutation}).
+spell_auto_data(slow,properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A drop of molasses.")],desc:"You alter time around up to six creatures of your choice in a 40-foot cube within range. Each target must succeed on a wisdom saving throw or be affected by this spell for the duration.An affected target’s speed is halved, it takes a -2 penalty to AC and dexterity saving throws, and it can’t use reactions. On its turn, it can use either an action or a bonus action, not both. Regardless of the creature’s abilities or magic items, it can’t make more than one melee or ranged attack during its turn.If the creature attempts to cast a spell with a casting time of 1 action, roll a d20. On an 11 or higher, the spell doesn’t take effect until the creature’s next turn, and the creature must use its action on that turn to complete the spell. If it can’t, the spell is wasted.A creature affected by this spell makes another wisdom saving throw at the end of its turn. On a successful save, the effect ends for it.",duration:"Up to 1 minute",higher_level:no,level:3,range:feet(120),ritual:no,school:transmutation}).
 
-spell('snilloc\'s snowball swarm',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("A piece of ice or a small white rock chip.")],desc:"A flurry of magic snowballs erupts from a point you choose within range. Each creature in a 5-foot-radius sphere centered on that point must make a Dexterity saving throw. A creature takes 3d6 cold damage on a failed save, or half as much damage on a successful one.",duration:"Up to 1 hour",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d6 for each slot level above 2nd.",level:2,range:feet(90),ritual:no,school:evocation}).
+spell_auto_data('snilloc\'s snowball swarm',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("A piece of ice or a small white rock chip.")],desc:"A flurry of magic snowballs erupts from a point you choose within range. Each creature in a 5-foot-radius sphere centered on that point must make a Dexterity saving throw. A creature takes 3d6 cold damage on a failed save, or half as much damage on a successful one.",duration:"Up to 1 hour",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d6 for each slot level above 2nd.",level:2,range:feet(90),ritual:no,school:evocation}).
 
-spell('spare the dying',properties{casting_time:"1 action",classes:[cleric],components:[v,s],desc:"You touch a living creature that has 0 hit points. The creature becomes stable. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:no,level:0,range:touch,ritual:no,school:necromancy}).
+spell_auto_data('spare the dying',properties{casting_time:"1 action",classes:[cleric],components:[v,s],desc:"You touch a living creature that has 0 hit points. The creature becomes stable. This spell has no effect on undead or constructs.",duration:"Instantaneous",higher_level:no,level:0,range:touch,ritual:no,school:necromancy}).
 
-spell('speak with animals',properties{casting_time:"1 action",classes:[bard,cleric,druid,paladin,ranger,'ritual caster'],components:[v,s],desc:"You gain the ability to comprehend and verbally communicate with beasts for the duration. The knowledge and awareness of many beasts is limited by their intelligence, but at a minimum, beasts can give you information about nearby locations and monsters, including whatever they can perceive or have perceived within the past day. You might be able to persuade a beast to perform a small favor for you, at the DM’s discretion.",duration:"10 minutes",higher_level:no,level:1,range:self,ritual:yes,school:divination}).
+spell_auto_data('speak with animals',properties{casting_time:"1 action",classes:[bard,cleric,druid,paladin,ranger,'ritual caster'],components:[v,s],desc:"You gain the ability to comprehend and verbally communicate with beasts for the duration. The knowledge and awareness of many beasts is limited by their intelligence, but at a minimum, beasts can give you information about nearby locations and monsters, including whatever they can perceive or have perceived within the past day. You might be able to persuade a beast to perform a small favor for you, at the DM’s discretion.",duration:"10 minutes",higher_level:no,level:1,range:self,ritual:yes,school:divination}).
 
-spell('speak with dead',properties{casting_time:"1 action",classes:[bard,cleric],components:[v,s,m("Burning incense.")],desc:"You grant the semblance of life and intelligence to a corpse of your choice within range, allowing it to answer the questions you pose. The corpse must still have a mouth and can’t be undead. The spell fails if the corpse was the target of this spell within the last 10 days.Until the spell ends, you can ask the corpse up to five questions. The corpse knows only what it knew in life, including the languages it knew. Answers are usually brief, cryptic, or repetitive, and the corpse is under no compulsion to offer a truthful answer if you are hostile to it or it recognizes you as an enemy. This spell doesn’t return the creature’s soul to its body, only its animating spirit. Thus, the corpse can’t learn new information, doesn’t comprehend anything that has happened since it died, and can’t speculate about future events.",duration:"10 minutes",higher_level:no,level:3,range:feet(10),ritual:no,school:necromancy}).
+spell_auto_data('speak with dead',properties{casting_time:"1 action",classes:[bard,cleric],components:[v,s,m("Burning incense.")],desc:"You grant the semblance of life and intelligence to a corpse of your choice within range, allowing it to answer the questions you pose. The corpse must still have a mouth and can’t be undead. The spell fails if the corpse was the target of this spell within the last 10 days.Until the spell ends, you can ask the corpse up to five questions. The corpse knows only what it knew in life, including the languages it knew. Answers are usually brief, cryptic, or repetitive, and the corpse is under no compulsion to offer a truthful answer if you are hostile to it or it recognizes you as an enemy. This spell doesn’t return the creature’s soul to its body, only its animating spirit. Thus, the corpse can’t learn new information, doesn’t comprehend anything that has happened since it died, and can’t speculate about future events.",duration:"10 minutes",higher_level:no,level:3,range:feet(10),ritual:no,school:necromancy}).
 
-spell('speak with plants',properties{casting_time:"1 action",classes:[bard,druid,ranger],components:[v,s],desc:"You imbue plants within 30 feet of you with limited sentience and animation, giving them the ability to communicate with you and follow your simple commands. You can question plants about events in the spell’s area within the past day, gaining information about creatures that have passed, weather, and other circumstances.You can also turn difficult terrain caused by plant growth (such as thickets and undergrowth) into ordinary terrain that lasts for the duration. Or you can turn ordinary terrain where plants are present into difficult terrain that lasts for the duration, causing vines and branches to hinder pursuers, for example.Plants might be able to perform other tasks on your behalf, at the DM’s discretion. The spell doesn’t enable plants to uproot themselves and move about, but they can freely move branches, tendrils, and stalks.If a plant creature is in the area, you can communicate with it as if you shared a common language, but you gain no magical ability to influence it.This spell can cause the plants created by the entangle spell to release a restrained creature.",duration:"10 minutes",higher_level:no,level:3,range:self,ritual:no,school:transmutation}).
+spell_auto_data('speak with plants',properties{casting_time:"1 action",classes:[bard,druid,ranger],components:[v,s],desc:"You imbue plants within 30 feet of you with limited sentience and animation, giving them the ability to communicate with you and follow your simple commands. You can question plants about events in the spell’s area within the past day, gaining information about creatures that have passed, weather, and other circumstances.You can also turn difficult terrain caused by plant growth (such as thickets and undergrowth) into ordinary terrain that lasts for the duration. Or you can turn ordinary terrain where plants are present into difficult terrain that lasts for the duration, causing vines and branches to hinder pursuers, for example.Plants might be able to perform other tasks on your behalf, at the DM’s discretion. The spell doesn’t enable plants to uproot themselves and move about, but they can freely move branches, tendrils, and stalks.If a plant creature is in the area, you can communicate with it as if you shared a common language, but you gain no magical ability to influence it.This spell can cause the plants created by the entangle spell to release a restrained creature.",duration:"10 minutes",higher_level:no,level:3,range:self,ritual:no,school:transmutation}).
 
-spell('spider climb',properties{casting_time:"1 action",classes:[druid,sorcerer,warlock,wizard],components:[v,s,m("A drop of bitumen and a spider.")],desc:"Until the spell ends, one willing creature you touch gains the ability to move up, down, and across vertical surfaces and upside down along ceilings, while leaving its hands free. The target also gains a climbing speed equal to its walking speed.",duration:"Up to 1 hour",higher_level:no,level:2,range:touch,ritual:no,school:transmutation}).
+spell_auto_data('spider climb',properties{casting_time:"1 action",classes:[druid,sorcerer,warlock,wizard],components:[v,s,m("A drop of bitumen and a spider.")],desc:"Until the spell ends, one willing creature you touch gains the ability to move up, down, and across vertical surfaces and upside down along ceilings, while leaving its hands free. The target also gains a climbing speed equal to its walking speed.",duration:"Up to 1 hour",higher_level:no,level:2,range:touch,ritual:no,school:transmutation}).
 
-spell('spike growth',properties{casting_time:"1 action",classes:[cleric,druid,ranger],components:[v,s,m("Seven sharp spines or seven twigs cut peak.")],desc:"The ground in a 20-foot radius centered on a point within range twists and sprouts hard spikes and thorns. The area becomes difficult terrain for the duration. When a creature moves into or within the area, it takes 2d4 piercing damage for every 5 feet it travels.The development of land is camouflaged to look natural. Any creature that does not see the area when the spell is spell casts must make a Wisdom (Perception) opposite the DD backup your fate or it does not recognize the dangerous nature of the ground before entering.",duration:"Up to 10 minutes",higher_level:no,level:2,range:feet(150),ritual:no,school:transmutation}).
+spell_auto_data('spike growth',properties{casting_time:"1 action",classes:[cleric,druid,ranger],components:[v,s,m("Seven sharp spines or seven twigs cut peak.")],desc:"The ground in a 20-foot radius centered on a point within range twists and sprouts hard spikes and thorns. The area becomes difficult terrain for the duration. When a creature moves into or within the area, it takes 2d4 piercing damage for every 5 feet it travels.The development of land is camouflaged to look natural. Any creature that does not see the area when the spell is spell casts must make a Wisdom (Perception) opposite the DD backup your fate or it does not recognize the dangerous nature of the ground before entering.",duration:"Up to 10 minutes",higher_level:no,level:2,range:feet(150),ritual:no,school:transmutation}).
 
-spell('spirit guardians',properties{casting_time:"1 action",classes:[cleric],components:[v,s,m("A holy symbol.")],desc:"You call forth spirits to protect you. They flit around you to a distance of 15 feet for the duration. If you are good or neutral, their spectral form appears angelic or fey (your choice). If you are evil, they appear fiendish.When you cast this spell, you can designate any number of creatures you can see to be unaffected by it. An affected creature’s speed is halved in the area, and when the creature enters the area for the first time on a turn or starts its turn there, it must make a wisdom saving throw. On a failed save, the creature takes 3d8 radiant damage (if you are good or neutral) or 3d8 necrotic damage (if you are evil). On a successful save, the creature takes half as much damage.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d8 for each slot level above 3rd.",level:3,range:self,ritual:no,school:conjuration}).
+spell_auto_data('spirit guardians',properties{casting_time:"1 action",classes:[cleric],components:[v,s,m("A holy symbol.")],desc:"You call forth spirits to protect you. They flit around you to a distance of 15 feet for the duration. If you are good or neutral, their spectral form appears angelic or fey (your choice). If you are evil, they appear fiendish.When you cast this spell, you can designate any number of creatures you can see to be unaffected by it. An affected creature’s speed is halved in the area, and when the creature enters the area for the first time on a turn or starts its turn there, it must make a wisdom saving throw. On a failed save, the creature takes 3d8 radiant damage (if you are good or neutral) or 3d8 necrotic damage (if you are evil). On a successful save, the creature takes half as much damage.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d8 for each slot level above 3rd.",level:3,range:self,ritual:no,school:conjuration}).
 
-spell('spiritual weapon',properties{casting_time:"1 bonus action",classes:[cleric],components:[v,s],desc:"You create a floating, spectral weapon within range that lasts for the duration or until you cast this spell again. When you cast the spell, you can make a melee spell attack against a creature within 5 feet of the weapon. On a hit, the target takes force damage equal to 1d8 + your spellcasting ability modifier.As a bonus action on your turn, you can move the weapon up to 20 feet and repeat the attack against a creature within 5 feet of it.The weapon can take whatever form you choose. Clerics of deities who are associated with a particular weapon (as St. Cuthbert is known for his mace and Thor for his hammer) make this spell’s effect resemble that weapon.",duration:"1 minute",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for every two slot levels above the 2nd.",level:2,range:feet(60),ritual:no,school:evocation}).
+spell_auto_data('spiritual weapon',properties{casting_time:"1 bonus action",classes:[cleric],components:[v,s],desc:"You create a floating, spectral weapon within range that lasts for the duration or until you cast this spell again. When you cast the spell, you can make a melee spell attack against a creature within 5 feet of the weapon. On a hit, the target takes force damage equal to 1d8 + your spellcasting ability modifier.As a bonus action on your turn, you can move the weapon up to 20 feet and repeat the attack against a creature within 5 feet of it.The weapon can take whatever form you choose. Clerics of deities who are associated with a particular weapon (as St. Cuthbert is known for his mace and Thor for his hammer) make this spell’s effect resemble that weapon.",duration:"1 minute",higher_level:"When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for every two slot levels above the 2nd.",level:2,range:feet(60),ritual:no,school:evocation}).
 
-spell('staggering smite',properties{casting_time:"1 bonus action",classes:[paladin],components:[v],desc:"The next time you hit a creature with a melee weapon attack during this spell’s duration, your weapon pierces both body and mind, and the attack deals an extra 4d6 psychic damage to the target. The target must make a wisdom saving throw. On a failed save, it has disadvantage on attack rolls and ability checks, and can't take reactions, until the end of its next turn.",duration:"Up to 1 minute",higher_level:no,level:4,range:self,ritual:no,school:evocation}).
+spell_auto_data('staggering smite',properties{casting_time:"1 bonus action",classes:[paladin],components:[v],desc:"The next time you hit a creature with a melee weapon attack during this spell’s duration, your weapon pierces both body and mind, and the attack deals an extra 4d6 psychic damage to the target. The target must make a wisdom saving throw. On a failed save, it has disadvantage on attack rolls and ability checks, and can't take reactions, until the end of its next turn.",duration:"Up to 1 minute",higher_level:no,level:4,range:self,ritual:no,school:evocation}).
 
-spell('stinking cloud',properties{casting_time:"1 action",classes:[bard,druid,sorcerer,warlock,wizard],components:[v,s,m("A rotten egg or several skunk cabbage leaves.")],desc:"You create a 20-foot-radius sphere of yellow, nauseating gas centered on a point within range. The cloud spreads around corners, and its area is heavily obscured. The cloud lingers in the air for the duration.Each creature that is completely within the cloud at the start of its turn must make a constitution saving throw against poison. On a failed save, the creature spends its action that turn retching and reeling. Creatures that don’t need to breathe or are immune to poison automatically succeed on this saving throw.A moderate wind (at least 10 miles per hour) disperses the cloud after 4 rounds. A strong wind (at least 20 miles per hour) disperses it after 1 round.",duration:"Up to 1 minute",higher_level:no,level:3,range:feet(90),ritual:no,school:conjuration}).
+spell_auto_data('stinking cloud',properties{casting_time:"1 action",classes:[bard,druid,sorcerer,warlock,wizard],components:[v,s,m("A rotten egg or several skunk cabbage leaves.")],desc:"You create a 20-foot-radius sphere of yellow, nauseating gas centered on a point within range. The cloud spreads around corners, and its area is heavily obscured. The cloud lingers in the air for the duration.Each creature that is completely within the cloud at the start of its turn must make a constitution saving throw against poison. On a failed save, the creature spends its action that turn retching and reeling. Creatures that don’t need to breathe or are immune to poison automatically succeed on this saving throw.A moderate wind (at least 10 miles per hour) disperses the cloud after 4 rounds. A strong wind (at least 20 miles per hour) disperses it after 1 round.",duration:"Up to 1 minute",higher_level:no,level:3,range:feet(90),ritual:no,school:conjuration}).
 
-spell('stone shape',properties{casting_time:"1 action",classes:[cleric,druid,wizard],components:[v,s,m("Soft clay, to be crudely worked into the desired shape for the stone object.")],desc:"You touch a stone object of Medium size or smaller or a section of stone no more than 5 feet in any dimension and form it into any shape that suits your purpose. So, for example, you could shape a large rock into a weapon, idol, or coffer, or make a small passage through a wall, as long as the wall is less than 5 feet thick. You could also shape a stone door or its frame to seal the door shut. The object you create can have up to two hinges and a latch, but finer mechanical detail isn’t possible.",duration:"Instantaneous",higher_level:no,level:4,range:touch,ritual:no,school:transmutation}).
+spell_auto_data('stone shape',properties{casting_time:"1 action",classes:[cleric,druid,wizard],components:[v,s,m("Soft clay, to be crudely worked into the desired shape for the stone object.")],desc:"You touch a stone object of Medium size or smaller or a section of stone no more than 5 feet in any dimension and form it into any shape that suits your purpose. So, for example, you could shape a large rock into a weapon, idol, or coffer, or make a small passage through a wall, as long as the wall is less than 5 feet thick. You could also shape a stone door or its frame to seal the door shut. The object you create can have up to two hinges and a latch, but finer mechanical detail isn’t possible.",duration:"Instantaneous",higher_level:no,level:4,range:touch,ritual:no,school:transmutation}).
 
-spell(stoneskin,properties{casting_time:"1 action",classes:[cleric,druid,paladin,ranger,sorcerer,wizard],components:[v,s,m("Diamond dust worth 100 gp, which the spell consumes.")],desc:"This spell turns the flesh of a willing creature you touch as hard as stone. Until the spell ends, the target has resistance to nonmagical bludgeoning, piercing, and slashing damage.",duration:"Up to 1 hour",higher_level:no,level:4,range:touch,ritual:no,school:abjuration}).
+spell_auto_data(stoneskin,properties{casting_time:"1 action",classes:[cleric,druid,paladin,ranger,sorcerer,wizard],components:[v,s,m("Diamond dust worth 100 gp, which the spell consumes.")],desc:"This spell turns the flesh of a willing creature you touch as hard as stone. Until the spell ends, the target has resistance to nonmagical bludgeoning, piercing, and slashing damage.",duration:"Up to 1 hour",higher_level:no,level:4,range:touch,ritual:no,school:abjuration}).
 
-spell('storm of vengeance',properties{casting_time:"1 action",classes:[druid],components:[v,s],desc:"A churning storm cloud forms, centered on a point you can see and spreading to a radius of 360 feet. Lightning flashes in the area, thunder booms, and strong winds roar. Each creature under the cloud (no more than 5,000 feet beneath the cloud) when it appears must make a constitution saving throw. On a failed save, a creature takes 2d6 thunder damage and becomes deafened for 5 minutes.Each round you maintain concentration on this spell, the storm produces additional effects on your turn. Round 2. Acidic rain falls from the cloud. Each creature and object under the cloud takes 1d6 acid damage.Round 3. You call six bolts of lightning from the cloud to strike six creatures or objects of your choice beneath the cloud. A given creature or object can’t be struck by more than one bolt. A struck creature must make a dexterity saving throw. The creature takes 10d6 lightning damage on a failed save, or half as much damage on a successful one.Round 4. Hailstones rain down from the cloud. Each creature under the cloud takes 2d6 bludgeoning damage.Round 5-10. Gusts and freezing rain assail the area under the cloud. The area becomes difficult terrain and is heavily obscured. Each creature there takes 1d6 cold damage. Ranged weapon attacks in the area are impossible. The wind and rain count as a severe distraction for the purposes of maintaining concentration on spells. Finally, gusts of strong wind (ranging from 20 to 50 miles per hour) automatically disperse fog, mists, and similar phenomena in the area, whether mundane or magical.",duration:"Up to 1 minute",higher_level:no,level:9,range:sight,ritual:no,school:conjuration}).
+spell_auto_data('storm of vengeance',properties{casting_time:"1 action",classes:[druid],components:[v,s],desc:"A churning storm cloud forms, centered on a point you can see and spreading to a radius of 360 feet. Lightning flashes in the area, thunder booms, and strong winds roar. Each creature under the cloud (no more than 5,000 feet beneath the cloud) when it appears must make a constitution saving throw. On a failed save, a creature takes 2d6 thunder damage and becomes deafened for 5 minutes.Each round you maintain concentration on this spell, the storm produces additional effects on your turn. Round 2. Acidic rain falls from the cloud. Each creature and object under the cloud takes 1d6 acid damage.Round 3. You call six bolts of lightning from the cloud to strike six creatures or objects of your choice beneath the cloud. A given creature or object can’t be struck by more than one bolt. A struck creature must make a dexterity saving throw. The creature takes 10d6 lightning damage on a failed save, or half as much damage on a successful one.Round 4. Hailstones rain down from the cloud. Each creature under the cloud takes 2d6 bludgeoning damage.Round 5-10. Gusts and freezing rain assail the area under the cloud. The area becomes difficult terrain and is heavily obscured. Each creature there takes 1d6 cold damage. Ranged weapon attacks in the area are impossible. The wind and rain count as a severe distraction for the purposes of maintaining concentration on spells. Finally, gusts of strong wind (ranging from 20 to 50 miles per hour) automatically disperse fog, mists, and similar phenomena in the area, whether mundane or magical.",duration:"Up to 1 minute",higher_level:no,level:9,range:sight,ritual:no,school:conjuration}).
 
-spell('storm sphere',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"A 20-foot-radius sphere of whirling air springs into existence centered on a point you choose within range. The sphere remains for the spell's duration. Each creature in the sphere when it appears or that ends its turn there must succeed on a Strength saving throw or take 2d6 bludgeoning damage. The sphere's space is difficult terrain.Until the spell ends, you can use a bonus action on each of your turns to cause a bolt of lightning to leap from the center of the sphere toward one creature you choose within 60 feet of the center. Make a ranged spell attack. You have advantage on the attack roll if the target is in the sphere. On a hit, the target takes 4d6 lightning damage.Creatures within 30 feet of the sphere have disadvantage on Wisdom (Perception) checks made to listen.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 5th level or higher, the damage increases for each of its effects by 1d6 for each slot level above 4th.",level:4,range:feet(150),ritual:no,school:evocation}).
+spell_auto_data('storm sphere',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s],desc:"A 20-foot-radius sphere of whirling air springs into existence centered on a point you choose within range. The sphere remains for the spell's duration. Each creature in the sphere when it appears or that ends its turn there must succeed on a Strength saving throw or take 2d6 bludgeoning damage. The sphere's space is difficult terrain.Until the spell ends, you can use a bonus action on each of your turns to cause a bolt of lightning to leap from the center of the sphere toward one creature you choose within 60 feet of the center. Make a ranged spell attack. You have advantage on the attack roll if the target is in the sphere. On a hit, the target takes 4d6 lightning damage.Creatures within 30 feet of the sphere have disadvantage on Wisdom (Perception) checks made to listen.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 5th level or higher, the damage increases for each of its effects by 1d6 for each slot level above 4th.",level:4,range:feet(150),ritual:no,school:evocation}).
 
-spell(suggestion,properties{casting_time:"1 action",classes:[bard,cleric,sorcerer,warlock,wizard],components:[v,m("A snake’s tongue and either a bit of honeycomb or a drop of sweet oil.")],desc:"You suggest a course of activity (limited to a sentence or two) and magically influence a creature you can see within range that can hear and understand you. Creatures that can’t be charmed are immune to this effect. The suggestion must be worded in such a manner as to make the course of action sound reasonable. Asking the creature to stab itself, throw itself onto a spear, immolate itself, or do some other obviously harmful act ends the spell.The target must make a wisdom saving throw. On a failed save, it pursues the course of action you described to the best of its ability. The suggested course of action can continue for the entire duration. If the suggested activity can be completed in a shorter time, the spell ends when the subject finishes what it was asked to do.You can also specify conditions that will trigger a special activity during the duration. For example, you might suggest that a knight give her warhorse to the first beggar she meets. If the condition isn’t met before the spell expires, the activity isn’t performed.If you or any of your companions damage the target, the spell ends.",duration:"Up to 8 hours",higher_level:no,level:2,range:feet(30),ritual:no,school:enchantment}).
+spell_auto_data(suggestion,properties{casting_time:"1 action",classes:[bard,cleric,sorcerer,warlock,wizard],components:[v,m("A snake’s tongue and either a bit of honeycomb or a drop of sweet oil.")],desc:"You suggest a course of activity (limited to a sentence or two) and magically influence a creature you can see within range that can hear and understand you. Creatures that can’t be charmed are immune to this effect. The suggestion must be worded in such a manner as to make the course of action sound reasonable. Asking the creature to stab itself, throw itself onto a spear, immolate itself, or do some other obviously harmful act ends the spell.The target must make a wisdom saving throw. On a failed save, it pursues the course of action you described to the best of its ability. The suggested course of action can continue for the entire duration. If the suggested activity can be completed in a shorter time, the spell ends when the subject finishes what it was asked to do.You can also specify conditions that will trigger a special activity during the duration. For example, you might suggest that a knight give her warhorse to the first beggar she meets. If the condition isn’t met before the spell expires, the activity isn’t performed.If you or any of your companions damage the target, the spell ends.",duration:"Up to 8 hours",higher_level:no,level:2,range:feet(30),ritual:no,school:enchantment}).
 
-spell(sunbeam,properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A magnifying glass.")],desc:"A beam of brilliant light flashes out from your hand in a 5-foot-wide, 60-foot-long line. Each creature in the line must make a constitution saving throw. On a failed save, a creature takes 6d8 radiant damage and is blinded until your next turn. On a successful save, it takes half as much damage and isn’t blinded by this spell. Undead and oozes have disadvantage on this saving throw.You can create a new line of radiance as your action on any turn until the spell ends.For the duration, a mote of brilliant radiance shines in your hand. It sheds bright light in a 30-foot radius and dim light for an additional 30 feet. This light is sunlight.",duration:"Up to 1 minute",higher_level:no,level:6,range:self,ritual:no,school:evocation}).
+spell_auto_data(sunbeam,properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A magnifying glass.")],desc:"A beam of brilliant light flashes out from your hand in a 5-foot-wide, 60-foot-long line. Each creature in the line must make a constitution saving throw. On a failed save, a creature takes 6d8 radiant damage and is blinded until your next turn. On a successful save, it takes half as much damage and isn’t blinded by this spell. Undead and oozes have disadvantage on this saving throw.You can create a new line of radiance as your action on any turn until the spell ends.For the duration, a mote of brilliant radiance shines in your hand. It sheds bright light in a 30-foot radius and dim light for an additional 30 feet. This light is sunlight.",duration:"Up to 1 minute",higher_level:no,level:6,range:self,ritual:no,school:evocation}).
 
-spell(sunburst,properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("Fire and a piece of sunstone.")],desc:"Brilliant sunlight flashes in a 60-foot radius centered on a point you choose within range. Each creature in that light must make a constitution saving throw. On a failed save, a creature takes 12d6 radiant damage and is blinded for 1 minute. On a successful save, it takes half as much damage and isn’t blinded by this spell. Undead and oozes have disadvantage on this saving throw.A creature blinded by this spell makes another constitution saving throw at the end of each of its turns. On a successful save, it is no longer blinded.This spell dispels any darkness in its area that was created by a spell.",duration:"Instantaneous",higher_level:no,level:8,range:feet(150),ritual:no,school:evocation}).
+spell_auto_data(sunburst,properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("Fire and a piece of sunstone.")],desc:"Brilliant sunlight flashes in a 60-foot radius centered on a point you choose within range. Each creature in that light must make a constitution saving throw. On a failed save, a creature takes 12d6 radiant damage and is blinded for 1 minute. On a successful save, it takes half as much damage and isn’t blinded by this spell. Undead and oozes have disadvantage on this saving throw.A creature blinded by this spell makes another constitution saving throw at the end of each of its turns. On a successful save, it is no longer blinded.This spell dispels any darkness in its area that was created by a spell.",duration:"Instantaneous",higher_level:no,level:8,range:feet(150),ritual:no,school:evocation}).
 
-spell('swift quiver',properties{casting_time:"1 bonus action",classes:[ranger],components:[v,s,m("A quiver containing at least one piece of ammunition.")],desc:"You transmute your quiver so it produces an endless supply of nonmagical ammunition, which seems to leap into your hand when you reach for it.On each of your turns until the spell ends, you can use a bonus action to make two attacks with a weapon that uses ammunition from the quiver. Each time you make such a ranged attack, your quiver magically replaces the piece of ammunition you used with a similar piece of nonmagical ammunition. Any pieces of ammunition created by this spell disintegrate when the spell ends. If the quiver leaves your possession, the spell ends.",duration:"Up to 1 minute",higher_level:no,level:5,range:touch,ritual:no,school:transmutation}).
+spell_auto_data('swift quiver',properties{casting_time:"1 bonus action",classes:[ranger],components:[v,s,m("A quiver containing at least one piece of ammunition.")],desc:"You transmute your quiver so it produces an endless supply of nonmagical ammunition, which seems to leap into your hand when you reach for it.On each of your turns until the spell ends, you can use a bonus action to make two attacks with a weapon that uses ammunition from the quiver. Each time you make such a ranged attack, your quiver magically replaces the piece of ammunition you used with a similar piece of nonmagical ammunition. Any pieces of ammunition created by this spell disintegrate when the spell ends. If the quiver leaves your possession, the spell ends.",duration:"Up to 1 minute",higher_level:no,level:5,range:touch,ritual:no,school:transmutation}).
 
-spell('sword burst',properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v],desc:"You create a momentary circle of spectral blades that sweep around you. Each creature within range, other than you, must succeed on a Dexterity saving throw or take 1d6 force damage.This spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).",duration:"Instantaneous",higher_level:no,level:0,range:feet(5),ritual:no,school:conjuration}).
+spell_auto_data('sword burst',properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v],desc:"You create a momentary circle of spectral blades that sweep around you. Each creature within range, other than you, must succeed on a Dexterity saving throw or take 1d6 force damage.This spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).",duration:"Instantaneous",higher_level:no,level:0,range:feet(5),ritual:no,school:conjuration}).
 
-spell(symbol,properties{casting_time:"1 minute",classes:[bard,cleric,wizard],components:[v,s,m("Mercury, phosphorus, and powdered diamond and opal with a total value of at least 1,000 gp, which the spell consumes.")],desc:"When you cast this spell, you inscribe a harmful glyph either on a surface (such as a section of floor, a wall, or a table) or within an object that can be closed to conceal the glyph (such as a book, a scroll, or a treasure chest). If you choose a surface, the glyph can cover an area of the surface no larger than 10 feet in diameter. If you choose an object, that object must remain in its place; if the object is moved more than 10 feet from where you cast this spell, the glyph is broken, and the spell ends without being triggered.The glyph is nearly invisible, requiring an Intelligence (Investigation) check against your spell save DC to find it.You decide what triggers the glyph when you cast the spell. For glyphs inscribed on a surface, the most typical triggers include touching or stepping on the glyph, removing another object covering it, approaching within a certain distance of it, or manipulating the object that holds it. For glyphs inscribed within an object, the most common triggers are opening the object, approaching within a certain distance of it, or seeing or reading the glyph.You can further refine the trigger so the spell is activated only under certain circumstances or according to a creature’s physical characteristics (such as height or weight), or physical kind (for example, the ward could be set to affect hags or shapechangers). You can also specify creatures that don’t trigger the glyph, such as those who say a certain password.When you inscribe the glyph, choose one of the options below for its effect. Once triggered, the glyph glows, filling a 60-foot-radius sphere with dim light for 10 minutes, after which time the spell ends. Each creature in the sphere when the glyph activates is targeted by its effect, as is a creature that enters the sphere for the first time on a turn or ends its turn there. Death. Each target must make a constitution saving throw, taking 10d 10 necrotic damage on a failed save, or half as much damage on a successful save.Discord. Each target must make a constitution saving throw. On a failed save, a target bickers and argues with other creatures for 1 minute. During this time, it is incapable of meaningful communication and has disadvantage on attack rolls and ability checks.Fear. Each target must make a wisdom saving throw and becomes frightened for 1 minute on a failed save. While frightened, the target drops whatever it is holding and must move at least 30 feet away from the glyph on each of its turns, if able.Hopelessness. Each target must make a charisma saving throw. On a failed save, the target is overwhelmed with despair for 1 minute. During this time, it can’t attack or target any creature with harmful abilities, spells, or other magical effects.Insanity. Each target must make an intelligence saving throw. On a failed save, the target is driven insane for 1 minute. An insane creature can’t take actions, can't understand what other creatures say, can’t read, and speaks only in gibberish. The DM controls its movement, which is erratic.Pain. Each target must make a constitution saving throw and becomes incapacitated with excruciating pain for 1 minute on a failed save.Sleep. Each target must make a wisdom saving throw and falls unconscious for 10 minutes on a failed save. A creature awakens if it takes damage or if someone uses an action to shake or slap it awake.Stunning. Each target must make a wisdom saving throw and becomes stunned for 1 minute on a failed save.",duration:"Until dispelled",higher_level:no,level:7,range:touch,ritual:no,school:abjuration}).
+spell_auto_data(symbol,properties{casting_time:"1 minute",classes:[bard,cleric,wizard],components:[v,s,m("Mercury, phosphorus, and powdered diamond and opal with a total value of at least 1,000 gp, which the spell consumes.")],desc:"When you cast this spell, you inscribe a harmful glyph either on a surface (such as a section of floor, a wall, or a table) or within an object that can be closed to conceal the glyph (such as a book, a scroll, or a treasure chest). If you choose a surface, the glyph can cover an area of the surface no larger than 10 feet in diameter. If you choose an object, that object must remain in its place; if the object is moved more than 10 feet from where you cast this spell, the glyph is broken, and the spell ends without being triggered.The glyph is nearly invisible, requiring an Intelligence (Investigation) check against your spell save DC to find it.You decide what triggers the glyph when you cast the spell. For glyphs inscribed on a surface, the most typical triggers include touching or stepping on the glyph, removing another object covering it, approaching within a certain distance of it, or manipulating the object that holds it. For glyphs inscribed within an object, the most common triggers are opening the object, approaching within a certain distance of it, or seeing or reading the glyph.You can further refine the trigger so the spell is activated only under certain circumstances or according to a creature’s physical characteristics (such as height or weight), or physical kind (for example, the ward could be set to affect hags or shapechangers). You can also specify creatures that don’t trigger the glyph, such as those who say a certain password.When you inscribe the glyph, choose one of the options below for its effect. Once triggered, the glyph glows, filling a 60-foot-radius sphere with dim light for 10 minutes, after which time the spell ends. Each creature in the sphere when the glyph activates is targeted by its effect, as is a creature that enters the sphere for the first time on a turn or ends its turn there. Death. Each target must make a constitution saving throw, taking 10d 10 necrotic damage on a failed save, or half as much damage on a successful save.Discord. Each target must make a constitution saving throw. On a failed save, a target bickers and argues with other creatures for 1 minute. During this time, it is incapable of meaningful communication and has disadvantage on attack rolls and ability checks.Fear. Each target must make a wisdom saving throw and becomes frightened for 1 minute on a failed save. While frightened, the target drops whatever it is holding and must move at least 30 feet away from the glyph on each of its turns, if able.Hopelessness. Each target must make a charisma saving throw. On a failed save, the target is overwhelmed with despair for 1 minute. During this time, it can’t attack or target any creature with harmful abilities, spells, or other magical effects.Insanity. Each target must make an intelligence saving throw. On a failed save, the target is driven insane for 1 minute. An insane creature can’t take actions, can't understand what other creatures say, can’t read, and speaks only in gibberish. The DM controls its movement, which is erratic.Pain. Each target must make a constitution saving throw and becomes incapacitated with excruciating pain for 1 minute on a failed save.Sleep. Each target must make a wisdom saving throw and falls unconscious for 10 minutes on a failed save. A creature awakens if it takes damage or if someone uses an action to shake or slap it awake.Stunning. Each target must make a wisdom saving throw and becomes stunned for 1 minute on a failed save.",duration:"Until dispelled",higher_level:no,level:7,range:touch,ritual:no,school:abjuration}).
 
-spell('tasha\'s hideous laughter',properties{casting_time:"1 action",classes:[bard,warlock,wizard],components:[v,s,m("Tiny tarts and a feather that is waved in the air.")],desc:"A creature of your choice that you can see within range perceives everything as hilariously funny and falls into fits of laughter if this spell affects it. The target must succeed on a wisdom saving throw or fall prone, becoming incapacitated and unable to stand up for the duration. A creature with an Intelligence score of 4 or less isn’t affected.At the end of each of its turns, and each time it takes damage, the target can make another wisdom saving throw. The target had advantage on the saving throw if it’s triggered by damage. On a success, the spell ends.",duration:"Up to 1 minute",higher_level:no,level:1,range:feet(30),ritual:no,school:enchantment}).
+spell_auto_data('tasha\'s hideous laughter',properties{casting_time:"1 action",classes:[bard,warlock,wizard],components:[v,s,m("Tiny tarts and a feather that is waved in the air.")],desc:"A creature of your choice that you can see within range perceives everything as hilariously funny and falls into fits of laughter if this spell affects it. The target must succeed on a wisdom saving throw or fall prone, becoming incapacitated and unable to stand up for the duration. A creature with an Intelligence score of 4 or less isn’t affected.At the end of each of its turns, and each time it takes damage, the target can make another wisdom saving throw. The target had advantage on the saving throw if it’s triggered by damage. On a success, the spell ends.",duration:"Up to 1 minute",higher_level:no,level:1,range:feet(30),ritual:no,school:enchantment}).
 
-spell(telekinesis,properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v,s],desc:"You gain the ability to move or manipulate creatures or objects by thought. When you cast the spell, and as your action each round for the duration, you can exert your will on one creature or object that you can see within range, causing the appropriate effect below. You can affect the same target round after round, or choose a new one at any time. If you switch targets, the prior target is no longer affected by the spell.Creature. You can try to move a Huge or smaller creature. Make an ability check with your spellcasting ability contested by the creature’s Strength check. If you win the contest, you move the creature up to 30 feet in any direction, including upward but not beyond the range of this spell. Until the end of your next turn, the creature is restrained in your telekinetic grip. A creature lifted upward is suspended in mid-air.On subsequent rounds, you can use your action to attempt to maintain your telekinetic grip on the creature by repeating the contest.Object. You can try to move an object that weighs up to 1,000 pounds. If the object isn’t being worn or carried, you automatically move it up to 30 feet in any direction, but not beyond the range of this spell.If the object is worn or carried by a creature, you must make an ability check with your spellcasting ability contested by that creature’s Strength check. If you succeed, you pull the object away from that creature and can move it up to 30 feet in any direction but not beyond the range of this spell.You can exert fine control on objects with your telekinetic grip, such as manipulating a simple tool, opening a door or a container, stowing or retrieving an item from an open container, or pouring the contents from a vial.",duration:"Up to 10 minutes",higher_level:no,level:5,range:feet(60),ritual:no,school:transmutation}).
+spell_auto_data(telekinesis,properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v,s],desc:"You gain the ability to move or manipulate creatures or objects by thought. When you cast the spell, and as your action each round for the duration, you can exert your will on one creature or object that you can see within range, causing the appropriate effect below. You can affect the same target round after round, or choose a new one at any time. If you switch targets, the prior target is no longer affected by the spell.Creature. You can try to move a Huge or smaller creature. Make an ability check with your spellcasting ability contested by the creature’s Strength check. If you win the contest, you move the creature up to 30 feet in any direction, including upward but not beyond the range of this spell. Until the end of your next turn, the creature is restrained in your telekinetic grip. A creature lifted upward is suspended in mid-air.On subsequent rounds, you can use your action to attempt to maintain your telekinetic grip on the creature by repeating the contest.Object. You can try to move an object that weighs up to 1,000 pounds. If the object isn’t being worn or carried, you automatically move it up to 30 feet in any direction, but not beyond the range of this spell.If the object is worn or carried by a creature, you must make an ability check with your spellcasting ability contested by that creature’s Strength check. If you succeed, you pull the object away from that creature and can move it up to 30 feet in any direction but not beyond the range of this spell.You can exert fine control on objects with your telekinetic grip, such as manipulating a simple tool, opening a door or a container, stowing or retrieving an item from an open container, or pouring the contents from a vial.",duration:"Up to 10 minutes",higher_level:no,level:5,range:feet(60),ritual:no,school:transmutation}).
 
-spell(telepathy,properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A pair of linked silver rings.")],desc:"You create a telepathic link between yourself and a willing creature with which you are familiar. The creature can be anywhere on the same plane of existence as you. The spell ends if you or the target are no longer on the same plane.Until the spell ends, you and the target can instantaneously share words, images, sounds, and other sensory messages with one another through the link, and the target recognizes you as the creature it is communicating with. The spell enables a creature with an Intelligence score of at least 1 to understand the meaning of your words and take in the scope of any sensory messages you send to it.",duration:"24 hours",higher_level:no,level:8,range:unlimited,ritual:no,school:evocation}).
+spell_auto_data(telepathy,properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A pair of linked silver rings.")],desc:"You create a telepathic link between yourself and a willing creature with which you are familiar. The creature can be anywhere on the same plane of existence as you. The spell ends if you or the target are no longer on the same plane.Until the spell ends, you and the target can instantaneously share words, images, sounds, and other sensory messages with one another through the link, and the target recognizes you as the creature it is communicating with. The spell enables a creature with an Intelligence score of at least 1 to understand the meaning of your words and take in the scope of any sensory messages you send to it.",duration:"24 hours",higher_level:no,level:8,range:unlimited,ritual:no,school:evocation}).
 
-spell(teleport,properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v],desc:"This spell instantly transports you and up to eight willing creatures of your choice that you can see within range, or a single object that you can see within range, to a destination you select. If you target an object, it must be able to fit entirely inside a 10-foot cube, and it can’t be held or carried by an unwilling creature.The destination you choose must be known to you, and it must be on the same plane of existence as you. Your familiarity with the destination determines whether you arrive there successfully. The DM rolls d100 and consults the table.",duration:"Instantaneous",higher_level:no,level:7,range:feet(10),ritual:no,school:conjuration}).
+spell_auto_data(teleport,properties{casting_time:"1 action",classes:[bard,sorcerer,wizard],components:[v],desc:"This spell instantly transports you and up to eight willing creatures of your choice that you can see within range, or a single object that you can see within range, to a destination you select. If you target an object, it must be able to fit entirely inside a 10-foot cube, and it can’t be held or carried by an unwilling creature.The destination you choose must be known to you, and it must be on the same plane of existence as you. Your familiarity with the destination determines whether you arrive there successfully. The DM rolls d100 and consults the table.",duration:"Instantaneous",higher_level:no,level:7,range:feet(10),ritual:no,school:conjuration}).
 
-spell('teleportation circle',properties{casting_time:"1 minute",classes:[bard,sorcerer,wizard],components:[v,m("Rare chalks and inks infused with precious gems with 50 gp, which the spell consumes.")],desc:"As you cast the spell, you draw a 10-foot-diameter circle on the ground inscribed with sigils that link your location to a permanent teleportation circle of your choice whose sigil sequence you know and that is on the same plane of existence as you. A shimmering portal opens within the circle you drew and remains open until the end of your next turn. Any creature that enters the portal instantly appears within 5 feet of the destination circle or in the nearest unoccupied space if that space is occupied.Many major temples, guilds, and other important places have permanent teleportation circles inscribed somewhere within their confines. Each such circle includes a unique sigil sequence—a string of magical runes arranged in a particular pattern. When you first gain the ability to cast this spell, you learn the sigil sequences for two destinations on the Material Plane, determined by the DM. You can learn additional sigil sequences during your adventures. You can commit a new sigil sequence to memory after studying it for 1 minute.You can create a permanent teleportation circle by casting this spell in the same location every day for one year. You need not use the circle to teleport when you cast the spell in this way.",duration:"1 round",higher_level:no,level:5,range:feet(10),ritual:no,school:conjuration}).
+spell_auto_data('teleportation circle',properties{casting_time:"1 minute",classes:[bard,sorcerer,wizard],components:[v,m("Rare chalks and inks infused with precious gems with 50 gp, which the spell consumes.")],desc:"As you cast the spell, you draw a 10-foot-diameter circle on the ground inscribed with sigils that link your location to a permanent teleportation circle of your choice whose sigil sequence you know and that is on the same plane of existence as you. A shimmering portal opens within the circle you drew and remains open until the end of your next turn. Any creature that enters the portal instantly appears within 5 feet of the destination circle or in the nearest unoccupied space if that space is occupied.Many major temples, guilds, and other important places have permanent teleportation circles inscribed somewhere within their confines. Each such circle includes a unique sigil sequence—a string of magical runes arranged in a particular pattern. When you first gain the ability to cast this spell, you learn the sigil sequences for two destinations on the Material Plane, determined by the DM. You can learn additional sigil sequences during your adventures. You can commit a new sigil sequence to memory after studying it for 1 minute.You can create a permanent teleportation circle by casting this spell in the same location every day for one year. You need not use the circle to teleport when you cast the spell in this way.",duration:"1 round",higher_level:no,level:5,range:feet(10),ritual:no,school:conjuration}).
 
-spell('tenser\'s floating disk',properties{casting_time:"1 action",classes:['ritual caster',wizard],components:[v,s,m("A drop of mercury.")],desc:"This spell creates a circular, horizontal plane of force, 3 feet in diameter and 1 inch thick, that floats 3 feet above the ground in an unoccupied space of your choice that you can see within range. The disk remains for the duration, and can hold up to 500 pounds. If more weight is placed on it, the spell ends, and everything on the disk falls to the ground.The disk is immobile while you are within 20 feet of it. If you move more than 20 feet away from it, the disk follows you so that it remains within 20 feet of you. If can move across uneven terrain, up or down stairs, slopes and the like, but it can’t cross an elevation change of 10 feet or more. For example, the disk can’t move across a 10-foot-deep pit, nor could it leave such a pit if it was created at the bottom.If you move more than 100 feet away from the disk (typically because it can’t move around an obstacle to follow you), the spell ends.",duration:"1 hour",higher_level:no,level:1,range:feet(30),ritual:yes,school:conjuration}).
+spell_auto_data('tenser\'s floating disk',properties{casting_time:"1 action",classes:['ritual caster',wizard],components:[v,s,m("A drop of mercury.")],desc:"This spell creates a circular, horizontal plane of force, 3 feet in diameter and 1 inch thick, that floats 3 feet above the ground in an unoccupied space of your choice that you can see within range. The disk remains for the duration, and can hold up to 500 pounds. If more weight is placed on it, the spell ends, and everything on the disk falls to the ground.The disk is immobile while you are within 20 feet of it. If you move more than 20 feet away from it, the disk follows you so that it remains within 20 feet of you. If can move across uneven terrain, up or down stairs, slopes and the like, but it can’t cross an elevation change of 10 feet or more. For example, the disk can’t move across a 10-foot-deep pit, nor could it leave such a pit if it was created at the bottom.If you move more than 100 feet away from the disk (typically because it can’t move around an obstacle to follow you), the spell ends.",duration:"1 hour",higher_level:no,level:1,range:feet(30),ritual:yes,school:conjuration}).
 
-spell(thaumaturgy,properties{casting_time:"1 action",classes:[cleric],components:[v],desc:"You manifest a minor wonder, a sign of supernatural power, within range. You create one of the following magical effects within range.- Your voice booms up to three times as loud as normal for 1 minute.- You cause flames to flicker, brighten, dim, or change color for 1 minute.- You cause harmless tremors in the ground for 1 minute.- You create an instantaneous sound that originates from a point of your choice within range, such as a rumble of thunder, the cry of a raven, or ominous whispers.- You instantaneously cause an unlocked door or window to fly open or slam shut.- You alter the appearance of your eyes for 1 minute.If you cast this spell multiple times, you can have up to three of its 1-minute effects active at a time, and you can dismiss such an effect as an action.",duration:"1 minute",higher_level:no,level:0,range:feet(30),ritual:no,school:transmutation}).
+spell_auto_data(thaumaturgy,properties{casting_time:"1 action",classes:[cleric],components:[v],desc:"You manifest a minor wonder, a sign of supernatural power, within range. You create one of the following magical effects within range.- Your voice booms up to three times as loud as normal for 1 minute.- You cause flames to flicker, brighten, dim, or change color for 1 minute.- You cause harmless tremors in the ground for 1 minute.- You create an instantaneous sound that originates from a point of your choice within range, such as a rumble of thunder, the cry of a raven, or ominous whispers.- You instantaneously cause an unlocked door or window to fly open or slam shut.- You alter the appearance of your eyes for 1 minute.If you cast this spell multiple times, you can have up to three of its 1-minute effects active at a time, and you can dismiss such an effect as an action.",duration:"1 minute",higher_level:no,level:0,range:feet(30),ritual:no,school:transmutation}).
 
-spell('thorn whip',properties{casting_time:"1 action",classes:[druid],components:[v,s,m("The stem of a plant with thorns.")],desc:"You create a long, vine-like whip covered in thorns that lashes out at your command toward a creature in range. Make a melee spell attack against the target. If the attack hits, the creature takes 1d6 piercing damage, and if the creature is Large or smaller, you pull the creature up to 10 feet closer to you.This spell’s damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).",duration:"Instantaneous",higher_level:no,level:0,range:feet(30),ritual:no,school:transmutation}).
+spell_auto_data('thorn whip',properties{casting_time:"1 action",classes:[druid],components:[v,s,m("The stem of a plant with thorns.")],desc:"You create a long, vine-like whip covered in thorns that lashes out at your command toward a creature in range. Make a melee spell attack against the target. If the attack hits, the creature takes 1d6 piercing damage, and if the creature is Large or smaller, you pull the creature up to 10 feet closer to you.This spell’s damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).",duration:"Instantaneous",higher_level:no,level:0,range:feet(30),ritual:no,school:transmutation}).
 
-spell('thunderous smite',properties{casting_time:"1 bonus action",classes:[paladin],components:[v],desc:"The first time you hit with a melee weapon attack during this spell’s duration, your weapon rings with thunder that is audible within 300 feet of you, and the attack deals an extra 2d6 thunder damage to the target. Additionally, if the target is a creature, it must succeed on a strength saving throw or be pushed 10 feet away from you and knocked prone.",duration:"Up to 1 minute",higher_level:no,level:1,range:self,ritual:no,school:evocation}).
+spell_auto_data('thunderous smite',properties{casting_time:"1 bonus action",classes:[paladin],components:[v],desc:"The first time you hit with a melee weapon attack during this spell’s duration, your weapon rings with thunder that is audible within 300 feet of you, and the attack deals an extra 2d6 thunder damage to the target. Additionally, if the target is a creature, it must succeed on a strength saving throw or be pushed 10 feet away from you and knocked prone.",duration:"Up to 1 minute",higher_level:no,level:1,range:self,ritual:no,school:evocation}).
 
-spell(thunderclap,properties{casting_time:"1 action",classes:[bard,druid,sorcerer,warlock,wizard],components:[s],desc:"You create a burst of thunderous sound, which can be heard 100 feet away. Each creature other than you within 5 feet of you must make a Constitution saving throw. On a failed save, the creature takes 1d6 thunder damage.The spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).",duration:"Instantaneous",higher_level:no,level:0,range:'self (5-foot radius)',ritual:no,school:evocation}).
+spell_auto_data(thunderclap,properties{casting_time:"1 action",classes:[bard,druid,sorcerer,warlock,wizard],components:[s],desc:"You create a burst of thunderous sound, which can be heard 100 feet away. Each creature other than you within 5 feet of you must make a Constitution saving throw. On a failed save, the creature takes 1d6 thunder damage.The spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).",duration:"Instantaneous",higher_level:no,level:0,range:'self (5-foot radius)',ritual:no,school:evocation}).
 
-spell(thunderwave,properties{casting_time:"1 action",classes:[bard,cleric,druid,sorcerer,wizard],components:[v,s],desc:"A wave of thunderous force sweeps out from you. Each creature in a 15-foot cube originating from you must make a constitution saving throw. On a failed save, a creature takes 2d8 thunder damage and is pushed 10 feet away from you. On a successful save, the creature takes half as much damage and isn’t pushed.In addition, unsecured objects that are completely within the area of effect are automatically pushed 10 feet away from you by the spell’s effect, and the spell emits a thunderous boom audible out to 300 feet.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d8 for each slot level above 1st.",level:1,range:self,ritual:no,school:evocation}).
+spell_auto_data(thunderwave,properties{casting_time:"1 action",classes:[bard,cleric,druid,sorcerer,wizard],components:[v,s],desc:"A wave of thunderous force sweeps out from you. Each creature in a 15-foot cube originating from you must make a constitution saving throw. On a failed save, a creature takes 2d8 thunder damage and is pushed 10 feet away from you. On a successful save, the creature takes half as much damage and isn’t pushed.In addition, unsecured objects that are completely within the area of effect are automatically pushed 10 feet away from you by the spell’s effect, and the spell emits a thunderous boom audible out to 300 feet.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d8 for each slot level above 1st.",level:1,range:self,ritual:no,school:evocation}).
 
-spell('tidal wave',properties{casting_time:"1 action",classes:[druid,wizard],components:[v,s,m("A drop of water.")],desc:"You conjure up a wave of water that crashes down on an area within range. The area can be up to 30 feet long, up to 10 feet wide, and up to 10 feet tall. Each creature in that area must make a Dexterity saving throw. On a failure, a creature takes 4d8 bludgeoning damage and is knocked prone. On a success, a creature takes half as much damage and isn't knocked prone. The water then spreads out across the ground in all directions, extinguishing unprotected flames in its area and within 30 feet of it.",duration:"Instantaneous",higher_level:no,level:3,range:feet(120),ritual:no,school:conjuration}).
+spell_auto_data('tidal wave',properties{casting_time:"1 action",classes:[druid,wizard],components:[v,s,m("A drop of water.")],desc:"You conjure up a wave of water that crashes down on an area within range. The area can be up to 30 feet long, up to 10 feet wide, and up to 10 feet tall. Each creature in that area must make a Dexterity saving throw. On a failure, a creature takes 4d8 bludgeoning damage and is knocked prone. On a success, a creature takes half as much damage and isn't knocked prone. The water then spreads out across the ground in all directions, extinguishing unprotected flames in its area and within 30 feet of it.",duration:"Instantaneous",higher_level:no,level:3,range:feet(120),ritual:no,school:conjuration}).
 
-spell('time stop',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v],desc:"You briefly stop the flow of time for everyone but yourself. No time passes for other creatures, while you take 1d4 + 1 turns in a row, during which you can use actions and move as normal.This spell ends if one of the actions you use during this period, or any effects that you create during this period, affects a creature other than you or an object being worn or carried by someone other than you. In addition, the spell ends if you move to a place more than 1,000 feet from the location where you cast it.",duration:"Instantaneous",higher_level:no,level:9,range:self,ritual:no,school:transmutation}).
+spell_auto_data('time stop',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v],desc:"You briefly stop the flow of time for everyone but yourself. No time passes for other creatures, while you take 1d4 + 1 turns in a row, during which you can use actions and move as normal.This spell ends if one of the actions you use during this period, or any effects that you create during this period, affects a creature other than you or an object being worn or carried by someone other than you. In addition, the spell ends if you move to a place more than 1,000 feet from the location where you cast it.",duration:"Instantaneous",higher_level:no,level:9,range:self,ritual:no,school:transmutation}).
 
-spell(tongues,properties{casting_time:"1 action",classes:[bard,cleric,sorcerer,warlock,wizard],components:[v,m("A small clay model of a ziggurat.")],desc:"This spell grants the creature you touch the ability to understand any spoken language it hears. Moreover, when the target speaks, any creature that knows at least one language and can hear the target understands what it says.",duration:"1 hour",higher_level:no,level:3,range:touch,ritual:no,school:divination}).
+spell_auto_data(tongues,properties{casting_time:"1 action",classes:[bard,cleric,sorcerer,warlock,wizard],components:[v,m("A small clay model of a ziggurat.")],desc:"This spell grants the creature you touch the ability to understand any spoken language it hears. Moreover, when the target speaks, any creature that knows at least one language and can hear the target understands what it says.",duration:"1 hour",higher_level:no,level:3,range:touch,ritual:no,school:divination}).
 
-spell('transmute rock',properties{casting_time:"1 action",classes:[druid,wizard],components:[v,s,m("Clay and water.")],desc:"You choose an area of stone or mud that you can see that fits within a 40-foot cube and that is within range, and choose one of the following effects.Transmute Rock to Mud. Nonmagical rock of any sort in the area becomes an equal volume of thick and flowing mud that remains for the spell's duration.If you cast the spell on an area of ground, it becomes muddy enough that creatures can sink into it. Each foot that a creature moves through the mud costs 4 feet of movement, and any creature on the ground when you cast the spell must make a Strength saving throw. A creature must also make this save the first time it enters the area on a turn or ends its turn there. On a failed save, a creature sinks into the mud and is restrained, though it can use an action to end the restrained condition on itself by pulling itself free of the mud.If you cast the spell on a ceiling, the mud falls. Any creature under the mud when it falls must make a Dexterity saving throw. A creature takes 4d8 bludgeoning damage on a failed save, or half as much damage on a successful one.Transmute Mud to Rock. Nonmagical mud or quicksand in the area no more than 10 feet deep transforms into soft stone for the spell's duration. Any creature in the mud when it transforms must make a Dexterity saving throw. On a failed save, a creature becomes restrained by the rock. The restrained creature can use an action to try to break free by succeeding on a Strength check (DC 20) or by dealing 25 damage to the rock around it. On a successful save, a creature is shunted safely to the surface to an unoccupied space.",duration:"Instantaneous",higher_level:no,level:5,range:feet(120),ritual:no,school:transmutation}).
+spell_auto_data('transmute rock',properties{casting_time:"1 action",classes:[druid,wizard],components:[v,s,m("Clay and water.")],desc:"You choose an area of stone or mud that you can see that fits within a 40-foot cube and that is within range, and choose one of the following effects.Transmute Rock to Mud. Nonmagical rock of any sort in the area becomes an equal volume of thick and flowing mud that remains for the spell's duration.If you cast the spell on an area of ground, it becomes muddy enough that creatures can sink into it. Each foot that a creature moves through the mud costs 4 feet of movement, and any creature on the ground when you cast the spell must make a Strength saving throw. A creature must also make this save the first time it enters the area on a turn or ends its turn there. On a failed save, a creature sinks into the mud and is restrained, though it can use an action to end the restrained condition on itself by pulling itself free of the mud.If you cast the spell on a ceiling, the mud falls. Any creature under the mud when it falls must make a Dexterity saving throw. A creature takes 4d8 bludgeoning damage on a failed save, or half as much damage on a successful one.Transmute Mud to Rock. Nonmagical mud or quicksand in the area no more than 10 feet deep transforms into soft stone for the spell's duration. Any creature in the mud when it transforms must make a Dexterity saving throw. On a failed save, a creature becomes restrained by the rock. The restrained creature can use an action to try to break free by succeeding on a Strength check (DC 20) or by dealing 25 damage to the rock around it. On a successful save, a creature is shunted safely to the surface to an unoccupied space.",duration:"Instantaneous",higher_level:no,level:5,range:feet(120),ritual:no,school:transmutation}).
 
-spell('transport via plants',properties{casting_time:"1 action",classes:[druid],components:[v,s],desc:"This spell creates a magical link between a Large or larger inanimate plant within range and another plant, at any distance, on the same plane of existence. You must have seen or touched the destination plant at least once before. For the duration, any creature can step into the target plant and exit from the destination plant by using 5 feet of movement.",duration:"1 round",higher_level:no,level:6,range:feet(10),ritual:no,school:conjuration}).
+spell_auto_data('transport via plants',properties{casting_time:"1 action",classes:[druid],components:[v,s],desc:"This spell creates a magical link between a Large or larger inanimate plant within range and another plant, at any distance, on the same plane of existence. You must have seen or touched the destination plant at least once before. For the duration, any creature can step into the target plant and exit from the destination plant by using 5 feet of movement.",duration:"1 round",higher_level:no,level:6,range:feet(10),ritual:no,school:conjuration}).
 
-spell('trap the soul',properties{casting_time:"1 minute",classes:[wizard],components:[v,s,m("err: no material")],desc:"This spell name was added as an error and does not exist. Refer to the spell named \"imprisonment\" for information on what this spell was intended to be.",duration:"Until dispelled",higher_level:no,level:8,range:feet(30),ritual:no,school:conjuration}).
+spell_auto_data('trap the soul',properties{casting_time:"1 minute",classes:[wizard],components:[v,s,m("err: no material")],desc:"This spell name was added as an error and does not exist. Refer to the spell named \"imprisonment\" for information on what this spell was intended to be.",duration:"Until dispelled",higher_level:no,level:8,range:feet(30),ritual:no,school:conjuration}).
 
-spell('tree stride',properties{casting_time:"1 action",classes:[cleric,druid,paladin,ranger],components:[v,s],desc:"You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.You can use this transportation ability once per round for the duration. You must end each turn outside a tree.",duration:"Up to 1 minute",higher_level:no,level:5,range:self,ritual:no,school:conjuration}).
+spell_auto_data('tree stride',properties{casting_time:"1 action",classes:[cleric,druid,paladin,ranger],components:[v,s],desc:"You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.You can use this transportation ability once per round for the duration. You must end each turn outside a tree.",duration:"Up to 1 minute",higher_level:no,level:5,range:self,ritual:no,school:conjuration}).
 
-spell('true polymorph',properties{casting_time:"1 action",classes:[bard,warlock,wizard],components:[v,s,m("A drop of mercury, a dollop of gum arabic, and a wisp of smoke.")],desc:"Choose one creature or nonmagical object that you can see within range. You transform the creature into a different creature, the creature into an object, or the object into a creature (the object must be neither worn nor carried by another creature). The transformation lasts for the duration, or until the target drops to 0 hit points or dies. If you concentrate on this spell for the full duration, the transformation becomes permanent.Shapechangers aren’t affected by this spell. An unwilling creature can make a wisdom saving throw, and if it succeeds, it isn’t affected by this spell.Creature into Creature. If you turn a creature into another kind of creature, the new form can be any kind you choose whose challenge rating is equal to or less than the target’s (or its level, if the target doesn’t have a challenge rating). The target’s game statistics, including mental ability scores, are replaced by the statistics of the new form. It retains its alignment and personality.The target assumes the hit points of its new form, and when it reverts to its normal form, the creature returns to the number of hit points it had before it transformed. If it reverts as a result of dropping to 0 hit points, any excess damage carries over to its normal form. As long as the excess damage doesn’t reduce the creature’s normal form to 0 hit points, it isn’t knocked unconscious.The creature is limited in the actions it can perform by the nature of its new form, and it can’t speak, cast spells, or take any other action that requires hands or speech unless its new form is capable of such actions.The target’s gear melds into the new form. The creature can’t activate, use, wield, or otherwise benefit from any of its equipment.Object into Creature. You can turn an object into any kind of creature, as long as the creature’s size is no larger than the object’s size and the creature’s challenge rating is 9 or lower. The creature is friendly to you and your companions. It acts on each of your turns. You decide what action it takes and how it moves. The DM has the creature’s statistics and resolves all of its actions and movement.If the spell becomes permanent, you no longer control the creature. It might remain friendly to you, depending on how you have treated it.Creature into Object. If you turn a creature into an object, it transforms along with whatever it is wearing and carrying into that form. The creature’s statistics become those of the object, and the creature has no memory of time spent in this form, after the spell ends and it returns to its normal form.",duration:"Up to 1 hour",higher_level:no,level:9,range:feet(30),ritual:no,school:transmutation}).
+spell_auto_data('true polymorph',properties{casting_time:"1 action",classes:[bard,warlock,wizard],components:[v,s,m("A drop of mercury, a dollop of gum arabic, and a wisp of smoke.")],desc:"Choose one creature or nonmagical object that you can see within range. You transform the creature into a different creature, the creature into an object, or the object into a creature (the object must be neither worn nor carried by another creature). The transformation lasts for the duration, or until the target drops to 0 hit points or dies. If you concentrate on this spell for the full duration, the transformation becomes permanent.Shapechangers aren’t affected by this spell. An unwilling creature can make a wisdom saving throw, and if it succeeds, it isn’t affected by this spell.Creature into Creature. If you turn a creature into another kind of creature, the new form can be any kind you choose whose challenge rating is equal to or less than the target’s (or its level, if the target doesn’t have a challenge rating). The target’s game statistics, including mental ability scores, are replaced by the statistics of the new form. It retains its alignment and personality.The target assumes the hit points of its new form, and when it reverts to its normal form, the creature returns to the number of hit points it had before it transformed. If it reverts as a result of dropping to 0 hit points, any excess damage carries over to its normal form. As long as the excess damage doesn’t reduce the creature’s normal form to 0 hit points, it isn’t knocked unconscious.The creature is limited in the actions it can perform by the nature of its new form, and it can’t speak, cast spells, or take any other action that requires hands or speech unless its new form is capable of such actions.The target’s gear melds into the new form. The creature can’t activate, use, wield, or otherwise benefit from any of its equipment.Object into Creature. You can turn an object into any kind of creature, as long as the creature’s size is no larger than the object’s size and the creature’s challenge rating is 9 or lower. The creature is friendly to you and your companions. It acts on each of your turns. You decide what action it takes and how it moves. The DM has the creature’s statistics and resolves all of its actions and movement.If the spell becomes permanent, you no longer control the creature. It might remain friendly to you, depending on how you have treated it.Creature into Object. If you turn a creature into an object, it transforms along with whatever it is wearing and carrying into that form. The creature’s statistics become those of the object, and the creature has no memory of time spent in this form, after the spell ends and it returns to its normal form.",duration:"Up to 1 hour",higher_level:no,level:9,range:feet(30),ritual:no,school:transmutation}).
 
-spell('true resurrection',properties{casting_time:"1 hour",classes:[cleric,druid],components:[v,s,m("A sprinkle of holy water and diamonds worth at least 25,000gp, which the spell consumes.")],desc:"You touch a creature that has been dead for no longer than 200 years and that died for any reason except old age. If the creature’s soul is free and willing, the creature is restored to life with all its hit points.This spell closes all wounds, neutralizes any poison, cures all diseases, and lifts any curses affecting the creature when it died. The spell replaces damaged or missing organs and limbs.The spell can even provide a new body if the original no longer exists, in which case you must speak the creature’s name. The creature then appears in an unoccupied space you choose within 10 feet of you.",duration:"Instantaneous",higher_level:no,level:9,range:touch,ritual:no,school:necromancy}).
+spell_auto_data('true resurrection',properties{casting_time:"1 hour",classes:[cleric,druid],components:[v,s,m("A sprinkle of holy water and diamonds worth at least 25,000gp, which the spell consumes.")],desc:"You touch a creature that has been dead for no longer than 200 years and that died for any reason except old age. If the creature’s soul is free and willing, the creature is restored to life with all its hit points.This spell closes all wounds, neutralizes any poison, cures all diseases, and lifts any curses affecting the creature when it died. The spell replaces damaged or missing organs and limbs.The spell can even provide a new body if the original no longer exists, in which case you must speak the creature’s name. The creature then appears in an unoccupied space you choose within 10 feet of you.",duration:"Instantaneous",higher_level:no,level:9,range:touch,ritual:no,school:necromancy}).
 
-spell('true seeing',properties{casting_time:"1 action",classes:[bard,cleric,sorcerer,warlock,wizard],components:[v,s,m("An ointment for the eyes that costs 25gp; is made from mushroom powder, saffron, and fat; and is consumed by the spell.")],desc:"This spell gives the willing creature you touch the ability to see things as they actually are. For the duration, the creature has truesight, notices secret doors hidden by magic, and can see into the Ethereal Plane, all out to a range of 120 feet.",duration:"1 hour",higher_level:no,level:6,range:touch,ritual:no,school:divination}).
+spell_auto_data('true seeing',properties{casting_time:"1 action",classes:[bard,cleric,sorcerer,warlock,wizard],components:[v,s,m("An ointment for the eyes that costs 25gp; is made from mushroom powder, saffron, and fat; and is consumed by the spell.")],desc:"This spell gives the willing creature you touch the ability to see things as they actually are. For the duration, the creature has truesight, notices secret doors hidden by magic, and can see into the Ethereal Plane, all out to a range of 120 feet.",duration:"1 hour",higher_level:no,level:6,range:touch,ritual:no,school:divination}).
 
-spell('true strike',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[s],desc:"You extend your hand and point a finger at a target in range. Your magic grants you a brief insight into the target’s defenses. On your next turn, you gain advantage on your first attack roll against the target, provided that this spell hasn’t ended.",duration:"Up to 1 round",higher_level:no,level:0,range:feet(30),ritual:no,school:divination}).
+spell_auto_data('true strike',properties{casting_time:"1 action",classes:[bard,sorcerer,warlock,wizard],components:[s],desc:"You extend your hand and point a finger at a target in range. Your magic grants you a brief insight into the target’s defenses. On your next turn, you gain advantage on your first attack roll against the target, provided that this spell hasn’t ended.",duration:"Up to 1 round",higher_level:no,level:0,range:feet(30),ritual:no,school:divination}).
 
-spell(tsunami,properties{casting_time:"1 minute",classes:[druid],components:[v,s],desc:"A wall of water springs into existence at a point you choose within range. You can make the wall up to 300 feet long, 300 feet high, and 50 feet thick. The wall lasts for the duration.When the wall appears, each creature within its area must make a strength saving throw. On a failed save, a creature takes 6 d10 bludgeoning damage, or half as much damage on a successful save.At the start of each of your turns after the wall appears, the wall, along with any creatures in it, moves 50 feet away from you. Any Huge or smaller creature inside the wall or whose space the wall enters when it moves must succeed on a strength saving throw or take 5 d10 bludgeoning damage. A creature can take this damage only once per round. At the end of the turn, the wall’s height is reduced by 50 feet, and the damage creatures take from the spell on subsequent rounds is reduced by 1d10. When the wall reaches 0 feet in height, the spell ends.A creature caught in the wall can move by swimming. Because of the force of the wave, though, the creature must make a successful Strength (Athletics) check against your spell save DC in order to move at all. If it fails the check, it can’t move. A creature that moves out of the area falls to the ground.",duration:"Up to 6 rounds",higher_level:no,level:8,range:sight,ritual:no,school:conjuration}).
+spell_auto_data(tsunami,properties{casting_time:"1 minute",classes:[druid],components:[v,s],desc:"A wall of water springs into existence at a point you choose within range. You can make the wall up to 300 feet long, 300 feet high, and 50 feet thick. The wall lasts for the duration.When the wall appears, each creature within its area must make a strength saving throw. On a failed save, a creature takes 6 d10 bludgeoning damage, or half as much damage on a successful save.At the start of each of your turns after the wall appears, the wall, along with any creatures in it, moves 50 feet away from you. Any Huge or smaller creature inside the wall or whose space the wall enters when it moves must succeed on a strength saving throw or take 5 d10 bludgeoning damage. A creature can take this damage only once per round. At the end of the turn, the wall’s height is reduced by 50 feet, and the damage creatures take from the spell on subsequent rounds is reduced by 1d10. When the wall reaches 0 feet in height, the spell ends.A creature caught in the wall can move by swimming. Because of the force of the wave, though, the creature must make a successful Strength (Athletics) check against your spell save DC in order to move at all. If it fails the check, it can’t move. A creature that moves out of the area falls to the ground.",duration:"Up to 6 rounds",higher_level:no,level:8,range:sight,ritual:no,school:conjuration}).
 
-spell('unseen servant',properties{casting_time:"1 action",classes:[bard,'ritual caster',warlock,wizard],components:[v,s,m("A piece of string and a bit of wood.")],desc:"This spell creates an invisible, mindless, shapeless force that performs simple tasks at your command until the spell ends. The servant springs into existence in an unoccupied space on the ground within range. It has AC 10, 1 hit point, and a Strength of 2, and it can’t attack. If it drops to 0 hit points, the spell ends.Once on each of your turns as a bonus action, you can mentally command the servant to move up to 15 feet and interact with an object. The servant can perform simple tasks that a human servant could do, such as fetching things, cleaning, mending, folding clothes, lighting fires, serving food, and pouring wind. Once you give the command, the servant performs the task to the best of its ability until it completes the task, then waits for your next command.If you command the servant to perform a task that would move it more than 60 feet away from you, the spell ends.",duration:"1 hour",higher_level:no,level:1,range:feet(60),ritual:yes,school:conjuration}).
+spell_auto_data('unseen servant',properties{casting_time:"1 action",classes:[bard,'ritual caster',warlock,wizard],components:[v,s,m("A piece of string and a bit of wood.")],desc:"This spell creates an invisible, mindless, shapeless force that performs simple tasks at your command until the spell ends. The servant springs into existence in an unoccupied space on the ground within range. It has AC 10, 1 hit point, and a Strength of 2, and it can’t attack. If it drops to 0 hit points, the spell ends.Once on each of your turns as a bonus action, you can mentally command the servant to move up to 15 feet and interact with an object. The servant can perform simple tasks that a human servant could do, such as fetching things, cleaning, mending, folding clothes, lighting fires, serving food, and pouring wind. Once you give the command, the servant performs the task to the best of its ability until it completes the task, then waits for your next command.If you command the servant to perform a task that would move it more than 60 feet away from you, the spell ends.",duration:"1 hour",higher_level:no,level:1,range:feet(60),ritual:yes,school:conjuration}).
 
-spell('vampiric touch',properties{casting_time:"1 action",classes:[warlock,wizard],components:[v,s],desc:"The touch of your shadow-wreathed hand can siphon life force from others to heal your wounds. Make a melee spell attack against a creature within your reach. On a hit, the target takes 3d6 necrotic damage, and you regain hit points equal to half the amount of necrotic damage dealt. Until the spell ends, you can make the attack again on each of your turns as an action.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d6 for each slot level above 3rd.",level:3,range:self,ritual:no,school:necromancy}).
+spell_auto_data('vampiric touch',properties{casting_time:"1 action",classes:[warlock,wizard],components:[v,s],desc:"The touch of your shadow-wreathed hand can siphon life force from others to heal your wounds. Make a melee spell attack against a creature within your reach. On a hit, the target takes 3d6 necrotic damage, and you regain hit points equal to half the amount of necrotic damage dealt. Until the spell ends, you can make the attack again on each of your turns as an action.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d6 for each slot level above 3rd.",level:3,range:self,ritual:no,school:necromancy}).
 
-spell('vicious mockery',properties{casting_time:"1 action",classes:[bard],components:[v],desc:"You unleash a string of insults laced with subtle enchantments at a creature you can see within range. If the target can hear you (though it need not understand you), it must succeed on a wisdom saving throw or take 1d4 psychic damage and have disadvantage on the next attack roll it makes before the end of its next turn.This spell’s damage increases by 1d4 when you reach 5th level (2d4), 11th level (3d4), and 17th level (4d4).",duration:"Instantaneous",higher_level:no,level:0,range:feet(60),ritual:no,school:enchantment}).
+spell_auto_data('vicious mockery',properties{casting_time:"1 action",classes:[bard],components:[v],desc:"You unleash a string of insults laced with subtle enchantments at a creature you can see within range. If the target can hear you (though it need not understand you), it must succeed on a wisdom saving throw or take 1d4 psychic damage and have disadvantage on the next attack roll it makes before the end of its next turn.This spell’s damage increases by 1d4 when you reach 5th level (2d4), 11th level (3d4), and 17th level (4d4).",duration:"Instantaneous",higher_level:no,level:0,range:feet(60),ritual:no,school:enchantment}).
 
-spell('vitriolic sphere',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("A drop of a giant slug bile.")],desc:"You point at a place within range, and a glowing 1-foot ball of emerald acid streaks there and explodes in a 20-foot radius. Each creature in that area must make a Dexterity saving throw. On a failed save, a creature takes 10d4 acid damage and 5d4 acid damage at the end of its next turn. On a successful save, a creature takes half the initial damage and no damage at the end of its next turn.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 5th level or higher, the initial damage increases by 2d4 for each slot level above 4th.",level:4,range:feet(150),ritual:no,school:evocation}).
+spell_auto_data('vitriolic sphere',properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v,s,m("A drop of a giant slug bile.")],desc:"You point at a place within range, and a glowing 1-foot ball of emerald acid streaks there and explodes in a 20-foot radius. Each creature in that area must make a Dexterity saving throw. On a failed save, a creature takes 10d4 acid damage and 5d4 acid damage at the end of its next turn. On a successful save, a creature takes half the initial damage and no damage at the end of its next turn.",duration:"Instantaneous",higher_level:"When you cast this spell using a spell slot of 5th level or higher, the initial damage increases by 2d4 for each slot level above 4th.",level:4,range:feet(150),ritual:no,school:evocation}).
 
-spell('wall of fire',properties{casting_time:"1 action",classes:[cleric,druid,sorcerer,warlock,wizard],components:[v,s,m("A small piece of phosphorus.")],desc:"You create a wall of fire on a solid surface within range. You can make the wall up to 60 feet long, 20 feet high, and 1 foot thick, or a ringed wall up to 20 feet in diameter, 20 feet high, and 1 foot thick. The wall is opaque and lasts for the duration.When the wall appears, each creature within its area must make a Dexterity saving throw. On a failed save, a creature takes 5d8 fire damage, or half as much damage on a successful save.One side of the wall, selected by you when you cast this spell, deals 5d8 fire damage to each creature that ends its turn within 10 feet o f that side or inside the wall. A creature takes the same damage when it enters the wall for the first time on a turn or ends its turn there. The other side o f the wall deals no damage.The other side of the wall deals no damage.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a level spell slot 5 or more, the damage of the spell increases by 1d8 for each level of higher spell slot to 4.",level:4,range:feet(120),ritual:no,school:evocation}).
+spell_auto_data('wall of fire',properties{casting_time:"1 action",classes:[cleric,druid,sorcerer,warlock,wizard],components:[v,s,m("A small piece of phosphorus.")],desc:"You create a wall of fire on a solid surface within range. You can make the wall up to 60 feet long, 20 feet high, and 1 foot thick, or a ringed wall up to 20 feet in diameter, 20 feet high, and 1 foot thick. The wall is opaque and lasts for the duration.When the wall appears, each creature within its area must make a Dexterity saving throw. On a failed save, a creature takes 5d8 fire damage, or half as much damage on a successful save.One side of the wall, selected by you when you cast this spell, deals 5d8 fire damage to each creature that ends its turn within 10 feet o f that side or inside the wall. A creature takes the same damage when it enters the wall for the first time on a turn or ends its turn there. The other side o f the wall deals no damage.The other side of the wall deals no damage.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a level spell slot 5 or more, the damage of the spell increases by 1d8 for each level of higher spell slot to 4.",level:4,range:feet(120),ritual:no,school:evocation}).
 
-spell('wall of force',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A pinch of powder made by crushing a clear gemstone.")],desc:"An invisible wall of force springs into existence at a point you choose within range. The wall appears in any orientation you choose, as a horizontal or vertical barrier or at an angle. It can be free floating or resting on a solid surface. You can form it into a hemispherical dome or a sphere with a radius of up to 10 feet, or you can shape a flat surface made up of ten 10-foot-by-10-foot panels. Each panel must be contiguous with another panel. In any form, the wall is 1/4 inch thick. It lasts for the duration. If the wall cuts through a creature’s space when it appears, the creature is pushed to one side of the wall (your choice which side).Nothing can physically pass through the wall. It is immune to all damage and can’t be dispelled by dispel magic. A disintegrate spell destroys the wall instantly, however. The wall also extends into the Ethereal Plane, blocking ethereal travel through the wall.",duration:"Up to 10 minutes",higher_level:no,level:5,range:feet(120),ritual:no,school:evocation}).
+spell_auto_data('wall of force',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A pinch of powder made by crushing a clear gemstone.")],desc:"An invisible wall of force springs into existence at a point you choose within range. The wall appears in any orientation you choose, as a horizontal or vertical barrier or at an angle. It can be free floating or resting on a solid surface. You can form it into a hemispherical dome or a sphere with a radius of up to 10 feet, or you can shape a flat surface made up of ten 10-foot-by-10-foot panels. Each panel must be contiguous with another panel. In any form, the wall is 1/4 inch thick. It lasts for the duration. If the wall cuts through a creature’s space when it appears, the creature is pushed to one side of the wall (your choice which side).Nothing can physically pass through the wall. It is immune to all damage and can’t be dispelled by dispel magic. A disintegrate spell destroys the wall instantly, however. The wall also extends into the Ethereal Plane, blocking ethereal travel through the wall.",duration:"Up to 10 minutes",higher_level:no,level:5,range:feet(120),ritual:no,school:evocation}).
 
-spell('wall of ice',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A small piece of quartz.")],desc:"You create a wall of ice on a solid surface within range. You can form it into a hemispherical dome or a sphere with a radius of up to 10 feet, or you can shape a flat surface made up of ten 10-foot-square panels. Each panel must be contiguous with another panel. In any form, the wall is 1 foot thick and lasts for the duration.If the wall cuts through a creature’s space when it appears, the creature within its area is pushed to one side of the wall and must make a dexterity saving throw. On a failed save, the creature takes 10d6 cold damage, or half as much damage on a successful save.The wall is an object that can be damaged and thus breached. It has AC 12 and 30 hit points per 10-foot section, and it is vulnerable to fire damage. Reducing a 10-foot section of wall to 0 hit points destroys it and leaves behind a sheet of frigid air in the space the wall occupied. A creature moving through the sheet of frigid air for the first time on a turn must make a constitution saving throw. That creature takes 5d6 cold damage on a failed save, or half as much damage on a successful one.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 7th level or higher, the damage the wall deals when it appears increases by 2d6, and the damage from passing through the sheet of frigid air increases by 1d6, for each slot level above 6th.",level:6,range:feet(120),ritual:no,school:evocation}).
+spell_auto_data('wall of ice',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A small piece of quartz.")],desc:"You create a wall of ice on a solid surface within range. You can form it into a hemispherical dome or a sphere with a radius of up to 10 feet, or you can shape a flat surface made up of ten 10-foot-square panels. Each panel must be contiguous with another panel. In any form, the wall is 1 foot thick and lasts for the duration.If the wall cuts through a creature’s space when it appears, the creature within its area is pushed to one side of the wall and must make a dexterity saving throw. On a failed save, the creature takes 10d6 cold damage, or half as much damage on a successful save.The wall is an object that can be damaged and thus breached. It has AC 12 and 30 hit points per 10-foot section, and it is vulnerable to fire damage. Reducing a 10-foot section of wall to 0 hit points destroys it and leaves behind a sheet of frigid air in the space the wall occupied. A creature moving through the sheet of frigid air for the first time on a turn must make a constitution saving throw. That creature takes 5d6 cold damage on a failed save, or half as much damage on a successful one.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 7th level or higher, the damage the wall deals when it appears increases by 2d6, and the damage from passing through the sheet of frigid air increases by 1d6, for each slot level above 6th.",level:6,range:feet(120),ritual:no,school:evocation}).
 
-spell('wall of sand',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A handful of sand.")],desc:"You conjure up a wall of swirling sand on the ground at a point you can see within range. You can make the wall up to 30 feet long, 10 feet high, and 10 feet thick, and it vanishes when the spell ends. It blocks line of sight but not movement. A creature is blinded while in the wall's space and must spend 3 feet of movement for every 1 foot it moves there.",duration:"Up to 10 minutes",higher_level:no,level:3,range:feet(90),ritual:no,school:evocation}).
+spell_auto_data('wall of sand',properties{casting_time:"1 action",classes:[wizard],components:[v,s,m("A handful of sand.")],desc:"You conjure up a wall of swirling sand on the ground at a point you can see within range. You can make the wall up to 30 feet long, 10 feet high, and 10 feet thick, and it vanishes when the spell ends. It blocks line of sight but not movement. A creature is blinded while in the wall's space and must spend 3 feet of movement for every 1 foot it moves there.",duration:"Up to 10 minutes",higher_level:no,level:3,range:feet(90),ritual:no,school:evocation}).
 
-spell('wall of stone',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A small block of granite.")],desc:"A nonmagical wall of solid stone springs into existence at a point you choose within range. The wall is 6 inches thick and is composed of ten 10-foot-by-10-foot panels. Each panel must be contiguous with at least one other panel. Alternatively, you can create 10-foot-by-20-foot panels that are only 3 inches thick.If the wall cuts through a creature’s space when it appears, the creature is pushed to one side of the wall (your choice). If a creature would be surrounded on all sides by the wall (or the wall and another solid surface), that creature can make a dexterity saving throw. On a success, it can use its reaction to move up to its speed so that it is no longer enclosed by the wall.The wall can have any shape you desire, though it can’t occupy the same space as a creature or object. The wall doesn’t need to be vertical or rest on any firm foundation. It must, however, merge with and be solidly supported by existing stone. Thus, you can use this spell to bridge a chasm or create a ramp.If you create a span greater than 20 feet in length, you must halve the size of each panel to create supports. You can crudely shape the wall to create crenellations, battlements, and so on.The wall is an object made of stone that can be damaged and thus breached. Each panel has AC 15 and 30 hit points per inch of thickness. Reducing a panel to 0 hit points destroys it and might cause connected panels to collapse at the DM’s discretion.If you maintain your concentration on this spell for its whole duration, the wall becomes permanent and can’t be dispelled. Otherwise, the wall disappears when the spell ends.",duration:"Up to 10 minutes",higher_level:no,level:5,range:feet(120),ritual:no,school:evocation}).
+spell_auto_data('wall of stone',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A small block of granite.")],desc:"A nonmagical wall of solid stone springs into existence at a point you choose within range. The wall is 6 inches thick and is composed of ten 10-foot-by-10-foot panels. Each panel must be contiguous with at least one other panel. Alternatively, you can create 10-foot-by-20-foot panels that are only 3 inches thick.If the wall cuts through a creature’s space when it appears, the creature is pushed to one side of the wall (your choice). If a creature would be surrounded on all sides by the wall (or the wall and another solid surface), that creature can make a dexterity saving throw. On a success, it can use its reaction to move up to its speed so that it is no longer enclosed by the wall.The wall can have any shape you desire, though it can’t occupy the same space as a creature or object. The wall doesn’t need to be vertical or rest on any firm foundation. It must, however, merge with and be solidly supported by existing stone. Thus, you can use this spell to bridge a chasm or create a ramp.If you create a span greater than 20 feet in length, you must halve the size of each panel to create supports. You can crudely shape the wall to create crenellations, battlements, and so on.The wall is an object made of stone that can be damaged and thus breached. Each panel has AC 15 and 30 hit points per inch of thickness. Reducing a panel to 0 hit points destroys it and might cause connected panels to collapse at the DM’s discretion.If you maintain your concentration on this spell for its whole duration, the wall becomes permanent and can’t be dispelled. Otherwise, the wall disappears when the spell ends.",duration:"Up to 10 minutes",higher_level:no,level:5,range:feet(120),ritual:no,school:evocation}).
 
-spell('wall of thorns',properties{casting_time:"1 action",classes:[druid],components:[v,s,m("A handful of thorns.")],desc:"You create a wall of tough, pliable, tangled brush bristling with needle-sharp thorns. The wall appears within range on a solid surface and lasts for the duration. You choose to make the wall up to 60 feet long, 10 feet high, and 5 feet thick or a circle that has a 20-foot diameter and is up to 20 feet high and 5 feet thick. The wall blocks line of sight.When the wall appears, each creature within its area must make a dexterity saving throw. On a failed save, a creature takes 7d8 piercing damage, or half as much damage on a successful save.A creature can move through the wall, albeit slowly and painfully. For every 1 foot a creature moves through the wall, it must spend 4 feet of movement. Furthermore, the first time a creature enters the wall on a turn or ends its turn there, the creature must make a dexterity saving throw. It takes 7d8 slashing damage on a failed save, or half as much damage on a successful one.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 7th level or higher, both types of damage increase by 1d8 for each slot level above 6th.",level:6,range:feet(120),ritual:no,school:conjuration}).
+spell_auto_data('wall of thorns',properties{casting_time:"1 action",classes:[druid],components:[v,s,m("A handful of thorns.")],desc:"You create a wall of tough, pliable, tangled brush bristling with needle-sharp thorns. The wall appears within range on a solid surface and lasts for the duration. You choose to make the wall up to 60 feet long, 10 feet high, and 5 feet thick or a circle that has a 20-foot diameter and is up to 20 feet high and 5 feet thick. The wall blocks line of sight.When the wall appears, each creature within its area must make a dexterity saving throw. On a failed save, a creature takes 7d8 piercing damage, or half as much damage on a successful save.A creature can move through the wall, albeit slowly and painfully. For every 1 foot a creature moves through the wall, it must spend 4 feet of movement. Furthermore, the first time a creature enters the wall on a turn or ends its turn there, the creature must make a dexterity saving throw. It takes 7d8 slashing damage on a failed save, or half as much damage on a successful one.",duration:"Up to 10 minutes",higher_level:"When you cast this spell using a spell slot of 7th level or higher, both types of damage increase by 1d8 for each slot level above 6th.",level:6,range:feet(120),ritual:no,school:conjuration}).
 
-spell('wall of water',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A drop of water.")],desc:"You conjure up a wall of water on the ground at a point you can see within range. You can make the wall up to 30 feet long, 10 feet high, and 1 foot thick, or you can make a ringed wall up to 20 feet in diameter, 20 feet high, and 1 foot thick. The wall vanishes when the spell ends. The wall's space is difficult terrain.Any ranged weapon attack that enters the wall's space has disadvantage on the attack roll, and fire damage is halved if the fire effect passes through the wall to reach its target. Spells that deal cold damage that pass through the wall cause the area of the wall they pass through to freeze solid (at least a 5-foot square section is frozen). Each 5-foot-square frozen section has AC 5 and 15 hit points. Reducing a frozen section to 0 hit points destroys it. When a section is destroyed, the wall's water doesn't fill it.",duration:"Up to 10 minutes",higher_level:no,level:3,range:feet(60),ritual:no,school:evocation}).
+spell_auto_data('wall of water',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A drop of water.")],desc:"You conjure up a wall of water on the ground at a point you can see within range. You can make the wall up to 30 feet long, 10 feet high, and 1 foot thick, or you can make a ringed wall up to 20 feet in diameter, 20 feet high, and 1 foot thick. The wall vanishes when the spell ends. The wall's space is difficult terrain.Any ranged weapon attack that enters the wall's space has disadvantage on the attack roll, and fire damage is halved if the fire effect passes through the wall to reach its target. Spells that deal cold damage that pass through the wall cause the area of the wall they pass through to freeze solid (at least a 5-foot square section is frozen). Each 5-foot-square frozen section has AC 5 and 15 hit points. Reducing a frozen section to 0 hit points destroys it. When a section is destroyed, the wall's water doesn't fill it.",duration:"Up to 10 minutes",higher_level:no,level:3,range:feet(60),ritual:no,school:evocation}).
 
-spell('warding bond',properties{casting_time:"1 action",classes:[cleric],components:[v,s,m("A pair of platinum rings worth at least 50gp each, which you and the target must wear for the duration.")],desc:"This spell wards a willing creature you touch and creates a mystic connection between you and the target until the spell ends. While the target is within 60 feet of you, it gains a +1 bonus to AC and saving throws, and it has resistance to all damage. Also, each time it takes damage, you take the same amount of damage.The spell ends if you drop to 0 hit points or if you and the target become separated by more than 60 feet.It also ends if the spell is cast again on either of the connected creatures. You can also dismiss the spell as an action.",duration:"1 hour",higher_level:no,level:2,range:touch,ritual:no,school:abjuration}).
+spell_auto_data('warding bond',properties{casting_time:"1 action",classes:[cleric],components:[v,s,m("A pair of platinum rings worth at least 50gp each, which you and the target must wear for the duration.")],desc:"This spell wards a willing creature you touch and creates a mystic connection between you and the target until the spell ends. While the target is within 60 feet of you, it gains a +1 bonus to AC and saving throws, and it has resistance to all damage. Also, each time it takes damage, you take the same amount of damage.The spell ends if you drop to 0 hit points or if you and the target become separated by more than 60 feet.It also ends if the spell is cast again on either of the connected creatures. You can also dismiss the spell as an action.",duration:"1 hour",higher_level:no,level:2,range:touch,ritual:no,school:abjuration}).
 
-spell('warding wind',properties{casting_time:"1 action",classes:[bard,druid,sorcerer],components:[v],desc:"A strong wind (20 miles per hour) blows around you in a 10-foot radius and moves with you, remaining centered on you. The wind lasts for the spell's duration. The wind has the following effects:- It deafens you and other creatures in its area.- It extinguishes unprotected flames in its area that are torch-sized or smaller.- The area is difficult terrain for creatures other than you.- The attack rolls of ranged weapon attacks have disadvantage if they pass in or out of the wind.- It hedges out vapor, gas, and fog that can be dispersed by strong wind.",duration:"Up to 10 minutes",higher_level:no,level:2,range:self,ritual:no,school:evocation}).
+spell_auto_data('warding wind',properties{casting_time:"1 action",classes:[bard,druid,sorcerer],components:[v],desc:"A strong wind (20 miles per hour) blows around you in a 10-foot radius and moves with you, remaining centered on you. The wind lasts for the spell's duration. The wind has the following effects:- It deafens you and other creatures in its area.- It extinguishes unprotected flames in its area that are torch-sized or smaller.- The area is difficult terrain for creatures other than you.- The attack rolls of ranged weapon attacks have disadvantage if they pass in or out of the wind.- It hedges out vapor, gas, and fog that can be dispersed by strong wind.",duration:"Up to 10 minutes",higher_level:no,level:2,range:self,ritual:no,school:evocation}).
 
-spell('water breathing',properties{casting_time:"1 action",classes:[druid,ranger,'ritual caster',sorcerer,wizard],components:[v,s,m("A short piece of reed or straw.")],desc:"This spell gives a maximum of ten willing creatures within range and you can see, the ability to breathe underwater until the end of its term. Affected creatures also retain their normal breathing pattern.",duration:"24 hours",higher_level:no,level:3,range:feet(30),ritual:yes,school:transmutation}).
+spell_auto_data('water breathing',properties{casting_time:"1 action",classes:[druid,ranger,'ritual caster',sorcerer,wizard],components:[v,s,m("A short piece of reed or straw.")],desc:"This spell gives a maximum of ten willing creatures within range and you can see, the ability to breathe underwater until the end of its term. Affected creatures also retain their normal breathing pattern.",duration:"24 hours",higher_level:no,level:3,range:feet(30),ritual:yes,school:transmutation}).
 
-spell('water walk',properties{casting_time:"1 action",classes:[cleric,druid,ranger,'ritual caster',sorcerer],components:[v,s,m("err: no material")],desc:"This spell grants the ability to move across any liquid surface—such as water, acid, mud, snow, quicksand, or lava—as if it were harmless solid ground (creatures crossing molten lava can still take damage from the heat). Up to ten willing creatures you can see within range gain this ability for the duration.If you target a creature submerged in a liquid, the spell carries the target to the surface of the liquid at a rate of 60 feet per round.",duration:"1 hour",higher_level:no,level:3,range:feet(30),ritual:yes,school:transmutation}).
+spell_auto_data('water walk',properties{casting_time:"1 action",classes:[cleric,druid,ranger,'ritual caster',sorcerer],components:[v,s,m("err: no material")],desc:"This spell grants the ability to move across any liquid surface—such as water, acid, mud, snow, quicksand, or lava—as if it were harmless solid ground (creatures crossing molten lava can still take damage from the heat). Up to ten willing creatures you can see within range gain this ability for the duration.If you target a creature submerged in a liquid, the spell carries the target to the surface of the liquid at a rate of 60 feet per round.",duration:"1 hour",higher_level:no,level:3,range:feet(30),ritual:yes,school:transmutation}).
 
-spell('watery sphere',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A droplet of water.")],desc:"You conjure up a sphere of water with a 10-foot radius on a point you can see within range. The sphere can hover in the air, but no more than 10 feet off the ground. The sphere remains for the spell's duration.Any creature in the sphere's space must make a Strength saving throw. On a successful save, a creature is ejected from that space to the nearest unoccupied space outside it. A Huge or larger creature succeeds on the saving throw automatically. On a failed save, a creature is restrained by the sphere and is engulfed by the water. At the end of each of its turns, a restrained target can repeat the saving throw.The sphere can restrain a maximum of four Medium or smaller creatures or one Large creature. If the sphere restrains a creature in excess of these numbers, a random creature that was already restrained by the sphere falls out of it and lands prone in a space within 5 feet of it.As an action, you can move the sphere up to 30 feet in a straight line. If it moves over a pit, cliff, or other drop, it safely descends until it is hovering 10 feet over ground. Any creature restrained by the sphere moves with it. You can ram the sphere into creatures, forcing them to make the saving throw, but no more than once per turn.When the spell ends, the sphere falls to the ground and extinguishes all normal flames within 30 feet of it. Any creature restrained by the sphere is knocked prone in the space where it falls.",duration:"Up to 1 minute",higher_level:no,level:4,range:feet(90),ritual:no,school:conjuration}).
+spell_auto_data('watery sphere',properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A droplet of water.")],desc:"You conjure up a sphere of water with a 10-foot radius on a point you can see within range. The sphere can hover in the air, but no more than 10 feet off the ground. The sphere remains for the spell's duration.Any creature in the sphere's space must make a Strength saving throw. On a successful save, a creature is ejected from that space to the nearest unoccupied space outside it. A Huge or larger creature succeeds on the saving throw automatically. On a failed save, a creature is restrained by the sphere and is engulfed by the water. At the end of each of its turns, a restrained target can repeat the saving throw.The sphere can restrain a maximum of four Medium or smaller creatures or one Large creature. If the sphere restrains a creature in excess of these numbers, a random creature that was already restrained by the sphere falls out of it and lands prone in a space within 5 feet of it.As an action, you can move the sphere up to 30 feet in a straight line. If it moves over a pit, cliff, or other drop, it safely descends until it is hovering 10 feet over ground. Any creature restrained by the sphere moves with it. You can ram the sphere into creatures, forcing them to make the saving throw, but no more than once per turn.When the spell ends, the sphere falls to the ground and extinguishes all normal flames within 30 feet of it. Any creature restrained by the sphere is knocked prone in the space where it falls.",duration:"Up to 1 minute",higher_level:no,level:4,range:feet(90),ritual:no,school:conjuration}).
 
-spell(web,properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A bit of spiderweb.")],desc:"You conjure a mass of thick, sticky webbing at a point of your choice within range. The webs fill a 20-foot cube from that point for the duration. The webs are difficult terrain and lightly obscure their area.If the webs aren’t anchored between two solid masses (such as walls or trees) or layered across a floor, wall, or ceiling, the conjured web collapses on itself, and the spell ends at the start of your next turn. Webs layered over a flat surface have a depth of 5 feet.Each creature that starts its turn in the webs or that enters them during its turn must make a dexterity saving throw. On a failed save, the creature is restrained as long as it remains in the webs or until it breaks free.A creature restrained by the webs can use its action to make a Strength check against your spell save DC. If it succeeds, it is no longer restrained.The webs are flammable. Any 5-foot cube of webs exposed to fire burns away in 1 round, dealing 2d4 fire damage to any creature that starts its turn in the fire.",duration:"Up to 1 hour",higher_level:no,level:2,range:feet(60),ritual:no,school:conjuration}).
+spell_auto_data(web,properties{casting_time:"1 action",classes:[druid,sorcerer,wizard],components:[v,s,m("A bit of spiderweb.")],desc:"You conjure a mass of thick, sticky webbing at a point of your choice within range. The webs fill a 20-foot cube from that point for the duration. The webs are difficult terrain and lightly obscure their area.If the webs aren’t anchored between two solid masses (such as walls or trees) or layered across a floor, wall, or ceiling, the conjured web collapses on itself, and the spell ends at the start of your next turn. Webs layered over a flat surface have a depth of 5 feet.Each creature that starts its turn in the webs or that enters them during its turn must make a dexterity saving throw. On a failed save, the creature is restrained as long as it remains in the webs or until it breaks free.A creature restrained by the webs can use its action to make a Strength check against your spell save DC. If it succeeds, it is no longer restrained.The webs are flammable. Any 5-foot cube of webs exposed to fire burns away in 1 round, dealing 2d4 fire damage to any creature that starts its turn in the fire.",duration:"Up to 1 hour",higher_level:no,level:2,range:feet(60),ritual:no,school:conjuration}).
 
-spell(weird,properties{casting_time:"1 action",classes:[wizard],components:[v,s],desc:"Drawing on the deepest fears of a group of creatures, you create illusory creatures in their minds, visible only to them. Each creature in a 30-foot-radius sphere centered on a point of your choice within range must make a wisdom saving throw. On a failed save, a creature becomes frightened for the duration. The illusion calls on the creature’s deepest fears, manifesting its worst nightmares as an implacable threat. At the start of each of the frightened creature’s turns, it must succeed on a wisdom saving throw or take 4 d10 psychic damage. On a successful save, the spell ends for that creature.",duration:"Up to 1 minute",higher_level:no,level:9,range:feet(120),ritual:no,school:illusion}).
+spell_auto_data(weird,properties{casting_time:"1 action",classes:[wizard],components:[v,s],desc:"Drawing on the deepest fears of a group of creatures, you create illusory creatures in their minds, visible only to them. Each creature in a 30-foot-radius sphere centered on a point of your choice within range must make a wisdom saving throw. On a failed save, a creature becomes frightened for the duration. The illusion calls on the creature’s deepest fears, manifesting its worst nightmares as an implacable threat. At the start of each of the frightened creature’s turns, it must succeed on a wisdom saving throw or take 4 d10 psychic damage. On a successful save, the spell ends for that creature.",duration:"Up to 1 minute",higher_level:no,level:9,range:feet(120),ritual:no,school:illusion}).
 
-spell(whirlwind,properties{casting_time:"1 action",classes:[druid,wizard],components:[v,m("A piece of straw.")],desc:"A whirlwind howls down to a point on the ground you specify. The whirlwind is a 10-foot-radius, 30-foot-high cylinder centered on that point. Until the spell ends, you can use your action to move the whirlwind up to 30 feet in any direction along the ground. The whirlwind sucks up any Medium or smaller objects that aren't secured to anything and that aren't worn or carried by anyone.A creature must make a Dexterity saving throw the first time on a turn that it enters the whirlwind or that the whirlwind enters its space, including when the whirlwind first appears. A creature takes 10d6 bludgeoning damage on a failed save, or half as much damage on a successful one. In addition, a Large or smaller creature that fails the save must succeed on a Strength saving throw or become restrained in the whirlwind until the spell ends. When a creature starts its turn restrained by the whirlwind, the creature is pulled 5 feet higher inside it, unless the creature is at the top. A restrained creature moves with the whirlwind and falls when the spell ends, unless the creature has some means to stay aloft.A restrained creature can use an action to make a Strength or Dexterity check against your spell save DC. If successful, the creature is no longer restrained by the whirlwind and is hurled 3d6 x 10 feet away from it in a random direction.",duration:"Up to 1 minute",higher_level:no,level:7,range:feet(300),ritual:no,school:evocation}).
+spell_auto_data(whirlwind,properties{casting_time:"1 action",classes:[druid,wizard],components:[v,m("A piece of straw.")],desc:"A whirlwind howls down to a point on the ground you specify. The whirlwind is a 10-foot-radius, 30-foot-high cylinder centered on that point. Until the spell ends, you can use your action to move the whirlwind up to 30 feet in any direction along the ground. The whirlwind sucks up any Medium or smaller objects that aren't secured to anything and that aren't worn or carried by anyone.A creature must make a Dexterity saving throw the first time on a turn that it enters the whirlwind or that the whirlwind enters its space, including when the whirlwind first appears. A creature takes 10d6 bludgeoning damage on a failed save, or half as much damage on a successful one. In addition, a Large or smaller creature that fails the save must succeed on a Strength saving throw or become restrained in the whirlwind until the spell ends. When a creature starts its turn restrained by the whirlwind, the creature is pulled 5 feet higher inside it, unless the creature is at the top. A restrained creature moves with the whirlwind and falls when the spell ends, unless the creature has some means to stay aloft.A restrained creature can use an action to make a Strength or Dexterity check against your spell save DC. If successful, the creature is no longer restrained by the whirlwind and is hurled 3d6 x 10 feet away from it in a random direction.",duration:"Up to 1 minute",higher_level:no,level:7,range:feet(300),ritual:no,school:evocation}).
 
-spell('wind walk',properties{casting_time:"1 minute",classes:[druid],components:[v,s,m("Fire and holy water.")],desc:"You and up to ten willing creatures you can see within range assume a gaseous form for the duration, appearing as wisps of cloud. While in this cloud form, a creature has a flying speed of 300 feet and has resistance to damage from nonmagical weapons. The only actions a creature can take in this form are the Dash action or to revert to its normal form. Reverting takes 1 minute, during which time a creature is incapacitated and can’t move. Until the spell ends, a creature can revert to cloud form, which also requires the 1-minute transformation.If a creature is in cloud form and flying when the effect ends, the creature descends 60 feet per round for 1 minute until it lands, which it does safely. If it can’t land after 1 minute, the creature falls the remaining distance.",duration:"8 hours",higher_level:no,level:6,range:feet(30),ritual:no,school:transmutation}).
+spell_auto_data('wind walk',properties{casting_time:"1 minute",classes:[druid],components:[v,s,m("Fire and holy water.")],desc:"You and up to ten willing creatures you can see within range assume a gaseous form for the duration, appearing as wisps of cloud. While in this cloud form, a creature has a flying speed of 300 feet and has resistance to damage from nonmagical weapons. The only actions a creature can take in this form are the Dash action or to revert to its normal form. Reverting takes 1 minute, during which time a creature is incapacitated and can’t move. Until the spell ends, a creature can revert to cloud form, which also requires the 1-minute transformation.If a creature is in cloud form and flying when the effect ends, the creature descends 60 feet per round for 1 minute until it lands, which it does safely. If it can’t land after 1 minute, the creature falls the remaining distance.",duration:"8 hours",higher_level:no,level:6,range:feet(30),ritual:no,school:transmutation}).
 
-spell('wind wall',properties{casting_time:"1 action",classes:[cleric,druid,ranger],components:[v,s,m("A tiny fan and a feather of exotic origin.")],desc:"A wall of strong wind rises from the ground at a point you choose within range. You can make the wall up to 50 feet long, 15 feet high, and 1 foot thick. You can shape the wall in any way you choose so long as it makes one continuous path along the ground. The wall lasts for the duration.When the wall appears, each creature within its area must make a strength saving throw. A creature takes 3d8 bludgeoning damage on a failed save, or half as much damage on a successful one.The strong wind keeps fog, smoke, and other gases at bay. Small or smaller flying creatures or objects can’t pass through the wall. Loose, lightweight materials brought into the wall fly upward. Arrows, bolts, and other ordinary projectiles launched at targets behind the wall are deflected upward and automatically miss. (Boulders hurled by giants or siege engines, and similar projectiles, are unaffected.) Creatures in gaseous form can’t pass through it.",duration:"Up to 1 minute",higher_level:no,level:3,range:feet(120),ritual:no,school:evocation}).
+spell_auto_data('wind wall',properties{casting_time:"1 action",classes:[cleric,druid,ranger],components:[v,s,m("A tiny fan and a feather of exotic origin.")],desc:"A wall of strong wind rises from the ground at a point you choose within range. You can make the wall up to 50 feet long, 15 feet high, and 1 foot thick. You can shape the wall in any way you choose so long as it makes one continuous path along the ground. The wall lasts for the duration.When the wall appears, each creature within its area must make a strength saving throw. A creature takes 3d8 bludgeoning damage on a failed save, or half as much damage on a successful one.The strong wind keeps fog, smoke, and other gases at bay. Small or smaller flying creatures or objects can’t pass through the wall. Loose, lightweight materials brought into the wall fly upward. Arrows, bolts, and other ordinary projectiles launched at targets behind the wall are deflected upward and automatically miss. (Boulders hurled by giants or siege engines, and similar projectiles, are unaffected.) Creatures in gaseous form can’t pass through it.",duration:"Up to 1 minute",higher_level:no,level:3,range:feet(120),ritual:no,school:evocation}).
 
-spell(wish,properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v],desc:"Desire is the most powerful spell a deadly creature can throw. Simply by speaking aloud, you can alter the very foundations of reality as you wish.The most basic use of this spell is to duplicate any other out of 8th level or lower. You only need to fill out any conditions for that, not even the need for costly components. The fate simply takes effect. You can also create one of the following effects of your choice:- You create one object of up to 25,000 gp in value that isn’t a magic item. The object can be no more than 300 feet in any dimension, and it appears in an unoccupied space you can see on the ground.- You allow a maximum of twenty creatures you can see to get all their points and you dispel all effects affecting them, as described in greater restoration spell.- You grant to a maximum of ten creatures you can see resistance to a damage type you choose.- You grant to a maximum of ten creatures you can see immunity to a single spell or other magical effect for 8 hours. For example, you can immunize yourself and your companions against the attack of the Lich draining.- You cancel a recent event unique by requiring a new replacement jet diced any jet made during the last round (including your last turn). The reality is transformed to match the new launch. For example, a wish spell can cancel a successful saving throw enemy critical strike an opponent or ally saving throw missed. You can impose a jet with advantage or disadvantage, and you can choose to use the new result of the start or the old.You can also do other things than the above examples. Describe your wishes to your MD in the most accurate way possible. The DM is free to determine what happens in this case; more desire, the more likely it is that something goes wrong. This spell may simply fail, the effect you want might be only partially executed, or you may suffer from unpredictable consequences depending on your formulation wish. For example, want an enemy died could propel you to a future time when your enemy is no longer alive, you effectively eliminating the game. Similarly, desiring a legendary magical object or artifact could carry you instantaneously in the presence of the current owner of the object.Stress to cast this spell to produce an effect other than the reproduction of another spell weakens you. After undergoing this tension every time you cast a spell, and this until your next extended rest, you suffer 1d10 necrotic damage per spell level. This damage can not be reduced or avoided in any way. In addition, your Force falls to 3, if it is not already less than 3, for 2d4 days. For each day spent resting or practicing a minor activity, your recovery time decreases by 2 days. Finally, you have a 33% chance of never being able to cast the spell if you wish undergoes stress.",duration:"Instantaneous",higher_level:no,level:9,range:self,ritual:no,school:conjuration}).
+spell_auto_data(wish,properties{casting_time:"1 action",classes:[sorcerer,wizard],components:[v],desc:"Desire is the most powerful spell a deadly creature can throw. Simply by speaking aloud, you can alter the very foundations of reality as you wish.The most basic use of this spell is to duplicate any other out of 8th level or lower. You only need to fill out any conditions for that, not even the need for costly components. The fate simply takes effect. You can also create one of the following effects of your choice:- You create one object of up to 25,000 gp in value that isn’t a magic item. The object can be no more than 300 feet in any dimension, and it appears in an unoccupied space you can see on the ground.- You allow a maximum of twenty creatures you can see to get all their points and you dispel all effects affecting them, as described in greater restoration spell.- You grant to a maximum of ten creatures you can see resistance to a damage type you choose.- You grant to a maximum of ten creatures you can see immunity to a single spell or other magical effect for 8 hours. For example, you can immunize yourself and your companions against the attack of the Lich draining.- You cancel a recent event unique by requiring a new replacement jet diced any jet made during the last round (including your last turn). The reality is transformed to match the new launch. For example, a wish spell can cancel a successful saving throw enemy critical strike an opponent or ally saving throw missed. You can impose a jet with advantage or disadvantage, and you can choose to use the new result of the start or the old.You can also do other things than the above examples. Describe your wishes to your MD in the most accurate way possible. The DM is free to determine what happens in this case; more desire, the more likely it is that something goes wrong. This spell may simply fail, the effect you want might be only partially executed, or you may suffer from unpredictable consequences depending on your formulation wish. For example, want an enemy died could propel you to a future time when your enemy is no longer alive, you effectively eliminating the game. Similarly, desiring a legendary magical object or artifact could carry you instantaneously in the presence of the current owner of the object.Stress to cast this spell to produce an effect other than the reproduction of another spell weakens you. After undergoing this tension every time you cast a spell, and this until your next extended rest, you suffer 1d10 necrotic damage per spell level. This damage can not be reduced or avoided in any way. In addition, your Force falls to 3, if it is not already less than 3, for 2d4 days. For each day spent resting or practicing a minor activity, your recovery time decreases by 2 days. Finally, you have a 33% chance of never being able to cast the spell if you wish undergoes stress.",duration:"Instantaneous",higher_level:no,level:9,range:self,ritual:no,school:conjuration}).
 
-spell('witch bolt',properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v,s,m("A twig from a tree that has been struck by lightning.")],desc:"A beam of crackling, blue energy lances out toward a creature within range, forming a sustained arc of lightning between you and the target. Make a ranged spell attack against that creature. On a hit, the target takes 1d12 lightning damage, and on each of your turns for the duration, you can use your action to deal 1d12 lightning damage to the target automatically. The spell ends if you use your action to do anything else. The spell also ends if the target is ever outside the spell’s range or if it has total cover from you.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d12 for each slot level above 1st.",level:1,range:feet(30),ritual:no,school:evocation}).
+spell_auto_data('witch bolt',properties{casting_time:"1 action",classes:[sorcerer,warlock,wizard],components:[v,s,m("A twig from a tree that has been struck by lightning.")],desc:"A beam of crackling, blue energy lances out toward a creature within range, forming a sustained arc of lightning between you and the target. Make a ranged spell attack against that creature. On a hit, the target takes 1d12 lightning damage, and on each of your turns for the duration, you can use your action to deal 1d12 lightning damage to the target automatically. The spell ends if you use your action to do anything else. The spell also ends if the target is ever outside the spell’s range or if it has total cover from you.",duration:"Up to 1 minute",higher_level:"When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d12 for each slot level above 1st.",level:1,range:feet(30),ritual:no,school:evocation}).
 
-spell('word of recall',properties{casting_time:"1 action",classes:[cleric],components:[v],desc:"You and up to five willing creatures within 5 feet of you instantly teleport to a previously designated sanctuary. You and any creatures that teleport with you appear in the nearest unoccupied space to the spot you designated when you prepared your sanctuary (see below). If you cast this spell without first preparing a sanctuary, the spell has no effect.You must designate a sanctuary by casting this spell within a location, such as a temple, dedicated to or strongly linked to your deity. If you attempt to cast the spell in this manner in an area that isn’t dedicated to your deity, the spell has no effect.",duration:"Instantaneous",higher_level:no,level:6,range:feet(5),ritual:no,school:conjuration}).
+spell_auto_data('word of recall',properties{casting_time:"1 action",classes:[cleric],components:[v],desc:"You and up to five willing creatures within 5 feet of you instantly teleport to a previously designated sanctuary. You and any creatures that teleport with you appear in the nearest unoccupied space to the spot you designated when you prepared your sanctuary (see below). If you cast this spell without first preparing a sanctuary, the spell has no effect.You must designate a sanctuary by casting this spell within a location, such as a temple, dedicated to or strongly linked to your deity. If you attempt to cast the spell in this manner in an area that isn’t dedicated to your deity, the spell has no effect.",duration:"Instantaneous",higher_level:no,level:6,range:feet(5),ritual:no,school:conjuration}).
 
-spell('wrathful smite',properties{casting_time:"1 bonus action",classes:[paladin],components:[v],desc:"The next time you hit with a melee weapon attack during this spell’s duration, your attack deals an extra 1d6 psychic damage. Additionally, if the target is a creature, it must make a wisdom saving throw or be frightened of you until the spell ends. As an action, the creature can make a Wisdom check against your spell save DC to steel its resolve and end this spell.",duration:"Up to 1 minute",higher_level:no,level:1,range:self,ritual:no,school:evocation}).
+spell_auto_data('wrathful smite',properties{casting_time:"1 bonus action",classes:[paladin],components:[v],desc:"The next time you hit with a melee weapon attack during this spell’s duration, your attack deals an extra 1d6 psychic damage. Additionally, if the target is a creature, it must make a wisdom saving throw or be frightened of you until the spell ends. As an action, the creature can make a Wisdom check against your spell save DC to steel its resolve and end this spell.",duration:"Up to 1 minute",higher_level:no,level:1,range:self,ritual:no,school:evocation}).
 
-spell('zone of truth',properties{casting_time:"1 action",classes:[bard,cleric,paladin],components:[v,s],desc:"You create a magical zone that guards against deception in a 15-foot-radius sphere centered on a point of your choice within range. Until the spell ends, a creature that enters the spell’s area for the first time on a turn or starts its turn there must make a Charisma saving throw. On a failed save, a creature can’t speak a deliberate lie while in the radius. You know whether each creature succeeds or fails on its saving throw.An affected creature is aware of the fate and can avoid answering questions she would normally have responded with a lie. Such a creature can remain evasive in his answers as they remain within the limits of truth.",duration:"10 minutes",higher_level:no,level:2,range:feet(60),ritual:no,school:enchantment}).
+spell_auto_data('zone of truth',properties{casting_time:"1 action",classes:[bard,cleric,paladin],components:[v,s],desc:"You create a magical zone that guards against deception in a 15-foot-radius sphere centered on a point of your choice within range. Until the spell ends, a creature that enters the spell’s area for the first time on a turn or starts its turn there must make a Charisma saving throw. On a failed save, a creature can’t speak a deliberate lie while in the radius. You know whether each creature succeeds or fails on its saving throw.An affected creature is aware of the fate and can avoid answering questions she would normally have responded with a lie. Such a creature can remain evasive in his answers as they remain within the limits of truth.",duration:"10 minutes",higher_level:no,level:2,range:feet(60),ritual:no,school:enchantment}).
 

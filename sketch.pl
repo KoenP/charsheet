@@ -1,4 +1,5 @@
 :- use_module(library(pldoc)).
+:- use_module(library(yall)).
 
 :- multifile
        gain_level/3,
@@ -17,7 +18,7 @@
 :- [options].
 :- [trait].
 :- [bonus].
-:- [spells].
+:- [spell_data].
 :- [spellcasting].
 :- [class].
 
@@ -97,10 +98,6 @@ traits_from_source(race('high elf'), [weapon(longsword),
 %commutative_spell_modifier(_,_,_) :- false.
 %current_class_level(_) :- false.
 %
-%sequence([], X, X).
-%sequence([Pred|Preds], X, Z) :-
-%    call(Pred, X, Y),
-%    sequence(Preds, Y, Z).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -108,6 +105,10 @@ traits_from_source(race('high elf'), [weapon(longsword),
 level(Level) :-
     findall(L, gain_level(L, _, _), Levels),
     max_member(Level, Levels).
+
+match_level(Level) :-
+    level(CurLevel),
+    between(1, CurLevel, Level).
 
 gain_level(_,_,_) :- false.
 problem(gain_level_not_contiguous(Levels)) :-
@@ -182,8 +183,7 @@ todo :-
     forall(todo(T), writeln_quoted_term(T)).
 
 spells :-
-    forall(learned_spell(Origin, Name), writeln_quoted_term(Origin:Name)).
-    
+    forall(known_spell(Origin, Name), writeln_quoted_term(Origin:Name)).
 
 mtodo :-
     forall(meta_todo(S,T), writeln_quoted_term(S->T)).

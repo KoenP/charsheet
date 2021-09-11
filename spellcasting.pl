@@ -1,13 +1,14 @@
 :- multifile
-       learned_spell/6.
+       known_spell/6,
+       spell_property/3.
 
-%! learned_spell(?Origin, ?Ability:atomic, ?Availability, ?Resources:list, ?Ritual:atomic, ?Name:atomic)
+%! known_spell(?Origin, ?Ability:atomic, ?Availability, ?Resources:list, ?Ritual:atomic, ?Name:atomic)
 %
-%  Learned spells are those spells spells that are on your character's
+%  Known spells are those spells spells that are on your character's
 %  spell list, either as spells that are always castable or spells
 %  that you need to prepare. Spell learning works differently for
 %  different classes. For a druid, for instance, every learnable spell
-%  (see learnable_spell/2) is automatically a learned spell. Sorcerers
+%  (see learnable_spell/2) is automatically a known spell. Sorcerers
 %  get to pick new spells and replace old spells upon leveling up.
 %
 %  * Origin is typically a class or a race. The Origin is not
@@ -50,20 +51,47 @@
 %  * Name is the name of the spell. I've put this last because I
 %    anticipate it will be useful often to partially apply all the
 %    other arguments.
-learned_spell(_,_,_,_,_,_) :- false.
-meta_todo(learned_spell(Origin, Name), resources_are_not_a_list(Resources)) :-
-    learned_spell(Origin, _, _, Resources, _, Name),
+known_spell(_,_,_,_,_,_) :- false.
+meta_todo(known_spell(Origin, Name), resources_are_not_a_list(Resources)) :-
+    known_spell(Origin, _, _, Resources, _, Name),
     \+ is_list(Resources).
-meta_todo(learned_spell(Origin, Name), invalid_field(ritual,Ritual)) :-
-    learned_spell(Origin, _, _, _, Ritual, Name),
+meta_todo(known_spell(Origin, Name), invalid_field(ritual,Ritual)) :-
+    known_spell(Origin, _, _, _, Ritual, Name),
     \+ member(Ritual, [always, 'when prepared', no, only]).
 % TODO: check all the fields
 
-%! learned_spell(?Origin, ?Name)
+%! known_spell(?Origin, ?Name)
 %
-%  Shorthand for learned_spell/6, for when we're only interested in Origin and Name.
-learned_spell(Origin, Name) :-
-    learned_spell(Origin, _, _, _, _, Name).
+%  Shorthand for known_spell/6, for when we're only interested in Origin and Name.
+known_spell(Origin, Name) :-
+    known_spell(Origin, _, _, _, _, Name).
+
+%! known_spell_data(?Origin:atomic, ?Name:atomic, ?Data)
+%
+%  Retrieves the Data associated with the spell Name, but after
+%  applying `modify_spell` bonuses with matching Origin.
+known_spell_data(Origin, Name, Data) :-
+    known_spell(Origin, Name),
+    spell_data(Name, GenericData),
+    findall(Mod, bonus(modify_spell(Origin, Name, Mod)), Mods),
+    sequence(Mods, GenericData, Data).
+
+%! known_spell_property(?Origin:atomic, ?Name:atomic, ?Field:atomic, ?Val)
+%
+%  Looks up the known_spell_data/3 associated with a given spell
+%  Origin and Name, and extracts the given Field from that data to
+%  yield Val. If the Field does not exist, this predicate silently fails.
+known_spell_property(Origin, Name, Field, Val) :-
+    known_spell_data(Origin, Name, Data),
+    Val = Data.get(Field).
+
+%! known_spell_property_or_error(?Origin:atomic, ?Name:atomic, ?Field:atomic, ?Val)
+%  
+%  Like known_spell_property/4, but if the Field does not exist in the
+%  spell data, throw an error instead of silently failing.
+known_spell_property_or_error(Origin, Name, Field, Val) :-
+    known_spell_data(Origin, Name, Data),
+    Val = Data.(Field).
     
 %! learnable_proper_spell(?Class, ?Name)
 %
@@ -85,29 +113,37 @@ learnable_proper_spell(Class, Name) :-
 %  
 %  Name is a cantrip on the spell list for Class.
 class_cantrip(Class, Name) :-
-    spell(Name, Data),
+    spell_data(Name, Data),
     Data.level = 0,
     member(Class, Data.classes).
+
+%! spell_origin(?Origin)
+%
+%  Origin is the origin of at least one known_spell/6.
+spell_origin(Origin) :-
+    findall(O, known_spell(O,_), Origins),
+    list_to_set(Origins, OriginsSet),
+    member(Origin, OriginsSet).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Interacting with spell data.
 
-%! spell_property(?Name:atomic, ?Prop:atomic, ?Val)
-%
-%  Extract the field Prop from the properties of the spell Name (see
-%  spell/2), and bind the result to Val. This uses the generic spell data.
-%  For the spell data after character-specific modifications (like the
-%  `'empowered spell'` trait), see learned_spell_property/4.
-spell_property(Name, Prop, Val) :-
-    spell(Name, Data),
-    Val = Data.Prop.
-
-%! learned_spell_property(?Origin:atomic, ?Name:atomic, ?Prop:atomic, ?Val)
+%! known_spell_property(?Origin:atomic, ?Name:atomic, ?Prop:atomic, ?Val)
 %
 %  Like spell_property/3, but taking into account any modifications to
 %  the spell data made for your character (for example the damage
 %  boost from `'empowered evocation'`.)
-learned_spell_property(_, _, _, _) :- throw('TODO: implement this').
+%known_spell_property(Origin, Name, Prop, Val) :-
+%    known_spell(Origin, Name),
+%    spell_property(Name, Prop, GenericVal),
+%    findall(Mod, bonus(modify_spell_property(Origin,Name,Prop,Mod)), Mods),
+%    sequence(Mods, GenericVal, Val).
+
+sequence([], X, X).
+sequence([Pred|Preds], X, Z) :-
+    call(Pred, X, Y),
+    sequence(Preds, Y, Z).
+    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Spell slots.
@@ -190,3 +226,33 @@ full_caster_spell_slot_table(6, [11,19]).
 full_caster_spell_slot_table(7, [13,20]).
 full_caster_spell_slot_table(8, [15]).
 full_caster_spell_slot_table(9, [17]).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Helper predicates for modifying spell data.
+
+modify_spell_field(Field, UpdateField, Old, New) :-
+    OldField = Old.get(Field),
+    call(UpdateField, OldField, NewField),
+    New = Old.put(Field, NewField).
+
+add_damage(Bonus, Orig, New) :-
+    Orig =.. [Type, Dice],
+    simplify_dice_sum(Dice+Bonus, NewDice),
+    New =.. [Type, NewDice].
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Cantrip damage scaling.
+
+
+
+% TODO: werkt niet: findall(Mod, bonus(modify_spell_property(_,'fire bolt',damage,Mod)), Mods), sequence(Mods, fire(1 d 10), X).
+
+cantrip_scale(Scale) :-
+    level(Level),
+    ( Level < 5  -> !, Scale = 1
+    ; Level < 11 -> !, Scale = 2
+    ; Level < 17 -> !, Scale = 3
+    ; Scale = 4
+    ).
+
+incr(N,M) :- M is N+1.

@@ -1,6 +1,7 @@
 :- multifile
        class_option/1,
-       subclass_options/2,
+       choose_subclass_level/1,
+       subclass_option/2,
        hd_per_level/2,
        initial_class_base_hp/2,
        max_hp_per_level/2,
@@ -11,10 +12,6 @@
        required_predicate_for_each_class/1.
 
 :- [class/sorcerer].
-
-% Druid example (to move)
-class_option(druid).
-subclass_options(druid:2, [land, moon]).
 
 %! class_level(?ClassLevel)
 %
@@ -40,7 +37,6 @@ class(Class) :- class_level(Class:_).
 %  subclass option with a choice/3 clause.
 subclass(Subclass) :-
     class(Class),
-    subclass_options(Class:_, _),
     choice(match_class(Class:_), subclass, Sub),
     Subclass =.. [Class, Sub].
 subclass_level(Subclass:Level) :-
@@ -48,16 +44,10 @@ subclass_level(Subclass:Level) :-
     Subclass =.. [Class, _],
     class_level(Class:Level).
 
-%! subclass_options(ClassLevel, OptionList)
-%
-%  For each class with subclasses to choose from (which is normally
-%  all of them, but the program doesn't require a class to have
-%  subclasses), we have a clause subclass_options(Class:Level,
-%  OptionList) which shows the level requirement to pick your
-%  character's subclass, as well as the options to pick from.
-subclass_options(_,_) :- false.
-options_source(match_class(Class:ClassLevel), subclass, from_list(SubclassOptions)) :-
-    subclass_options(Class:ClassLevel, SubclassOptions).
+%! subclass_option(?Class, ?Subclass)
+subclass_option(_,_) :- false.
+options_source(match_class(Class:ClassLevel), subclass, subclass_option(Class)) :-
+    choose_subclass_level(Class:ClassLevel).
 
 %! match_class(?X)
 %
@@ -137,6 +127,12 @@ required_predicate_for_each_class(max_hp_per_level/2).
 %  saving throws for Ability.
 class_saving_throw(_,_) :- false.
 required_predicate_for_each_class(class_saving_throw/2).
+
+%! choose_subclass_level(?ClassLevel)
+%
+%  Determines at which ClassLevel for any given class you have to pick
+%  your subclass.
+choose_subclass_level(_) :- false.
 
 %! caster(?Class, ?Factor)
 %

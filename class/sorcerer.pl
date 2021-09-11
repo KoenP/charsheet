@@ -1,6 +1,11 @@
 class_option(sorcerer).
 hd_per_level(sorcerer, 1 d 6).
+initial_class_base_hp(sorcerer, 6).
+max_hp_per_level(sorcerer, 1 d 6).
 caster(sorcerer, full).
+choose_subclass_level(sorcerer:1).
+
+% TODO: asis
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features (you don't gain these when multiclassing into sorcerer).
@@ -48,10 +53,10 @@ on_rest(short, 'sorcery point', restore(4)) :- trait('sorcerous restoration').
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Learning new sorcerer spells.
 
-learned_spell(sorcerer, cha, always, [], no, Name) :-
+known_spell(sorcerer, cha, always, [], no, Name) :-
     class_origin_to_class(Origin, sorcerer),
     choice_member(Origin, cantrip, Name).
-learned_spell(sorcerer, cha, prepare, [slot], Ritual, Name) :-
+known_spell(sorcerer, cha, prepare, [slot], Ritual, Name) :-
     class_level(sorcerer:L),
     selected_at_class_level(sorcerer:L, spell, Name),
     spell_property(Name, ritual, Ritual). % TODO: this might be wrong
@@ -60,21 +65,79 @@ learned_spell(sorcerer, cha, prepare, [slot], Ritual, Name) :-
 options_source(class(sorcerer), cantrip, 4 unique_from class_cantrip(sorcerer)).
 options_source(match_class(sorcerer:L), cantrip, class_cantrip(sorcerer)) :- L=4 ; L=10.
    
-
+% Learn proper spells.
 options_source(class(sorcerer), spell,
                2 unique_from learnable_proper_spell(sorcerer)).
-
 options_source(match_class(sorcerer:L), spell,
                learnable_proper_spell(sorcerer)) :-
     member(L, [2,3,4,5,6,7,8,9,10,11,13,15,17]).
 
+% Replace proper spells.
 options_source(match_class(sorcerer:L), replace(spell),
                selected_at_class_level(sorcerer:Prev, spell)) :-
     between(2, 20, L),
     Prev is L-1.
-
 options(match_class(sorcerer:L), replacing(spell, Name), learnable_proper_spell(sorcerer)) :-
     choice_member(match_class(sorcerer:L), replace(spell), Name).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Sorcerous origin: draconic bloodline.
+
+subclass_option(sorcerer, 'draconic bloodline').
+
+% Dragon ancestor.
+dragon_ancestor_element(black, acid).
+dragon_ancestor_element(blue, lightning).
+dragon_ancestor_element(brass, fire).
+dragon_ancestor_element(bronze, lightning).
+dragon_ancestor_element(copper, acid).
+dragon_ancestor_element(gold, fire).
+dragon_ancestor_element(green, poison).
+dragon_ancestor_element(red, fire).
+dragon_ancestor_element(silver, cold).
+dragon_ancestor_element(white, cold).
+dragon_ancestor_element(Elem) :-
+    trait(dragon_ancestor(Color)),
+    dragon_ancestor_element(Color, Elem).
+
+dragon_ancestor_option(Color) :- dragon_ancestor_element(Color, _).
+
+
+trait_options_source(match_class(sorcerer('draconic bloodline')),
+                     'dragon ancestor',
+                     wrap(dragon_ancestor),
+                     dragon_ancestor_option).
+
+trait_source(match_class(sorcerer('draconic bloodline')), language(draconic)).
+
+% Draconic resilience.
+trait_source(match_class(sorcerer('draconic bloodline')), 'draconic resilience').
+bonus_source(trait('draconic resilience'), 'max hp'+Level) :-
+    class_level(sorcerer:Level).
+bonus_source(trait('draconic resilience'), 'base ac'+3).
+
+% Elemental affinity.
+trait_source(match_class(sorcerer('draconic bloodline'):6),
+             elemental_affinity(Element)) :-
+    trait(dragon_ancestor(Color)),
+    dragon_ancestor_element(Color, Element).
+
+
+bonus_source(trait(elemental_affinity(Element)), modify_spell(_, Name, Goal)) :-
+             
+    dragon_ancestor_element(Element),
+    known_spell(_, Name),
+    spell_property(Name, damage_rolls, [on_hit(ElemDamage)]),
+    ElemDamage =.. [Element, _],
+    Goal = modify_spell_field(damage_rolls, elemental_affinity_update_damage_rolls).
+
+elemental_affinity_update_damage_rolls([on_hit(ElemDamage)], [on_hit(NewElemDamage)]) :-
+    ability_mod(cha, Mod),
+    ElemDamage =.. [Element, Damage],
+    simplify_dice_sum(Damage+Mod, NewDamage),
+    NewElemDamage =.. [Element, NewDamage].
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DESCRIPTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -117,3 +180,15 @@ Spell Points
 5th      7
 
 Converting a Spell Slot to Sorcery Points. As a bonus action on your turn, you can expend one spell slot and gain a number of sorcery points equal to the slot's level.".
+
+dragon_ancestor(_) ?= "You have a specific dragon type as your ancestor. Whenever you make a Charisma check when interacting with dragons, your proficiency bonus is doubled if it applies to the check.".
+
+'draconic resilience' ?= "As magic flows through your body, it causes physical traits of your dragon ancestors to emerge. At 1st level, your hit point maximum increases by 1 and increases by 1 again whenever you gain a level in this class.
+Additionally, parts of your skin are covered by a thin sheen of dragon-like scales. When you aren't wearing armor, your AC equals 13 + your Dexterity modifier. ".
+
+elemental_affinity(_) ?= "Starting at 6th level, when you cast a spell that deals damage of the type associated with your draconic ancestry, you can add your Charisma modifier to one damage roll of that spell. At the same time, you can spend 1 sorcery point to gain resistance to that damage type for 1 hour.".
+
+'dragon wings' ?= "At 14th level, you gain the ability to sprout a pair of dragon wings from your back, gaining a flying speed equal to your current speed. You can create these wings as a bonus action on your turn. They last until you dismiss them as a bonus action on your turn.
+You can't manifest your wings while wearing armor unless the armor is made to accommodate them, and clothing not made to accommodate your wings might be destroyed when you manifest them.".
+
+'draconic presence '?= "Beginning at 18th level, you can channel the dread presence of your dragon ancestor, causing those around you to become awestruck or frightened. As an action, you can spend 5 sorcery points to draw on this power and exude an aura of awe or fear (your choice) to a distance of 60 feet. For 1 minute or until you lose your concentration (as if you were casting a concentration spell), each hostile creature that starts its turn in this aura must succeed on a Wisdom saving throw or be charmed (if you chose awe) or frightened (if you chose fear) until the aura ends. A creature that succeeds on this saving throw is immune to your aura for 24 hours.".
