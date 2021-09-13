@@ -36,3 +36,7 @@ choice(match_class(sorcerer:4), cantrip, 'fire bolt').
 
 gain_level(5, sorcerer, hp_avg).
 gain_level(6, sorcerer, hp_avg).
+gain_level(7, sorcerer, hp_avg).
+gain_level(8, sorcerer, hp_avg).
+
+gain_level(L, sorcerer, hp_avg) :- between(9, 20, L).

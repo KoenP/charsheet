@@ -63,6 +63,13 @@ trait_options(Source, Id, ToTrait, Spec) :-
 options(Source, Id, Spec) :-
     trait_options(Source, Id, _, Spec).
 
+%! class_trait(?Class:atomic, ?Origin, ?Trait)
+%
+%  Query your character's traits that originate from Class.
+class_trait(Class, Origin, Trait) :-
+    trait(Origin, Trait),
+    class_origin_to_class(Origin, Class).
+
 %! choice_member_to_trait(Source, Id, ToTrait)
 %
 %  Every clause of this predicate declares that some choice/3 clause

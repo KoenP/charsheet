@@ -124,20 +124,23 @@ trait_source(match_class(sorcerer('draconic bloodline'):6),
 
 
 bonus_source(trait(elemental_affinity(Element)), modify_spell(_, Name, Goal)) :-
-             
     dragon_ancestor_element(Element),
     known_spell(_, Name),
-    spell_property(Name, damage_rolls, [on_hit(ElemDamage)]),
+    spell_property(Name, damage_rolls, [on_hit:ElemDamage]),
     ElemDamage =.. [Element, _],
     Goal = modify_spell_field(damage_rolls, elemental_affinity_update_damage_rolls).
 
-elemental_affinity_update_damage_rolls([on_hit(ElemDamage)], [on_hit(NewElemDamage)]) :-
+elemental_affinity_update_damage_rolls([on_hit:ElemDamage], [on_hit:NewElemDamage]) :-
     ability_mod(cha, Mod),
     ElemDamage =.. [Element, Damage],
     simplify_dice_sum(Damage+Mod, NewDamage),
     NewElemDamage =.. [Element, NewDamage].
 
+% Dragon wings.
+trait_source(match_class(sorcerer('draconic bloodline'):14), 'dragon wings').
 
+% Draconic presence.
+trait_source(match_class(sorcerer('draconic bloodline'):18), 'draconic presence').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DESCRIPTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -192,3 +195,8 @@ elemental_affinity(_) ?= "Starting at 6th level, when you cast a spell that deal
 You can't manifest your wings while wearing armor unless the armor is made to accommodate them, and clothing not made to accommodate your wings might be destroyed when you manifest them.".
 
 'draconic presence '?= "Beginning at 18th level, you can channel the dread presence of your dragon ancestor, causing those around you to become awestruck or frightened. As an action, you can spend 5 sorcery points to draw on this power and exude an aura of awe or fear (your choice) to a distance of 60 feet. For 1 minute or until you lose your concentration (as if you were casting a concentration spell), each hostile creature that starts its turn in this aura must succeed on a Wisdom saving throw or be charmed (if you chose awe) or frightened (if you chose fear) until the aura ends. A creature that succeeds on this saving throw is immune to your aura for 24 hours.".
+
+'dragon wings' ?= "At 14th level, you gain the ability to sprout a pair of dragon wings from your back, gaining a flying speed equal to your current speed. You can create these wings as a bonus action on your turn. They last until you dismiss them as a bonus action on your turn.
+You can't manifest your wings while wearing armor unless the armor is made to accommodate them, and clothing not made to accommodate your wings might be destroyed when you manifest them.".
+
+'draconic presence' ?= "Beginning at 18th level, you can channel the dread presence of your dragon ancestor, causing those around you to become awestruck or frightened. As an action, you can spend 5 sorcery points to draw on this power and exude an aura of awe or fear (your choice) to a distance of 60 feet. For 1 minute or until you lose your concentration (as if you were casting a concentration spell), each hostile creature that starts its turn in this aura must succeed on a Wisdom saving throw or be charmed (if you chose awe) or frightened (if you chose fear) until the aura ends. A creature that succeeds on this saving throw is immune to your aura for 24 hours.".

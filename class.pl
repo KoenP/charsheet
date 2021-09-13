@@ -81,8 +81,12 @@ class_origin_to_class_level(choice(Origin,_), ClassLevel) :-
 class_origin_to_class_level(Origin, ClassLevel) :-
     class_origin_to_class_level_(Origin, ClassLevel).
 class_origin_to_class_level_(class(Class), Class:1).
+class_origin_to_class_level_(subclass(Subclass), Class:Lvl) :-
+    Subclass =.. [Class, _],
+    choose_subclass_level(Class:Lvl).
 class_origin_to_class_level_(initial_class(Class), Class:1).
-class_origin_to_class_level_(match_class(Class:Level), Class:Level).
+class_origin_to_class_level_(match_class(ClassF:Level), Class:Level) :-
+    ClassF =.. [Class|_].
 %class_origin_to_class_level_(replaced_spell(Class:Level, _), Class:Level).
 
 %! class_origin_to_class(?Origin, ?Class:atomic)
