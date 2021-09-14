@@ -7,7 +7,8 @@
        todo/1,
        meta_todo/2,
        problem/1,
-       resource/2.
+       resource/2,
+       name/1.
 
 :- op(650, xfx, from).
 :- op(650, xfx, unique_from).
@@ -21,6 +22,8 @@
 :- [spell_data].
 :- [spellcasting].
 :- [class].
+:- [ac].
+:- [html].
 
 %! meta_todo(Source, Todo)
 %
@@ -31,6 +34,7 @@
 meta_todo(_,_) :- false.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+subrace(elf, 'high elf').
 traits_from_source(race(elf), [darkvision, 
                                'fey ancestry',
                                'keen senses',
@@ -128,6 +132,9 @@ initial_class(Class) :- choice(init, 'initial class', Class), !.
 % Todo.
 todo(problem:P) :- problem(P).
 
+name(_) :- false.
+problem('pick a name!') :- \+ name(_).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Resources. TODO: need to rethink resources
 % * needs new name (clashes with builtin)
@@ -178,6 +185,12 @@ restore(N, Max, Cur, New) :-
     New is min(Cur+N, Max).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Race.
+most_specific_race(Race) :-
+    race(Race),
+    \+ subrace(Race, _).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Shorthands.
 todo :-
     forall(todo(T), writeln_quoted_term(T)).
@@ -193,3 +206,6 @@ problems :-
 
 writeln_quoted_term(T) :-
     write_term(T, [quoted(true), fullstop(true), nl(true)]).
+
+warn_if_problems :-
+    forall(problem(P), (write("WARNING: "), writeln_quoted_term(P))).

@@ -5,10 +5,12 @@
 :- [sketch].
 
 % TODO
+ability_mod(dex, 1).
 ability_mod(cha, 4).
 
 
 % Level 1
+name('Zahar') :- !.
 race(elf).
 race('high elf').
 choice(init, 'initial class', sorcerer).
