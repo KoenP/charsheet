@@ -6,7 +6,8 @@
        initial_class_base_hp/2,
        max_hp_per_level/2,
        class_saving_throw/2,
-       caster/2.
+       caster/2,
+       asi_level/1.
 
 :- discontiguous
        required_predicate_for_each_class/1.
@@ -139,6 +140,32 @@ required_predicate_for_each_class(class_saving_throw/2).
 %  your subclass.
 choose_subclass_level(_) :- false.
 
+%! asi_level(?ClassLevel)
+%
+%  Determines at which ClassLevels your character receives an ability
+%  score increase.
+asi_level(_) :- false.
+required_predicate_for_each_class(asi_level/1).
+default_asi_level(L) :-
+    member(L, [4,8,12,16,19]).
+
+options_source(match_class(AsiLevel), 'asi or feat', asi_or_feat) :-
+    asi_level(AsiLevel).
+asi_or_feat(feat(Feat)) :-
+    feat_option(Feat).
+asi_or_feat(Ability + 2) :-
+    ability(Ability).
+asi_or_feat([Ability1 + 1, Ability2 + 1]) :-
+    ability(Ability1),
+    ability(Ability2),
+    Ability1 \= Ability2.
+
+trait(choice(match_class(AsiLevel),'asi or feat'), feat(Feat)) :-
+    choice(match_class(AsiLevel), 'asi or feat', feat(Feat)).
+bonus(choice(match_class(AsiLevel),'asi or feat'), Ability+N) :-
+    choice(match_class(AsiLevel), 'asi or feat', Bonus),
+    (Bonus = Ability + N ; member(Ability+N, Bonus)).
+
 %! caster(?Class, ?Factor)
 %
 %  Indicates to what extent the given Class is a classical spell caster.
@@ -173,7 +200,10 @@ meta_todo(class(Class), predicate_missing(Pred/Arity)) :-
     required_predicate_for_each_class(Pred/Arity),
     missing_for_class(Class, Pred/Arity).
 
+missing_for_class(Class, Pred/1) :-
+    \+ call(Pred, Class:_).
 missing_for_class(Class, Pred/Arity) :-
+    Arity \= 1,
     length(Args, Arity),
     Args = [Class|_],
     Goal =.. [Pred|Args],

@@ -5,9 +5,12 @@
 :- [sketch].
 
 % TODO
-ability_mod(dex, 1).
-ability_mod(cha, 4).
-
+base_ability(str, 12).
+base_ability(dex, 12).
+base_ability(con, 12).
+base_ability(wis, 12).
+base_ability(cha, 12).
+base_ability(int, 12).
 
 % Level 1
 name('Zahar') :- !.
@@ -36,9 +39,11 @@ choice(match_class(sorcerer:3), replacing(spell, darkvision), 'scorching ray').
 gain_level(4, sorcerer, hp_avg).
 choice(match_class(sorcerer:4), cantrip, 'fire bolt').
 
+choice(match_class(sorcerer:4), 'asi or feat', cha+2).
+
 gain_level(5, sorcerer, hp_avg).
 gain_level(6, sorcerer, hp_avg).
-gain_level(7, sorcerer, hp_avg).
-gain_level(8, sorcerer, hp_avg).
-
-gain_level(L, sorcerer, hp_avg) :- between(9, 20, L).
+%gain_level(7, sorcerer, hp_avg).
+%gain_level(8, sorcerer, hp_avg).
+%
+%gain_level(L, sorcerer, hp_avg) :- between(9, 20, L).

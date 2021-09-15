@@ -16,20 +16,38 @@ ac(AC) :- ac(_, AC).
 ac(Origin, AC) :-
     body_ac(Origin, BodyAC),
     findall(Bonus, bonus(ac+Bonus), Bonuses),
-    sumlist([BodyAC, ShieldAC | Bonuses], AC).
+    sumlist([BodyAC | Bonuses], AC).
 
+% Add shield AC to final AC.
 bonus_source(equipped(shield), ac+2).
-bonus_source(equipped(shield+N), ac+Bon) :-
+bonus(equipped(shield+N), ac+Bon) :-
+    equipped(shield+N), % can't use bonus_source/2 because N might not
+                        % be fully instantiated in the next line.
     Bon is 2 + N.
 
+%! body_ac(?Origin, ?AC:int)
+%
+%  Your character's armor class without considering bonuses.  Multiple
+%  different formulas might be applicable, the one we use is indicated
+%  by Origin.
 body_ac(Origin, AC) :-
     (unarmored_ac_formula(Origin, Formula) ; armored_ac_formula(Origin, Formula)),
     eval_ac_formula(Formula, AC).
 
+%! unarmored_ac_formula(?Origin, ?Formula)
+%
+%  Formula is the formula used to calculate your character's unarmored AC.
+%  See eval_ac_formula/3 for how a correct formula is constructed.
 unarmored_ac_formula(Origin, AltFormula) :-
     bonus(Origin, 'unarmored ac' = AltFormula).
-unarmored_ac_formula('standard formula', 10 + dex).
+unarmored_ac_formula('standard formula', 10 + dex) :-
+    \+ bonus('unarmored ac' = _).
 
+%! armored_ac_formula(?Origin, ?Formula)
+%
+%  Formula is the formula used to calculate your character's AC while
+%  wearing armor.  See eval_ac_formula/2 for how a correct formula is
+%  constructed.
 armored_ac_formula(heavy_armor(Armor), AC) :-
     equipped(Armor),
     body_armor(Armor, heavy, ac(AC)).
@@ -40,15 +58,9 @@ armored_ac_formula(light_armor(Armor), AC + dex) :-
     equipped(Armor),
     body_armor(Armor, light, ac(AC)).
 
-shield_ac_formula(shield, 2) :-
-    equipped(shield).
-shield_ac_formula(shield+N, 2+N) :-
-    equipped(shield+N).
- 
-eval_ac_formula(Id, Formula, AC) :-
-    findall(Bon, bonus(Id + Bon), Bonuses),
-    eval_ac_formula(Formula, ACWithoutBonuses),
-    sumlist([ACWithoutBonuses|Bonuses], AC).
+%! eval_ac_formula(?Formula, ?AC:int)
+%
+%  Evaluate an AC formula to an integer.
 eval_ac_formula(A + B, AC) :-
     eval_ac_formula(A, X),
     eval_ac_formula(B, Y),

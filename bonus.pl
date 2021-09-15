@@ -33,3 +33,11 @@ bonus_source(Source, Bonus) :-
 %  Equivalent to asserting a bonus_source(Source, Bonus) clause for
 %  each member(Bonus, Bonuses).
 bonuses_from_source(_,_) :- false.
+
+%! sum_bonuses(++Stat, ?Total:int)
+%
+%  Sum up all the bonuses that affect Stat.
+sum_bonuses(Stat, Total) :-
+    ground(Stat),
+    findall(Bon, bonus(Stat + Bon), Bonuses),
+    sumlist(Bonuses, Total).

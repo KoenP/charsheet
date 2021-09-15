@@ -2,6 +2,7 @@
 :- use_module(library(yall)).
 
 :- multifile
+       (?=)/2,
        gain_level/3,
        on_rest/3,
        todo/1,
@@ -16,13 +17,17 @@
 :- op(1000, xfx, ?=).
 
 :- [dice].
+:- [format].
 :- [options].
 :- [trait].
 :- [bonus].
 :- [spell_data].
 :- [spellcasting].
 :- [class].
+:- [feat].
+:- [ability].
 :- [ac].
+:- [hp].
 :- [html].
 
 %! meta_todo(Source, Todo)
