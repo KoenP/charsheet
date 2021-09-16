@@ -26,6 +26,7 @@
 :- [class].
 :- [feat].
 :- [ability].
+:- [skill].
 :- [ac].
 :- [hp].
 :- [html].
@@ -132,6 +133,28 @@ problem(gain_level_not_contiguous(Levels)) :-
 % Pick your initial class.
 options(init, 'initial class', class_option).
 initial_class(Class) :- choice(init, 'initial class', Class), !.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% To organize:
+initiative(Init) :-
+    ability_mod(dex, DexMod),
+    sum_bonuses(init, Bonus),
+    Init is DexMod + Bonus.
+
+%! hit_dice(?HD)
+hit_dice(HD) :-
+    findall(CHD, hit_dice(_, CHD), CHDs),
+    list_to_sum(CHDs, Sum),
+    simplify_dice_sum(Sum, HD).
+%! hit_dice(?Class:atomic, ?HD)
+hit_dice(Class, M d X) :-
+    class_level(Class:Level),
+    hd_per_level(Class, N d X),
+    M is N * Level.
+
+%! proficiency_bonus(?Bonus:int)
+proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).
+calc_bonus(Level, Bonus) :- Bonus is 2 + div(Level-1, 4).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Todo.

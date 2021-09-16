@@ -26,9 +26,10 @@ char_sheet_body([Div]) :-
     Div = div(class(container),
               [header(h1(CharName)), article(Contents)]).
 
-body_contents([Summary, AbilityTable]) :-
+body_contents([Summary, AbilityTable, SkillTable]) :-
     character_summary(Summary),
-    ability_table(AbilityTable).
+    ability_table(AbilityTable),
+    skill_table(SkillTable).
 
 character_summary(Div) :-
     Div = div([table( [id=summary, style='padding: 4px'] ,
@@ -48,11 +49,11 @@ character_summary(Div) :-
     level(Level),
     max_hp(HP),
     ac(AC),
-    Init = todo,
+    initiative(InitVal), format_bonus(InitVal, Init, []),
     Speed = todo,
-    HD = todo,
+    hit_dice(HDTerm), format_dice_sum(HDTerm, HD, []),
     PP = todo,
-    ProfBon = todo.
+    proficiency_bonus(ProfBonVal), format_bonus(ProfBonVal, ProfBon, []).
 
 % Ability table.
 ability_table(Table) :- 
@@ -71,7 +72,34 @@ ability_hdr(con, 'CON').
 ability_hdr(int, 'INT').
 ability_hdr(wis, 'WIS').
 ability_hdr(cha, 'CHA').
-    
+
+% Skill table.
+skill_table(Table) :-
+    table('skills', 'Skills', [Header|Rows], Table),
+    Header = tr([th([]), th('Skill'), th('Score')]),
+    findall(Row, 
+            (ability(Abil), skill_table_rows_for_abil(Abil, Row)),
+            AbilRows),
+    flatten(AbilRows, Rows).
+skill_table_rows_for_abil(Abil, [FirstRow|OtherRows]) :-
+    findall(Skill, skill_ability(Skill, Abil), Skills),
+    length(Skills, NumberOfSkills),
+    [FirstSkill|OtherSkills] = Skills,
+    skill_table_row(FirstSkill, NumberOfSkills, FirstRow),
+    repl(0, NumberOfSkills, [0|Zeros]),
+    maplist(skill_table_row, OtherSkills, Zeros, OtherRows).
+skill_table_row(Skill, NumberOfSkills, tr(Row)) :- 
+    skill_table_row_span_line(Skill, NumberOfSkills, RowSpanLine),
+    skill(Skill, ScoreVal), format_bonus(ScoreVal, Score, []),
+    append(RowSpanLine, [td(Skill), td(Score)], Row).
+skill_table_row_span_line(_, 0, []) :- !.
+skill_table_row_span_line(Skill, Rowspan, [td(rowspan=Rowspan, b(AbilHdr))]) :-
+    skill_ability(Skill, Abil),
+    ability_hdr(Abil, AbilHdr).
+
+repl(X, Len, Xs) :-
+    length(Xs, Len),
+    maplist(=(X), Xs).
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

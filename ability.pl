@@ -73,7 +73,11 @@ total_racial_ability_bonus(Ability, Total) :-
 
 total_asi_ability_bonus(Ability, Total) :-
     ability(Ability),
-    findall(Bon, bonus(choice(_, 'asi or feat'), Ability+Bon), Bonuses),
+    findall(Bon,
+            (bonus(Origin, Ability+Bon), Origin = choice(_, 'asi or feat')),
+              % Omitting the intermediate Origin variable causes a warning in swipl which,
+              % I think, is a bug in swipl.
+            Bonuses),
     sumlist(Bonuses, Total).
 
 total_other_ability_bonus(Ability, Total) :-
