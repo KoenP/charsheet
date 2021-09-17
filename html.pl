@@ -26,10 +26,22 @@ char_sheet_body([Div]) :-
     Div = div(class(container),
               [header(h1(CharName)), article(Contents)]).
 
-body_contents([Summary, AbilityTable, SkillTable]) :-
+body_contents([Summary,
+               AbilityTable,
+               SkillTable,
+               Proficiencies,
+               Traits,
+               SpellSlots,
+               SpellPrep,
+               Spells]) :-
     character_summary(Summary),
     ability_table(AbilityTable),
-    skill_table(SkillTable).
+    skill_table(SkillTable),
+    proficiency_list(Proficiencies),
+    trait_list(Traits),
+    spell_slot_table(SpellSlots),
+    spell_preparation_table(SpellPrep),
+    spell_table(Spells).
 
 character_summary(Div) :-
     Div = div([table( [id=summary, style='padding: 4px'] ,
@@ -100,6 +112,95 @@ skill_table_row_span_line(Skill, Rowspan, [td(rowspan=Rowspan, b(AbilHdr))]) :-
 repl(X, Len, Xs) :-
     length(Xs, Len),
     maplist(=(X), Xs).
+
+% Proficiencies, other than skill proficiencies.
+proficiency_list(p([h3("Proficiencies"), div([id=proficiencies], ul(Profs))])) :-
+    findall(Prof, proficiency_list_entry(Prof), Profs).
+proficiency_list_entry(Entry) :-
+      proficiency_category("Languages: ", language, Entry)
+    ; proficiency_category("Weapons: ", weapon, Entry)
+    ; proficiency_category("Armor: ", armor, Entry)
+    ; proficiency_category("Tools: ", tool, Entry).
+proficiency_category(CatHdr, CatFunctor, li([b(CatHdr) | Profs])) :-
+    findall(T,
+            (Search =.. [CatFunctor,X], trait(Search), maybe_tooltip(Search, X, T)),
+            Ts),
+    format_list_flat(Ts, Profs, []).
+
+% Traits.
+trait_list(p([h3("Notable traits"), div([id=traits], ul(Items))])) :-
+    findall(li(Item), trait_list_entry(Item), Items).
+%trait_list_entry(div(class=tooltip, [Trait, span(class=tooltiptext, Desc)])) :-
+trait_list_entry(Entry) :-
+    trait(TraitVal),
+    \+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_), skill(_)]),
+    fmt(format_trait(TraitVal), Trait),
+    maybe_tooltip(TraitVal, Trait, Entry).
+    %fmt(format_trait(TraitVal), Trait),
+    %format_trait(TraitVal, Trait),
+
+    % ((TraitVal ?= Desc), !; source(TraitVal,Src), format_source(Src,Desc,[])).
+
+format_trait(feat(Feat)) --> !, ['feat: '], format_term(Feat).
+% format_trait(T) --> format_term(T), [' ('], summary(T), !, [')'].
+format_trait(T) --> format_term(T).
+
+% Spellcasting section.
+spell_slot_table(Table) :-
+    table('spell_slots', 'Spell slots', [tr(Levels)|Rows], Table),
+    findall(th(Str),
+            (between(1, 9, Level), atomic_list_concat(['lvl ', Level], Str)),
+            Levels),
+    findall(Row, spell_slot_table_row(Row), Rows).
+spell_slot_table_row(tr(Row)) :-
+    findall(Cell,
+            spell_slot_table_cell(Cell),
+            Slots),
+    \+ length(Slots, 0),
+    length(Row, 9),
+    append(Slots, Padding, Row),
+    maplist(=(td([])), Padding).
+spell_slot_table_cell(td(Contents)) :-
+    between(1, 9, Level),
+    spell_slots(Level, N),
+    repl(input(type=checkbox, []), N, Contents).
+
+spell_preparation_table(Html) :-
+    table('spell preparation', 'Spells to prepare', [Header|Rows], Table),
+    Header = tr([th('Class'), th('Number'), th('Max Lvl')]),
+    findall(Row, spell_preparation_table_row(Row), Rows),
+    (Rows = [] -> Html = div([]); Rows \= [] -> Html = Table).
+spell_preparation_table_row(tr([td(Class), td(Prep), td(MaxLvl)])) :-
+    class(Class),
+    max_prepared_spells(Class, Prep),
+    findall(Level, spell_slots_single_class(Level, Class, _), Levels),
+    max_list(Levels, MaxLvl).
+
+spell_table(Table) :-
+    table('spells', 'Spells', [Header|Rows], Table),
+    Header = tr([th('Prep\'d'), th('Lvl'), th('Source'), th('Spell'), th('Cast time'),
+                 th('Rng'), th('Cpts'), th('Dur'), th('To Hit/DC'),
+                 th('Effect (summary)'), th('Res')]),
+    findall(Row, spell_table_row(_, _, Row), Rows).
+    %spell_table_rows(Rows).
+
+spell_table_row(Name, SpellLevel, tr(Row)) :-
+    known_spell(Origin, _, Availability, Resources, _Ritual, Name),
+    known_spell_data(Origin, Name, Data),
+    SpellLevel = Data.level,
+    format_components(Data.components, Components),
+    RowFields = [Availability, SpellLevel, Origin,
+                 div(class=tooltip, [Name, span(class=tooltiptext, Data.desc)]),
+                 Data.casting_time, Data.range, Components, Data.duration,
+                 "todo_to_hit", "todo_effects", Resources
+                ],
+    maplist(wrap(td), RowFields, Row).
+
+format_components(Cs, Format) :-
+    maplist(format_component, Cs, Format).
+    %format_list(Formats, Format, []).
+format_component(m(M), span(class=tooltip, [m, span(class=tooltiptext, M)])).
+format_component(C, C) :- C \= m(_).
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -115,6 +216,18 @@ pred(Pred, Result, _) :-
 
 % Helper predicates.
 table(Id, Caption, Contents, table(id=Id, [caption(h3(Caption))|Contents])).
+
+tooltip(Text, Tooltip, div(class=tooltip, [Text, span(class=tooltiptext, Tooltip)])).
+
+maybe_tooltip(Subject, Text, WithTooltip) :-
+    (Subject ?= Tooltip),
+    tooltip(Text, Tooltip, WithTooltip).
+%maybe_tooltip(Subject, Text, WithTooltip) :-
+%    source(Subject, Source),
+%    phrase(format_source(Source), Tooltip),
+%    tooltip(Text, Tooltip, WithTooltip).
+maybe_tooltip(Subject, Text, Text) :-
+    \+ (Subject ?= _).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

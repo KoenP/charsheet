@@ -144,7 +144,6 @@ sequence([Pred|Preds], X, Z) :-
     call(Pred, X, Y),
     sequence(Preds, Y, Z).
     
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Spell slots.
 

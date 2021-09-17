@@ -7,7 +7,8 @@
        max_hp_per_level/2,
        class_saving_throw/2,
        caster/2,
-       asi_level/1.
+       asi_level/1,
+       max_prepared_spells/2.
 
 :- discontiguous
        required_predicate_for_each_class/1.
@@ -181,6 +182,13 @@ bonus(choice(match_class(AsiLevel),'asi or feat'), Ability+N) :-
 %  which works differently.
 caster(_,_) :- false.
 required_predicate_for_each_class(caster/2).
+
+%! max_prepared_spells(?Class:atomic, ?N:int)
+%
+%  Number of spells you can prepare for Class. A class that doesn't
+%  need to prepare spells (like sorcerer) should just not list a
+%  clause for this predicate.
+max_prepared_spells(_,_) :- false.
 
 %! caster
 %

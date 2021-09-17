@@ -1,3 +1,7 @@
+fmt(Spec, Out) :-
+    phrase(Spec, Phrase),
+    atomics_to_string(Phrase, Out).
+
 format_term(Compound) -->
     {\+ is_list(Compound), Compound =.. [Ftor|Tms], \+ member(Ftor, ['/', ':', 'd', '+']), Tms \= []},
     format_atom(Ftor),
