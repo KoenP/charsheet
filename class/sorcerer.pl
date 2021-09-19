@@ -58,7 +58,7 @@ on_rest(short, 'sorcery point', restore(4)) :- trait('sorcerous restoration').
 known_spell(sorcerer, cha, always, [], no, Name) :-
     class_origin_to_class(Origin, sorcerer),
     choice_member(Origin, cantrip, Name).
-known_spell(sorcerer, cha, prepare, [slot], Ritual, Name) :-
+known_spell(sorcerer, cha, always, [slot], Ritual, Name) :-
     class_level(sorcerer:L),
     selected_at_class_level(sorcerer:L, spell, Name),
     spell_property(Name, ritual, Ritual). % TODO: this might be wrong
@@ -123,7 +123,6 @@ trait_source(match_class(sorcerer('draconic bloodline'):6),
              elemental_affinity(Element)) :-
     trait(dragon_ancestor(Color)),
     dragon_ancestor_element(Color, Element).
-
 
 bonus_source(trait(elemental_affinity(Element)), modify_spell(_, Name, Goal)) :-
     dragon_ancestor_element(Element),

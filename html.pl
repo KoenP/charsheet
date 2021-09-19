@@ -185,23 +185,39 @@ spell_table(Table) :-
     %spell_table_rows(Rows).
 
 spell_table_row(Name, SpellLevel, tr(Row)) :-
-    known_spell(Origin, _, Availability, Resources, _Ritual, Name),
+    known_spell(Origin, Ability, Availability, Resources, _Ritual, Name),
     known_spell_data(Origin, Name, Data),
     SpellLevel = Data.level,
+    phrase(format_range(Data.range), Range),
     format_components(Data.components, Components),
+    spell_to_hit_or_dc(Ability, Data, ToHitOrDC),
     RowFields = [Availability, SpellLevel, Origin,
                  div(class=tooltip, [Name, span(class=tooltiptext, Data.desc)]),
-                 Data.casting_time, Data.range, Components, Data.duration,
-                 "todo_to_hit", "todo_effects", Resources
+                 Data.casting_time, Range, Components, Data.duration,
+                 ToHitOrDC, "todo_effects", Resources
                 ],
     maplist(wrap(td), RowFields, Row).
+
+spell_to_hit_or_dc(Ability, SpellData, ToHit) :-
+    Effects = SpellData.get(effects),
+    contains_attack_roll(Effects),
+    proficiency_bonus(ProfBon),
+    ability_mod(Ability, Mod),
+    ToHitVal is ProfBon + Mod,
+    format_bonus(ToHitVal, ToHit, []).
+spell_to_hit_or_dc(_, SpellData, "-") :-
+    \+ (Effects = SpellData.get(effects), contains_attack_roll(Effects)).
 
 format_components(Cs, Format) :-
     maplist(format_component, Cs, Format).
     %format_list(Formats, Format, []).
 format_component(m(M), span(class=tooltip, [m, span(class=tooltiptext, M)])).
 format_component(C, C) :- C \= m(_).
-    
+
+format_range(feet(X)) --> {!}, [X], [" ft"].
+format_range(miles(X)) --> {!}, [X], [" mi"].
+format_range(X) --> [X].
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 thtd(Header, DataRule, [tr([th(Header), td(X)])], Tail) :-

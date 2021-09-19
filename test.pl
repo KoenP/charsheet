@@ -38,6 +38,7 @@ choice(match_class(sorcerer:3), replacing(spell, darkvision), 'scorching ray').
 % Level 4
 gain_level(4, sorcerer, hp_avg).
 choice(match_class(sorcerer:4), cantrip, 'fire bolt').
+choice(match_class(sorcerer:4), spell, fireball).
 
 choice(match_class(sorcerer:4), 'asi or feat', feat(alert)).
 
