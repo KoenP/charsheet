@@ -6,8 +6,8 @@ caster(sorcerer, full).
 choose_subclass_level(sorcerer:1).
 asi_level(sorcerer:L) :-
     default_asi_level(L).
-
-% TODO: asis
+class_saving_throw(sorcerer, con).
+class_saving_throw(sorcerer, cha).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features (you don't gain these when multiclassing into sorcerer).

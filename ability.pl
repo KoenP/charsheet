@@ -66,11 +66,19 @@ ability_after_feats(Ability, Score) :-
     ability_max(Ability, Max),
     Score is min(AfterAsis+Bonus, Max).
 
+%! saving_throw(?Ability:atomic, ?Bonus:int)
+saving_throw(Ability, Bonus) :-
+    ability_mod(Ability, Mod),
+    initial_class(Class),
+    proficiency_bonus(ProfBon),
+    (class_saving_throw(Class, Ability)
+    -> Bonus is Mod + ProfBon
+    ;  Bonus = Mod).
+
 total_racial_ability_bonus(Ability, Total) :-
     ability(Ability), % ground
     findall(Bon, bonus(race(_), Ability + Bon), Bonuses),
     sumlist(Bonuses, Total).
-
 total_asi_ability_bonus(Ability, Total) :-
     ability(Ability),
     findall(Bon,
@@ -79,7 +87,6 @@ total_asi_ability_bonus(Ability, Total) :-
               % I think, is a bug in swipl.
             Bonuses),
     sumlist(Bonuses, Total).
-
 total_other_ability_bonus(Ability, Total) :-
     ability(Ability),
     findall(Bon,

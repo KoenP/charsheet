@@ -133,6 +133,9 @@ problem(gain_level_not_contiguous(Levels)) :-
 % Pick your initial class.
 options(init, 'initial class', class_option).
 initial_class(Class) :- choice(init, 'initial class', Class), !.
+problem(multiple_initial_classes(Classes)) :-
+    findall(Class, initial_class(Class), Classes),
+    Classes = [_,_|_].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % To organize:

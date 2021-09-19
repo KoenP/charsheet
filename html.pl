@@ -12,7 +12,6 @@ out :-
     close(Stream).
 out_file_name --> {name(CharName)}, seq_atom(CharName), ".html".
 
-
 char_sheet_html([head(Head), body(Body)]) :-
     char_sheet_head(Head),
     char_sheet_body(Body).
@@ -26,22 +25,18 @@ char_sheet_body([Div]) :-
     Div = div(class(container),
               [header(h1(CharName)), article(Contents)]).
 
-body_contents([Summary,
-               AbilityTable,
-               SkillTable,
-               Proficiencies,
-               Traits,
-               SpellSlots,
-               SpellPrep,
-               Spells]) :-
-    character_summary(Summary),
-    ability_table(AbilityTable),
-    skill_table(SkillTable),
-    proficiency_list(Proficiencies),
-    trait_list(Traits),
-    spell_slot_table(SpellSlots),
-    spell_preparation_table(SpellPrep),
-    spell_table(Spells).
+body_contents(Contents) :-
+    call_all([character_summary,
+              ability_table,
+              skill_table,
+              proficiency_list,
+              trait_list,
+              spell_slot_table,
+              spell_preparation_table,
+              spell_table],
+             Contents).
+call_all(Preds, Xs) :-
+    maplist([P,X]>>call(P,X), Preds, Xs).
 
 character_summary(Div) :-
     Div = div([table( [id=summary, style='padding: 4px'] ,
@@ -76,8 +71,7 @@ ability_table_row(Abil, tr([th(AbilHdr), td(Score), td(Mf), td(ST)])) :-
     ability_hdr(Abil, AbilHdr),
     ability(Abil, Score),
     ability_mod(Abil, MfVal), format_bonus(MfVal, Mf, []),
-    ST=todo.
-    %saving_throw(Abil, STVal), format_bonus(STVal, ST, []).
+    saving_throw(Abil, STVal), format_bonus(STVal, ST, []).
 ability_hdr(str, 'STR').
 ability_hdr(dex, 'DEX').
 ability_hdr(con, 'CON').
