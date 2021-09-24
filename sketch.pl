@@ -11,11 +11,15 @@
        resource/2,
        name/1.
 
+:- op(700, xfx, else).
+:- op(650, xfx, from).
 :- op(650, xfx, from).
 :- op(650, xfx, unique_from).
 :- op(1000, xfx, ?=).
 :- op(1000, xfx, ?=).
+:- op(650, xfx, ft).
 
+:- [util].
 :- [dice].
 :- [format].
 :- [options].

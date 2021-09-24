@@ -139,11 +139,6 @@ spell_origin(Origin) :-
 %    findall(Mod, bonus(modify_spell_property(Origin,Name,Prop,Mod)), Mods),
 %    sequence(Mods, GenericVal, Val).
 
-sequence([], X, X).
-sequence([Pred|Preds], X, Z) :-
-    call(Pred, X, Y),
-    sequence(Preds, Y, Z).
-    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Spell slots.
 

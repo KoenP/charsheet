@@ -33,6 +33,12 @@ format_list_flat([]) --> [].
 format_list_flat([X]) --> [X].
 format_list_flat([X|Xs]) --> {Xs \= []}, [X], [', '], format_list_flat(Xs).
 
+format_damage([R|Rs]) --> {Rs \= []}, format_damage_roll(R), ',', format_damage(Rs).
+format_damage([R]) --> format_damage_roll(R).
+format_damage([]) --> [].
+format_damage_roll(damage(Type,Dice)) -->
+    format_dice_sum(Dice), [' '], [Type].
+
 format_dice_sum(Ds + K) --> {number(K), K \= 0}, format_dice_sum(Ds), ['+'], [K].
 format_dice_sum(Ds + 0) --> format_dice_sum(Ds).
 format_dice_sum(Ds + D) --> format_dice_sum(Ds), ['+'], format_dice(D).

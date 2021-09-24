@@ -124,18 +124,31 @@ trait_source(match_class(sorcerer('draconic bloodline'):6),
     trait(dragon_ancestor(Color)),
     dragon_ancestor_element(Color, Element).
 
-bonus_source(trait(elemental_affinity(Element)), modify_spell(_, Name, Goal)) :-
+bonus_source(trait(elemental_affinity(Element)),
+             modify_spell(_, Name, Goal)) :-
     dragon_ancestor_element(Element),
     known_spell(_, Name),
-    spell_property(Name, damage_rolls, [on_hit:ElemDamage]),
-    ElemDamage =.. [Element, _],
-    Goal = modify_spell_field(damage_rolls, elemental_affinity_update_damage_rolls).
+    spell_property(Name, effects, Effects),
+    subterm_member(damage(Element,_), Effects),
+    Goal = modify_spell_field(effects, apply_elemental_affinity).
 
-elemental_affinity_update_damage_rolls([on_hit:ElemDamage], [on_hit:NewElemDamage]) :-
-    ability_mod(cha, Mod),
-    ElemDamage =.. [Element, Damage],
-    simplify_dice_sum(Damage+Mod, NewDamage),
-    NewElemDamage =.. [Element, NewDamage].
+apply_elemental_affinity(OldEffects, NewEffects) :-
+    \+ contains_multiple_damage_rolls(OldEffects),
+    dragon_ancestor_element(Element),
+    ability_mod(cha, Bonus),
+    select_subterm(damage(Element,Dice), OldEffects, damage(Element,NewDice), NewEffects),
+    simplify_dice_sum(Dice + Bonus, NewDice).
+apply_elemental_affinity(OldEffects, NewEffects) :-
+    contains_multiple_damage_rolls(OldEffects),
+    ability_mod(cha, Bonus),
+    atomics_to_string(["add +", Bonus, " to one damage roll"], New),
+    append(OldEffects, [New], NewEffects).
+contains_multiple_damage_rolls(Effects) :-
+    findall(A-B, subterm_member(damage(A,B),Effects), [_,_|_]).
+contains_multiple_damage_rolls(Effects) :-
+    member(N*SubEffects, Effects),
+    N > 1,
+    subterm_member(damage(_,_), SubEffects).
 
 % Dragon wings.
 trait_source(match_class(sorcerer('draconic bloodline'):14), 'dragon wings').

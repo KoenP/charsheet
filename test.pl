@@ -1,4 +1,5 @@
 :- doc_server(4000).
+:- set_prolog_flag(toplevel_print_anon, false).
 :- portray_text(true).
 
 
@@ -9,7 +10,7 @@ base_ability(str, 12).
 base_ability(dex, 12).
 base_ability(con, 12).
 base_ability(wis, 12).
-base_ability(cha, 12).
+base_ability(cha, 18).
 base_ability(int, 12).
 
 % Level 1

@@ -40,7 +40,7 @@
 <tr><th>CON</th><td>12</td><td>+1</td><td>+4</td></tr>
 <tr><th>INT</th><td>13</td><td>+1</td><td>+1</td></tr>
 <tr><th>WIS</th><td>12</td><td>+1</td><td>+1</td></tr>
-<tr><th>CHA</th><td>12</td><td>+1</td><td>+4</td></tr>
+<tr><th>CHA</th><td>18</td><td>+4</td><td>+7</td></tr>
 </table>
 
 <table id="skills">
@@ -64,10 +64,10 @@
 <tr><td>investigation</td><td>+1</td></tr>
 <tr><td>nature</td><td>+1</td></tr>
 <tr><td>religion</td><td>+1</td></tr>
-<tr><td rowspan="4"><b>CHA</b></td><td>deception</td><td>+4</td></tr>
-<tr><td>intimidation</td><td>+1</td></tr>
-<tr><td>performance</td><td>+1</td></tr>
-<tr><td>persuasion</td><td>+1</td></tr>
+<tr><td rowspan="4"><b>CHA</b></td><td>deception</td><td>+7</td></tr>
+<tr><td>intimidation</td><td>+4</td></tr>
+<tr><td>performance</td><td>+4</td></tr>
+<tr><td>persuasion</td><td>+4</td></tr>
 </table>
 
 <p>
@@ -77,7 +77,7 @@
 <div id="proficiencies">
 <ul>
 <li><b>Languages: </b>common, elvish, draconic</li>
-<li><b>Weapons: </b>longsword, shortsword, shortbow, longbow, dagger, dart, sling, quarterstaff, light crossbow</li>
+<li><b>Weapons: </b>dagger, dart, sling, quarterstaff, light crossbow, longsword, shortsword, shortbow, longbow</li>
 <li><b>Armor: </b></li>
 <li><b>Tools: </b></li>
 </ul>
@@ -136,34 +136,34 @@ Additionally, parts of your skin are covered by a thin sheen of dragon-like scal
 <tr><th>Prep'd</th><th>Lvl</th><th>Source</th><th>Spell</th><th>Cast time</th><th>Rng</th><th>Cpts</th><th>Dur</th><th>To Hit/DC</th><th>Effect (summary)</th><th>Res</th></tr>
 <tr><td>always</td><td>0</td><td>sorcerer</td><td>
 <div class="tooltip">acid splash<span class="tooltiptext">You hurl a bubble of acid. Choose one creature within range, or choose two creatures within range that are within 5 feet of each other. A target must succeed on a dexterity saving throw or take 1d6 acid damage. This spell’s damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).</span></div>
-</td><td>1 action</td><td>60 ft</td><td>vs</td><td>Instantaneous</td><td>-</td><td>todo_effects</td><td></td></tr>
+</td><td>1 action</td><td>60 ft</td><td>vs</td><td>Instantaneous</td><td>DC 15 (dex)</td><td>up to two targets within 5 ft of eachother; saving throw (dex) -&gt; 2d6 acid on fail; </td><td></td></tr>
 <tr><td>always</td><td>0</td><td>sorcerer</td><td>
 <div class="tooltip">blade ward<span class="tooltiptext">You extend your hand and trace a sigil of warding in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.</span></div>
-</td><td>1 action</td><td>self</td><td>vs</td><td>1 round</td><td>-</td><td>todo_effects</td><td></td></tr>
+</td><td>1 action</td><td>self</td><td>vs</td><td>1 round</td><td>-</td><td></td><td></td></tr>
 <tr><td>always</td><td>0</td><td>sorcerer</td><td>
 <div class="tooltip">booming blade<span class="tooltiptext">As part of the action used the cast this spell, you must make a melee attack with a weapon against one create within the spell's range otherwise the spell fails. On a hit, the target suffers the attack's normal effects, and it becomes sheathed in booming energy until the start of your next turn. If the target willingly moves before then, it immediately takes 1d8 thunder damage, and the spell ends.This spell's damage increases when you reach higher levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target, and the damage the target take for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level and 17th level.</span></div>
-</td><td>1 action</td><td>5 ft</td><td>v<span class="tooltip">m<span class="tooltiptext">A weapon.</span></span></td><td>1 round</td><td>-</td><td>todo_effects</td><td></td></tr>
+</td><td>1 action</td><td>5 ft</td><td>v<span class="tooltip">m<span class="tooltiptext">A weapon.</span></span></td><td>1 round</td><td>-</td><td></td><td></td></tr>
 <tr><td>always</td><td>0</td><td>sorcerer</td><td>
 <div class="tooltip">chill touch<span class="tooltiptext">You create a ghostly, skeletal hand in the space of a creature within range. Make a ranged spell attack against the creature to assail it with the chill of the grave. On a hit, the target takes 1d8 necrotic damage, and it can’t regain hit points until the start of your next turn. Until then, the hand clings to the target.If you hit an undead target, it also has disadvantage on attack rolls against you until the end of your next turn.This spell’s damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).</span></div>
-</td><td>1 action</td><td>120 ft</td><td>vs</td><td>1 round</td><td>-</td><td>todo_effects</td><td></td></tr>
+</td><td>1 action</td><td>120 ft</td><td>vs</td><td>1 round</td><td>-</td><td></td><td></td></tr>
 <tr><td>always</td><td>0</td><td>sorcerer</td><td>
 <div class="tooltip">fire bolt<span class="tooltiptext">You hurl a mote of fire at a creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 fire damage. A flammable object hit by this spell ignites if it isn’t being worn or carried.This spell’s damage increases by 1d10 when you reach 5th level (2d10), 11th level (3d10), and 17th level (4d10).</span></div>
-</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>+4</td><td>todo_effects</td><td></td></tr>
+</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>+7</td><td>2d10+4 fire on hit; </td><td></td></tr>
 <tr><td>always</td><td>3</td><td>sorcerer</td><td>
 <div class="tooltip">fireball<span class="tooltiptext">A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame. Each creature in a 20-foot-radius sphere centered on that point must make a dexterity saving throw. A target takes 8d6 fire damage on a failed save, or half as much damage on a successful one.The fire spreads around corners. It ignites flammable objects in the area that aren’t being worn or carried.</span></div>
-</td><td>1 action</td><td>150 ft</td><td>vs<span class="tooltip">m<span class="tooltiptext">A tiny ball of bat guano and sulfur.</span></span></td><td>Instantaneous</td><td>-</td><td>todo_effects</td><td>slot</td></tr>
+</td><td>1 action</td><td>150 ft</td><td>vs<span class="tooltip">m<span class="tooltiptext">A tiny ball of bat guano and sulfur.</span></span></td><td>Instantaneous</td><td>DC 15 (dex)</td><td>in 20 ft sphere: saving throw (dex) -&gt; 8d6+4 fire on fail, else half damage; </td><td>slot</td></tr>
 <tr><td>always</td><td>1</td><td>sorcerer</td><td>
 <div class="tooltip">inflict wounds<span class="tooltiptext">Make a melee spell attack against a creature you can reach. On a hit, the target takes 3d10 necrotic damage.</span></div>
-</td><td>1 action</td><td>touch</td><td>vs</td><td>Instantaneous</td><td>-</td><td>todo_effects</td><td>slot</td></tr>
+</td><td>1 action</td><td>touch</td><td>vs</td><td>Instantaneous</td><td>-</td><td></td><td>slot</td></tr>
 <tr><td>always</td><td>2</td><td>sorcerer</td><td>
 <div class="tooltip">scorching ray<span class="tooltiptext">You generate three rays of fire and hurl them at targets in the range of the spell. You can hurl them at on one target or several.Perform a ranged attack spell for each ray. If it hits, the target takes 2d6 fire damage.</span></div>
-</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>+4</td><td>todo_effects</td><td>slot</td></tr>
+</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>+7</td><td>3 times 2d6 fire on hit; add +4 to one damage roll; </td><td>slot</td></tr>
 <tr><td>always</td><td>1</td><td>sorcerer</td><td>
 <div class="tooltip">false life<span class="tooltiptext">Bolstering yourself with a necromantic facsimile of life, you gain 1d4 + 4 temporary hit points for the duration.</span></div>
-</td><td>1 action</td><td>self</td><td>vs<span class="tooltip">m<span class="tooltiptext">A small amount of alcohol or distilled spirits.</span></span></td><td>1 hour</td><td>-</td><td>todo_effects</td><td>slot</td></tr>
+</td><td>1 action</td><td>self</td><td>vs<span class="tooltip">m<span class="tooltiptext">A small amount of alcohol or distilled spirits.</span></span></td><td>1 hour</td><td>-</td><td>temp hp+1d4+4; </td><td>slot</td></tr>
 <tr><td>always</td><td>2</td><td>sorcerer</td><td>
 <div class="tooltip">blur<span class="tooltiptext">Your body becomes blurred, shifting and wavering to all who can see you. For the duration, any creature has disadvantage on attack rolls against you. An attacker is immune to this effect if it doesn’t rely on sight, as with blindsight, or can see through illusions, as with truesight.</span></div>
-</td><td>1 action</td><td>self</td><td>v</td><td>Up to 1 minute</td><td>-</td><td>todo_effects</td><td>slot</td></tr>
+</td><td>1 action</td><td>self</td><td>v</td><td>Up to 1 minute</td><td>-</td><td></td><td>slot</td></tr>
 </table>
 
 </article></div>

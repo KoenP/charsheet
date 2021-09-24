@@ -185,22 +185,34 @@ spell_table_row(Name, SpellLevel, tr(Row)) :-
     phrase(format_range(Data.range), Range),
     format_components(Data.components, Components),
     spell_to_hit_or_dc(Ability, Data, ToHitOrDC),
+    display_spell_effects(Data, Effects),
     RowFields = [Availability, SpellLevel, Origin,
                  div(class=tooltip, [Name, span(class=tooltiptext, Data.desc)]),
                  Data.casting_time, Range, Components, Data.duration,
-                 ToHitOrDC, "todo_effects", Resources
+                 ToHitOrDC, Effects, Resources
                 ],
     maplist(wrap(td), RowFields, Row).
 
 spell_to_hit_or_dc(Ability, SpellData, ToHit) :-
     Effects = SpellData.get(effects),
-    contains_attack_roll(Effects),
+    subterm_member(spell_attack_roll(_):_, Effects),
+    !,
     proficiency_bonus(ProfBon),
     ability_mod(Ability, Mod),
     ToHitVal is ProfBon + Mod,
     format_bonus(ToHitVal, ToHit, []).
-spell_to_hit_or_dc(_, SpellData, "-") :-
-    \+ (Effects = SpellData.get(effects), contains_attack_roll(Effects)).
+spell_to_hit_or_dc(Ability, SpellData, DC) :-
+    Effects = SpellData.get(effects),
+    findall(STAbi, subterm_member(saving_throw(STAbi):_, Effects), STAbis),
+    STAbis = [_|_],
+    !,
+    proficiency_bonus(ProfBon),
+    ability_mod(Ability, Mod),
+    DCVal is 8 + ProfBon + Mod,
+    phrase(format_dc(DCVal, STAbis), DC).
+spell_to_hit_or_dc(_, _, "-").
+
+format_dc(DC, Abis) --> ["DC "], [DC], [" ("], format_list(Abis), [")"].
 
 format_components(Cs, Format) :-
     maplist(format_component, Cs, Format).
@@ -211,6 +223,56 @@ format_component(C, C) :- C \= m(_).
 format_range(feet(X)) --> {!}, [X], [" ft"].
 format_range(miles(X)) --> {!}, [X], [" mi"].
 format_range(X) --> [X].
+
+display_spell_effects(Data, Effects) :-
+    format_effects(Data.get(effects), Effects, []),
+    !.
+display_spell_effects(_, "-").
+
+format_effects([]) --> [].
+format_effects([E|Es]) -->
+    format_effect(E),
+    ["; "],
+    format_effects(Es).
+
+format_effect(spell_attack_roll(_):Damage) -->
+    {!},
+    format_damage_roll(Damage),
+    [" on hit"].
+format_effect(in(Area):Effect) -->
+    ["in "],
+    format_area(Area),
+    [": "],
+    format_effect(Effect),
+    {!}.
+format_effect(N*Es) -->
+    {!},
+    [N],
+    [" times "],
+    format_effect(Es).
+format_effect(saving_throw(Abi):(E1 else E2)) -->
+    {!},
+    ["saving throw ("],
+    [Abi],
+    [") -> "],
+    format_effect(E1),
+    [" on fail, else "],
+    format_effect(E2).
+format_effect(saving_throw(Abi):Effect) -->
+    {!},
+    ["saving throw ("],
+    [Abi],
+    [") -> "],
+    format_effect(Effect),
+    [" on fail"].
+format_effect(damage(Type,Roll)) -->
+    {!},
+    format_damage_roll(damage(Type,Roll)).
+format_effect(E) -->
+    format_term(E).
+    
+format_area(N ft Shape) --> [N], [" ft "], [Shape].
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -14,6 +14,7 @@
        required_predicate_for_each_class/1.
 
 :- [class/sorcerer].
+:- [class/warlock].
 
 %! class_level(?ClassLevel)
 %
