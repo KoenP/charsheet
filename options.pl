@@ -101,7 +101,18 @@ selected_at_class_level(Class:Level, Id, Choice) :-
 %! from(+N:int, :Pred, ?Choices)
 %  Helper predicate to support the infix `N from Pred` notation in
 %  options/3 specifications.
-from(N, Pred, Choices) :-
+from(1, Spec, Choice) :-
+    \+ is_list(Choice),
+    !,
+    from_(1, Spec, [Choice]).
+from(N, Spec, Choice) :-
+    from_(N, Spec, Choice).
+from_(N, List, Choices) :-
+    is_list(List),
+    !,
+    length(Choices, N),
+    subset(Choices, List).
+from_(N, Pred, Choices) :-
     length(Choices, N),
     maplist(call(Pred), Choices).
 
@@ -109,7 +120,7 @@ from(N, Pred, Choices) :-
 %  Like from/3, but only true if each choice in Choices is unique.
 unique_from(N, Pred, Choices) :-
     from(N, Pred, Choices),
-    is_set(Choices).
+    (is_set(Choices) ; N = 1).
          
 %! from_list(?List, ?Elem)
 %  Like member/2, but with the arguments flipped.

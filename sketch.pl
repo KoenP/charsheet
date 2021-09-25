@@ -23,6 +23,7 @@
 :- [dice].
 :- [format].
 :- [options].
+:- [replace].
 :- [trait].
 :- [bonus].
 :- [spell_data].

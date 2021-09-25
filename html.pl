@@ -179,10 +179,11 @@ spell_table(Table) :-
     %spell_table_rows(Rows).
 
 spell_table_row(Name, SpellLevel, tr(Row)) :-
-    known_spell(Origin, Ability, Availability, Resources, _Ritual, Name),
+    known_spell(Origin, Ability, Availability, ResourcesVal, _Ritual, Name),
     known_spell_data(Origin, Name, Data),
     SpellLevel = Data.level,
     phrase(format_range(Data.range), Range),
+    phrase(format_resources(ResourcesVal), Resources),
     format_components(Data.components, Components),
     spell_to_hit_or_dc(Ability, Data, ToHitOrDC),
     display_spell_effects(Data, Effects),
@@ -223,6 +224,12 @@ format_component(C, C) :- C \= m(_).
 format_range(feet(X)) --> {!}, [X], [" ft"].
 format_range(miles(X)) --> {!}, [X], [" mi"].
 format_range(X) --> [X].
+
+format_resources([]) --> [].
+format_resources([R]) --> {!}, format_resource(R).
+format_resources([R|Rs]) --> format_resource(R), [', '], format_resources(Rs).
+format_resource(per_rest(Dur, N)) --> {!}, checkboxes(N), [' / '], [Dur], [' rest'].
+format_resource(R) --> [R].
 
 display_spell_effects(Data, Effects) :-
     format_effects(Data.get(effects), Effects, []),
@@ -285,6 +292,11 @@ wrapped(Goal, Rule, Result, Tail) :-
 
 pred(Pred, Result, _) :-
     call(Pred, Result).
+
+checkboxes(N, Boxes) :-    
+    repl(input(type=checkbox, []), N, Boxes).
+
+checkboxes(N) --> {checkboxes(N, Boxes)}, seq(Boxes).
 
 % Helper predicates.
 table(Id, Caption, Contents, table(id=Id, [caption(h3(Caption))|Contents])).
