@@ -1,6 +1,7 @@
 :- multifile
        known_spell/6,
-       spell_property/3.
+       spell_property/3,
+       extend_class_spell_list/2.
 
 %! known_spell(?Origin, ?Ability:atomic, ?Availability, ?Resources:list, ?Ritual:atomic, ?Name:atomic)
 %
@@ -106,8 +107,17 @@ learnable_proper_spell(Class, Name) :-
     Class \= warlock,
     findall(L, spell_slots_single_class(L, Class, _), SlotLevels), % TODO this is inefficient
     max_member(MaxSlotLevel, SlotLevels),
-    spell_property(Name, level, SpellLevel),
-    between(1, MaxSlotLevel, SpellLevel).
+    spell_data(Name, SpellData),
+    (member(Class, SpellData.classes); extend_class_spell_list(Class, Name)),
+    between(1, MaxSlotLevel, SpellData.level).
+learnable_proper_spell(warlock, Name) :-
+    pact_magic_slot_level(SlotLevel),
+    spell_data(Name, Data),
+    (member(warlock, Data.classes); extend_class_spell_list(warlock, Name)),
+    between(1, SlotLevel, Data.level).
+
+%! cantrip(?Name)
+cantrip(Name) :- spell_property(Name, level, 0).
 
 %! class_cantrip(?Class, ?Name)
 %  
@@ -236,8 +246,6 @@ add_damage(Bonus, Orig, New) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Cantrip damage scaling.
-
-
 
 % TODO: werkt niet: findall(Mod, bonus(modify_spell_property(_,'fire bolt',damage,Mod)), Mods), sequence(Mods, fire(1 d 10), X).
 

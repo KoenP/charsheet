@@ -1,3 +1,5 @@
+:- multifile extend_spell_data/3.
+
 :- [spell_auto_data].
 
 %! spell_property(?Name:atomic, ?Field:atomic, ?Val)
@@ -85,6 +87,8 @@ add_spell_effect('acid splash', saving_throw(dex): damage(acid, N d 6)) :-
     cantrip_scale(N).
 
 add_spell_effect('false life', 'temp hp' + (1 d 4 + 4)).
+
+add_spell_effect('find familiar', test).
 
 add_spell_effect(fireball,
                  in(20 ft sphere):

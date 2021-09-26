@@ -17,6 +17,7 @@ name('Mr Warlock') :- !.
 race(elf).
 race('high elf').
 choice(init, 'initial class', warlock).
+choice(match_class(warlock:1), subclass, fiend).
 
 
 gain_level(2, warlock, hp_avg).
@@ -25,8 +26,19 @@ choice(match_class(warlock:2), 'eldritch invocation', ['beast speech', 'agonizin
 gain_level(3, warlock, hp_avg).
 choice(match_class(warlock:3), replace('eldritch invocation'), 'beast speech').
 choice(match_class(warlock:3), replacing('eldritch invocation', 'beast speech'), 'beguiling influence').
+choice(match_class(warlock:3), 'pact boon', chain).
 
 gain_level(4, warlock, hp_avg).
 choice(match_class(warlock:4), replace('eldritch invocation'), 'beguiling influence').
 choice(match_class(warlock:4), replacing('eldritch invocation', 'beguiling influence'),
        'bewitching whispers').
+
+gain_level(5, warlock, hp_avg).
+gain_level(6, warlock, hp_avg).
+gain_level(7, warlock, hp_avg).
+gain_level(8, warlock, hp_avg).
+gain_level(9, warlock, hp_avg).
+gain_level(10, warlock, hp_avg).
+
+gain_level(11, warlock, hp_avg).
+choice(_, 'arcanum spell', 'wall of ice').
