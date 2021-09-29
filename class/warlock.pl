@@ -29,7 +29,7 @@ trait_source(match_class(warlock:11), 'mystic arcanum').
 options_source(match_class(warlock:WarlockLevel), 'arcanum spell',
                [Spell]>>spell_property(Spell, level, SpellLevel)) :-
     member(WarlockLevel-SpellLevel, [11-6, 13-7, 15-8, 17-9]).
-known_spell(warlock, cha, always, [per_rest(long, 1)], todo, Spell) :-
+known_spell(warlock:'mystic arcanum', cha, always, [per_rest(long, 1)], todo, Spell) :-
     choice_member(_, 'arcanum spell', Spell).
 
 % Eldritch master.
@@ -69,7 +69,7 @@ known_spell(warlock, cha, always, ['pact slot'], Ritual, Name) :-
     spell_property(Name, ritual, Ritual). % TODO this might be wrong.
 
 % Learn cantrips.
-options_source(match_class(warlock), cantrip, 2 unique_from class_cantrip(warlock)).
+options_source(match_class(warlock:1), cantrip, 2 unique_from class_cantrip(warlock)).
 options_source(match_class(warlock:L), cantrip, class_cantrip(warlock)) :-
     L = 4; L = 10.
 
@@ -124,28 +124,49 @@ replaceable_class_options(warlock:L, 'eldritch invocation',
 replace_at_class_level(warlock:L, 'eldritch invocation', 1, eldritch_invocation_option) :-
     between(3, 20, L).
 
+% Shorthands.
+eldinv(Inv) :- trait(eldritch_invocation(Inv)).
+
+:- discontiguous eldinv_deletes_spell_component/2.
+delete_component_source(trait(eldritch_invocation(Inv)),
+                        warlock:eldritch_invocation(Inv),
+                        _,
+                        Component) :-
+    eldinv_deletes_spell_component(Inv, Component).
+
+:- discontiguous eldinv_spell/3.
+known_spell(warlock:eldritch_invocation(Inv),
+            cha, always, Resources, Ritual, Name) :-
+    eldinv_spell(Inv, Resources, Name),
+    trait(eldritch_invocation(Inv)),
+    spell_property(Name, ritual, Ritual).
+
+
 % Actually add the selected invocations as traits.
 trait(match_class(warlock:Level), eldritch_invocation(Inv)) :-
     find_choice_level(warlock:Level, 'eldritch invocation', Inv).
 
 % Eldritch invocation options and effects.
+
 eldritch_invocation_option('agonizing blast') :-
     known_spell(warlock, 'eldritch blast').
 bonus_source(trait(eldritch_invocation('agonizing blast')),
-             modify_spell(_, 'eldritch blast', spell_damage_bonus(Mod))) :-
+             modify_spell(_, 'eldritch blast', increase_all_spell_damage_rolls(Mod))) :-
     ability_mod(cha, Mod).
 
 eldritch_invocation_option('armor of shadows').
-known_spell(warlock, cha, always, [], no, 'mage armor') :-
+known_spell(warlock:eldritch_invocation('armor of shadows'), cha, always, [], no, 'mage armor') :-
     trait(eldritch_invocation('armor of shadows')).
 
 eldritch_invocation_option('ascendant step') :-
     match_class(warlock:9).
-known_spell(warlock, cha, always, [], no, levitate) :-
+known_spell(warlock:eldritch_invocation('ascendant step'),
+            cha, always, [], no, levitate) :-
     trait(eldritch_invocation('ascendant step')).
 
 eldritch_invocation_option('beast speech').
-known_spell(warlock, cha, always, [], no, 'speak with animals') :-
+known_spell(warlock:eldritch_invocation('beast speech'),
+            cha, always, [], no, 'speak with animals') :-
     trait(eldritch_invocation('beast speech')).
 
 eldritch_invocation_option('beguiling influence').
@@ -154,7 +175,8 @@ traits_from_source(trait(eldritch_invocation('beguiling influence')),
 
 eldritch_invocation_option('bewitching whispers') :-
     match_class(warlock:7).
-known_spell(warlock, cha, always, ['pact slot', per_rest(long, 1)], no, compulsion) :-
+known_spell(warlock:eldritch_invocation('bewitching whispers'),
+            cha, always, ['pact slot', per_rest(long, 1)], no, compulsion) :-
     trait(eldritch_invocation('bewitching whispers')).
 
 eldritch_invocation_option('book of ancient secrets') :-
@@ -166,7 +188,8 @@ ancient_secret_ritual(Ritual) :-
     spell_data(Ritual, Data),
     Data.level = 1,
     Data.ritual = yes. 
-known_spell(warlock, cha, always, [], only, Ritual) :-
+known_spell(warlock:eldritch_invocation('book of ancient secrets'),
+            cha, always, [], only, Ritual) :-
     choice_member(trait(eldritch_invocation('book of ancient secrets')),
                   ritual,
                   Ritual).
@@ -175,18 +198,129 @@ known_spell(warlock, cha, always, [], only, Ritual) :-
 eldritch_invocation_option('chains of carceri') :-
     match_class(warlock:15),
     trait(pact_boon(chain)).
-known_spell(warlock, cha, always, [], no, 'hold monster').
+known_spell(warlock:eldritch_invocation('chains of carceri'),
+            cha, always, [], no, 'hold monster') :-
+    trait(eldritch_invocation('chains of carceri')).
+bonus_source(trait(eldritch_invocation('chains of carceri')),
+             modify_spell(warlock:eldritch_invocation('chains of carceri'),
+                          'hold monster',
+                          chains_of_carceri_spell_mod)).
+chains_of_carceri_spell_mod(OldData, NewData) :-
+    get_or_default(OldData, effects, [], OldEffects),
+    append(OldEffects,
+           ["only target celestial, fiend, or elemental",
+            "long rest before you use this invocation on the same creature again"],
+           NewEffects),
+    NewData = OldData.put(components, [])
+                     .put(effects, NewEffects).
 
-%AAAAAH: TODO: hold monster is ook gewoon een warlock spell, moet dus ook als normale variant leerbaar zijn
-% project: known_spell Origin moet gesplitst worden in Class en Origin
-%bonus_source(trait(eldritch_invocation('chains of carceri')),
-%             modify_spell(warlock, 'hold monster', )
-%            )
+eldritch_invocation_option('devil\'s sight').
+trait_source(trait(eldritch_invocation('devil\'s sight')),
+             sense('devil\'s sight')).
 
-add_spell_effect('hold monster', "only on celestial, fiend, or elemental").
-add_spell_effect('hold monster', "must finish long rest before same creature can be targeted again").
+eldritch_invocation_option('dreadful word') :-
+    match_class(warlock:7).
+known_spell(warlock:eldritch_invocation('dreadful word'),
+            cha, always, ['pact slot', per_rest(long,1)], no, confusion) :-
+    eldinv('dreadful word').
 
+eldritch_invocation_option('eldritch sight').
+known_spell(warlock:eldritch_invocation('eldritch sight'),
+            cha, always, [], no, 'detect magic') :-
+    eldinv('eldritch sight').
 
+eldritch_invocation_option('eldritch spear') :-
+    known_spell(warlock, 'eldritch blast').
+bonus_source(trait(eldritch_invocation('eldritch spear')),
+             modify_spell(_, 'eldritch blast',
+                          modify_spell_field(range, const(feet(300))))).
+
+eldritch_invocation_option('eyes of the rune keeper').
+
+eldritch_invocation_option('gaze of two minds').
+
+eldritch_invocation_option(lifedrinker) :-
+    match_class(warlock:12),
+    trait(pact_boon(blade)).
+% TODO: lifedrinker damage bonus
+
+eldritch_invocation_option('mask of many faces').
+known_spell(warlock:eldritch_invocation('mask of many faces'),
+            cha, always, [], no, 'disguise self') :-
+    eldinv('mask of many faces').
+
+eldritch_invocation_option('master of myriad forms') :-
+    match_class(warlock:15).
+known_spell(warlock:eldritch_invocation('master of myriad forms'),
+            cha, always, [], no, 'alter self') :-
+    eldinv('master of myriad forms').
+
+eldritch_invocation_option('minions of chaos') :-
+    match_class(warlock:9).
+eldinv_spell('minions of chaos', ['pact slot', per_rest(long,1)], 'conjure elemental').
+
+eldritch_invocation_option('mire the mind') :-
+    match_class(warlock:5).
+known_spell(warlock:eldritch_invocation('mire the mind'),
+            cha, always, ['pact slot', per_rest(long,1)], no, slow) :-
+    eldinv('mire the mind').
+
+eldritch_invocation_option('misty visions').
+eldinv_spell('misty visions', [], 'silent image').
+eldinv_deletes_spell_component('misty visions', m(_)).
+
+eldritch_invocation_option('one with shadows').
+% TODO: add an "action"
+
+eldritch_invocation_option('otherwordly leap') :-
+    match_class(warlock:9).
+eldinv_spell('otherworldly leap', [], jump).
+eldinv_deletes_spell_component('otherworldly leap', m(_)).
+
+eldritch_invocation_option('repelling blast') :-
+    known_spell(_, 'eldritch blast').
+bonus_source(trait(eldritch_invocation('repelling blast')),
+             modify_spell(_, 'eldritch blast', Goal)) :-
+    Goal = modify_spell_field(effects, apply_repelling_blast).
+apply_repelling_blast(OldEffects, NewEffects) :-
+    select_subterm(spell_attack_roll(ranged):E1,
+                   OldEffects,
+                   spell_attack_roll(ranged):E2,
+                   NewEffects),
+    nonlist_to_singleton(E1, L),
+    append(L, ["push up to 10 ft away"], E2).
+
+eldritch_invocation_option('sculptor of flesh') :-
+    match_class(warlock:7).
+eldinv_spell('sculptor of flesh', ['pact slot', per_rest(long,1)], polymorph).
+
+eldritch_invocation_option('sign of ill omen') :-
+    match_class(warlock:5).
+eldinv_spell('sign of ill omen', ['pact slot', per_rest(long,1)], 'bestow curse').
+
+eldritch_invocation_option('thief of five fates').
+eldinv_spell('thief of five fates', ['pact slot', per_rest(long,1)], bane).
+
+eldritch_invocation_option('thirsting blade') :-
+    match_class(warlock:5),
+    trait(pact_boon(blade)).
+% TODO
+
+eldritch_invocation_option('visions of distant realms') :-
+    match_class(warlock:15).
+eldinv_spell('visions of distant realms', [], 'arcane eye').
+
+eldritch_invocation_option('voice of the chain master') :-
+    trait(pact_boon(chain)).
+% TODO
+
+eldritch_invocation_option('whispers of the grave') :-
+    match_class(warlock:9).
+eldinv_spell('whispers of the grave', [], 'speak with dead').
+
+eldritch_invocation_option('witch sight') :-
+    match_class(warlock:15).
+% TODO
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Patron: the fiend.
@@ -232,3 +366,9 @@ Once you use this feature, you can't use it again until you finish a short or lo
 'hurl through hell' ?= "Starting at 14th level, when you hit a creature with an attack, you can use this feature to instantly transport the target through the lower planes. The creature disappears and hurtles through a nightmare landscape.
 At the end of your next turn, the target returns to the space it previously occupied, or the nearest unoccupied space. If the target is not a fiend, it takes 10d10 psychic damage as it reels from its horrific experience.
 Once you use this feature, you can't use it again until you finish a long rest. ".
+
+sense('devil\'s sight') ?= "You can see normally in darkness, both magical and nonmagical, to a distance of 120 feet.".
+
+eldritch_invocation('eyes of the rune keeper') ?= "You can read all writing.".
+
+eldritch_invocation('gaze of two minds') ?= "You can use your action to touch a willing humanoid and perceive through its senses until the end of your next turn. As long as the creature is on the same plane of existence as you, you can use your action on subsequent turns to maintain this connection, extending the duration until the end of your next turn. While perceiving through the other creature's senses, you benefit from any special senses possessed by that creature, and you are blinded and deafened to your own surroundings.".

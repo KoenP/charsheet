@@ -215,6 +215,7 @@ spell_to_hit_or_dc(_, _, "-").
 
 format_dc(DC, Abis) --> ["DC "], [DC], [" ("], format_list(Abis), [")"].
 
+format_components([], "-") :- !.
 format_components(Cs, Format) :-
     maplist(format_component, Cs, Format).
     %format_list(Formats, Format, []).
@@ -225,7 +226,7 @@ format_range(feet(X)) --> {!}, [X], [" ft"].
 format_range(miles(X)) --> {!}, [X], [" mi"].
 format_range(X) --> [X].
 
-format_resources([]) --> [].
+format_resources([]) --> ["-"].
 format_resources([R]) --> {!}, format_resource(R).
 format_resources([R|Rs]) --> format_resource(R), [', '], format_resources(Rs).
 format_resource(per_rest(Dur, N)) --> {!}, checkboxes(N), [' / '], [Dur], [' rest'].
@@ -242,9 +243,16 @@ format_effects([E|Es]) -->
     ["; "],
     format_effects(Es).
 
-format_effect(spell_attack_roll(_):Damage) -->
-    {!},
-    format_damage_roll(Damage),
+format_effect(Damage) -->
+    {Damage = damage(_,_), !},
+    format_damage_roll(Damage).
+format_effect(spell_attack_roll(_):Effects) -->
+    {is_list(Effects), !},
+    ["["],
+    format_effects(Effects),
+    ["] on hit"].
+format_effect(spell_attack_roll(_):Effect) -->
+    format_effect(Effect),
     [" on hit"].
 format_effect(in(Area):Effect) -->
     ["in "],
@@ -252,6 +260,7 @@ format_effect(in(Area):Effect) -->
     [": "],
     format_effect(Effect),
     {!}.
+format_effect(1*Es) --> {!}, format_effect(Es).
 format_effect(N*Es) -->
     {!},
     [N],

@@ -143,12 +143,6 @@ apply_elemental_affinity(OldEffects, NewEffects) :-
     ability_mod(cha, Bonus),
     atomics_to_string(["add +", Bonus, " to one damage roll"], New),
     append(OldEffects, [New], NewEffects).
-contains_multiple_damage_rolls(Effects) :-
-    findall(A-B, subterm_member(damage(A,B),Effects), [_,_|_]).
-contains_multiple_damage_rolls(Effects) :-
-    member(N*SubEffects, Effects),
-    N > 1,
-    subterm_member(damage(_,_), SubEffects).
 
 % Dragon wings.
 trait_source(match_class(sorcerer('draconic bloodline'):14), 'dragon wings').

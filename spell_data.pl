@@ -86,6 +86,9 @@ add_spell_effect('acid splash', "up to two targets within 5 ft of eachother").
 add_spell_effect('acid splash', saving_throw(dex): damage(acid, N d 6)) :-
     cantrip_scale(N).
 
+add_spell_effect('eldritch blast', N*(spell_attack_roll(ranged):damage(force, 1 d 10))) :-
+    cantrip_scale(N).
+
 add_spell_effect('false life', 'temp hp' + (1 d 4 + 4)).
 
 add_spell_effect('find familiar', test).

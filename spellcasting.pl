@@ -17,6 +17,12 @@
 %    or bonus/2. We typically just note `wizard` or `'high elf'`
 %    rather than choice(match_class(wizard:2), spell) or
 %    choice(race('high elf'), cantrip) as the Origin.
+%    Some classes can learn the same spell multiple times through
+%    different means. For example, warlocks can learn 'hold monster'
+%    as a regular spell, or a modified version through the eldritch
+%    invocation 'chains of carceri'. In the first case, the origin is
+%    simply `warlock`; in the second, it's
+%    `warlock:eldritch_invocation('chains of carceri')`.
 %    Origin is relevant for:
 %    * Characters can learn the same spell multiple times,
 %      but not more than once for the same Origin.
@@ -25,7 +31,9 @@
 %      added to when prepared.
 %    * Some traits add bonuses to spells based on their Origin, such
 %      as the `'empowered evocation'` trait, which increases the damage
-%      of wizard evocations.
+%      of wizard evocations. In this case, both the literal Origin
+%      `wizard`, as well as any Origins of the form `wizard:_` count
+%      as "wizard spells" .
 %  * Ability is the ability used for casting the spell. For many
 %    spells this is irrelevant, but it's usually tied to the
 %    Origin. Because I'm not 100% sure it's _always_ tied to the
@@ -60,6 +68,15 @@ meta_todo(known_spell(Origin, Name), invalid_field(ritual,Ritual)) :-
     known_spell(Origin, _, _, _, Ritual, Name),
     \+ member(Ritual, [always, 'when prepared', no, only]).
 % TODO: check all the fields
+
+%! known_spell_origin_class(?Origin, ?Class:atomic)
+%
+%  True iff Origin (as in a known_spell/6 Origin) refers to the class
+%  Class.
+known_spell_origin_class(Class, Class) :-
+    class_option(Class).
+known_spell_origin_class(Class:_, Class) :-
+    class_option(Class).
 
 %! known_spell(?Origin, ?Name)
 %
@@ -239,10 +256,64 @@ modify_spell_field(Field, UpdateField, Old, New) :-
     call(UpdateField, OldField, NewField),
     New = Old.put(Field, NewField).
 
-add_damage(Bonus, Orig, New) :-
-    Orig =.. [Type, Dice],
-    simplify_dice_sum(Dice+Bonus, NewDice),
-    New =.. [Type, NewDice].
+increase_all_spell_damage_rolls(Bonus, Old, New) :-
+    get_or_default(Old, effects, [], OldEffects),
+    map_matching_subterms({Bonus}/[damage(El,OldRoll),damage(El,NewRoll)]
+                            >> simplify_dice_sum(OldRoll+Bonus, NewRoll),
+                          OldEffects,
+                          NewEffects),
+    New = Old.put(effects, NewEffects).
+
+%spell_damage_bonus(Bonus, Old, New) :-
+%    get_or_default(Old, effects, [], OldEffects),
+%    select_subterm(damage(Element,Dice), OldEffects,
+%                   damage(Element,NewDice), NewEffects),
+%    simplify_dice_sum(Dice+Bonus, NewDice),
+%    New = Old.put(effects, NewEffects).
+%spell_damage_bonus(Bonus, Old, New) :-
+%    get_or_default(Old, effects, [], OldEffects),
+%    contains_multiple_damage_rolls(OldEffects),
+%    atomics_to_string(["add +", Bonus, " to one damage roll"], NewEffect),
+%    append(OldEffects, [NewEffect], NewEffects),
+%    New = Old.put(effects, NewEffects).
+%spell_damage_bonus(_,_,_) :- writeln('wat').
+
+contains_multiple_damage_rolls(Effects) :-
+    findall(A-B, subterm_member(damage(A,B),Effects), [_,_|_]).
+contains_multiple_damage_rolls(Effects) :-
+    member(N*SubEffects, Effects),
+    N > 1,
+    subterm_member(damage(_,_), SubEffects).
+
+add_damage(Bonus, damage(Element,Roll1), damage(Element,Roll2)) :-
+    simplify_dice_sum(Roll1+Bonus, Roll2).
+
+const(X,_,X).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+:- multifile
+       drop_all_components_source/3,
+       delete_component_source/4.
+
+%! drop_all_components_source(?BonusOrigin, ?SpellOrigin, ?Spell)
+%
+%  True iff your character has some feature (BonusOrigin) that causes
+%  Spell (for SpellOrigin) to not require components.
+drop_all_components_source(_,_,_) :- false.
+bonus_source(BonusOrigin, modify_spell(SpellOrigin, Spell, Goal)) :-
+    drop_all_components_source(BonusOrigin, SpellOrigin, Spell),
+    Goal = modify_spell_field(components, const([])).
+
+%! delete_component_source(?BonusOrigin, ?SpellOrigin, ?Spell, ?Component)
+%
+%  True iff your character has some feature (BonusOrigin) that causes
+%  Spell (for SpellOrigin) to not require Component as a component.
+delete_component_source(_,_,_,_) :- false.
+bonus_source(BonusOrigin, modify_spell(SpellOrigin, Spell, Goal)) :-
+    delete_component_source(BonusOrigin, SpellOrigin, Spell, Component),
+    Goal = modify_spell_field(components,
+                              {Component}/[Cs1,Cs2]
+                               >> delete(Cs1, Component, Cs2)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Cantrip damage scaling.

@@ -25,6 +25,9 @@ format_terms([]) --> [].
 format_terms([X]) --> format_term(X).
 format_terms([X|Xs]) --> {Xs \= []}, format_term(X), [', '], format_terms(Xs).
 
+format_list_empty_as_dash([]) --> ['-'].
+format_list_empty_as_dash(L) --> {L = [_|_]}, format_list(L).
+
 format_list([]) --> [].
 format_list([X]) --> format_term(X).
 format_list([X|Xs]) --> {Xs \= []}, format_term(X), [', '], format_list(Xs).

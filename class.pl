@@ -100,6 +100,14 @@ class_origin_to_class_level_(match_class(ClassF:Level), Class:Level) :-
 class_origin_to_class(Origin, Class) :-
     class_origin_to_class_level(Origin, Class:_).
 
+%! find_origin_class(?Origin, ?Class)
+%
+%  True if Origin is somehow related to Class.
+find_origin_class(Origin, Class) :-
+    class_origin_to_class(Origin, Class).
+find_origin_class(trait(Trait), Class) :-
+    trait(TraitOrigin, Trait),
+    find_origin_class(TraitOrigin, Class).
 
 %! multiclass
 %
