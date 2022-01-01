@@ -23,6 +23,7 @@ choice(race(human(variant)), asi, [int+1, con+1]).
 choice(init, 'initial class', wizard).
 choice(initial_class(wizard), skill, [arcana, investigation]).
 choice(class(wizard), cantrip, ['dancing lights', frostbite, 'minor illusion']).
+% poison spray, ray of frost, mold earth, fire bolt
 choice(class(wizard), 'free spell',
        ['detect magic', 'unseen servant', thunderwave, shield, 'magic missile', 'ice knife']).
 
@@ -35,6 +36,17 @@ choice(match_class(wizard:2), 'free spell', ['burning hands', 'comprehend langua
 % Level 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 gain_level(3, wizard, hp_avg).
+choice(match_class(wizard:3), 'free spell', [shatter, 'see invisibility']).
+% misty step, mirror image, magic weapon, darkvision, aganazzar's scorcher
+% scrolls: levitate? knock? invisibility? detect thoughts? rope trick?
 
+% Level 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% poison spray, ray of frost, mold earth, fire bolt
+gain_level(4, wizard, hp_avg).
+choice(match_class(wizard:4), cantrip, 'fire bolt').
+choice(match_class(wizard:4), 'free spell', [darkvision, 'misty step']).
+
+% Level 5 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+gain_level(5, wizard, hp_avg).
+choice(match_class(wizard:5), 'free spell', [counterspell, fireball]).

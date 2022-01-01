@@ -243,6 +243,7 @@ describe_spell(Spell) :-
     writeln(""),
     write("Casting time:\t"), writeln(Data.casting_time),
     write("Duration:\t"), writeln(Data.duration),
+    write("Concentration:\t"), writeln(Data.concentration),
     write("Range:\t\t"), writeln(Data.range),
     write("Components:\t"), writeln(Data.components),
     write("Ritual:\t\t"), writeln(Data.ritual),

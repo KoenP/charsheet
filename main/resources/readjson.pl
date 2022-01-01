@@ -11,7 +11,7 @@ read_spells(Spells) :-
     close(In).
 
 write_spells(Spells) :-
-    open('spells/spells.pl', write, Out),
+    open('spell_auto_data.pl', write, Out),
     writeln(Out, "% Auto generated, do not edit directly.\n"),
     maplist(write_spell(Out), Spells).
 
@@ -19,17 +19,18 @@ write_spell(Out, Spell) :-
     write_term(Out, Spell, [quoted(true), nl(true), fullstop(true)]),
     writeln(Out, "").
     
-transform_dict(In, spell(Name, properties{ level:Level,
-                                           higher_level:HigherLevel,
-                                           school:School,
-                                           components:Components,
-                                           range:Range,
-                                           casting_time:In.casting_time,
-                                           duration:In.duration,
-                                           ritual:Ritual,
-                                           desc:In.desc,
-                                           classes:Classes
-                                         })) :-
+transform_dict(In, spell_auto_data(Name, properties{ level:Level,
+                                                     higher_level:HigherLevel,
+                                                     school:School,
+                                                     components:Components,
+                                                     range:Range,
+                                                     casting_time:In.casting_time,
+                                                     duration:In.duration,
+                                                     concentration:In.concentration,
+                                                     ritual:Ritual,
+                                                     desc:In.desc,
+                                                     classes:Classes
+                                                   })) :-
     to_lowercase_atom(In.name, Name),
     parse_level(In.level, Level),
     get_or_default(In, higher_level, no, HigherLevel),
