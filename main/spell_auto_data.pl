@@ -13,7 +13,7 @@ spell_auto_data('abi-dalzim\'s horrid wilting',
                  school:necromancy}).
 
 spell_auto_data('absorb elements',
-      properties{casting_time:"1 action",
+      properties{casting_time:"1 reaction",
                  classes:[druid,ranger,wizard],
                  components:[s],
                  desc:"The spell captures some of the incoming energy, lessening its effect on you and storing it for your next melee attack. You have resistance to the triggering damage type until the start of your next turn. Also, the first time you hit with a melee attack on your next turn, the target takes an extra 1d6 damage of the triggering type, and the spell ends.",

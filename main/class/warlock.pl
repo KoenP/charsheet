@@ -320,7 +320,7 @@ eldinv_spell('whispers of the grave', [], 'speak with dead').
 
 eldritch_invocation_option('witch sight') :-
     match_class(warlock:15).
-% TODO
+trait_source(trait(eldritch_invocation('witch sight')), sense('witch sight')).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Patron: the fiend.
@@ -372,3 +372,6 @@ sense('devil\'s sight') ?= "You can see normally in darkness, both magical and n
 eldritch_invocation('eyes of the rune keeper') ?= "You can read all writing.".
 
 eldritch_invocation('gaze of two minds') ?= "You can use your action to touch a willing humanoid and perceive through its senses until the end of your next turn. As long as the creature is on the same plane of existence as you, you can use your action on subsequent turns to maintain this connection, extending the duration until the end of your next turn. While perceiving through the other creature's senses, you benefit from any special senses possessed by that creature, and you are blinded and deafened to your own surroundings.".
+
+(eldritch_invocation('witch sight') ?= Desc) :- (sense('witch sight') ?= Desc).
+sense('witch sight') ?= "You can see the true form of any shapechanger or creature concealed by illusion or transmutation magic while the creature is within 30 feet of you and within line of sight.".

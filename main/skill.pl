@@ -7,6 +7,9 @@ skill(Skill, Score) :-
     skill_proficiency_bonus(Skill, Bonus),
     Score is Mod + Bonus.
 
+%! skill(?Skill:atomic)
+skill(Skill) :- skill_ability(Skill, _).
+
 skill_proficiency_bonus(Skill, Bonus) :-
     trait(skill(Skill)), !,
     level(Level),

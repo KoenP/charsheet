@@ -172,14 +172,15 @@ spell_preparation_table_row(tr([td(Class), td(Prep), td(MaxLvl)])) :-
 
 spell_table(Table) :-
     table('spells', 'Spells', [Header|Rows], Table),
-    Header = tr([th('Prep\'d'), th('Lvl'), th('Source'), th('Spell'), th('Cast time'),
+    Header = tr([th('Prep\'d'), th('Lvl'), th('Source'), th('Spell'), th('CT'),
                  th('Rng'), th('Cpts'), th('Dur'), th('To Hit/DC'),
                  th('Effect (summary)'), th('Res')]),
     findall(Row, spell_table_row(_, _, Row), Rows).
     %spell_table_rows(Rows).
 
 spell_table_row(Name, SpellLevel, tr(Row)) :-
-    known_spell(Origin, Ability, Availability, ResourcesVal, _Ritual, Name),
+    known_spell(Origin, Ability, AvailabilityVal, ResourcesVal, _Ritual, Name),
+    format_spell_availability(AvailabilityVal, Availability),
     known_spell_data(Origin, Name, Data),
     SpellLevel = Data.level,
     phrase(format_range(Data.range), Range),
@@ -193,6 +194,10 @@ spell_table_row(Name, SpellLevel, tr(Row)) :-
                  ToHitOrDC, Effects, Resources
                 ],
     maplist(wrap(td), RowFields, Row).
+
+format_spell_availability(always, "✓") :- !.
+format_spell_availability('when prepared', input(type=checkbox, [])) :- !.
+format_spell_availability(A, A).
 
 spell_to_hit_or_dc(Ability, SpellData, ToHit) :-
     Effects = SpellData.get(effects),

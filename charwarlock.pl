@@ -2,7 +2,7 @@
 :- set_prolog_flag(toplevel_print_anon, false).
 :- portray_text(true).
 
-:- [sketch].
+:- [main/main].
 
 % TODO
 base_ability(str, 12).
@@ -14,8 +14,8 @@ base_ability(int, 12).
 
 % Level 1
 name('Mr Warlock') :- !.
-race(elf).
-race('high elf').
+%race(elf).
+%race('high elf').
 choice(init, 'initial class', warlock).
 choice(match_class(warlock:1), subclass, fiend).
 choice(match_class(warlock:1), cantrip, ['eldritch blast', 'blade ward']).
@@ -46,8 +46,8 @@ gain_level(11, warlock, hp_avg).
 choice(_, 'arcanum spell', 'wall of ice').
 
 
-trait(_, eldritch_invocation('eldritch spear')).
-trait(_, eldritch_invocation('otherworldly leap')).
-trait(_, eldritch_invocation('misty visions')).
-trait(_, eldritch_invocation('minions of chaos')).
-trait(_, eldritch_invocation('repelling blast')).
+%trait(_, eldritch_invocation('eldritch spear')).
+%trait(_, eldritch_invocation('otherworldly leap')).
+%trait(_, eldritch_invocation('misty visions')).
+%trait(_, eldritch_invocation('minions of chaos')).
+%trait(_, eldritch_invocation('repelling blast')).

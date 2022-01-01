@@ -1,5 +1,6 @@
 :- use_module(library(pldoc)).
 :- use_module(library(yall)).
+:- use_module(library(pairs)).
 
 :- multifile
        (?=)/2,
@@ -26,9 +27,11 @@
 :- [replace].
 :- [trait].
 :- [bonus].
+:- [origin_category].
 :- [spell_data].
 :- [spellcasting].
 :- [class].
+:- [race].
 :- [feat].
 :- [ability].
 :- [skill].
@@ -45,23 +48,6 @@
 meta_todo(_,_) :- false.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-subrace(elf, 'high elf').
-traits_from_source(race(elf), [darkvision, 
-                               'fey ancestry',
-                               'keen senses',
-                               trance,
-                               language(common),
-                               language(elvish)]).
-trait_source(trait('keen senses'), skill(perception)).
-bonus_source(race(elf), dex+2).
-
-bonus_source(race('high elf'), int+1).
-traits_from_source(race('high elf'), [weapon(longsword),
-                                      weapon(shortsword),
-                                      weapon(shortbow),
-                                      weapon(longbow)]).
-%options_source(race('high elf'), cantrip, learnable_cantrip(wizard)).
-%options_source(race('high elf'), language, language).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % TODO!!
@@ -125,6 +111,11 @@ match_level(Level) :-
     level(CurLevel),
     between(1, CurLevel, Level).
 
+%! gain_level(?CharLevel, ?Class, ?HPMode)
+%
+%  Gain a level in the given Class. HPMode determines how your HP
+%  increase is calculcated. Use hp_avg to gain the default "average"
+%  hp for the given Class. Other options yet to be implemented.
 gain_level(_,_,_) :- false.
 problem(gain_level_not_contiguous(Levels)) :-
     findall(L, gain_level(L,_,_), Levels),
@@ -245,3 +236,27 @@ writeln_quoted_term(T) :-
 
 warn_if_problems :-
     forall(problem(P), (write("WARNING: "), writeln_quoted_term(P))).
+
+describe_spell(Spell) :-
+    spell_data(Spell, Data),
+    write("* "), writeln(Spell),
+    writeln(""),
+    write("Casting time:\t"), writeln(Data.casting_time),
+    write("Duration:\t"), writeln(Data.duration),
+    write("Range:\t\t"), writeln(Data.range),
+    write("Components:\t"), writeln(Data.components),
+    write("Ritual:\t\t"), writeln(Data.ritual),
+    write("School:\t\t"), writeln(Data.school),
+    writeln(""),
+    writeln(Data.desc),
+    writeln(""),
+    writeln("").
+    
+describe_new_learnable_spells(Class:Level) :-
+    forall((learnable_proper_spell(Class,Spell),
+            spell_property(Spell,level,Level),
+            \+ known_spell(Class,Spell)),
+           describe_spell(Spell)).
+
+describe_class_cantrips(Class) :-
+    forall(class_cantrip(Class, Spell), describe_spell(Spell)).

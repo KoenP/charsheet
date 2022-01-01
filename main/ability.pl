@@ -9,7 +9,9 @@ ability_max(Ability, Max) :-
     ability(Ability),
     sum_bonuses(max_ability(Ability), Bonus),
     Max is 20 + Bonus.
-    
+
+ability_plus_n(N, Ability+N) :-
+    ability(Ability).
 
 %:- table
 %   naked_lvl1_ability/2,

@@ -24,7 +24,7 @@
     "ritual":"no",
     "duration":"1 round",
     "concentration":"no",
-    "casting_time":"1 action",
+    "casting_time":"1 reaction",
     "level":"1st-level",
     "school":"Abjuration",
     "class":"Druid, Ranger, Wizard"
@@ -489,7 +489,7 @@
     "casting_time":"1 action",
     "level":"1st-level",
     "school":"Divination",
-    "class":"Druid, Ranger, Wizard"
+    "class":"Druid, Ranger"
   },
   {
     "name":"Beast Sense",
@@ -5272,7 +5272,7 @@
     "components":"V, S, M",
     "material":"A piece of ice or a small white rock chip.",
     "ritual":"no",
-    "duration":"Up to 1 hour",
+    "duration":"Instantaneous",
     "concentration":"yes",
     "casting_time":"1 action",
     "level":"2nd-level",

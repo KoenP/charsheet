@@ -55,6 +55,12 @@ problem(choice_does_not_match_spec(Origin, Id, Choice)) :-
     % Flag a problem if a choice clause does not match the spec of the corresponding options clause.
     choice(Origin, Id, Choice),
     \+ choice_matches_spec(Origin, Id, Choice).
+choice(_,_) :- false. % Suppress a warning which I think is caused a bug in swipl.
+problem(chosen_same_trait_twice(Origin1, Origin2, Id1, Id2, Trait)) :-
+    % Flag a problem if the same trait is chosen twice.
+    trait(choice(Origin1, Id1), Trait),
+    trait(choice(Origin2, Id2), Trait),
+    (Origin1 \= Origin2 ; Id1 \= Id2).
 
 %! choice_matches_spec(?Origin, ?Id, ?Choice)
 %
