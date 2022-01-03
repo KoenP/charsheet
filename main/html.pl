@@ -46,7 +46,7 @@ character_summary(Div) :-
                       , tr([th("Max HP"), td(HP)])
                       , tr([th("AC"), td(AC)])
                       , tr([th("Initiative"), td(Init)])
-                      , tr([th("Speed"), td(Speed)])
+                      , tr([th("Speed"), td([Speed, ' ft'])])
                       , tr([th("HD"), td(HD)])
                       , tr([th("PP"), td(PP)])
                       , tr([th("Prof Bon"), td(ProfBon)])
@@ -57,9 +57,9 @@ character_summary(Div) :-
     max_hp(HP),
     ac(AC),
     initiative(InitVal), format_bonus(InitVal, Init, []),
-    Speed = todo,
+    speed(Speed),
     hit_dice(HDTerm), format_dice_sum(HDTerm, HD, []),
-    PP = todo,
+    passive_perception(PP),
     proficiency_bonus(ProfBonVal), format_bonus(ProfBonVal, ProfBon, []).
 
 % Ability table.
@@ -172,8 +172,8 @@ spell_preparation_table_row(tr([td(Class), td(Prep), td(MaxLvl)])) :-
 
 spell_table(Table) :-
     table('spells', 'Spells', [Header|Rows], Table),
-    Header = tr([th('Prep\'d'), th('Lvl'), th('Source'), th('Spell'), th('CT'),
-                 th('Rng'), th('Cpts'), th('Dur'), th('To Hit/DC'),
+    Header = tr([th('Prep\'d'), th('Lvl'), th('Src'), th('Spell'), th('CT'),
+                 th('Rng'), th('Cpts'), th('Dur'), th('Conc'), th('To Hit/DC'),
                  th('Effect (summary)'), th('Res')]),
     findall(Row, spell_table_row(_, _, Row), Rows).
     %spell_table_rows(Rows).
@@ -183,17 +183,27 @@ spell_table_row(Name, SpellLevel, tr(Row)) :-
     format_spell_availability(AvailabilityVal, Availability),
     known_spell_data(Origin, Name, Data),
     SpellLevel = Data.level,
+    spell_origin_shorthand(Origin, OriginShorthand),
     phrase(format_range(Data.range), Range),
     phrase(format_resources(ResourcesVal), Resources),
     format_components(Data.components, Components),
     spell_to_hit_or_dc(Ability, Data, ToHitOrDC),
     display_spell_effects(Data, Effects),
-    RowFields = [Availability, SpellLevel, Origin,
+    RowFields = [Availability, SpellLevel, OriginShorthand,
                  div(class=tooltip, [Name, span(class=tooltiptext, Data.desc)]),
-                 Data.casting_time, Range, Components, Data.duration,
+                 Data.casting_time, Range, Components, Data.duration, Data.concentration,
                  ToHitOrDC, Effects, Resources
                 ],
     maplist(wrap(td), RowFields, Row).
+
+spell_origin_shorthand(Class, Shorthand) :-
+    class_shorthand(Class, Shorthand).
+spell_origin_shorthand(Race, Shorthand) :-
+    race_shorthand(Race, Shorthand).
+spell_origin_shorthand(Origin:Elaboration,
+                       [Shorthand, div(class=tooltip, ["*", span(class=tooltiptext, ElabFmt)])]) :-
+    spell_origin_shorthand(Origin, Shorthand),
+    format_term(Elaboration, ElabFmt, []).
 
 format_spell_availability(always, "✓") :- !.
 format_spell_availability('when prepared', input(type=checkbox, [])) :- !.

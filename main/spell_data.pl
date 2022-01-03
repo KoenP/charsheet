@@ -102,6 +102,10 @@ add_spell_effect('fire bolt',
                   spell_attack_roll(ranged):damage(fire, N d 10)) :-
     cantrip_scale(N).
 
+add_spell_effect(frostbite,
+                 saving_throw(con):damage(cold,N d 6)) :-
+    cantrip_scale(N).
+
 %extend_spell_data('scorching ray', damage rolls, [on_hit: fire(2 d 6)]).
 add_spell_effect('scorching ray',
                  3 * (spell_attack_roll(ranged):damage(fire, 2 d 6))).

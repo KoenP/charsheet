@@ -1,4 +1,5 @@
 race_option(elf).
+race_shorthand(el).
 
 subrace(elf, 'high elf').
 traits_from_source(race(elf), [sense(darkvision), 

@@ -26,7 +26,7 @@ trait_options_source(initial_class(wizard), skill, wrap(skill),
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 trait_source(class(wizard), spellbook).
 trait_source(class(wizard), spellcasting_focus(arcane)).
-trait_source(class(wizard), 'ritual casting').
+trait_source(class(wizard), ritual_casting(wizard)).
 trait_source(class(wizard), arcane_recovery(N)) :-
     class_level(wizard:L),
     N is ceil(L/2).
@@ -85,15 +85,48 @@ subclass_option(wizard, evocation).
 
 trait_source(match_class(wizard(evocation):2), 'evocation savant').
 trait_source(match_class(wizard(evocation):2), 'sculpt spells').
+
 trait_source(match_class(wizard(evocation):6), 'potent cantrip'). % TODO
-trait_source(match_class(wizard(evocation):6), overchannel).
+bonus_source(trait('potent cantrip'), modify_spell(_, Cantrip, Goal)) :-
+    known_spell(_, Cantrip),
+    spell_data(Cantrip, Data),
+    Data.level = 0,
+    subterm_member(saving_throw(_):damage(_,_), Data.effects),
+    Goal = modify_spell_field(effects, apply_potent_cantrip).
+apply_potent_cantrip(OldEffects, NewEffects) :-
+    select_subterm(saving_throw(Abi):damage(Element,Dice),
+                   OldEffects,
+                   saving_throw(Abi):(damage(Element,Dice) else 'half damage'),
+                   NewEffects).
+    
+trait_source(match_class(wizard(evocation):10), 'empowered evocation').
+bonus_source(trait('empowered evocation'), modify_spell(wizard, Spell, Goal)) :-
+    known_spell(wizard, Spell),
+    spell_data(Spell, Data),
+    Data.school = evocation,
+    subterm_member(damage(_,_), Data.effects), 
+    Goal = modify_spell_field(effects, apply_empowered_evocation).
+apply_empowered_evocation(OldEffects, NewEffects) :-
+    \+ contains_multiple_damage_rolls(OldEffects),
+    ability_mod(int, Bonus),
+    select_subterm(damage(Element, Dice), OldEffects,
+                   damage(Element, NewDice), NewEffects),
+    simplify_dice_sum(Dice + Bonus, NewDice).
+apply_empowered_evocation(OldEffects, NewEffects) :-
+    contains_multiple_damage_rolls(OldEffects),
+    ability_mod(int, Bonus),
+    atomics_to_string(["add +", Bonus, " to one damage roll"], New),
+    append(OldEffects, [New], NewEffects).
 
+trait_source(match_class(wizard(evocation):14), overchannel).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-'arcane recovery' ?= "You have learned to regain some of your magical energy by studying your spellbook. Once per day when you finish a short rest, you can choose expended spell slots to recover. The spell slots can have a combined level that is equal to or less than half your wizard level (rounded up), and none of the slots can be 6th level or higher.
+ritual_casting(wizard) ?= "You can cast a wizard spell as a ritual if that spell has the ritual tag and you have the spell in your spellbook. You don't need to have the spell prepared.".
+
+arcane_recovery(_) ?= "You have learned to regain some of your magical energy by studying your spellbook. Once per day when you finish a short rest, you can choose expended spell slots to recover. The spell slots can have a combined level that is equal to or less than half your wizard level (rounded up), and none of the slots can be 6th level or higher.
 For example, if you're a 4th-level wizard, you can recover up to two levels worth of spell slots. You can recover either a 2nd-level spell slot or two 1st-level spell slots.".
 
 spellbook ?= "The spells that you add to your spellbook as you gain levels reflect the arcane research you conduct on your own, as well as intellectual breakthroughs you have had about the nature of the multiverse. You might find other spells during your adventures. You could discover a spell recorded on a scroll in an evil wizard's chest, for example, or in a dusty tome in an ancient library.
@@ -109,3 +142,6 @@ If you lose your spellbook, you can use the same procedure to transcribe the spe
 'potent cantrip' ?= "Starting at 6th level, your damaging cantrips affect even creatures that avoid the brunt of the effect. When a creature succeeds on a saving throw against your cantrip, the creature takes half the cantrip's damage (if any) but suffers no additional effect from the cantrip.".
 
 'empowered evocation' ?= "Beginning at 10th level, you can add your Intelligence modifier to one damage roll of any wizard evocation spell you cast. ".
+
+overchannel ?= "Starting at 14th level, you can increase the power of your simpler spells. When you cast a wizard spell of 1st through 5th level that deals damage, you can deal maximum damage with that spell.
+The first time you do so, you suffer no adverse effect. If you use this feature again before you finish a long rest, you take 2d12 necrotic damage for each level of the spell, immediately after you cast it. Each time you use this feature again before finishing a long rest, the necrotic damage per spell level increases by 1d12. This damage ignores resistance and immunity.".

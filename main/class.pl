@@ -213,6 +213,22 @@ caster :-
     Factor \= 0,
     !.
 
+%! class_shorthand(?Class:atomic, ?Shorthand:atomic)
+%
+%  Associates each class with a two-letter shorthand.
+class_shorthand(barbarian , bb).
+class_shorthand(bard      , bd).
+class_shorthand(cleric    , cl).
+class_shorthand(druid     , dr).
+class_shorthand(fighter   , fi).
+class_shorthand(monk      , mo).
+class_shorthand(paladin   , pa).
+class_shorthand(ranger    , ra).
+class_shorthand(rogue     , ro).
+class_shorthand(sorcerer  , so).
+class_shorthand(warlock   , wl).
+class_shorthand(wizard    , wz).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % meta todo's

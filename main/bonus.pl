@@ -15,6 +15,10 @@
 bonus(Source, Bonus) :-
     bonus_source(Source, Bonus),
     call(Source).
+bonus(choice(Source, Id), Bonus) :-
+    choice_member(Source, Id, Choice),
+    choice_member_to_bonus(Source, Id, Goal),
+    call(Goal, Choice, Bonus).
 
 %! bonus(Bonus)
 %

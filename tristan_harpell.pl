@@ -50,3 +50,14 @@ choice(match_class(wizard:4), 'free spell', [darkvision, 'misty step']).
 
 gain_level(5, wizard, hp_avg).
 choice(match_class(wizard:5), 'free spell', [counterspell, fireball]).
+
+
+gain_level(6, wizard, hp_avg).
+gain_level(7, wizard, hp_avg).
+gain_level(8, wizard, hp_avg).
+gain_level(9, wizard, hp_avg).
+gain_level(10, wizard, hp_avg).
+gain_level(11, wizard, hp_avg).
+gain_level(12, wizard, hp_avg).
+gain_level(13, wizard, hp_avg).
+gain_level(14, wizard, hp_avg).

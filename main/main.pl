@@ -151,9 +151,21 @@ hit_dice(Class, M d X) :-
     hd_per_level(Class, N d X),
     M is N * Level.
 
+%! speed(?Speed:int)
+speed(Speed) :-
+    race(Race),
+    racial_speed(Race, BaseSpeed),
+    findall(Bonus, bonus(speed+Bonus), Bonuses),
+    sumlist([BaseSpeed|Bonuses], Speed).
+
 %! proficiency_bonus(?Bonus:int)
 proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).
 calc_bonus(Level, Bonus) :- Bonus is 2 + div(Level-1, 4).
+
+%! passive_perception(?PP:int)
+passive_perception(PP) :-
+    skill(perception, Perception),
+    PP is 10 + Perception.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Todo.
@@ -219,6 +231,15 @@ most_specific_race(Race) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Shorthands.
+%search(X) :-
+%    atom_to_chars(X, X1),
+%    (Topic ?= Desc),
+%    Topic =.. []
+%    atom_to_chars(Topic, Topic1),
+%    append([_, X1, _], Topic1),
+%    writeln(Topic),
+%    writeln(Desc).
+
 todo :-
     forall(todo(T), writeln_quoted_term(T)).
 
