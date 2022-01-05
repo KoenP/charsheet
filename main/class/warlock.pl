@@ -5,6 +5,7 @@ hd_per_level(warlock, 1 d 8).
 initial_class_base_hp(warlock, 8).
 max_hp_per_level(warlock, 1 d 8).
 caster(warlock, 0).
+spellcasting_ability(warlock, cha).
 choose_subclass_level(warlock:1).
 asi_level(warlock:L) :-
     default_asi_level(L).

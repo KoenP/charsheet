@@ -31,9 +31,10 @@ body_contents(Contents) :-
               skill_table,
               proficiency_list,
               trait_list,
-              spell_slot_table,
-              spell_preparation_table,
-              spell_table],
+              spellcasting_section],
+              %spell_slot_table,
+              %spell_preparation_table,
+              %spell_table],
              Contents).
 call_all(Preds, Xs) :-
     maplist([P,X]>>call(P,X), Preds, Xs).
@@ -108,7 +109,7 @@ repl(X, Len, Xs) :-
     maplist(=(X), Xs).
 
 % Proficiencies, other than skill proficiencies.
-proficiency_list(p([h3("Proficiencies"), div([id=proficiencies], ul(Profs))])) :-
+proficiency_list(p([h2("Proficiencies"), div([id=proficiencies], ul(Profs))])) :-
     findall(Prof, proficiency_list_entry(Prof), Profs).
 proficiency_list_entry(Entry) :-
       proficiency_category("Languages: ", language, Entry)
@@ -122,7 +123,7 @@ proficiency_category(CatHdr, CatFunctor, li([b(CatHdr) | Profs])) :-
     format_list_flat(Ts, Profs, []).
 
 % Traits.
-trait_list(p([h3("Notable traits"), div([id=traits], ul(Items))])) :-
+trait_list(p([h2("Notable traits"), div([id=traits], ul(Items))])) :-
     findall(li(Item), trait_list_entry(Item), Items).
 %trait_list_entry(div(class=tooltip, [Trait, span(class=tooltiptext, Desc)])) :-
 trait_list_entry(Entry) :-
@@ -140,24 +141,48 @@ format_trait(feat(Feat)) --> !, ['feat: '], format_term(Feat).
 format_trait(T) --> format_term(T).
 
 % Spellcasting section.
+spellcasting_section(p([])) :- \+ known_spell(_,_).
+spellcasting_section(p([h2("Spellcasting"),
+                        SpellSlotTable|
+                        OriginSections])) :-
+    spell_slot_table(SpellSlotTable),
+    findall(OriginSection,
+            spell_origin_section(OriginSection),
+            OriginSections).
+
 spell_slot_table(Table) :-
-    table('spell_slots', 'Spell slots', [tr(Levels)|Rows], Table),
-    findall(th(Str),
-            (between(1, 9, Level), atomic_list_concat(['lvl ', Level], Str)),
-            Levels),
-    findall(Row, spell_slot_table_row(Row), Rows).
-spell_slot_table_row(tr(Row)) :-
-    findall(Cell,
-            spell_slot_table_cell(Cell),
-            Slots),
-    \+ length(Slots, 0),
-    length(Row, 9),
-    append(Slots, Padding, Row),
-    maplist(=(td([])), Padding).
-spell_slot_table_cell(td(Contents)) :-
-    between(1, 9, Level),
-    spell_slots(Level, N),
-    repl(input(type=checkbox, []), N, Contents).
+    table('spell_slots', 'Spell slots', [tr(Header)|Slots], Table),
+    findall(Cell, spell_slot_table_header_cell(Cell), Header),
+    findall(Cell, spell_slot_table_slot_cell(Cell), Slots).
+spell_slot_table_header_cell(th(Cell)) :-
+    pact_magic_slot_level(SlotLevel),
+    format(string(Cell), "pact magic (level ~w)", [SlotLevel]).
+spell_slot_table_header_cell(th(LevelStr)) :-
+    spell_slots(Level, _),
+    atomics_to_string(['lvl ', Level], LevelStr).
+spell_slot_table_slot_cell(td(WarlockSlots)) :-
+    pact_magic_slots(N),
+    checkboxes(N, WarlockSlots).
+spell_slot_table_slot_cell(td(Slots)) :-
+    spell_slots(_, N),
+    checkboxes(N, Slots).
+
+spell_origin_section(p([h3(Origin),ul(Infos),SpellTable])) :-
+    spell_origin(Origin),
+    findall(li(Str),
+            (spell_origin_info(Origin,Hdr,Info),
+             format(string(Str), "~w: ~w", [Hdr,Info])),
+            Infos),
+    spell_table(Origin, SpellTable).
+%spell_origin_info(_,_,_) :- false.
+spell_origin_info(Origin, "Max prepared spells", Prep) :-
+    max_prepared_spells(Origin, Prep).
+spell_origin_info(Origin, "Spellcasting ability", AbiStr) :-
+    spellcasting_ability(Origin, Abi),
+    ability_mod(Abi, Mod),
+    format_bonus(Mod, ModFmt, []),
+    atomic_list_concat(ModFmt, ModAtom),
+    format(string(AbiStr), "~w (~s)", [Abi, ModAtom]).
 
 spell_preparation_table(Html) :-
     table('spell preparation', 'Spells to prepare', [Header|Rows], Table),
@@ -170,15 +195,15 @@ spell_preparation_table_row(tr([td(Class), td(Prep), td(MaxLvl)])) :-
     findall(Level, spell_slots_single_class(Level, Class, _), Levels),
     max_list(Levels, MaxLvl).
 
-spell_table(Table) :-
+spell_table(Origin, Table) :-
     table('spells', 'Spells', [Header|Rows], Table),
     Header = tr([th('Prep\'d'), th('Lvl'), th('Src'), th('Spell'), th('CT'),
                  th('Rng'), th('Cpts'), th('Dur'), th('Conc'), th('To Hit/DC'),
                  th('Effect (summary)'), th('Res')]),
-    findall(Row, spell_table_row(_, _, Row), Rows).
+    findall(Row, spell_table_row(Origin, _, _, Row), Rows).
     %spell_table_rows(Rows).
 
-spell_table_row(Name, SpellLevel, tr(Row)) :-
+spell_table_row(Origin, Name, SpellLevel, tr(Row)) :-
     known_spell(Origin, Ability, AvailabilityVal, ResourcesVal, _Ritual, Name),
     format_spell_availability(AvailabilityVal, Availability),
     known_spell_data(Origin, Name, Data),
@@ -325,7 +350,7 @@ checkboxes(N, Boxes) :-
 checkboxes(N) --> {checkboxes(N, Boxes)}, seq(Boxes).
 
 % Helper predicates.
-table(Id, Caption, Contents, table(id=Id, [caption(h3(Caption))|Contents])).
+table(Id, Caption, Contents, table(id=Id, [caption(h4(Caption))|Contents])).
 
 tooltip(Text, Tooltip, div(class=tooltip, [Text, span(class=tooltiptext, Tooltip)])).
 

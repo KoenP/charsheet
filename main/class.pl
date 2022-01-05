@@ -7,6 +7,7 @@
        max_hp_per_level/2,
        class_saving_throw/2,
        caster/2,
+       spellcasting_ability/2,
        asi_level/1,
        max_prepared_spells/2.
 
@@ -195,6 +196,9 @@ bonus(choice(match_class(AsiLevel),'asi or feat'), Ability+N) :-
 %  which works differently.
 caster(_,_) :- false.
 required_predicate_for_each_class(caster/2).
+
+%! spellcasting_ability(?Class:atomic, ?Ability:atomic)
+spellcasting_ability(_,_) :- false.
 
 %! max_prepared_spells(?Class:atomic, ?N:int)
 %

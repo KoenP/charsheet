@@ -3,6 +3,7 @@ hd_per_level(sorcerer, 1 d 6).
 initial_class_base_hp(sorcerer, 6).
 max_hp_per_level(sorcerer, 1 d 6).
 caster(sorcerer, full).
+spellcasting_ability(sorcerer, cha).
 choose_subclass_level(sorcerer:1).
 asi_level(sorcerer:L) :-
     default_asi_level(L).

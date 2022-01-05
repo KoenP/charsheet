@@ -107,6 +107,8 @@ meta_todo(_,_) :- false.
 level(Level) :-
     findall(L, gain_level(L, _, _), Levels),
     max_member(Level, Levels).
+level(1) :-
+    \+ gain_level(_,_,_).
 
 match_level(Level) :-
     level(CurLevel),

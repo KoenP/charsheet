@@ -3,6 +3,7 @@
        spell_property/3,
        extend_class_spell_list/2.
 
+
 %! known_spell(?Origin, ?Ability:atomic, ?Availability, ?Resources:list, ?Ritual:atomic, ?Name:atomic)
 %
 %  Known spells are those spells spells that are on your character's
@@ -250,6 +251,19 @@ full_caster_spell_slot_table(6, [11,19]).
 full_caster_spell_slot_table(7, [13,20]).
 full_caster_spell_slot_table(8, [15]).
 full_caster_spell_slot_table(9, [17]).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Preparing spells.
+
+%! default_max_prepared_spells(?Class:atomic, -N:integer)
+%
+%  The default formula for determining how many spells a full caster
+%  can prepare for the given class.
+default_max_prepared_spells(Class, N) :-
+    spellcasting_ability(Class, Ability),
+    ability_mod(Ability, Mod),
+    class_level(Class:Level),
+    N is Level + Mod.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Helper predicates for modifying spell data.

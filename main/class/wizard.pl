@@ -3,6 +3,9 @@ hd_per_level(wizard, 1 d 6).
 initial_class_base_hp(wizard, 6).
 max_hp_per_level(wizard, 1 d 6).
 caster(wizard, full).
+spellcasting_ability(wizard, int).
+max_prepared_spells(wizard, N) :-
+    default_max_prepared_spells(wizard, N).
 choose_subclass_level(wizard:2).
 asi_level(wizard:L) :-
     default_asi_level(L).

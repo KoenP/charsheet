@@ -67,9 +67,10 @@ gain_level(15, wizard, hp_avg).
 gain_level(16, wizard, hp_avg).
 gain_level(17, wizard, hp_avg).
 gain_level(18, wizard, hp_avg).
-gain_level(19, wizard, hp_avg).
-gain_level(20, wizard, hp_avg).
+gain_level(19, warlock, hp_avg).
+choice(match_class(warlock:1), cantrip, ['eldritch blast', 'blade ward']).
+gain_level(20, warlock, hp_avg).
 
 choice(match_class(wizard:18), spell_mastery(1), thunderwave).
 choice(match_class(wizard:18), spell_mastery(2), shatter).
-choice(match_class(wizard:20), 'signature spell', [counterspell, fireball]).
+%choice(match_class(wizard:20), 'signature spell', [counterspell, fireball]).
