@@ -1,4 +1,5 @@
 :- multifile extend_spell_data/3.
+:- discontiguous add_spell_effect/2, known_spell_effect/3.
 
 :- [spell_auto_data].
 
@@ -81,10 +82,40 @@ extend_spell_data(Name, effects, Effects) :-
     spell_auto_data(Name, _), % ground Name
     findall(Effect, add_spell_effect(Name, Effect), Effects).
 
+%! known_spell_effect(?Origin, ?Name:atomic, ?Effect)
+%
+%  Like add_spell_effect/2, but only gets applied to spells your
+%  character knows, typically because some class-specific data is
+%  needed to generate the effect summary for the spell. An example of
+%  this is counterspell, where in some cases the caster needs to roll
+%  an ability check with their own spellcasting ability. Filling in
+%  this spellcasting ability requires knowing as which class the spell
+%  has been learned.
+known_spell_effect(_,_,_) :- false.
+
 %! add_spell_effect(?Name:atomic, ?Effect)
+%
+%  Add an entry to the `effects` field of the spell data.
 add_spell_effect('acid splash', "up to two targets within 5 ft of eachother").
 add_spell_effect('acid splash', saving_throw(dex): damage(acid, N d 6)) :-
     cantrip_scale(N).
+
+add_spell_effect('burning hands',
+                 in(15 ft cone):saving_throw(dex):(damage(fire, 3 d 6) else 'half damage')).
+
+known_spell_effect(Origin, counterspell, Effect) :-
+    known_spell(Origin, Ability, _, _, _, counterspell),
+    atomics_to_string(
+        ["target's spell fails if spell level not greater than 3, or if you pass a DC [10 + spell level] ",
+         Ability,
+         " check"],
+        Effect).
+
+add_spell_effect(darkvision, "grant 60 ft darkvision").
+
+add_spell_effect('detect magic', "sense presence of magic within 30 ft").
+add_spell_effect('detect magic', "use action to see faint aura around visible magical creature or object and learn its school of magic").
+add_spell_effect('detect magic', "penetrate most barriers, but blocked by 1 ft stone, 1 inch common metal, thin sheet of lead, 3 ft wood or dirt").
 
 add_spell_effect('eldritch blast', N*(spell_attack_roll(ranged):damage(force, 1 d 10))) :-
     cantrip_scale(N).
@@ -106,8 +137,14 @@ add_spell_effect(frostbite,
                  saving_throw(con):damage(cold,N d 6)) :-
     cantrip_scale(N).
 
+add_spell_effect('misty step', "teleport 30 ft").
+
 %extend_spell_data('scorching ray', damage rolls, [on_hit: fire(2 d 6)]).
 add_spell_effect('scorching ray',
                  3 * (spell_attack_roll(ranged):damage(fire, 2 d 6))).
 
+add_spell_effect('see invisibility',
+                 "see invisible creatures and objects, see through Ethereal").
 
+add_spell_effect(shatter,
+                 in(10 ft sphere):saving_throw(con):(damage(thunder, 3 d 8) else 'half damage')).

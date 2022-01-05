@@ -33,32 +33,50 @@ trait_source(class(wizard), arcane_recovery(N)) :-
 on_rest(long, 'arcane recovery', full) :-
     trait('arcane recovery').
 
-spell_mastery_candidate(Spell) :-
+% Spell mastery.
+spell_mastery_candidate(Level, Spell) :-
     known_spell(wizard, Spell),
-    spell_property(Spell, level, L),
+    spell_property(Spell, level, Level).
+trait_options_source(match_class(wizard:18),
+                     spell_mastery(L),
+                     wrap(spell_mastery),
+                     spell_mastery_candidate(L)) :-
     member(L, [1,2]).
-trait_options_source(class(wizard:18), 'spell mastery', wrap(spell_mastery),
-                     spell_mastery_candidate).
+bonus_source(trait(spell_mastery(Spell)),
+             modify_spell(wizard, Spell, Goal)) :-
+    Goal = modify_spell_field(effects,
+                              append_to_list("spell mastery")).
 
+% Signature spells.
 signature_spell_candidate(Spell) :-
     known_spell(wizard, Spell),
     spell_property(Spell, level, 3).
-trait_options_source(class(wizard:20), 'signature spell', wrap(signature_spell),
-                     2 from signature_spell_candidate).
+trait_options_source(match_class(wizard:20),
+                     'signature spell', wrap(signature_spell),
+                     2 unique_from signature_spell_candidate).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Learning wizard spells
 known_spell(wizard, int, always, [], no, Name) :-
     class_origin_to_class(Origin, wizard),
     choice_member(Origin, cantrip, Name).
-known_spell(wizard, int, 'when prepared', [slot], Ritual, Name) :-
+known_spell(wizard, int, Availability, Resources, Ritual, Name) :-
     class_origin_to_class(Origin, wizard),
-    choice_member(Origin, 'free spell', Name),
+    member(ChoiceID, [spell, 'free spell']),
+    choice_member(Origin, ChoiceID, Name),
+    wizard_spell_resources(Name, Resources),
+    wizard_spell_availability(Name, Availability),
     spell_property(Name, ritual, Ritual).
-known_spell(wizard, int, 'when prepared', [slot], Ritual, Name) :-
-    class_origin_to_class(Origin, wizard),
-    choice_member(Origin, spell, Name),
-    spell_property(Name, ritual, Ritual).
+
+wizard_spell_resources(Spell, []) :-
+    trait(spell_mastery(Spell)), !.
+wizard_spell_resources(Spell, [per_rest(short,1)] or [slot]) :-
+    trait(signature_spell(Spell)), !.
+wizard_spell_resources(_, [slot]).
+
+wizard_spell_availability(Spell, always) :-
+    trait(signature_spell(Spell)), !.
+wizard_spell_availability(_, 'when prepared').
 
 % Learn cantrips.
 options_source(class(wizard), cantrip, 3 unique_from class_cantrip(wizard)).
@@ -134,6 +152,12 @@ Copying a Spell into the Book. When you find a wizard spell of 1st level or high
 For each level of the spell, the process takes 2 hours and costs 50 gp. The cost represents material components you expend as you experiment with the spell to master it, as well as the fine inks you need to record it. Once you have spent this time and money, you can prepare the spell just like your other spells.
 Replacing the Book. You can copy a spell from your own spellbook into another book - for example, if you want to make a backup copy of your spellbook. This is just like copying a new spell into your spellbook, but faster and easier, since you understand your own notation and already know how to cast the spell. You need spend only 1 hour and 10 gp for each level of the copied spell.
 If you lose your spellbook, you can use the same procedure to transcribe the spells that you have prepared into a new spellbook. Filling out the remainder of your spellbook requires you to find new spells to do so, as normal. For this reason, many wizards keep backup spellbooks in a safe place. The Book's Appearance. Your spellbook is a unique compilation of spells, with its own decorative flourishes and margin notes. It might be a plain, functional leather volume that you received as a gift from your master, a finely bound gilt-edged tome you found in an ancient library, or even a loose collection of notes scrounged together after you lost your previous spellbook in a mishap.".
+
+spell_mastery(_) ?= "At 18th level, you have achieved such mastery over certain spells that you can cast them at will. Choose a 1st-level wizard spell and a 2nd-level wizard spell that are in your spellbook. You can cast those spells at their lowest level without expending a spell slot when you have them prepared. If you want to cast either spell at a higher level, you must expend a spell slot as normal.
+By spending 8 hours in study, you can exchange one or both of the spells you chose for different spells of the same levels.".
+
+signature_spell(_) ?= "When you reach 20th level, you gain mastery over two powerful spells and can cast them with little effort. Choose two 3rd-level wizard spells in your spellbook as your signature spells. You always have these spells prepared, they don't count against the number of spells you have prepared, and you can cast each of them once at 3rd level without expending a spell slot. When you do so, you can't do so again until you finish a short or long rest.
+If you want to cast either spell at a higher level, you must expend a spell slot as normal.".
 
 'evocation savant' ?= "Beginning when you select this school at 2nd level, the gold and time you must spend to copy an evocation spell into your spellbook is halved.".
 

@@ -91,7 +91,10 @@ known_spell(Origin, Name) :-
 known_spell_data(Origin, Name, Data) :-
     known_spell(Origin, Name),
     spell_data(Name, GenericData),
-    findall(Mod, bonus(modify_spell(Origin, Name, Mod)), Mods),
+    findall(Mod,
+            (bonus(modify_spell(Origin, Name, Mod));
+             known_spell_mod(Origin, Name, Mod)),
+            Mods),
     sequence(Mods, GenericData, Data).
 
 %! known_spell_property(?Origin:atomic, ?Name:atomic, ?Field:atomic, ?Val)
@@ -250,6 +253,11 @@ full_caster_spell_slot_table(9, [17]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Helper predicates for modifying spell data.
+
+%! 
+known_spell_mod(Origin, Name, Mod) :-
+    known_spell_effect(Origin, Name, Effect),
+    Mod = modify_spell_field(effects, append_to_list(Effect)).
 
 modify_spell_field(Field, UpdateField, Old, New) :-
     OldField = Old.get(Field),

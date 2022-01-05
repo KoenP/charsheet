@@ -241,6 +241,8 @@ format_range(feet(X)) --> {!}, [X], [" ft"].
 format_range(miles(X)) --> {!}, [X], [" mi"].
 format_range(X) --> [X].
 
+format_resources(Rs1 or Rs2) -->
+    format_resources(Rs1), [" or "], format_resources(Rs2).
 format_resources([]) --> ["-"].
 format_resources([R]) --> {!}, format_resource(R).
 format_resources([R|Rs]) --> format_resource(R), [', '], format_resources(Rs).

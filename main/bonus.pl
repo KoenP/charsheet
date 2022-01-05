@@ -6,12 +6,21 @@
 
 %! bonus(?Source, ?Bonus)
 %
-%  Bonuses are properties of your character that stack.
+%  Bonuses are properties of your character that typically stack.
 %  For example, if your character is an elf,
 %  bonus(race(elf), dex+2) would be true.
 %  This bonus would stack with other improvements to your dexterity.
 %  For most properties that don't stack, such as proficiencies or
 %  class features, see trait/2.
+%
+%  List of valid Bonus terms (should try to keep this exhaustive):
+%  - `Abi+N`, where ability(Abi) and integer(N). For example `int+1`,
+%    `str+2`, ...
+%  - `modify_spell(Origin, Name, Mod)` where
+%    `known_spell(Origin,Name,_,_,_,_)`.
+%    `Mod` is a binary goal such that `call(Mod,
+%    OldData, NewData)` produces the new spell data from the old spell
+%    data.
 bonus(Source, Bonus) :-
     bonus_source(Source, Bonus),
     call(Source).

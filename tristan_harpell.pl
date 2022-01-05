@@ -22,7 +22,7 @@ choice(race(human(variant)), asi, [int+1, con+1]).
 
 choice(init, 'initial class', wizard).
 choice(initial_class(wizard), skill, [arcana, investigation]).
-choice(class(wizard), cantrip, ['dancing lights', frostbite, 'minor illusion']).
+choice(class(wizard), cantrip, ['dancing lights', frostbite, 'acid splash']). %'minor illusion']).
 % poison spray, ray of frost, mold earth, fire bolt
 choice(class(wizard), 'free spell',
        ['detect magic', 'unseen servant', thunderwave, shield, 'magic missile', 'ice knife']).
@@ -53,6 +53,8 @@ choice(match_class(wizard:5), 'free spell', [counterspell, fireball]).
 
 
 gain_level(6, wizard, hp_avg).
+choice(match_class(wizard:6), 'free spell', [slow, 'stinking cloud']).
+
 gain_level(7, wizard, hp_avg).
 gain_level(8, wizard, hp_avg).
 gain_level(9, wizard, hp_avg).
@@ -61,3 +63,13 @@ gain_level(11, wizard, hp_avg).
 gain_level(12, wizard, hp_avg).
 gain_level(13, wizard, hp_avg).
 gain_level(14, wizard, hp_avg).
+gain_level(15, wizard, hp_avg).
+gain_level(16, wizard, hp_avg).
+gain_level(17, wizard, hp_avg).
+gain_level(18, wizard, hp_avg).
+gain_level(19, wizard, hp_avg).
+gain_level(20, wizard, hp_avg).
+
+choice(match_class(wizard:18), spell_mastery(1), thunderwave).
+choice(match_class(wizard:18), spell_mastery(2), shatter).
+choice(match_class(wizard:20), 'signature spell', [counterspell, fireball]).

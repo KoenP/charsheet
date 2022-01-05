@@ -11,7 +11,8 @@
        problem/1,
        resource/2,
        name/1.
-
+:- op(500, xfy, or).
+:- op(400, xfy, and).
 :- op(700, xfx, else).
 :- op(650, xfx, from).
 :- op(650, xfx, from).
