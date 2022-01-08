@@ -38,6 +38,7 @@
 :- [skill].
 :- [ac].
 :- [hp].
+:- [attacks].
 :- [html].
 
 %! meta_todo(Source, Todo)

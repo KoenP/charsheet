@@ -31,6 +31,7 @@ body_contents(Contents) :-
               skill_table,
               proficiency_list,
               trait_list,
+              attack_table,
               spellcasting_section],
               %spell_slot_table,
               %spell_preparation_table,
@@ -140,6 +141,22 @@ format_trait(feat(Feat)) --> !, ['feat: '], format_term(Feat).
 % format_trait(T) --> format_term(T), [' ('], summary(T), !, [')'].
 format_trait(T) --> format_term(T).
 
+% Attacks.
+attack_table(Table) :-
+    table('attacks', 'Attacks', [Header|Rows], Table),
+    Header = tr([th([]), th('Range'), th('To Hit'), th('Damage'), th('Notes')]),
+    findall(Row, attack_table_row(Row), Rows).
+attack_table_row(tr([td(Name), td(Range), td(ToHitOrDC), td(DamageFmt), td(FNotes)])) :-
+    attack(Name, RangeVal, ToHitOrDCVal, Damage, Notes),
+    format_list(Notes, FNotes, []),
+    fmt(format_measure(RangeVal), Range),
+    format_to_hit_or_dc(ToHitOrDCVal, ToHitOrDC, []),
+    format_damage(Damage, DamageFmt, []).
+
+format_to_hit_or_dc(to_hit(ToHit)) --> format_bonus(ToHit).
+format_to_hit_or_dc(saving_throw(DC, Abi)) -->
+    ["DC "], [DC], [" ("], [Abi], [")"].
+
 % Spellcasting section.
 spellcasting_section(p([])) :- \+ known_spell(_,_).
 spellcasting_section(p([h2("Spellcasting"),
@@ -183,6 +200,13 @@ spell_origin_info(Origin, "Spellcasting ability", AbiStr) :-
     format_bonus(Mod, ModFmt, []),
     atomic_list_concat(ModFmt, ModAtom),
     format(string(AbiStr), "~w (~s)", [Abi, ModAtom]).
+spell_origin_info(Origin, "Spell save DC", DC) :-
+    known_spell_origin_class(Origin, Class),
+    spell_save_dc(Class, DC).
+spell_origin_info(Origin, "Spell attack modifier", AttackModStr) :-
+    known_spell_origin_class(Origin, Class),
+    spell_attack_modifier(Class, AttackMod),
+    format_bonus_str(AttackMod, AttackModStr, []).
 
 spell_preparation_table(Html) :-
     table('spell preparation', 'Spells to prepare', [Header|Rows], Table),

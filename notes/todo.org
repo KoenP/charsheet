@@ -1,13 +1,9 @@
 - spellcasting
-  - druid spell_known/5 logic veralgemenen
-  - gekende spells filteren uit learn_spell lijstjes
-  - oorsprong van spells tonen
-  - warlock eldritch invocation spells ondersteunen
-  - spell effects terug introduceren
   - simpele DC based spells zoals sacred flame toevoegen aan attack table
-  - archdruid correct implementeren
-
-- alternatief voor trait_options: een waarbij je niet rechtstreeks je traits kiest maar opties die expanded worden naar traits, om af te raken van "trait pollution", zoals het learn_spell trait
+    
+- backgrounds
+- equipment en equipment effecten toevoegen
+- attack table
 
 - leesbare error messages
 - effecten van short en long rests registreren
@@ -16,13 +12,17 @@
 - beast json
 - lege tabellen (bv spell prep) niet tonen
 - ergens een lijst van talen toevoegen; of meer algemeen: omgaan met het idee "kies van deze lijst, of vul gewoon zelf iets in"
+- consistentie "ft" vs "feet" functor
 
 - onderscheid tussen initial class exclusive traits en reguliere level 1 traits (zie https://5thsrd.org/rules/multiclassing/#proficiencies)
 
   
-* huidige todo
-Bezig met warlock class.
-Deze class heeft identieke functionaliteit nodig als sorcerers voor het leren van spells.
-Dit moet dus veralgemeend worden.
-Ik wil een algemeen idee van "novel spells" -> learnable spells die niet al gekend zijn.
-Ik wil ook een algemeen systeem voor het vergeten en vervangen van spells.
+* Huidige todo
+  Debugging: attack(A,B,C,D,E), format_list(Notes,FNotes,[]).
+
+* Lange termijn
+Swipl in-browser
+JavaScript interactieve editor om character te maken
+Interactieve character sheet met automatisch spellcasten, resting, ...
+Visueel aangeven welke traits geautomatiseerd worden en een toggle geven om automatisatie uit te zetten
+A4 character sheet generatie

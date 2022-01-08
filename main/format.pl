@@ -28,9 +28,9 @@ format_terms([X|Xs]) --> {Xs \= []}, format_term(X), [', '], format_terms(Xs).
 format_list_empty_as_dash([]) --> ['-'].
 format_list_empty_as_dash(L) --> {L = [_|_]}, format_list(L).
 
-format_list([]) --> [].
-format_list([X]) --> format_term(X).
-format_list([X|Xs]) --> {Xs \= []}, format_term(X), [', '], format_list(Xs).
+format_list([]) --> {!}, [].
+format_list([X]) --> {!}, format_term(X).
+format_list([X|Xs]) --> {Xs \= [], !}, format_term(X), [', '], format_list(Xs).
 
 format_list_flat([]) --> [].
 format_list_flat([X]) --> [X].
@@ -50,6 +50,15 @@ format_dice(N d X) --> seq([N, 'd', X]).
 
 format_bonus(N) --> {N >= 0}, ['+'], [N].
 format_bonus(N) --> {N < 0}, [N].
+format_bonus_str(N, Str, Tail) :-
+    format_bonus(N, Fmt, Tail),
+    atomic_list_concat(Fmt, Str).
+
+format_measure(Measure) -->
+    {Measure =.. [Unit, Magnitude]},
+    [Magnitude],
+    [" "],
+    [Unit].
 
 % Replace underscores by spaces.
 us_to_space([ X |Xs]) --> {X \= '_'}, [X], us_to_space(Xs).

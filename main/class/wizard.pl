@@ -121,7 +121,8 @@ apply_potent_cantrip(OldEffects, NewEffects) :-
                    NewEffects).
     
 trait_source(match_class(wizard(evocation):10), 'empowered evocation').
-bonus_source(trait('empowered evocation'), modify_spell(wizard, Spell, Goal)) :-
+bonus_source(trait('empowered evocation'),
+             modify_spell(wizard, Spell, Goal)) :-
     known_spell(wizard, Spell),
     spell_data(Spell, Data),
     Data.school = evocation,

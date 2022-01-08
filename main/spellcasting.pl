@@ -114,6 +114,45 @@ known_spell_property(Origin, Name, Field, Val) :-
 known_spell_property_or_error(Origin, Name, Field, Val) :-
     known_spell_data(Origin, Name, Data),
     Val = Data.(Field).
+
+%! spell_attack_modifier(?Class:atomic, ?Mod:int)
+%
+%  The PC's spell attack modifier for the given Class.
+spell_attack_modifier(Class, AttackMod) :-
+    spellcasting_ability(Class, Abi),
+    ability_mod(Abi, AbiMod),
+    proficiency_bonus(ProfBon),
+    AttackMod is ProfBon + AbiMod.
+
+spell_save_dc(Class, DC) :-
+    spellcasting_ability(Class, Abi),
+    ability_mod(Abi, AbiMod),
+    proficiency_bonus(ProfBon),
+    DC is 8 + ProfBon + AbiMod.
+
+%! known_spell_to_hit(?Origin, ?Name:atomic, ?ToHit:int)
+%
+%  The to hit value of the given known spell, if it is relevant
+%  (predicate will fail for a spell that does not make any attack
+%  rolls; it will succeed once if a spell makes at least one attack
+%  roll).
+known_spell_to_hit(Origin, Name, ToHit) :-
+    known_spell_property(Origin, Name, effects, Effects),
+    contains_attack_roll(Effects, _),
+    known_spell_origin_class(Origin, Class),
+    spell_attack_modifier(Class, ToHit).
+
+%! known_spell_saving_throw(?Origin, ?Name:atomic, ?DC:int, ?Abi:atomic)
+%
+%  Associates a known spell with the DC and the Ability of one of its
+%  saving throws. The predicate may be true more than once for a given
+%  Origin and Name, if the spell has more than one saving throw.
+known_spell_saving_throw(Origin, Name, DC, Abi) :-
+    known_spell_property(Origin, Name, effects, Effects),
+    contains_saving_throw(Effects, saving_throw(Abi):_),
+    known_spell_origin_class(Origin, Class),
+    spell_save_dc(Class, DC).
+%contains_saving_throw(Effects, saving_throw(Abi):Effect)
     
 %! learnable_proper_spell(?Class, ?Name)
 %

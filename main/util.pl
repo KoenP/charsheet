@@ -1,6 +1,9 @@
 subterm_member(X, T) :-
     select_subterm(X, T, _, _).
 
+unique_subterm_member(X, T) :-
+    findall(Y, (Y=X, subterm_member(Y,T)), [X]).
+
 select_subterm(X, X , Y, Y ).
 select_subterm(X, T1, Y, T2) :-
     T1 =.. [Functor|Args],
