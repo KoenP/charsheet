@@ -40,6 +40,7 @@
 :- [hp].
 :- [attacks].
 :- [html].
+:- [server].
 
 %! meta_todo(Source, Todo)
 %

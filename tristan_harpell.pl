@@ -1,4 +1,4 @@
-:- doc_server(4000).
+%:- doc_server(4000).
 :- set_prolog_flag(toplevel_print_anon, false).
 :- portray_text(true).
 
