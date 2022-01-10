@@ -332,12 +332,12 @@ extend_class_spell_list(warlock, Spell) :-
                   'scorching ray', fireball, 'stinking cloud', 'fire shield',
                   'wall of fire', 'flame strike', hallow]).
 
-trait_source(match_class(warlock:1), 'dark one\'s blessing').
-trait_source(match_class(warlock:6), 'dark one\'s own luck').
+trait_source(match_class(warlock(fiend):1), 'dark one\'s blessing').
+trait_source(match_class(warlock(fiend):6), 'dark one\'s own luck').
 resource('dark one\'s own luck', 'dark one\'s own luck', 1) :-
     trait('dark one\'s own luck').
-trait_source(match_class(warlock:10), 'fiendish resilience').
-trait_source(match_class(warlock:14), 'hurl through hell').
+trait_source(match_class(warlock(fiend):10), 'fiendish resilience').
+trait_source(match_class(warlock(fiend):14), 'hurl through hell').
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
