@@ -3,6 +3,7 @@
 :- use_module(library(http/http_parameters)).
 :- use_module(library(http/json)).
 :- use_module(library(http/http_json)).
+:- use_module(library(http/http_header)).
 
 :- http_handler(root(.), remote_query(Method), [method(Method)]).
 
@@ -38,6 +39,7 @@ handle_request_param(QueryString, _) :-
 handle_request_param(_, TodoString) :-
     ground(TodoString),
     findall(Entry, todo_entry_jsondict(Entry), Entries),
+    format("Access-Control-Allow-Origin: *~n"),
     reply_json_dict(Entries).
 
 todo_entry_jsondict(_{origin:OriginStr, id:IdStr, spec:SpecDict}) :-
