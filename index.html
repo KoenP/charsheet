@@ -1,9 +1,13 @@
 <head>
   <title>charsheet</title>
+  <meta charset="UTF-8">
 </head>
 <body>
   <h1>charsheet</h1>
-
+  <input type="text" id="queryText" value="">
+  <button id="query" onclick="myFunction(this.id)">Try query</button>
+  <button id="todo" onclick="myFunction(this.id)">TODO</button>
+  <pre id="outputtest"></pre>
   <script type="text/javascript">
     let query = function(q) {
         fetch("/?" + new URLSearchParams({query: q}),
@@ -23,5 +27,29 @@
                   });
               });
     };
+  </script>
+  <script type="text/javascript">
+    let myFunction = function(clicked_id) {
+      if(clicked_id == "todo") {
+        fetch("/?" + new URLSearchParams({todo: "foo"}),
+                {method:"post"}).then(function(response) {
+                    response.text().then(function(text) {
+                      const resultJSON = JSON.parse(text);
+                      const resultString = JSON.stringify(resultJSON, null, '\t');
+                      document.getElementById("outputtest").innerHTML = resultString;
+                      console.log(resultString);
+                    });
+                    console.log(clicked_id);
+                });
+              } else if(clicked_id == "query") {
+                const q = document.getElementById("queryText").value; 
+                fetch("/?" + new URLSearchParams({query: q}),
+                  {method:"post"}).then(function(response) {
+                    response.text().then(function(text) {
+                      document.getElementById("outputtest").innerHTML = text;
+                  });
+                });
+              }
+            };
   </script>
 </body>
