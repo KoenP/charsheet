@@ -1,0 +1,27 @@
+<head>
+  <title>charsheet</title>
+</head>
+<body>
+  <h1>charsheet</h1>
+
+  <script type="text/javascript">
+    let query = function(q) {
+        fetch("/?" + new URLSearchParams({query: q}),
+              {method:"post"}).then(function(response) {
+                  response.text().then(function(text) {
+                      console.log(text);
+                  });
+              });
+    };
+  </script>
+  <script type="text/javascript">
+    let todo = function() {
+        fetch("/?" + new URLSearchParams({todo: "foo"}),
+              {method:"post"}).then(function(response) {
+                  response.text().then(function(text) {
+                      console.log(text);
+                  });
+              });
+    };
+  </script>
+</body>
