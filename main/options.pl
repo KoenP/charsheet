@@ -13,9 +13,9 @@
 %  A todo is generated for every options/3 clause without matching
 %  choice/3 clause.
 options(_,_,_) :- false.
-todo(options(Origin, Id)) :-
+todo(options(Origin, Id, Spec)) :-
     % Generate a todo for each options clause without corresponding choice clause.
-    options(Origin, Id, _),
+    options(Origin, Id, Spec),
     \+ choice(Origin, Id, _).
 
 
@@ -134,8 +134,12 @@ unique_from(N, Pred, Choices) :-
 from_list(L, X) :- member(X, L).
 
 %! inspect_options(?Origin, ?Id, ?Desc)
-%  Desc is the list of all valid choices for the options/3 clause with
+%  Desc describes all valid choices for the options/3 clause with
 %  matching Origin and Id.
+%  The format of Desc is one of:
+%  - `N unique_from D`; with `N` an integer and `D` a sub-escription,
+%  - `N from D`; with `N` an integer and `D` a sub-escription,
+%  - A list of terms.
 inspect_options(Origin, Id, Desc) :-
     options(Origin, Id, Spec), % ground
     inspect_spec(Spec, Desc).
