@@ -5,18 +5,18 @@
 :- use_module(library(http/json)).
 :- use_module(library(http/http_json)).
 :- use_module(library(http/http_header)).
+:- use_module(library(http/http_server_files)).
+:- use_module(library(http/http_path)).
 :- use_module(library(sgml)).
-
-:- http_handler(root(.), remote_query(Method), [method(Method)]).
 
 run_server :-
     http_server(http_dispatch, [port(8000)]).
 
+:- http_handler(root(.), http_reply_file('index.html', []), [method=get, priority=1]).
+:- http_handler(root(Path), http_reply_file(Path, []), [method=get]).
+:- http_handler(root(request), remote_query, [method=post]).
 
-remote_query(get, Request) :-
-    http_reply_from_files('.', [], Request).
-
-remote_query(post, Request) :-
+remote_query(Request) :-
     http_parameters(Request, [query(QueryString,[optional(true)]), todo(TodoString,[optional(true)])]),
     handle_request_param(QueryString, TodoString).
 handle_request_param(QueryString, _) :-
