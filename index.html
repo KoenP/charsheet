@@ -10,7 +10,7 @@
   <pre id="outputtest"></pre>
   <script type="text/javascript">
     let query = function(q) {
-        fetch("/?" + new URLSearchParams({query: q}),
+        fetch("/request?" + new URLSearchParams({query: q}),
               {method:"post"}).then(function(response) {
                   response.text().then(function(text) {
                       console.log(text);
@@ -20,7 +20,7 @@
   </script>
   <script type="text/javascript">
     let todo = function() {
-        fetch("/?" + new URLSearchParams({todo: "foo"}),
+        fetch("/request?" + new URLSearchParams({todo: "foo"}),
               {method:"post"}).then(function(response) {
                   response.text().then(function(text) {
                       console.log(text);
@@ -31,7 +31,7 @@
   <script type="text/javascript">
     let myFunction = function(clicked_id) {
       if(clicked_id == "todo") {
-        fetch("/?" + new URLSearchParams({todo: "foo"}),
+        fetch("/request?" + new URLSearchParams({todo: "foo"}),
                 {method:"post"}).then(function(response) {
                     response.text().then(function(text) {
                       const resultJSON = JSON.parse(text);
@@ -43,7 +43,7 @@
                 });
               } else if(clicked_id == "query") {
                 const q = document.getElementById("queryText").value; 
-                fetch("/?" + new URLSearchParams({query: q}),
+                fetch("/request?" + new URLSearchParams({query: q}),
                   {method:"post"}).then(function(response) {
                     response.text().then(function(text) {
                       document.getElementById("outputtest").innerHTML = text;
