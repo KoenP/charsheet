@@ -3,6 +3,7 @@ let setName = function() {
           {method:"post"}).then(function(response) {
               response.text().then(function(text) {
                   document.getElementById("charname").innerHTML = text;
+                  document.getElementById("chartitle").innerHTML = text;
               });
           });
 };
