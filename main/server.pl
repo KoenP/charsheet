@@ -9,8 +9,7 @@
 :- use_module(library(http/http_path)).
 :- use_module(library(sgml)).
 
-run_server :-
-    http_server(http_dispatch, [port(8000)]).
+:- initialization(http_server(http_dispatch, [port(8000)])).
 
 :- http_handler(root(.), http_reply_file('index.html', []), [method=get, priority=1]).
 :- http_handler(root(Path), http_reply_file(Path, []), [method=get]).
