@@ -1,9 +1,3 @@
-%:- doc_server(4000).
-:- set_prolog_flag(toplevel_print_anon, false).
-:- portray_text(true).
-
-:- [main/main].
-
 % TODO
 base_ability(str, 12).
 base_ability(dex, 12).
