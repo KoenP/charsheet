@@ -1,3 +1,5 @@
+:- dynamic base_ability/2.
+
 ability(str).
 ability(dex).
 ability(con).
