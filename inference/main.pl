@@ -2,6 +2,10 @@
 :- use_module(library(yall)).
 :- use_module(library(pairs)).
 
+:- doc_server(4000).
+:- set_prolog_flag(toplevel_print_anon, false).
+:- portray_text(true).
+
 :- multifile
        (?=)/2,
        gain_level/3,
@@ -40,7 +44,6 @@
 :- [hp].
 :- [attacks].
 :- [html].
-:- [server].
 
 %! meta_todo(Source, Todo)
 %

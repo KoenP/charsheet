@@ -1,3 +1,5 @@
+:- [inference/main].
+
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/http_parameters)).
@@ -7,13 +9,20 @@
 :- use_module(library(http/http_header)).
 :- use_module(library(http/http_server_files)).
 :- use_module(library(http/http_path)).
+:- use_module(library(http/http_error)).
 :- use_module(library(sgml)).
 
-:- initialization(http_server(http_dispatch, [port(8000)])).
+user:file_search_path(html, 'static').
+user:file_search_path(css, 'static/css').
+user:file_search_path(js, 'static/js').
 
-:- http_handler(root(.), http_reply_file('index.html', []), [method=get, priority=1]).
-:- http_handler(root(Path), http_reply_file(Path, []), [method=get]).
+:- http_handler(root(.), http_reply_file('static/index.html',[]), [priority=1]).
+:- http_handler(root(.), serve_files_in_directory(html), [prefix]).
+:- http_handler(css(.), serve_files_in_directory(css), [prefix]).
+:- http_handler(js(.), serve_files_in_directory(js), [prefix]).
 :- http_handler(root(request), remote_query, [method=post]).
+
+:- initialization(http_server(http_dispatch, [port(8000)])).
 
 remote_query(Request) :-
     http_parameters(Request, [query(QueryString,[optional(true)]), todo(TodoString,[optional(true)])]),
