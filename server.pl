@@ -16,7 +16,7 @@
 user:file_search_path(html, 'static').
 user:file_search_path(css, 'static/css').
 user:file_search_path(js, 'static/js').
-http:location(request, root(request)).
+%http:location(request, root(request)).
 
 :- http_handler(root(.), http_reply_file('static/index.html',[]), [priority=1]).
 :- http_handler(root(.), serve_files_in_directory(html), [prefix]).

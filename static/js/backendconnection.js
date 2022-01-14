@@ -1,68 +1,57 @@
 let setName = function() {
-    fetch("/request?" + new URLSearchParams({query: "name(X)"}),
-          {method:"post"}).then(function(response) {
-              response.text().then(function(text) {
-                  document.getElementById("charname").innerHTML = text;
-                  document.getElementById("chartitle").innerHTML = text;
-              });
-          });
+  fetch("/request/query?" + new URLSearchParams({q: "name(X)"}),
+        {method:"post"}).then(function(response) {
+            response.text().then(function(text) {
+                document.getElementById("charname").innerHTML = text;
+                document.getElementById("chartitle").innerHTML = text;
+            });
+        });
 };
 
 setName();
 
+let query = function(query, continueWithResult) {
+  ask("/request/query?", "post", {q: query},
+  function(response) {
+    response.text()
+    .then(continueWithResult);
+  });
+};
 
-let query = function(q) {
-    fetch("/request?" + new URLSearchParams({query: q}),
-          {method:"post"}).then(function(response) {
-              response.text().then(function(text) {
-                  console.log(text);
-              });
-          });
-};
-let todo = function() {
-    fetch("/request?" + new URLSearchParams({todo: "foo"}),
-          {method:"post"}).then(function(response) {
-              response.text().then(function(text) {
-                  console.log(text);
-              });
-          });
-};
+
+//let query = function(q) {
+//    fetch("/request?" + new URLSearchParams({query: q}),
+//          {method:"post"}).then(function(response) {
+//              response.text().then(function(text) {
+//                  console.log(text);
+//              });
+//          });
+//};
+//let todo = function() {
+//    fetch("/request?" + new URLSearchParams({todo: "foo"}),
+//          {method:"post"}).then(function(response) {
+//              response.text().then(function(text) {
+//                  console.log(text);
+//              });
+//          });
+//};
 let myFunction = function(clicked_id) {
-    if(clicked_id == "todo") {
-      fetch("/request?" + new URLSearchParams({todo: "foo"}),
-              {method:"post"}).then(function(response) {
-                  response.text().then(function(text) {
-                    const resultJSON = JSON.parse(text);
-                    const resultString = JSON.stringify(resultJSON, null, '\t');
-                    document.getElementById("outputtest").innerHTML = resultString;
-                    todoString = resultString;
-                  });
-                  console.log(clicked_id);
-              });
-            } else if(clicked_id == "query") {
-              const q = document.getElementById("queryText").value; 
-              fetch("/request?" + new URLSearchParams({query: q}),
-                {method:"post"}).then(function(response) {
-                  response.text().then(function(text) {
-                    document.getElementById("outputtest").innerHTML = text;
-                });
-              });
-            }
-
+    const q = document.getElementById("queryText").value; 
+    query(q, function(text) {document.getElementById("outputtest").innerHTML = text;});
 };
 
 let myFunction2 = function() {
-  request({todo: "foo"}, 
-    function(resultJSON) {
-      const resultString = JSON.stringify(resultJSON, null, '\t');
-      document.getElementById("outputtest").innerHTML = resultString;
-      if(resultJSON[2].spec[0] == undefined) console.log(resultJSON[2].spec.unique_from.spec[0]);
-      else console.log(resultJSON[2].spec[0]);
+    request("todo", {}, 
+      function(resultJSON) {
+        const resultString = JSON.stringify(resultJSON, null, '\t');
+        document.getElementById("outputtest").innerHTML = resultString;
+        if(resultJSON[2].spec[0] == undefined) console.log(resultJSON[2].spec.unique_from.spec[0]);
+        else console.log(resultJSON[2].spec[0]);
     });
 };
 
-let request = function(params, reactToJSON) {
-  ask("/request?", "post", params,
+let request = function(path, params, reactToJSON) {
+  ask("/request/" + path + "?", "post", params,
   function(response) {
     response.text()
     .then(function(text) {
@@ -78,7 +67,7 @@ let ask = function(path, method, params, reactToResponse) {
 };
 
 let generateLists = function() {
-  request({todo: "foo"}, 
+  request("todo", {}, 
   function(resultJSON){
     parent = document.getElementById("outputdiv");
     for(let i = 0; i < resultJSON.length; i++) {
@@ -105,7 +94,7 @@ let generateLists = function() {
 };
 
 let chooseOption = function(clicked_value) {
-  request({todo: "foo"},
+  request("todo", {},
   function(resultJSON) {
     console.log(JSON.stringify(resultJSON));
     console.log(clicked_value);
