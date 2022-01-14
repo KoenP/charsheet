@@ -79,7 +79,7 @@ rep(X) --> [X], rep(X).
 seq([]) --> [].
 seq([E|Es]) --> [E], seq(Es).
 
-seq_atom(Atom) --> {atom_codes(Atom, Chars)}, seq(Chars).
+seq_atom(Atom) --> {atom_chars(Atom, Chars)}, seq(Chars).
     
 maybe(_) --> [].
 maybe(X) --> [X].
