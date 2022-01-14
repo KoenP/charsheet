@@ -1,3 +1,5 @@
+var todoString;
+
 let setName = function() {
     fetch("/request?" + new URLSearchParams({query: "name(X)"}),
           {method:"post"}).then(function(response) {
@@ -32,8 +34,7 @@ let myFunction = function(clicked_id) {
                     const resultJSON = JSON.parse(text);
                     const resultString = JSON.stringify(resultJSON, null, '\t');
                     document.getElementById("outputtest").innerHTML = resultString;
-                    console.log(resultString);
-                    console.log(resultJSON['id'])
+                    todoString = resultString;
                   });
                   console.log(clicked_id);
               });
@@ -46,4 +47,31 @@ let myFunction = function(clicked_id) {
                 });
               });
             }
+
+};
+
+let myFunction2 = function(clicked_id) {
+  request({todo: "foo"},
+    function(resultJSON) {
+      const resultString = JSON.stringify(resultJSON, null, '\t');
+      document.getElementById("outputtest").innerHTML = resultString;
+      todoString = resultString;
+    }
+  )
+};
+
+let request = function(params, reactToJSON) {
+  ask("/request?", "post", params,
+  function(response) {
+    response.text()
+    .then(function(text) {
+      const resultJSON = JSON.parse(text);
+      reactToJSON(resultJSON);
+    });
+  });
+};
+
+let ask = function(path, method, params, reactToResponse) {
+  fetch(path + new URLSearchParams(params), {method:method})
+  .then(function(response) {reactToResponse(response);});
 };
