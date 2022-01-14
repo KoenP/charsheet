@@ -21,5 +21,24 @@ load_character_file(CharName) :-
     charname_to_filename(CharName, FileName),
     load_files(FileName, []).
 
+saved_character(CharName) :-
+    directory_member(characters, FileName, [extensions([pl])]),
+    charname_to_filename(CharName, FileName).
+
 charname_to_filename(CharName, FileName) :-
-    atomic_list_concat(['characters/', CharName, '.pl'], FileName).
+    ground(CharName),
+    !,
+    atom_chars(CharName, CharNameChars),
+    cn2fn(CharNameChars, FileNameChars, []),
+    atom_chars(FileName, FileNameChars).
+charname_to_filename(CharName, FileName) :-
+    ground(FileName),
+    !,
+    atom_chars(FileName, FileNameChars),
+    cn2fn(CharNameChars, FileNameChars, []),
+    atom_chars(CharName, CharNameChars).
+    %atomic_list_concat(['characters/', CharName, '.pl'], FileName).
+
+cn2fn(CharName) --> seq_atom('characters/'),
+                    seq(CharName),
+                    seq_atom('.pl').
