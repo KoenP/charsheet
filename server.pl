@@ -84,8 +84,8 @@ remote_query(_, '/save_character') :-
 
 todo_entry_jsondict(_{origin:OriginStr, id:IdStr, spec:SpecDict}) :-
     todo(options(Origin, Id, Spec)),
-    term_string(Origin, OriginStr),
-    term_string(Id, IdStr),
+    quoted_term_string(Origin, OriginStr),
+    quoted_term_string(Id, IdStr),
     inspect_spec(Spec, ISpec),
     spec_to_jsondict(ISpec, SpecDict).
 
@@ -93,6 +93,9 @@ spec_to_jsondict(N unique_from Spec, _{unique_from: _{number:N, spec:SpecDict}})
     spec_to_jsondict(Spec, SpecDict).
 spec_to_jsondict(N from Spec, _{from: _{number:N, spec:SpecDict}}) :-
     spec_to_jsondict(Spec, SpecDict).
-spec_to_jsondict(List, List) :-
-    is_list(List).
+spec_to_jsondict(List, StrList) :-
+    maplist(quoted_term_string, List, StrList).
+
+quoted_term_string(T, S) :-
+    term_string(T, S, [quoted(true)]).
 
