@@ -47,6 +47,9 @@ user:file_search_path(js, 'static/js').
 %      with matching =name=.
 %   - =|/request/save_character|=: Save all changes made to the
 %      current character.
+%   - =|/request/choice?source=_&id=_&choice=_|=: Register the given
+%      choice for the character. This is not committed to permanent
+%      storage until =save_character= is requested.
 run_server :-
     http_server(http_dispatch, [port(8000)]).
 
@@ -76,11 +79,14 @@ remote_query(Request, '/load_character') :-
     load_character_file(Name).
 remote_query(_, '/save_character') :-
     write_character_file.
-%remote_query(Request, '/choice') :-
-%    http_parameters(Request, [source(SourceStr,[]),
-%                              id(IdStr,[]),
-%                              
-%                             ])
+remote_query(Request, '/choice') :-
+    http_parameters(Request, [source(SourceStr,[]),
+                              id(IdStr,[]),
+                              choice(ChoiceStr,[])]),
+    term_string(Source, SourceStr),
+    term_string(Id, IdStr),
+    term_string(Choice, ChoiceStr),
+    assert(choice(Source, Id, Choice)).
 
 todo_entry_jsondict(_{origin:OriginStr, id:IdStr, spec:SpecDict}) :-
     todo(options(Origin, Id, Spec)),
