@@ -16,7 +16,7 @@ char_sheet_html([head(Head), body(Body)]) :-
     char_sheet_head(Head),
     char_sheet_body(Body).
 
-char_sheet_head([title(Name), link([rel=stylesheet, href='charsheet.css'], [])]) :-
+char_sheet_head([title(Name), link([rel=stylesheet, href='css/charsheet.css'], [])]) :-
     name(Name).
 
 char_sheet_body([Div]) :-

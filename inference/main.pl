@@ -7,22 +7,12 @@
 :- portray_text(true).
 
 :- multifile
-       name/1,
-       base_ability/2,
-       gain_level/3,
-       choice/3,
        (?=)/2,
        on_rest/3,
        todo/1,
        meta_todo/2,
        problem/1,
        resource/2.
-
-:- dynamic
-       name/1,
-       base_ability/2,
-       gain_level/3,
-       choice/3.
 
 :- op(500, xfy, or).
 :- op(400, xfy, and).

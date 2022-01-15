@@ -1,4 +1,5 @@
 race_option(elf).
+racial_speed(elf, 30).
 race_shorthand(el).
 
 subrace(elf, 'high elf').

@@ -8,8 +8,8 @@ base_ability(int, 12).
 
 % Level 1
 name('Mr Warlock') :- !.
-%race(elf).
-%race('high elf').
+choice(init, 'base race', elf).
+choice(race(elf), subrace, 'high elf').
 choice(init, 'initial class', warlock).
 choice(match_class(warlock:1), subclass, fiend).
 choice(match_class(warlock:1), cantrip, ['eldritch blast', 'blade ward']).
