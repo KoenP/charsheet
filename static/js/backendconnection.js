@@ -23,7 +23,7 @@ async function getName() {
 }
 
 async function loadChar(n) {
-  ask("/request/load_character?", "post", {name: n}); 
+  return await ask("/request/load_character?", "post", {name: n}); 
 }
 
 async function initPage() {
@@ -38,18 +38,11 @@ async function initPage() {
 initPage();
 
 async function initChar() {
-  const charJSON = await charList();
-  // console.log(JSON.stringify(charJSON, null, '\t'));
-  await loadChar(charJSON[document.getElementById("characterChoice").value]);
-  // console.log(charJSON[document.getElementById("characterChoice").value])
-  // const textName = await getName();
-  // console.log(textName);
-  // document.getElementById("outputtest").innerHTML = textName;
-  printChar();
-}
-
-async function printChar() {
-  document.getElementById("outputtest").innerHTML = await getName();
+  const resultJSON = await charList();
+  const chosenCharacter = resultJSON[document.getElementById("characterChoice").value];
+  const result = await loadChar(chosenCharacter);
+  document.getElementById("outputtest").innerHTML = "Loading " + chosenCharacter + " in new tab...";
+  window.open("http://localhost:8000/sheet", '_blank');
 }
 
 async function queryClicked() {
