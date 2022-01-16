@@ -61,6 +61,7 @@ send_char_sheet(_) :-
 remote_query(Request) :-
     member(path_info(PathInfo), Request),
     files_ex:strip_trailing_slash(PathInfo, Stripped),
+    writeln("Access-Control-Allow-Origin: *"),
     remote_query(Request, Stripped).
 remote_query(_, '/todo') :-
     findall(Entry, todo_entry_jsondict(Entry), Entries),
@@ -76,9 +77,11 @@ remote_query(_, '/list_characters') :-
     reply_json_dict(Chars).
 remote_query(Request, '/load_character') :-
     http_parameters(Request, [name(Name,[])]),
-    load_character_file(Name).
+    load_character_file(Name),
+    reply_json_dict("success!").
 remote_query(_, '/save_character') :-
-    write_character_file.
+    write_character_file,
+    reply_json_dict("success!").
 remote_query(Request, '/choice') :-
     http_parameters(Request, [source(SourceStr,[]),
                               id(IdStr,[]),
@@ -86,7 +89,8 @@ remote_query(Request, '/choice') :-
     term_string(Source, SourceStr),
     term_string(Id, IdStr),
     term_string(Choice, ChoiceStr),
-    assert(choice(Source, Id, Choice)).
+    assert(choice(Source, Id, Choice)),
+    reply_json_dict("success!").
 
 todo_entry_jsondict(_{origin:OriginStr, id:IdStr, spec:SpecDict}) :-
     todo(options(Origin, Id, Spec)),
