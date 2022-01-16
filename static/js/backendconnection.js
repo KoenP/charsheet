@@ -37,12 +37,13 @@ async function initPage() {
 }
 initPage();
 
-async function initChar() {
+async function initChar(clicked_id) {
   const resultJSON = await charList();
   const chosenCharacter = resultJSON[document.getElementById("characterChoice").value];
   const result = await loadChar(chosenCharacter);
   document.getElementById("outputtest").innerHTML = "Loading " + chosenCharacter + " in new tab...";
-  window.open("http://localhost:8000/sheet", '_blank');
+  if(clicked_id == "newtab") open("http://localhost:8000/sheet");
+  if(clicked_id == "replace") window.location.replace("http://localhost:8000/sheet");
 }
 
 async function queryClicked() {
@@ -55,7 +56,7 @@ async function todoClicked() {
 }
 
 async function generateLists() {
-  let resultJSON = todo();
+  let resultJSON = await todo();
   parent = document.getElementById("outputdiv");
   for(let i = 0; i < resultJSON.length; i++) {
     var newLabel = document.createElement("p");
