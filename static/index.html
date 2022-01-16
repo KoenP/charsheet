@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-  <title id="chartitle">charsheet</title>
+  <title id="chartitle">Choose a character</title>
   <meta charset="UTF-8">
   <script src="js/backendconnection.js"></script>
 </head>
 <body>
-  <h1 id="charname">charsheet</h1>
-  <input type="text" id="queryText" value="">
+  <h1 id="charname">Choose a character</h1>
+  <select id="characterChoice"></select>
+  <button id="characterChosen" onclick="initChar()">Choose this character</button>
+  <!-- <input type="text" id="queryText" value="">
   <button id="query" onclick="queryClicked()">Try query</button>
   <button id="todo" onclick="todoClicked()">TODO</button>
-  <button id="level up" onclick="generateLists()">Level up</button>
+  <button id="level up" onclick="generateLists()">Level up</button> -->
   <div id="outputdiv"><pre id="outputtest"></pre></div>
 </body>
 </html>

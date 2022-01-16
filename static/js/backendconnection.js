@@ -10,12 +10,40 @@ async function query(query) {
   return (await ask("/request/query?", "post", {q: query})).text();
 }
 
-async function setName() {
-  const text = await query("name(X)");
-  document.getElementById("charname").innerHTML = text;
-  document.getElementById("chartitle").innerHTML = text;
+async function todo() {
+  return JSON.parse(await request("todo", {}));
 }
-setName();
+
+async function charList() {
+  return JSON.parse(await request("list_characters", {}));
+}
+
+async function getName() {
+  return await query("name(X)");
+}
+
+async function loadChar(n) {
+  ask("/request/load_character?", "post", {name: n}); 
+}
+
+async function initPage() {
+  const charJSON =  await charList();
+  for(let i = 0; i < charJSON.length; i++) {
+    var option = document.createElement("option");
+    option.text = charJSON[i];
+    option.value = i;
+    document.getElementById("characterChoice").add(option);
+  }
+}
+initPage();
+
+async function initChar() {
+  const charJSON = await charList();
+  console.log(JSON.stringify(charJSON, null, '\t'));
+  await loadChar(charJSON[document.getElementById("characterChoice").value]);
+  console.log(charJSON[document.getElementById("characterChoice").value])
+  document.getElementById("outputtest").innerHTML = await getName();
+}
 
 async function queryClicked() {
   const q = document.getElementById("queryText").value;
@@ -27,7 +55,7 @@ async function todoClicked() {
 }
 
 async function generateLists() {
-  let resultJSON = JSON.parse(await request("todo", {}));
+  let resultJSON = todo();
   parent = document.getElementById("outputdiv");
   for(let i = 0; i < resultJSON.length; i++) {
     var newLabel = document.createElement("p");
