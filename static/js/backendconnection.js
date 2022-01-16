@@ -1,5 +1,5 @@
 async function ask (path, method, params) {
-  return await fetch(path + new URLSearchParams(params, {method:method}));
+  return await fetch(path + new URLSearchParams(params), {method:method});
 }
 
 async function request(path, params) {
@@ -39,9 +39,16 @@ initPage();
 
 async function initChar() {
   const charJSON = await charList();
-  console.log(JSON.stringify(charJSON, null, '\t'));
+  // console.log(JSON.stringify(charJSON, null, '\t'));
   await loadChar(charJSON[document.getElementById("characterChoice").value]);
-  console.log(charJSON[document.getElementById("characterChoice").value])
+  // console.log(charJSON[document.getElementById("characterChoice").value])
+  // const textName = await getName();
+  // console.log(textName);
+  // document.getElementById("outputtest").innerHTML = textName;
+  printChar();
+}
+
+async function printChar() {
   document.getElementById("outputtest").innerHTML = await getName();
 }
 
