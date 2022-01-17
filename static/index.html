@@ -4,14 +4,15 @@
   <title id="chartitle">Choose a character</title>
   <meta charset="UTF-8">
   <script src="js/backendconnection.js"></script>
+  <script src="js/characterselector.js"></script>
 </head>
 <body>
   <h1 id="charname">Choose a character</h1>
   <select id="characterChoice"></select>
   <button id="newtab" onclick="initChar(this.id)">Choose this character (new tab)</button>
   <button id="replace" onclick="initChar(this.id)">Choose this character</button>
-  <!-- <input type="text" id="queryText" value="">
-  <button id="query" onclick="queryClicked()">Try query</button> -->
+  <input type="text" id="queryText" value="">
+  <button id="query" onclick="queryClicked()">Try query</button>
   <button id="todo" onclick="todoClicked()">TODO</button>
   <button id="level up" onclick="generateLists()">Level up</button>
   <div id="outputdiv"><pre id="outputtest"></pre></div>
