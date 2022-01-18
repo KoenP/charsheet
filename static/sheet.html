@@ -51,7 +51,25 @@
 <h4>Skills</h4>
 
 </caption>
-
+<tr><th></th><th>Skill</th><th>Score</th></tr>
+<tr><td rowspan="1"><b>STR</b></td><td>athletics</td><td id="athletics"></td></tr>
+<tr><td rowspan="3"><b>DEX</b></td><td>acrobatics</td><td id="acrobatics"></td></tr>
+<tr><td>sleight of hand</td><td id="sleight"></td></tr>
+<tr><td>stealth</td><td id="stealth"></td></tr>
+<tr><td rowspan="5"><b>WIS</b></td><td>animal handling</td><td id="animal"></td></tr>
+<tr><td>insight</td><td id="insight"></td></tr>
+<tr><td>medicine</td><td id="medicine"></td></tr>
+<tr><td>perception</td><td id="perception"></td></tr>
+<tr><td>survival</td><td id="survival"></td></tr>
+<tr><td rowspan="5"><b>INT</b></td><td>arcana</td><td id="arcana"></td></tr>
+<tr><td>history</td><td id="history"></td></tr>
+<tr><td>investigation</td><td id="investigation"></td></tr>
+<tr><td>nature</td><td id="nature"></td></tr>
+<tr><td>religion</td><td id="religion"></td></tr>
+<tr><td rowspan="4"><b>CHA</b></td><td>deception</td><td id="deception"></td></tr>
+<tr><td>intimidation</td><td id="intimidation"></td></tr>
+<tr><td>performance</td><td id="performance"></td></tr>
+<tr><td>persuasion</td><td id="persuasion"></td></tr>
 </table>
 
 <p>
@@ -60,10 +78,10 @@
 
 <div id="proficiencies">
 <ul>
-<li><b>Languages: </b></li>
-<li><b>Weapons: </b>simple</li>
-<li><b>Armor: </b>light</li>
-<li><b>Tools: </b></li>
+<li id="languages"><b>Languages: </b></li>
+<li id="weapons"><b>Weapons: </b></li>
+<li id="armor"><b>Armor: </b></li>
+<li id="tools"><b>Tools: </b></li>
 </ul>
 </div>
 </p>
@@ -73,9 +91,8 @@
 <h2>Notable traits</h2>
 
 <div id="traits">
-<ul>
-<li>spellcasting focus (arcane)</li>
-<li>pact magic</li>
+<ul id="traitlist">
+
 </ul>
 </div>
 </p>
@@ -87,7 +104,6 @@
 
 </caption>
 <tr><th></th><th>Range</th><th>To Hit</th><th>Damage</th><th>Notes</th></tr>
-<tr><td>eldritch blast</td><td>120 feet</td><td>+3</td><td>1d10 force</td><td></td></tr>
 </table>
 
 <p>
@@ -100,18 +116,14 @@
 <h4>Spell slots</h4>
 
 </caption>
-<tr><th>pact magic (level 1)</th></tr>
-<td><input type="checkbox"></td>
 </table>
 
 <p>
 
-<h3>warlock</h3>
+<h3 id="classspellslots"></h3>
 
-<ul>
-<li>Spellcasting ability: cha (+1)</li>
-<li>Spell save DC: 11</li>
-<li>Spell attack modifier: +3</li>
+<ul id="classspellcasting">
+
 </ul>
 
 <table id="spells">
@@ -121,12 +133,6 @@
 
 </caption>
 <tr><th>Prep'd</th><th>Lvl</th><th>Src</th><th>Spell</th><th>CT</th><th>Rng</th><th>Cpts</th><th>Dur</th><th>Conc</th><th>To Hit/DC</th><th>Effect (summary)</th><th>Res</th></tr>
-<tr><td>✓</td><td>0</td><td>wl</td><td>
-<div class="tooltip">blade ward<span class="tooltiptext">You extend your hand and trace a sigil of warding in the air. Until the end of your next turn, you have resistance against bludgeoning, piercing, and slashing damage dealt by weapon attacks.</span></div>
-</td><td>1 action</td><td>self</td><td>vs</td><td>1 round</td><td>no</td><td>-</td><td></td><td>-</td></tr>
-<tr><td>✓</td><td>0</td><td>wl</td><td>
-<div class="tooltip">eldritch blast<span class="tooltiptext">A beam of crackling energy streaks toward a creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 force damage.The spell creates more than one beam when you reach higher levels: two beams at 5th level, three beams at 11th level, and four beams at 17th level. You can direct the beams at the same target or at different ones. Make a separate attack roll for each beam.</span></div>
-</td><td>1 action</td><td>120 ft</td><td>vs</td><td>Instantaneous</td><td>no</td><td>+3</td><td>1d10 force on hit; </td><td>-</td></tr>
 </table>
 
 </p></p></article></div>
