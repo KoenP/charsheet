@@ -28,7 +28,7 @@ user:file_search_path(js, 'static/js').
 
 %! run_server
 %
-%  Run an HTTP server on port 8000. 
+%  Run an HTTP server on port 8000.
 %
 %  The server responds to the following GET requests:
 %   - =|/|= : Serves =|static/index.html|=.
@@ -43,6 +43,8 @@ user:file_search_path(js, 'static/js').
 %      rendered as plaintext.
 %   - =|/request/list_characters|=: Replies with a JSON list of
 %      characters currently saved on the server.
+%   - =|/request/new_character?name=_|=: Create a new character with the
+%      given name.
 %   - =|/request/load_character?name=_|=: Load the given character
 %      with matching =name=.
 %   - =|/request/save_character|=: Save all changes made to the
@@ -71,10 +73,14 @@ remote_query(Request, '/query') :-
     format('Content-type: text/plain~n~n'),
     read_term_from_atom(QueryString, Query, [variables([X])]),
     call(Query),
-    format(X).
+    write_term(X, [quoted(true)]).
 remote_query(_, '/list_characters') :-
     findall(Char, saved_character(Char), Chars),
     reply_json_dict(Chars).
+remote_query(Request, '/new_character') :-
+    http_parameters(Request, [name(Name,[])]),
+    assert(name(Name)),
+    reply_json_dict("success!").
 remote_query(Request, '/load_character') :-
     http_parameters(Request, [name(Name,[])]),
     load_character_file(Name),
