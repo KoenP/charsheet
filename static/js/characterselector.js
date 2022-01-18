@@ -3,23 +3,38 @@
 //initialize the character selector
 async function initPage() {
     const charJSON =  await charList();
-    for(let i = 0; i < charJSON.length; i++) {
+    let menu = document.getElementById("characterChoice")
+    for(let i = 0; i < charJSON.list.length; i++) {
       var option = document.createElement("option");
-      option.text = charJSON[i];
-      option.value = i;
-      document.getElementById("characterChoice").add(option);
+      option.text = charJSON.list[i];
+      option.value = option.text;
+      menu.add(option);
+    }
+    if (charJSON.current) {
+      console.log(charJSON.current);
+      menu.value = charJSON.current;
+    }
+    else {
+      var option = document.createElement("option");
+      option.text = "choose your character";
+      option.selected = true;
+      option.hidden = true;
+      option.disabled = true;
+      menu.add(option);
     }
   }
   initPage();
   
   //set character to the chosen one if button is clicked (in new tab or replace current window)
   async function initChar(clicked_id) {
-    const resultJSON = await charList();
-    const chosenCharacter = resultJSON[document.getElementById("characterChoice").value];
-    const result = await loadChar(chosenCharacter);
-    document.getElementById("outputtest").innerHTML = "Loading " + chosenCharacter + " in new tab...";
-    if(clicked_id == "newtab") open("http://localhost:8000/sheet.html");
-    if(clicked_id == "replace") window.open("http://localhost:8000/sheet.html", "_self");
+    // const resultJSON = await charList();
+    //   console.log(resultJSON);
+    // const chosenCharacter = resultJSON.list[document.getElementById("characterChoice").value];
+    // console.log(chosenCharacter);
+    const result = await loadChar(document.getElementById("characterChoice").value);
+    // document.getElementById("outputtest").innerHTML = "Loading " + chosenCharacter + " in new tab...";
+    // if(clicked_id == "newtab") open("http://localhost:8000/sheet.html");
+    // if(clicked_id == "replace") window.open("http://localhost:8000/sheet.html", "_self");
   }
   
   //send query in input box to server and put response on page

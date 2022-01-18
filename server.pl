@@ -41,8 +41,10 @@ user:file_search_path(js, 'static/js').
 %   - =|/request/query?q=_|=: Run the query =|q|= which should contain a
 %      variable =|X|=. The server responds with whatever =|X|= unified with,
 %      rendered as plaintext.
-%   - =|/request/list_characters|=: Replies with a JSON list of
-%      characters currently saved on the server.
+%   - =|/request/list_characters|=: Replies with a JSON object
+%      containing at least a "list" field with a list of characters
+%      currently saved on the server, and optionally a "current" field
+%      with the name of the currently loaded character.
 %   - =|/request/new_character?name=_|=: Create a new character with the
 %      given name.
 %   - =|/request/load_character?name=_|=: Load the given character
@@ -76,11 +78,13 @@ remote_query(Request, '/query') :-
     write_term(X, [quoted(true)]).
 remote_query(_, '/list_characters') :-
     findall(Char, saved_character(Char), Chars),
-    reply_json_dict(Chars).
+    (  name(Name)
+    -> !, reply_json_dict(_{list: Chars, current: Name})
+    ;  reply_json_dict(_{list: Chars})
+    ).
 remote_query(Request, '/new_character') :-
     http_parameters(Request, [name(Name,[])]),
-    assert(name(Name)),
-    forall(ability(Abi), assert(base_ability(Abi,10))),
+    initialize_new_character(Name),
     reply_json_dict("success!").
 remote_query(Request, '/load_character') :-
     http_parameters(Request, [name(Name,[])]),
@@ -92,14 +96,11 @@ remote_query(_, '/save_character') :-
 remote_query(_, '/ability_table') :-
     abilities_table_jsondict(Dict),
     reply_json_dict(Dict).
-%remote_query(_, '/base_abilities') :-
-%    findall(A-V, base_ability(A,V), Abis),
-%    dict_pairs(Dict, _, Abis),
-%    reply_json_dict(Dict).
 remote_query(Request, '/set_base_abilities') :-
     member(search(Params), Request),
     forall((member(Abi=ScoreStr,Params),
-            read_term_from_atom(ScoreStr,Score,[])),
+            read_term_from_atom(ScoreStr,Score,[]),
+            integer(Score)),
            update_base_ability(Abi, Score)),
     reply_json_dict("success!").
 remote_query(Request, '/choice') :-

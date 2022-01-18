@@ -40,6 +40,12 @@ async function loadChar(n) {
   return await ask("/request/load_character?", "post", {name: n}); 
 }
 
+//create new character with given name
+async function newChar() {
+  const name = document.getElementById("newcharname").value;
+  return await request("new_character", {name: name}); 
+}
+
 //function can be used to turn a JSON.spec into JSON.spec.unique_from.spec if necesarry
 function ignoreUniqueFrom(spec) {
   if (spec.unique_from) {return spec.unique_from.spec;}

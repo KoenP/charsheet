@@ -7,14 +7,22 @@
   <script src="js/characterselector.js"></script>
 </head>
 <body>
-  <h1 id="charname">Choose a character</h1>
-  <select id="characterChoice"></select>
-  <button id="newtab" onclick="initChar(this.id)">Choose this character (new tab)</button>
-  <button id="replace" onclick="initChar(this.id)">Choose this character</button>
   <input type="text" id="queryText" value="">
   <button id="query" onclick="queryClicked()">Try query</button>
+
+  <h1>Select a saved character...</h1>
+  <select id="characterChoice" onchange="initChar(this.id)"></select>
+  <p><a href="sheet.html">View character sheet</a></p>
+  <p><a href="edit.html">Edit character</a></p>
+  <!-- ><button id="newtab" onclick="initChar(this.id)">Choose this character (new tab)</button>
+  <button id="replace" onclick="initChar(this.id)">Choose this character</button>
   <button id="todo" onclick="todoClicked()">TODO</button>
   <button id="level up" onclick="generateLists()">Level up</button>
   <div id="outputdiv"><pre id="outputtest"></pre></div>
+  -->
+
+  <h1> ... or create a new one! </h1>
+  <input type="text" id="newcharname" value="Zaphod Beeblebrox">
+  <button id="makenewchar" onclick="newChar()">Create</button>
 </body>
 </html>

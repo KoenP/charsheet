@@ -1,10 +1,10 @@
 name("Mr Dragon").
-base_ability(str,8).
 base_ability(dex,13).
 base_ability(con,14).
-base_ability(wis,12).
 base_ability(cha,15).
 base_ability(int,10).
+base_ability(wis,20).
+base_ability(str,20).
 gain_level(2,warlock,hp_avg).
 choice(init,'base race',human).
 choice(race(human),subrace,standard).

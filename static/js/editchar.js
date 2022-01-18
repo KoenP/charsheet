@@ -23,13 +23,18 @@ initPage();
 
 function updateBaseAttribute(attr) {
     return async function (e) {
-        await request("set_base_abilities", {[attr]: e.data});
-        let abilityTableVals = await requestJson("ability_table", {});
         let row = document.getElementById(attr);
+        let inputField = row.getElementsByTagName("input")[0];
+        await request("set_base_abilities", {[attr]: inputField.value});
+        let abilityTableVals = await requestJson("ability_table", {});
         row.getElementsByClassName("afterbonuses")[0].innerHTML
             = abilityTableVals.after_bonuses[attr];
         row.getElementsByClassName("mod")[0].innerHTML
             = abilityTableVals.mods[attr];
     };
+}
+
+async function saveChar() {
+    await request("save_character", {});
 }
 

@@ -64,6 +64,12 @@ unload_current_character :-
     character_definition_predicates(Preds),
     forall(member(Pred,Preds), retractall_pred(Pred)).
 
+initialize_new_character(Name) :-
+    unload_current_character,
+    assert(name(Name)),
+    forall(ability(Abi), assert(base_ability(Abi,10))),
+    write_character_file.
+
 retractall_pred(Pred/Arity) :-
     length(Args, Arity),
     Goal =.. [Pred|Args],
