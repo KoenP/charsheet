@@ -11,7 +11,7 @@ async function initSummary() {
     document.getElementById("ac").innerHTML = await query("ac(X)");
     document.getElementById("initiative").innerHTML = await query("initiative(X)");
     document.getElementById("speed").innerHTML = await query("speed(X)") + " ft";
-    document.getElementById("hd").innerHTML = "TODO";
+    document.getElementById("hd").innerHTML = await query("hit_dice(X)");
     document.getElementById("pp").innerHTML = await query("passive_perception(X)");
     document.getElementById("prof_bon").innerHTML = await query("proficiency_bonus(X)");
 }
