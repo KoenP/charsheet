@@ -1,20 +1,22 @@
 async function initPage() {
     const charName = await getName();
-    const abis = await requestJson("base_abilities", {});
+    const abilityTableVals = await requestJson("ability_table", {});
+
     document.getElementById("chartitle").innerHTML = "Editing " + charName;
     document.getElementById("pagetitle").innerHTML = charName;
-    document.getElementById("attrStr").value = abis.str;
-    document.getElementById("attrStr").oninput = updateBaseAttribute("str");
-    document.getElementById("attrDex").value = abis.dex;
-    document.getElementById("attrDex").oninput = updateBaseAttribute("dex");
-    document.getElementById("attrCon").value = abis.con;
-    document.getElementById("attrCon").oninput = updateBaseAttribute("con");
-    document.getElementById("attrInt").value = abis.int;
-    document.getElementById("attrInt").oninput = updateBaseAttribute("int");
-    document.getElementById("attrWis").value = abis.wis;
-    document.getElementById("attrWis").oninput = updateBaseAttribute("wis");
-    document.getElementById("attrCha").value = abis.cha;
-    document.getElementById("attrCha").oninput = updateBaseAttribute("cha");
+
+    let abilityTable = document.getElementById("abilitytable");
+    Array.from(abilityTable.getElementsByClassName("abilityrow"))
+        .forEach(function (row) {
+            let inputField     = row.getElementsByTagName("input")[0];
+            inputField.value   = abilityTableVals.base[row.id];
+            inputField.oninput = updateBaseAttribute(row.id);
+            row.getElementsByClassName("afterbonuses")[0].innerHTML
+                = abilityTableVals.after_bonuses[row.id];
+            row.getElementsByClassName("mod")[0].innerHTML
+                = abilityTableVals.mods[row.id];
+        }
+    );
 }
 
 initPage();
@@ -22,6 +24,12 @@ initPage();
 function updateBaseAttribute(attr) {
     return async function (e) {
         await request("set_base_abilities", {[attr]: e.data});
+        let abilityTableVals = await requestJson("ability_table", {});
+        let row = document.getElementById(attr);
+        row.getElementsByClassName("afterbonuses")[0].innerHTML
+            = abilityTableVals.after_bonuses[attr];
+        row.getElementsByClassName("mod")[0].innerHTML
+            = abilityTableVals.mods[attr];
     };
 }
 

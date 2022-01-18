@@ -89,13 +89,18 @@ remote_query(Request, '/load_character') :-
 remote_query(_, '/save_character') :-
     write_character_file,
     reply_json_dict("success!").
-remote_query(_, '/base_abilities') :-
-    findall(A-V, base_ability(A,V), Abis),
-    dict_pairs(Dict, _, Abis),
+remote_query(_, '/ability_table') :-
+    abilities_table_jsondict(Dict),
     reply_json_dict(Dict).
+%remote_query(_, '/base_abilities') :-
+%    findall(A-V, base_ability(A,V), Abis),
+%    dict_pairs(Dict, _, Abis),
+%    reply_json_dict(Dict).
 remote_query(Request, '/set_base_abilities') :-
     member(search(Params), Request),
-    forall(member(Abi=Score,Params), update_base_ability(Abi, Score)),
+    forall((member(Abi=ScoreStr,Params),
+            read_term_from_atom(ScoreStr,Score,[])),
+           update_base_ability(Abi, Score)),
     reply_json_dict("success!").
 remote_query(Request, '/choice') :-
     http_parameters(Request, [source(SourceStr,[]),
@@ -106,6 +111,20 @@ remote_query(Request, '/choice') :-
     term_string(Choice, ChoiceStr),
     assert(choice(Source, Id, Choice)),
     reply_json_dict("success!").
+
+abilities_table_jsondict(_{base: Base, after_bonuses: AfterBonuses, mods: Mods}) :-
+    base_abilities_jsondict(Base),
+    final_abilities_jsondict(AfterBonuses),
+    ability_mods_jsondict(Mods).
+base_abilities_jsondict(Dict) :-
+    findall(A-V, base_ability(A,V), Abis),
+    dict_pairs(Dict, _, Abis).
+final_abilities_jsondict(Dict) :-
+    findall(A-V, ability(A,V), Abis),
+    dict_pairs(Dict, _, Abis).
+ability_mods_jsondict(Dict) :-
+    findall(A-M, (ability_mod(A,V), fmt(format_bonus(V),M)), Abis),
+    dict_pairs(Dict, _, Abis).
 
 todo_entry_jsondict(_{origin:OriginStr, id:IdStr, spec:SpecDict}) :-
     todo(options(Origin, Id, Spec)),
