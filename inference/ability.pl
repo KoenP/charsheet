@@ -1,5 +1,9 @@
 :- dynamic base_ability/2.
 
+update_base_ability(Abi, NewScore) :-
+    retract(base_ability(Abi, _)),
+    assert(base_ability(Abi, NewScore)).
+
 ability(str).
 ability(dex).
 ability(con).

@@ -80,6 +80,7 @@ remote_query(_, '/list_characters') :-
 remote_query(Request, '/new_character') :-
     http_parameters(Request, [name(Name,[])]),
     assert(name(Name)),
+    forall(ability(Abi), assert(base_ability(Abi,10))),
     reply_json_dict("success!").
 remote_query(Request, '/load_character') :-
     http_parameters(Request, [name(Name,[])]),
@@ -87,6 +88,14 @@ remote_query(Request, '/load_character') :-
     reply_json_dict("success!").
 remote_query(_, '/save_character') :-
     write_character_file,
+    reply_json_dict("success!").
+remote_query(_, '/base_abilities') :-
+    findall(A-V, base_ability(A,V), Abis),
+    dict_pairs(Dict, _, Abis),
+    reply_json_dict(Dict).
+remote_query(Request, '/set_base_abilities') :-
+    member(search(Params), Request),
+    forall(member(Abi=Score,Params), update_base_ability(Abi, Score)),
     reply_json_dict("success!").
 remote_query(Request, '/choice') :-
     http_parameters(Request, [source(SourceStr,[]),

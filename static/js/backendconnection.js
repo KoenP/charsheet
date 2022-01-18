@@ -10,6 +10,11 @@ async function request(path, params) {
   return (await ask("/request/" + path + "?", "post", params)).text();
 }
 
+//like request, but also parses the response as JSON.
+async function requestJson(path, params) {
+    return JSON.parse(await request(path, params));
+}
+
 //send an http request with a query returns the response to the query as a string (promise)
 async function query(query) {
   return (await ask("/request/query?", "post", {q: query})).text();
