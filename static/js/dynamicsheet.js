@@ -1,24 +1,20 @@
+//put initial values in the summary
+async function initSummary() {
+    const characterName = await query("name(X)");
+    console.log(characterName);
+    document.getElementById("nametitle").innerHTML = characterName;
+    document.getElementById("nameheader").innerHTML = characterName;
+    document.getElementById("race").innerHTML = await query("race(X)");
+    document.getElementById("class").innerHTML = await query("class(X)");
+    document.getElementById("level").innerHTML = await query("level(X)");
+    document.getElementById("maxhp").innerHTML = await query("max_hp(X)");
+    document.getElementById("ac").innerHTML = await query("ac(X)");
+    document.getElementById("initiative").innerHTML = await query("initiative(X)");
+    document.getElementById("speed").innerHTML = await query("speed(X)") + " ft";
+    document.getElementById("hd").innerHTML = "TODO";
+    document.getElementById("pp").innerHTML = await query("passive_perception(X)");
+    document.getElementById("prof_bon").innerHTML = await query("proficiency_bonus(X)");
+}
+initSummary();
 
-//tried some stuff but it is not working yet
-//TODO copy sheet html to page and dynamically fill it with javascript DOM?
 
-window.addEventListener("DOMContentLoaded", initPage());
-function sleep(milliseconds) {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-      currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
-  }
-
-  function initPage() {
-    let newButton = document.createElement("button");
-    newButton.id = "back";
-    newButton.innerHTML = "Back to character selector";
-    //var parent = document.getElementsByClassName("container");
-    //var header = document.querySelector("header");
-    //parent[0].insertBefore(newButton, header);
-    let elementToAddBefore = document.getElementById("summary");
-    document.body.insertBefore(newButton, elementToAddBefore);
-    console.log("Hello World!");
-  }

@@ -18,8 +18,8 @@ async function initPage() {
     const chosenCharacter = resultJSON[document.getElementById("characterChoice").value];
     const result = await loadChar(chosenCharacter);
     document.getElementById("outputtest").innerHTML = "Loading " + chosenCharacter + " in new tab...";
-    if(clicked_id == "newtab") open("http://localhost:8000/sheet");
-    if(clicked_id == "replace") window.location.replace("http://localhost:8000/sheet");
+    if(clicked_id == "newtab") open("http://localhost:8000/sheet.html");
+    if(clicked_id == "replace") window.open("http://localhost:8000/sheet.html", "_self");
   }
   
   //send query in input box to server and put response on page
