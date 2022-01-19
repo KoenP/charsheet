@@ -11,10 +11,18 @@
   <button id="query" onclick="queryClicked()">Try query</button>
 
   <h1>Select a saved character...</h1>
-  <select id="characterChoice" onchange="initChar(this.id)"></select>
-  <p><a href="sheet.html">View character sheet</a></p>
+  
+  <form action="sheet.html">
+    <select id="characterChoice" onchange="initChar(this.id)"></select>
+    <input type="submit" value="View character sheet" />
+    <form action="edit.html">
+      <input type="submit" value="Edit character" />
+    </form>
+  </form>
+
+  <!--<p><a href="sheet.html">View character sheet</a></p>
   <p><a href="edit.html">Edit character</a></p>
-  <!-- ><button id="newtab" onclick="initChar(this.id)">Choose this character (new tab)</button>
+  <button id="newtab" onclick="initChar(this.id)">Choose this character (new tab)</button>
   <button id="replace" onclick="initChar(this.id)">Choose this character</button>
   <button id="todo" onclick="todoClicked()">TODO</button>
   <button id="level up" onclick="generateLists()">Level up</button>
