@@ -112,6 +112,9 @@ remote_query(Request, '/choice') :-
     term_string(Choice, ChoiceStr),
     assert(choice(Source, Id, Choice)),
     reply_json_dict("success!").
+remote_query(_, '/sheet') :-
+    sheet_json_dict(Dict),
+    reply_json_dict(Dict).
 
 abilities_table_jsondict(_{base: Base, after_bonuses: AfterBonuses, mods: Mods}) :-
     base_abilities_jsondict(Base),

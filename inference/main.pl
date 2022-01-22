@@ -44,6 +44,7 @@
 :- [attacks].
 :- [html].
 :- [character_file].
+:- [sheet_json].
 
 %! meta_todo(Source, Todo)
 %
