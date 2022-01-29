@@ -1,12 +1,22 @@
 sheet_json_dict(_{name: Name,
                   summary: Summary,
                   ability_table: AbiTable,
-                  skill_table: SkillTable
+                  skill_table: SkillTable,
+                  languages: Languages,
+                  weapons: Weapons,
+                  armor: Armor,
+                  tools: Tools,
+                  attacks: Attacks
                  }) :-
     name(Name),
     summary_json_dict(Summary),
     ability_table_json_dict(AbiTable),
-    skill_table_json_dict(SkillTable).
+    skill_table_json_dict(SkillTable),
+    findall(X, trait(language(X)), Languages),
+    findall(X, trait(weapon(X)), Weapons),
+    findall(X, trait(armor(X)), Armor),
+    findall(X, trait(tools(X)), Tools),
+    attack_table_json_dict(Attacks).
 
 call_snd(Id-Goal, Id-Result) :-
     Goal =.. [Pred|Args],
@@ -72,3 +82,17 @@ skill_table_json_dict(Dict) :-
              fmt(format_bonus(Mod),ModStr)),
             Pairs),
     dict_pairs(Dict, _, Pairs).
+
+% Attack table.
+attack_table_json_dict(List) :-
+    findall(X, attack_table_json_dict_entry(X), List).
+attack_table_json_dict_entry(_{name: Name,
+                               range: Range,
+                               to_hit_or_dc: ToHitOrDC,
+                               damage: Damage,
+                               notes: Notes}) :-
+    attack(Name, RangeVal, ToHitOrDCVal, DamageVal, NotesVal),
+    fmt(format_range(RangeVal), Range),
+    fmt(format_to_hit_or_dc(ToHitOrDCVal), ToHitOrDC),
+    fmt(format_damage(DamageVal), Damage),
+    fmt(format_list(NotesVal), Notes).
