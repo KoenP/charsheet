@@ -10,13 +10,13 @@ out :-
     html_write:page(Html, Tokens, []),
     html_write:print_html(Stream, Tokens),
     close(Stream).
-out_file_name --> {name(CharName)}, seq_atom(CharName), ".html".
+out_file_name --> {name(CharName)}, seq_atom(CharName), seq_atom(".html").
 
 char_sheet_html([head(Head), body(Body)]) :-
     char_sheet_head(Head),
     char_sheet_body(Body).
 
-char_sheet_head([title(Name), link([rel=stylesheet, href='css/charsheet.css'], [])]) :-
+char_sheet_head([title(Name), link([rel=stylesheet, href='static/css/charsheet.css'], [])]) :-
     name(Name).
 
 char_sheet_body([Div]) :-

@@ -34,7 +34,6 @@ async function initPage() {
     var attackTable = document.getElementById("attacks");
     console.log(sheetData);
     sheetData.attacks.forEach(function (attack) {
-        console.log(attack);
         var row = document.createElement('tr');
         ["name","range","to_hit_or_dc","damage","notes"]
             .forEach(function (key) {
@@ -44,6 +43,60 @@ async function initPage() {
             });
         attackTable.appendChild(row);
     })
+
+    // Spellcasting.
+    if (sheetData.spell_slots.length > 0) {
+        initSpellcasting(sheetData)
+    }
+}
+
+function initSpellcasting(sheetData) {
+    // Header.
+    var header = document.createElement("h2");
+    header.innerHTML = "Spellcasting";
+    document.getElementById("spellcasting")
+        .prepend(header);
+
+    // Spell slot table.
+    var spellSlotTable = document.createElement("table");
+    var spellSlotTableHeaderRow = document.createElement("tr");
+    var spellSlotTableSlotRow = document.createElement("tr");
+
+    // Add pact slots if you have them.
+    if (sheetData.pact_magic != null) {
+        var th = document.createElement("th");
+        th.innerHTML
+            = `pact magic (level ${sheetData.pact_magic.slot_level})`;
+        spellSlotTableHeaderRow.appendChild(th);
+
+        var td = document.createElement("td");
+        spellSlotCheckBoxes(td, sheetData.pact_magic.slot_count);
+        spellSlotTableSlotRow.appendChild(td);
+    }
+
+    sheetData.spell_slots.forEach(function (pair) {
+        const level  = pair[0];
+        const nSlots = pair[1];
+
+        var th = document.createElement("th");
+        th.innerHTML = "lvl " + level;
+        spellSlotTableHeaderRow.appendChild(th);
+
+        var td = document.createElement("td");
+        spellSlotCheckBoxes(td, nSlots);
+        spellSlotTableSlotRow.appendChild(td);
+    });
+    spellSlotTable.appendChild(spellSlotTableHeaderRow);
+    spellSlotTable.appendChild(spellSlotTableSlotRow);
+    document.getElementById("spellslots").appendChild(spellSlotTable);
+}
+
+function spellSlotCheckBoxes(parent, nSlots) {
+    for (var i = 0; i < nSlots; i++) {
+        input = document.createElement("input");
+        input.setAttribute("type", "checkbox");
+        parent.appendChild(input);
+    }
 }
 
 initPage();

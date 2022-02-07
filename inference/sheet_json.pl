@@ -6,7 +6,9 @@ sheet_json_dict(_{name: Name,
                   weapons: Weapons,
                   armor: Armor,
                   tools: Tools,
-                  attacks: Attacks
+                  attacks: Attacks,
+                  spell_slots: SpellSlots,
+                  pact_magic: PactMagic
                  }) :-
     name(Name),
     summary_json_dict(Summary),
@@ -16,7 +18,9 @@ sheet_json_dict(_{name: Name,
     findall(X, trait(weapon(X)), Weapons),
     findall(X, trait(armor(X)), Armor),
     findall(X, trait(tools(X)), Tools),
-    attack_table_json_dict(Attacks).
+    attack_table_json_dict(Attacks),
+    findall([Lvl,N], spell_slots(Lvl,N), SpellSlots),
+    pact_magic_json_dict(PactMagic).
 
 call_snd(Id-Goal, Id-Result) :-
     Goal =.. [Pred|Args],
@@ -96,3 +100,18 @@ attack_table_json_dict_entry(_{name: Name,
     fmt(format_to_hit_or_dc(ToHitOrDCVal), ToHitOrDC),
     fmt(format_damage(DamageVal), Damage),
     fmt(format_list(NotesVal), Notes).
+
+% Spellcasting section.
+
+%spell_slots_dict_entry(PactMagicStr, N) :-
+%    pact_magic_slots(N),
+%    pact_magic_slot_level(Level),
+%    format(string(PactMagicStr), "pact magic (level ~w)", [Level]).
+
+pact_magic_json_dict(_{slot_count: NSlots,
+                       slot_level: SlotLevel}) :-
+    pact_magic_slots(NSlots),
+    pact_magic_slot_level(SlotLevel),
+    !.
+pact_magic_json_dict(null).
+
