@@ -56,3 +56,8 @@ nonlist_to_singleton(L,  L ) :-    is_list(L).
 % [a:1, a:2, b:1] -> _{a:[1,2], b:[1]}
 %multi_assoc_list_to_dict_of_dicts(Tag, Assocs) :-
 %    dict_of_dicts_helper()
+
+default_on_fail(_, Goal, X) :-
+    call(Goal, X),
+    !.
+default_on_fail(Default, _, Default).

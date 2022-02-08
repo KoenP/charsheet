@@ -299,7 +299,7 @@ format_resource(per_rest(Dur, N)) --> {!}, checkboxes(N), [' / '], [Dur], [' res
 format_resource(R) --> [R].
 
 display_spell_effects(Data, Effects) :-
-    format_effects(Data.get(effects), Effects, []),
+    fmt(format_effects(Data.get(effects)), Effects),
     !.
 display_spell_effects(_, "-").
 

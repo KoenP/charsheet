@@ -8,8 +8,8 @@ sheet_json_dict(_{name: Name,
                   tools: Tools,
                   attacks: Attacks,
                   spell_slots: SpellSlots,
-                  pact_magic: PactMagic
-                 }) :-
+                  pact_magic: PactMagic,
+                  spellcasting_sections: SpellcastingSections}) :-
     name(Name),
     summary_json_dict(Summary),
     ability_table_json_dict(AbiTable),
@@ -20,7 +20,8 @@ sheet_json_dict(_{name: Name,
     findall(X, trait(tools(X)), Tools),
     attack_table_json_dict(Attacks),
     findall([Lvl,N], spell_slots(Lvl,N), SpellSlots),
-    pact_magic_json_dict(PactMagic).
+    pact_magic_json_dict(PactMagic),
+    findall(X, spellcasting_section_json_dict(X), SpellcastingSections).
 
 call_snd(Id-Goal, Id-Result) :-
     Goal =.. [Pred|Args],
@@ -114,4 +115,58 @@ pact_magic_json_dict(_{slot_count: NSlots,
     pact_magic_slot_level(SlotLevel),
     !.
 pact_magic_json_dict(null).
+
+spellcasting_section_json_dict(
+    _{origin: Origin,
+      spellcasting_ability: Abi,
+      spellcasting_ability_mod: AbiMod,
+      spell_save_dc: DC,
+      spell_attack_mod: AttackMod,
+      max_prepared_spells: Prep,
+      spells: Spells}) :-
+    spell_origin(Origin),
+    spellcasting_ability(Origin, Abi),
+    ability_mod(Abi, AbiMod),
+    known_spell_origin_class(Origin, Class),
+    spell_save_dc(Class, DC),
+    spell_attack_modifier(Class, AttackMod),
+    default_on_fail(null, max_prepared_spells(Origin), Prep),
+    spell_list_json_dict(Origin, Spells).
+
+spell_list_json_dict(Origin, SpellsSorted) :-
+    findall(Spell,
+            spell_json_dict(Origin, Spell),
+            SpellsUnsorted),
+    sort(level, @=<, SpellsUnsorted, SpellsSorted).
+
+spell_json_dict(Origin,
+                _{availability: Availability,
+                  level: Level,
+                  name: Name,
+                  description: Description,
+                  casting_time: CastingTime,
+                  range: Range,
+                  components: Components,
+                  duration: Duration,
+                  concentration: Concentration,
+                  to_hit: ToHit,
+                  dc: DC,
+                  summary: Summary,
+                  ritual: Ritual,
+                  resources: Resources}) :-
+    known_spell(Origin, _Ability, Availability, Resources, Ritual, Name),
+    known_spell_data(Origin, Name, Data),
+    Level         = Data.level,
+    Description   = Data.desc,
+    CastingTime   = Data.casting_time,
+    RangeVal      = Data.range,
+    fmt(format_measure(RangeVal), Range),
+    Components    = "todo", %Data.components,
+    Duration      = Data.duration,
+    Concentration = Data.concentration,
+    display_spell_effects(Data, Summary),
+    known_spell_origin_class(Origin, Class),
+    default_on_fail(null, spell_attack_modifier(Class), ToHit),
+    default_on_fail(null, spell_save_dc(Class), DC).
+
 

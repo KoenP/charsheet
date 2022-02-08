@@ -89,7 +89,93 @@ function initSpellcasting(sheetData) {
     spellSlotTable.appendChild(spellSlotTableHeaderRow);
     spellSlotTable.appendChild(spellSlotTableSlotRow);
     document.getElementById("spellslots").appendChild(spellSlotTable);
+
+    // Add spellcasting sections.
+    sheetData.spellcasting_sections.forEach(initSpellcastingSection);
 }
+
+function initSpellcastingSection(sectionData) {
+    const abiMod = formatBonus(sectionData.spellcasting_ability_mod);
+    const attackMod = formatBonus(sectionData.spell_attack_mod);
+    const prep = (sectionData.max_prepared_spells != null)
+          ? `<li>Max prepared spells: ${sectionData.max_prepared_spells}</li>`
+          : "";
+    const sectionHTML =
+          `<h3>${sectionData.origin}</h3>
+           <ul>
+             ${prep}
+             <li>Spellcasting ability: ${sectionData.spellcasting_ability}(${abiMod})</li>
+             <li>Spell save DC: ${sectionData.spell_save_dc}</li>
+             <li>Spell attack modifier: ${attackMod}</li>
+           </ul>`
+
+    var table = document.createElement("table");
+    table.setAttribute("class", "spelltable");
+    table.innerHTML =
+          `<tr>
+             <th>Prep'd</th>
+             <th>Lvl</th>
+             <th>Spell</th>
+             <th>CT</th>
+             <th>Rng</th>
+             <th>Cpts</th>
+             <th>Dur</th>
+             <th>Conc</th>
+             <th>To Hit/DC</th>
+             <th>Effect (summary)</th>
+             <th>Res</th>
+           </tr>`
+    sectionData.spells.forEach(sd => addSpellTableRow(table,sd));
+
+    var spellcastingDiv = document.getElementById("spellcasting");
+    spellcastingDiv.innerHTML += sectionHTML;
+    spellcastingDiv.appendChild(table);
+}
+
+function addSpellTableRow(table, sd) {
+    table.innerHTML +=
+      `<tr>
+         <td>${formatAvailability(sd.availability)}</td>
+         <td>${sd.level}</td>
+         <td>${sd.name}</td>
+         <td>${sd.casting_time}</td>
+         <td>${sd.range}</td>
+         <td>${sd.components}</td>
+         <td>${sd.duration}</td>
+         <td>${sd.concentration}</td>
+         <td>${formatToHitOrDc(sd)}</td>
+         <td>${sd.summary}</td>
+         <td>${sd.resources}</td>
+       </tr>
+      `;
+}
+
+function formatAvailability(availability) {
+    return {
+        "always": "✓",
+        "when prepared": `<input type="checkbox">`
+    }[availability];
+}
+
+
+function formatBonus(bonus) {
+    if (bonus >= 0) {
+        return '+' + bonus;
+    } else {
+        return bonus;
+    }
+}
+
+function formatToHitOrDc(spellData) {
+    const list = notNullSingleton(spellData.to_hit)
+          .concat(notNullSingleton(spellData.dc));
+    return list.join(",");
+}
+
+function notNullSingleton(val) {
+    return (val != null) ? [val] : [];
+}
+
 
 function spellSlotCheckBoxes(parent, nSlots) {
     for (var i = 0; i < nSlots; i++) {
