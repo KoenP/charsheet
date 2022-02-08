@@ -137,7 +137,7 @@ function addSpellTableRow(table, sd) {
       `<tr>
          <td>${formatAvailability(sd.availability)}</td>
          <td>${sd.level}</td>
-         <td>${sd.name}</td>
+         <td>${formatSpellName(sd)}</td>
          <td>${sd.casting_time}</td>
          <td>${sd.range}</td>
          <td>${sd.components}</td>
@@ -157,7 +157,6 @@ function formatAvailability(availability) {
     }[availability];
 }
 
-
 function formatBonus(bonus) {
     if (bonus >= 0) {
         return '+' + bonus;
@@ -166,9 +165,20 @@ function formatBonus(bonus) {
     }
 }
 
+function formatSpellName(spellData) {
+    return `<div class="tooltip">
+              ${spellData.name}
+              <span class="tooltiptext">
+                ${spellData.description}
+              </span>
+            </div>`;
+}
+
 function formatToHitOrDc(spellData) {
     const list = notNullSingleton(spellData.to_hit)
-          .concat(notNullSingleton(spellData.dc));
+          .map(formatBonus)
+          .concat(notNullSingleton(spellData.dc)
+                  .map(dc => `DC ${dc} (${spellData.dc_abi})`));
     return list.join(",");
 }
 

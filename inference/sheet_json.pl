@@ -151,6 +151,7 @@ spell_json_dict(Origin,
                   concentration: Concentration,
                   to_hit: ToHit,
                   dc: DC,
+                  dc_abi: DCAbi,
                   summary: Summary,
                   ritual: Ritual,
                   resources: Resources}) :-
@@ -165,8 +166,10 @@ spell_json_dict(Origin,
     Duration      = Data.duration,
     Concentration = Data.concentration,
     display_spell_effects(Data, Summary),
-    known_spell_origin_class(Origin, Class),
-    default_on_fail(null, spell_attack_modifier(Class), ToHit),
-    default_on_fail(null, spell_save_dc(Class), DC).
+    default_on_fail(null, known_spell_to_hit(Origin,Name), ToHit),
+    known_spell_saving_throw_or_null(Origin, Name, DC, DCAbi).
 
-
+known_spell_saving_throw_or_null(Origin, Name, DC, Abi) :-
+    known_spell_saving_throw(Origin, Name, DC, Abi),
+    !.
+known_spell_saving_throw_or_null(_, _, null, null).
