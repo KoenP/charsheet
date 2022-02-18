@@ -117,29 +117,29 @@ pact_magic_json_dict(_{slot_count: NSlots,
 pact_magic_json_dict(null).
 
 spellcasting_section_json_dict(
-    _{origin: Origin,
+    _{origin: BaseOrigin,
       spellcasting_ability: Abi,
       spellcasting_ability_mod: AbiMod,
       spell_save_dc: DC,
       spell_attack_mod: AttackMod,
       max_prepared_spells: Prep,
       spells: Spells}) :-
-    spell_origin(Origin),
-    spellcasting_ability(Origin, Abi),
+    spell_base_origin(BaseOrigin),
+    spellcasting_ability(BaseOrigin, Abi),
     ability_mod(Abi, AbiMod),
-    known_spell_origin_class(Origin, Class),
+    known_spell_origin_class(BaseOrigin, Class),
     spell_save_dc(Class, DC),
     spell_attack_modifier(Class, AttackMod),
-    default_on_fail(null, max_prepared_spells(Origin), Prep),
-    spell_list_json_dict(Origin, Spells).
+    default_on_fail(null, max_prepared_spells(BaseOrigin), Prep),
+    spell_list_json_dict(BaseOrigin, Spells).
 
-spell_list_json_dict(Origin, SpellsSorted) :-
+spell_list_json_dict(BaseOrigin, SpellsSorted) :-
     findall(Spell,
-            spell_json_dict(Origin, Spell),
+            spell_json_dict(BaseOrigin, Spell),
             SpellsUnsorted),
     sort(level, @=<, SpellsUnsorted, SpellsSorted).
 
-spell_json_dict(Origin,
+spell_json_dict(BaseOrigin,
                 _{availability: Availability,
                   level: Level,
                   name: Name,
@@ -155,18 +155,19 @@ spell_json_dict(Origin,
                   summary: Summary,
                   ritual: Ritual,
                   resources: Resources}) :-
+    (Origin =.. [BaseOrigin,_] ; Origin = BaseOrigin),
     known_spell(Origin, _Ability, Availability, Resources, Ritual, Name),
     known_spell_data(Origin, Name, Data),
     Level         = Data.level,
     Description   = Data.desc,
     CastingTime   = Data.casting_time,
     RangeVal      = Data.range,
-    fmt(format_measure(RangeVal), Range),
+    fmt(format_range(RangeVal), Range),
     Components    = "todo", %Data.components,
     Duration      = Data.duration,
     Concentration = Data.concentration,
     display_spell_effects(Data, Summary),
-    default_on_fail(null, known_spell_to_hit(Origin,Name), ToHit),
+    default_on_fail(null, known_spell_to_hit(BaseOrigin:_,Name), ToHit),
     known_spell_saving_throw_or_null(Origin, Name, DC, DCAbi).
 
 known_spell_saving_throw_or_null(Origin, Name, DC, Abi) :-

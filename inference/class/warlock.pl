@@ -30,7 +30,7 @@ trait_source(match_class(warlock:11), 'mystic arcanum').
 options_source(match_class(warlock:WarlockLevel), 'arcanum spell',
                [Spell]>>spell_property(Spell, level, SpellLevel)) :-
     member(WarlockLevel-SpellLevel, [11-6, 13-7, 15-8, 17-9]).
-known_spell(warlock:'mystic arcanum', cha, always, [per_rest(long, 1)], todo, Spell) :-
+known_spell(warlock('mystic arcanum'), cha, always, [per_rest(long, 1)], todo, Spell) :-
     choice_member(_, 'arcanum spell', Spell).
 
 % Eldritch master.
@@ -136,7 +136,7 @@ delete_component_source(trait(eldritch_invocation(Inv)),
     eldinv_deletes_spell_component(Inv, Component).
 
 :- discontiguous eldinv_spell/3.
-known_spell(warlock:eldritch_invocation(Inv),
+known_spell(warlock(eldritch_invocation(Inv)),
             cha, always, Resources, Ritual, Name) :-
     eldinv_spell(Inv, Resources, Name),
     trait(eldritch_invocation(Inv)),
@@ -156,17 +156,17 @@ bonus_source(trait(eldritch_invocation('agonizing blast')),
     ability_mod(cha, Mod).
 
 eldritch_invocation_option('armor of shadows').
-known_spell(warlock:eldritch_invocation('armor of shadows'), cha, always, [], no, 'mage armor') :-
+known_spell(warlock(eldritch_invocation('armor of shadows')), cha, always, [], no, 'mage armor') :-
     trait(eldritch_invocation('armor of shadows')).
 
 eldritch_invocation_option('ascendant step') :-
     match_class(warlock:9).
-known_spell(warlock:eldritch_invocation('ascendant step'),
+known_spell(warlock(eldritch_invocation('ascendant step')),
             cha, always, [], no, levitate) :-
     trait(eldritch_invocation('ascendant step')).
 
 eldritch_invocation_option('beast speech').
-known_spell(warlock:eldritch_invocation('beast speech'),
+known_spell(warlock(eldritch_invocation('beast speech')),
             cha, always, [], no, 'speak with animals') :-
     trait(eldritch_invocation('beast speech')).
 
@@ -176,7 +176,7 @@ traits_from_source(trait(eldritch_invocation('beguiling influence')),
 
 eldritch_invocation_option('bewitching whispers') :-
     match_class(warlock:7).
-known_spell(warlock:eldritch_invocation('bewitching whispers'),
+known_spell(warlock(eldritch_invocation('bewitching whispers')),
             cha, always, ['pact slot', per_rest(long, 1)], no, compulsion) :-
     trait(eldritch_invocation('bewitching whispers')).
 
@@ -189,7 +189,7 @@ ancient_secret_ritual(Ritual) :-
     spell_data(Ritual, Data),
     Data.level = 1,
     Data.ritual = yes. 
-known_spell(warlock:eldritch_invocation('book of ancient secrets'),
+known_spell(warlock(eldritch_invocation('book of ancient secrets')),
             cha, always, [], only, Ritual) :-
     choice_member(trait(eldritch_invocation('book of ancient secrets')),
                   ritual,
@@ -199,7 +199,7 @@ known_spell(warlock:eldritch_invocation('book of ancient secrets'),
 eldritch_invocation_option('chains of carceri') :-
     match_class(warlock:15),
     trait(pact_boon(chain)).
-known_spell(warlock:eldritch_invocation('chains of carceri'),
+known_spell(warlock(eldritch_invocation('chains of carceri')),
             cha, always, [], no, 'hold monster') :-
     trait(eldritch_invocation('chains of carceri')).
 bonus_source(trait(eldritch_invocation('chains of carceri')),
@@ -221,12 +221,12 @@ trait_source(trait(eldritch_invocation('devil\'s sight')),
 
 eldritch_invocation_option('dreadful word') :-
     match_class(warlock:7).
-known_spell(warlock:eldritch_invocation('dreadful word'),
+known_spell(warlock(eldritch_invocation('dreadful word')),
             cha, always, ['pact slot', per_rest(long,1)], no, confusion) :-
     eldinv('dreadful word').
 
 eldritch_invocation_option('eldritch sight').
-known_spell(warlock:eldritch_invocation('eldritch sight'),
+known_spell(warlock(eldritch_invocation('eldritch sight')),
             cha, always, [], no, 'detect magic') :-
     eldinv('eldritch sight').
 
@@ -246,13 +246,13 @@ eldritch_invocation_option(lifedrinker) :-
 % TODO: lifedrinker damage bonus
 
 eldritch_invocation_option('mask of many faces').
-known_spell(warlock:eldritch_invocation('mask of many faces'),
+known_spell(warlock(eldritch_invocation('mask of many faces')),
             cha, always, [], no, 'disguise self') :-
     eldinv('mask of many faces').
 
 eldritch_invocation_option('master of myriad forms') :-
     match_class(warlock:15).
-known_spell(warlock:eldritch_invocation('master of myriad forms'),
+known_spell(warlock(eldritch_invocation('master of myriad forms')),
             cha, always, [], no, 'alter self') :-
     eldinv('master of myriad forms').
 
@@ -262,7 +262,7 @@ eldinv_spell('minions of chaos', ['pact slot', per_rest(long,1)], 'conjure eleme
 
 eldritch_invocation_option('mire the mind') :-
     match_class(warlock:5).
-known_spell(warlock:eldritch_invocation('mire the mind'),
+known_spell(warlock(eldritch_invocation('mire the mind')),
             cha, always, ['pact slot', per_rest(long,1)], no, slow) :-
     eldinv('mire the mind').
 

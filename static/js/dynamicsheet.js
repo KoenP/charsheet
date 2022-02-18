@@ -145,7 +145,7 @@ function addSpellTableRow(table, sd) {
          <td>${sd.concentration}</td>
          <td>${formatToHitOrDc(sd)}</td>
          <td>${sd.summary}</td>
-         <td>${sd.resources}</td>
+         <td>${formatResources(sd.resources)}</td>
        </tr>
       `;
 }
@@ -163,6 +163,10 @@ function formatBonus(bonus) {
     } else {
         return bonus;
     }
+}
+
+function formatResources(resources) {
+    return (resources.length == 0 ? "-" : resources.join(", "));
 }
 
 function formatSpellName(spellData) {
