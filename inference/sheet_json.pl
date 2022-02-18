@@ -6,6 +6,7 @@ sheet_json_dict(_{name: Name,
                   weapons: Weapons,
                   armor: Armor,
                   tools: Tools,
+                  notable_traits: NotableTraits,
                   attacks: Attacks,
                   spell_slots: SpellSlots,
                   pact_magic: PactMagic,
@@ -18,6 +19,7 @@ sheet_json_dict(_{name: Name,
     findall(X, trait(weapon(X)), Weapons),
     findall(X, trait(armor(X)), Armor),
     findall(X, trait(tools(X)), Tools),
+    findall(X, notable_trait_json_dict(X), NotableTraits),
     attack_table_json_dict(Attacks),
     findall([Lvl,N], spell_slots(Lvl,N), SpellSlots),
     pact_magic_json_dict(PactMagic),
@@ -87,6 +89,13 @@ skill_table_json_dict(Dict) :-
              fmt(format_bonus(Mod),ModStr)),
             Pairs),
     dict_pairs(Dict, _, Pairs).
+
+% Notable traits.
+notable_trait_json_dict(_{name: Trait, desc: Desc}) :-
+    trait(TraitVal),
+    \+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_), skill(_)]),
+    fmt(format_trait(TraitVal), Trait),
+    default_on_fail(null, ?=(TraitVal), Desc).
 
 % Attack table.
 attack_table_json_dict(List) :-

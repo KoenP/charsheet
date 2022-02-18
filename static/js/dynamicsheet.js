@@ -30,6 +30,12 @@ async function initPage() {
     document.getElementById("tools").innerHTML
         = "<b>Tools: </b>" + sheetData.tools.join(", ");
 
+    // Notable traits.
+    var traitList = document.getElementById("traitlist")
+    sheetData.notable_traits.forEach(function(trait) {
+        traitList.innerHTML += `<li>${addTooltip(trait.name, trait.desc)}</li>`;
+    });
+
     // Attack table.
     var attackTable = document.getElementById("attacks");
     console.log(sheetData);
@@ -197,6 +203,20 @@ function spellSlotCheckBoxes(parent, nSlots) {
         input.setAttribute("type", "checkbox");
         parent.appendChild(input);
     }
+}
+
+function addTooltip(text, tooltip) {
+    if (tooltip != null) {
+        return `<div class="tooltip">
+                  ${text}
+                  <span class="tooltiptext">
+                    ${tooltip}
+                  </span>
+                </div>`;
+    } else {
+        return text;
+    }
+
 }
 
 initPage();

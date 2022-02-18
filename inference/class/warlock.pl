@@ -13,7 +13,7 @@ class_saving_throw(warlock, wis).
 class_saving_throw(warlock, cha).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Initial class features (you don't gain these when multiclassing into warlock).
+% Features gained for picking this class as initial class.
 trait_options_source(initial_class(warlock), skill, wrap(skill),
                      2 unique_from from_list(
                          [arcana, deception, history, intimidation,

@@ -17,6 +17,7 @@
 :- [class/sorcerer].
 :- [class/warlock].
 :- [class/wizard].
+:- [class/gambler].
 
 %! class_level(?ClassLevel)
 %
