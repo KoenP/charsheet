@@ -1,3 +1,5 @@
+:- multifile attack/5.
+
 %! attack(?Name, ?Range, ?ToHitOrDC, ?DamageFormula, ?Notes)
 attack(Cantrip, Range, to_hit(ToHit), [DamageDice], []) :-
     known_spell_to_hit(Origin, Cantrip, ToHit),

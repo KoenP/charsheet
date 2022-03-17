@@ -173,6 +173,10 @@ function formatBonus(bonus) {
     }
 }
 
+function formatResources(resources) {
+    return (resources.length == 0 ? "-" : resources.join(", "));
+}
+
 function formatSpellName(spellData) {
     return maybeAddTooltip(spellData.name, spellData.description);
     // return `<div class="tooltip">
@@ -230,6 +234,20 @@ function spellSlotCheckBoxes(parent, nSlots) {
         input.setAttribute("type", "checkbox");
         parent.appendChild(input);
     }
+}
+
+function addTooltip(text, tooltip) {
+    if (tooltip != null) {
+        return `<div class="tooltip">
+                  ${text}
+                  <span class="tooltiptext">
+                    ${tooltip}
+                  </span>
+                </div>`;
+    } else {
+        return text;
+    }
+
 }
 
 initPage();

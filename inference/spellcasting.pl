@@ -23,7 +23,7 @@
 %    as a regular spell, or a modified version through the eldritch
 %    invocation 'chains of carceri'. In the first case, the origin is
 %    simply `warlock`; in the second, it's
-%    `warlock:eldritch_invocation('chains of carceri')`.
+%    `warlock(eldritch_invocation('chains of carceri'))`.
 %    Origin is relevant for:
 %    * Characters can learn the same spell multiple times,
 %      but not more than once for the same Origin.
@@ -69,6 +69,7 @@ meta_todo(known_spell(Origin, Name), resources_are_not_a_list(Resources)) :-
 meta_todo(known_spell(Origin, Name), invalid_field(ritual,Ritual)) :-
     known_spell(Origin, _, _, _, Ritual, Name),
     \+ member(Ritual, [always, 'when prepared', no, only]).
+
 % TODO: check all the fields
 
 %! known_spell_origin_class(?Origin, ?Class:atomic)
@@ -196,16 +197,10 @@ spell_origin(Origin) :-
     list_to_set(Origins, OriginsSet),
     member(Origin, OriginsSet).
 
-%origin_base_origin(Origin:_, Origin).
-%origin_base_origin(Origin, Origin) :- Origin \= _:_.
-%
-%spell_base_origin(BaseOrigin) :-
-%    findall(O, spell_origin())
-
 base_spell_origin(BaseOrigin) :-
-    spell_origin(BaseOrigin),
-    BaseOrigin \= _:_.
-
+    findall(BO, (spell_origin(Origin), Origin =.. [BO|_]), BaseOrigins),
+    list_to_set(BaseOrigins, BaseOriginsSet),
+    member(BaseOrigin, BaseOriginsSet).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Interacting with spell data.

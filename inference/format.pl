@@ -47,6 +47,7 @@ format_dice_sum(Ds + 0) --> format_dice_sum(Ds).
 format_dice_sum(Ds + D) --> format_dice_sum(Ds), ['+'], format_dice(D).
 format_dice_sum(Ds) --> format_dice(Ds).
 format_dice(N d X) --> seq([N, 'd', X]).
+format_dice(N) --> {number(N)}, [N].
 
 format_bonus(N) --> {N >= 0}, ['+'], [N].
 format_bonus(N) --> {N < 0}, [N].

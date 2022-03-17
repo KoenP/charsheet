@@ -19,7 +19,7 @@ sheet_json_dict(_{name: Name,
     findall(X, trait(weapon(X)), Weapons),
     findall(X, trait(armor(X)), Armor),
     findall(X, trait(tools(X)), Tools),
-    findall(X, notable_trait_json(X), NotableTraits),
+    findall(X, notable_trait_json_dict(X), NotableTraits),
     attack_table_json_dict(Attacks),
     findall([Lvl,N], spell_slots(Lvl,N), SpellSlots),
     pact_magic_json_dict(PactMagic),
@@ -91,10 +91,9 @@ skill_table_json_dict(Dict) :-
     dict_pairs(Dict, _, Pairs).
 
 % Notable traits.
-notable_trait_json(_{trait: Trait, desc: Desc}) :-
+notable_trait_json_dict(_{name: Trait, desc: Desc}) :-
     trait(TraitVal),
-    \+ member(TraitVal,
-              [language(_), tool(_), weapon(_), armor(_), skill(_)]),
+    \+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_), skill(_)]),
     fmt(format_trait(TraitVal), Trait),
     default_on_fail(null, ?=(TraitVal), Desc).
 
@@ -127,7 +126,7 @@ pact_magic_json_dict(_{slot_count: NSlots,
 pact_magic_json_dict(null).
 
 spellcasting_section_json_dict(
-    _{origin: Origin,
+    _{origin: BaseOrigin,
       spellcasting_ability: Abi,
       spellcasting_ability_mod: AbiMod,
       spell_save_dc: DC,
@@ -137,18 +136,15 @@ spellcasting_section_json_dict(
     base_spell_origin(Origin),
     spellcasting_ability(Origin, Abi),
     ability_mod(Abi, AbiMod),
-    known_spell_origin_class(Origin, Class),
+    known_spell_origin_class(BaseOrigin, Class),
     spell_save_dc(Class, DC),
     spell_attack_modifier(Class, AttackMod),
-    default_on_fail(null, max_prepared_spells(Origin), Prep),
-    spell_list_json_dict(Origin, Spells).
+    default_on_fail(null, max_prepared_spells(BaseOrigin), Prep),
+    spell_list_json_dict(BaseOrigin, Spells).
 
-%origin_json(Base:Sub, _{base: Base, sub: Sub}).
-%origin_json(Origin, _{base: Origin}) :- Origin \= _:_.
-
-spell_list_json_dict(Origin, SpellsSorted) :-
+spell_list_json_dict(BaseOrigin, SpellsSorted) :-
     findall(Spell,
-            spell_json_dict(Origin, Spell),
+            spell_json_dict(BaseOrigin, Spell),
             SpellsUnsorted),
     sort(level, @=<, SpellsUnsorted, SpellsSorted).
 
@@ -168,20 +164,19 @@ spell_json_dict(BaseOrigin,
                   summary: Summary,
                   ritual: Ritual,
                   resources: Resources}) :-
-    known_spell(Origin, _Ability, Availability, ResourcesVal, Ritual, Name),
-    (Origin = BaseOrigin ; Origin = BaseOrigin:_),
-    resources_json(ResourcesVal, Resources),
+    (Origin =.. [BaseOrigin,_] ; Origin = BaseOrigin),
+    known_spell(Origin, _Ability, Availability, Resources, Ritual, Name),
     known_spell_data(Origin, Name, Data),
     Level         = Data.level,
     Description   = Data.desc,
     CastingTime   = Data.casting_time,
     RangeVal      = Data.range,
-    fmt(format_measure(RangeVal), Range),
+    fmt(format_range(RangeVal), Range),
     Components    = "todo", %Data.components,
     Duration      = Data.duration,
     Concentration = Data.concentration,
     display_spell_effects(Data, Summary),
-    default_on_fail(null, known_spell_to_hit(Origin,Name), ToHit),
+    default_on_fail(null, known_spell_to_hit(BaseOrigin:_,Name), ToHit),
     known_spell_saving_throw_or_null(Origin, Name, DC, DCAbi).
 
 known_spell_saving_throw_or_null(Origin, Name, DC, Abi) :-
