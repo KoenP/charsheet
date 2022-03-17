@@ -6,6 +6,7 @@ sheet_json_dict(_{name: Name,
                   weapons: Weapons,
                   armor: Armor,
                   tools: Tools,
+                  notable_traits: NotableTraits,
                   attacks: Attacks,
                   spell_slots: SpellSlots,
                   pact_magic: PactMagic,
@@ -18,6 +19,7 @@ sheet_json_dict(_{name: Name,
     findall(X, trait(weapon(X)), Weapons),
     findall(X, trait(armor(X)), Armor),
     findall(X, trait(tools(X)), Tools),
+    findall(X, notable_trait_json(X), NotableTraits),
     attack_table_json_dict(Attacks),
     findall([Lvl,N], spell_slots(Lvl,N), SpellSlots),
     pact_magic_json_dict(PactMagic),
@@ -88,6 +90,14 @@ skill_table_json_dict(Dict) :-
             Pairs),
     dict_pairs(Dict, _, Pairs).
 
+% Notable traits.
+notable_trait_json(_{trait: Trait, desc: Desc}) :-
+    trait(TraitVal),
+    \+ member(TraitVal,
+              [language(_), tool(_), weapon(_), armor(_), skill(_)]),
+    fmt(format_trait(TraitVal), Trait),
+    default_on_fail(null, ?=(TraitVal), Desc).
+
 % Attack table.
 attack_table_json_dict(List) :-
     findall(X, attack_table_json_dict_entry(X), List).
@@ -124,7 +134,7 @@ spellcasting_section_json_dict(
       spell_attack_mod: AttackMod,
       max_prepared_spells: Prep,
       spells: Spells}) :-
-    spell_origin(Origin),
+    base_spell_origin(Origin),
     spellcasting_ability(Origin, Abi),
     ability_mod(Abi, AbiMod),
     known_spell_origin_class(Origin, Class),
@@ -133,13 +143,16 @@ spellcasting_section_json_dict(
     default_on_fail(null, max_prepared_spells(Origin), Prep),
     spell_list_json_dict(Origin, Spells).
 
+%origin_json(Base:Sub, _{base: Base, sub: Sub}).
+%origin_json(Origin, _{base: Origin}) :- Origin \= _:_.
+
 spell_list_json_dict(Origin, SpellsSorted) :-
     findall(Spell,
             spell_json_dict(Origin, Spell),
             SpellsUnsorted),
     sort(level, @=<, SpellsUnsorted, SpellsSorted).
 
-spell_json_dict(Origin,
+spell_json_dict(BaseOrigin,
                 _{availability: Availability,
                   level: Level,
                   name: Name,
@@ -155,7 +168,9 @@ spell_json_dict(Origin,
                   summary: Summary,
                   ritual: Ritual,
                   resources: Resources}) :-
-    known_spell(Origin, _Ability, Availability, Resources, Ritual, Name),
+    known_spell(Origin, _Ability, Availability, ResourcesVal, Ritual, Name),
+    (Origin = BaseOrigin ; Origin = BaseOrigin:_),
+    resources_json(ResourcesVal, Resources),
     known_spell_data(Origin, Name, Data),
     Level         = Data.level,
     Description   = Data.desc,
@@ -173,3 +188,15 @@ known_spell_saving_throw_or_null(Origin, Name, DC, Abi) :-
     known_spell_saving_throw(Origin, Name, DC, Abi),
     !.
 known_spell_saving_throw_or_null(_, _, null, null).
+
+resources_json(R1 or R2, _{tag: or, val: Val}) :-
+    maplist(resources_json, [R1,R2], Val),
+    !.
+resources_json(per_rest(Dur, N), _{tag: per_rest,
+                                   rest_type: Dur,
+                                   count: N}) :-
+    !.
+resources_json(List, _{tag: list, val: JsonList}) :-
+    maplist(resources_json, List, JsonList),
+    !.
+resources_json(X, _{tag: val, val: X}).

@@ -1,6 +1,7 @@
 //put initial values in the summary
 async function initPage() {
     const sheetData = await requestJson("sheet", {});
+    console.log(sheetData);
     const characterName = sheetData.name;
     document.getElementById("nametitle").innerHTML = characterName;
     document.getElementById("nameheader").innerHTML = characterName;
@@ -30,6 +31,13 @@ async function initPage() {
     document.getElementById("tools").innerHTML
         = "<b>Tools: </b>" + sheetData.tools.join(", ");
 
+    // Notable traits.
+    var traitList = document.getElementById("traitlist");
+    sheetData.notable_traits.forEach(function (trait) {
+        const item = maybeAddTooltip(trait.trait, trait.desc);
+        traitList.innerHTML += `<li>${item}</li>`;
+    });
+
     // Attack table.
     var attackTable = document.getElementById("attacks");
     console.log(sheetData);
@@ -45,7 +53,7 @@ async function initPage() {
     })
 
     // Spellcasting.
-    if (sheetData.spell_slots.length > 0) {
+    if (sheetData.spell_slots.length > 0 || sheetData.pact_magic != null) {
         initSpellcasting(sheetData)
     }
 }
@@ -145,7 +153,7 @@ function addSpellTableRow(table, sd) {
          <td>${sd.concentration}</td>
          <td>${formatToHitOrDc(sd)}</td>
          <td>${sd.summary}</td>
-         <td>${sd.resources}</td>
+         <td>${formatResources(sd.resources)}</td>
        </tr>
       `;
 }
@@ -166,12 +174,13 @@ function formatBonus(bonus) {
 }
 
 function formatSpellName(spellData) {
-    return `<div class="tooltip">
-              ${spellData.name}
-              <span class="tooltiptext">
-                ${spellData.description}
-              </span>
-            </div>`;
+    return maybeAddTooltip(spellData.name, spellData.description);
+    // return `<div class="tooltip">
+    //           ${spellData.name}
+    //           <span class="tooltiptext">
+    //             ${spellData.description}
+    //           </span>
+    //         </div>`;
 }
 
 function formatToHitOrDc(spellData) {
@@ -180,6 +189,34 @@ function formatToHitOrDc(spellData) {
           .concat(notNullSingleton(spellData.dc)
                   .map(dc => `DC ${dc} (${spellData.dc_abi})`));
     return list.join(",");
+}
+
+function formatResources(resources) {
+    console.log(resources);
+    const tag = resources.tag;
+    const val = resources.val;
+    const formatResList = function (list) {
+        console.log("TEST");
+        console.log(list);
+        return list.map(formatResources).join(", ");
+    };
+    return {
+        "val": val,
+        "or": "todo",
+        "per_rest": "todo",
+        "list": formatResList(val)
+    }[tag];
+}
+
+function maybeAddTooltip(mainText, tooltipText) {
+    if (tooltipText != null)
+        return `<div class="tooltip">
+                  ${mainText}
+                  <span class="tooltiptext">
+                    ${tooltipText}
+                  </span>
+                </div>`
+    else return mainText;
 }
 
 function notNullSingleton(val) {

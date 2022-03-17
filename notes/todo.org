@@ -1,16 +1,15 @@
+- uniekheid van traits deftig ondersteunen, bv als je al eens "feat(alert)" hebt gekozen, moet dat niet zichtbaar zijn in een lijst van opties voor een nieuwe feat.
+
 - spellcasting
   - simpele DC based spells zoals sacred flame toevoegen aan attack table
     
 - backgrounds
 - equipment en equipment effecten toevoegen
-- attack table
 
 - leesbare error messages
 - effecten van short en long rests registreren
 - "asserted"/GM fiat traits toevoegen
 - manuele overrides toevoegen
-- beast json
-- lege tabellen (bv spell prep) niet tonen
 - ergens een lijst van talen toevoegen; of meer algemeen: omgaan met het idee "kies van deze lijst, of vul gewoon zelf iets in"
 - consistentie "ft" vs "feet" functor
 
@@ -18,7 +17,6 @@
 
   
 * Huidige todo
-  Debugging: attack(A,B,C,D,E), format_list(Notes,FNotes,[]).
 
 * Lange termijn
 Swipl in-browser

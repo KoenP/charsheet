@@ -4,7 +4,7 @@
        extend_class_spell_list/2.
 
 
-%! known_spell(?Origin, ?Ability:atomic, ?Availability, ?Resources:list, ?Ritual:atomic, ?Name:atomic)
+%! known_spell(?Origin, ?Ability:atomic, ?Availability, ?Resources, ?Ritual:atomic, ?Name:atomic)
 %
 %  Known spells are those spells spells that are on your character's
 %  spell list, either as spells that are always castable or spells
@@ -44,8 +44,9 @@
 %    has to be prepared, we look at the Origin to check which list of
 %    prepared spells this spell belongs to.
 %  * Resources indicates which resources the spell consumes when
-%    cast. Resources is always a list. Some spells don't consume any
-%    resource; in those cases the Resources list is empty. The most
+%    cast. Resources is either a list, or an `or` functor containing
+%    two "sub-resources". Some spells don't consume any
+%    resource; in those cases Resources is an empty list. The most
 %    common case is spells that consume a normal spell slot; they are
 %    marked with the singleton list `[slot]`. Warlock pact magic slots
 %    are separate from generic spell slots, and are marked with
@@ -194,6 +195,17 @@ spell_origin(Origin) :-
     findall(O, known_spell(O,_), Origins),
     list_to_set(Origins, OriginsSet),
     member(Origin, OriginsSet).
+
+%origin_base_origin(Origin:_, Origin).
+%origin_base_origin(Origin, Origin) :- Origin \= _:_.
+%
+%spell_base_origin(BaseOrigin) :-
+%    findall(O, spell_origin())
+
+base_spell_origin(BaseOrigin) :-
+    spell_origin(BaseOrigin),
+    BaseOrigin \= _:_.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Interacting with spell data.
