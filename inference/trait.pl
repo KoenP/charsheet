@@ -63,6 +63,13 @@ trait_options(Source, Id, ToTrait, Spec) :-
 options(Source, Id, Spec) :-
     trait_options(Source, Id, _, Spec).
 
+% Don't display traits that have already been picked as options to the
+% user (see inspect_options/3).
+hide_option(Source, Id, Option) :-
+    trait_options(Source, Id, ToTrait, _),
+    call(ToTrait, Option, Trait),
+    trait(Trait).
+
 %! class_trait(?Class:atomic, ?Origin, ?Trait)
 %
 %  Query your character's traits that originate from Class.

@@ -134,7 +134,7 @@ todo_entry_jsondict(_{origin:OriginStr, id:IdStr, spec:SpecDict}) :-
     todo(options(Origin, Id, Spec)),
     quoted_term_string(Origin, OriginStr),
     quoted_term_string(Id, IdStr),
-    inspect_spec(Spec, ISpec),
+    inspect_spec(Origin, Id, Spec, ISpec),
     spec_to_jsondict(ISpec, SpecDict).
 
 spec_to_jsondict(N unique_from Spec, _{unique_from: _{number:N, spec:SpecDict}}) :-

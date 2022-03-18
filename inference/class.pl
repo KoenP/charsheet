@@ -9,11 +9,13 @@
        caster/2,
        spellcasting_ability/2,
        asi_level/1,
-       max_prepared_spells/2.
+       max_prepared_spells/2,
+       class_skill_list/2.
 
 :- discontiguous
        required_predicate_for_each_class/1.
 
+:- [class/rogue].
 :- [class/sorcerer].
 :- [class/warlock].
 :- [class/wizard].
@@ -234,6 +236,21 @@ class_shorthand(sorcerer  , so).
 class_shorthand(warlock   , wl).
 class_shorthand(wizard    , wz).
 
+%! class_skill_list(?Class, ?List)
+%
+%  List of skills you can typically pick from when you gain skills
+%  through this class.
+class_skill_list(_,_) :- false.
+
+%! class_skill(?Class, ?Skill)
+%
+%  One of the skills you can typically pick when you gain skills
+%  through this class.
+class_skill(Class, Skill) :-
+    class_skill_list(Class, List),
+    member(Skill, List).
+class_skill_wrapped(Class, skill(Skill)) :-
+    class_skill(Class, Skill).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % meta todo's

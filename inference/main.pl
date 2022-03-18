@@ -42,6 +42,7 @@
 :- [ac].
 :- [hp].
 :- [attacks].
+:- [languages].
 :- [html].
 :- [character_file].
 :- [sheet_json].

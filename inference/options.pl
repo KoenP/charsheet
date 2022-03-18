@@ -1,7 +1,9 @@
 :- multifile
        options/3,
+       options/4,
        options_source/3,
-       choice/3.
+       choice/3,
+       hide_option/3.
 
 %! options(?Source, ?Id, ?Spec)
 %  
@@ -133,6 +135,9 @@ unique_from(N, Pred, Choices) :-
 %  Useful for options/3 specifications.
 from_list(L, X) :- member(X, L).
 
+or(Goal1, Goal2, X) :-
+    call(Goal1, X) ; call(Goal2, X).
+
 %! inspect_options(?Origin, ?Id, ?Desc)
 %  Desc describes all valid choices for the options/3 clause with
 %  matching Origin and Id.
@@ -142,11 +147,17 @@ from_list(L, X) :- member(X, L).
 %  - A list of terms.
 inspect_options(Origin, Id, Desc) :-
     options(Origin, Id, Spec), % ground
-    inspect_spec(Spec, Desc).
-inspect_spec(N from Pred, N from List) :-
-    inspect_spec(Pred, List).
-inspect_spec(N unique_from Pred, N unique_from List) :-
-    inspect_spec(Pred, List).
-inspect_spec(Pred, List) :-
+    inspect_spec(Origin, Id, Spec, Desc).
+inspect_spec(Origin, Id, N from Pred, N from List) :-
+    inspect_spec(Origin, Id, Pred, List).
+inspect_spec(Origin, Id, N unique_from Pred, N unique_from List) :-
+    inspect_spec(Origin, Id, Pred, List).
+inspect_spec(Origin, Id, Pred, List) :-
     \+ member(Pred, [_ from _, _ unique_from _]),
-    findall(X, call(Pred, X), List).
+    findall(X, (call(Pred, X), \+ hide_option(Origin, Id, X)), List).
+
+%! hide_option(?Source, ?Id, ?Option)
+%
+%  True iff Option shouldn't be displayed to the user as a valid
+%  choice for the option with given Source and Id.
+hide_option(_,_,_) :- false.

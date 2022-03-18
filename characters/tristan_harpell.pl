@@ -15,7 +15,7 @@ choice(race(human(variant)), asi, [int+1, con+1]).
 % Level 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 choice(init, 'initial class', wizard).
-choice(initial_class(wizard), skill, [arcana, investigation]).
+%choice(initial_class(wizard), skill, [arcana, investigation]).
 choice(class(wizard), cantrip, ['dancing lights', frostbite, 'acid splash']). %'minor illusion']).
 % poison spray, ray of frost, mold earth, fire bolt
 choice(class(wizard), 'free spell',
