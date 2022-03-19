@@ -19,7 +19,7 @@ sheet_json_dict(_{name: Name,
     findall(X, trait(weapon(X)), Weapons),
     findall(X, trait(armor(X)), Armor),
     findall(X, trait(tools(X)), Tools),
-    findall(X, notable_trait_json_dict(X), NotableTraits),
+    notable_traits_json_dict(NotableTraits),
     attack_table_json_dict(Attacks),
     findall([Lvl,N], spell_slots(Lvl,N), SpellSlots),
     pact_magic_json_dict(PactMagic),
@@ -91,9 +91,16 @@ skill_table_json_dict(Dict) :-
     dict_pairs(Dict, _, Pairs).
 
 % Notable traits.
-notable_trait_json_dict(_{name: Trait, desc: Desc}) :-
-    trait(TraitVal),
-    \+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_), skill(_)]),
+notable_traits_json_dict(TraitDictsPerCat) :-
+    notable_traits_by_category(TraitsPerCat),
+    maplist(trait_category_json_dict, TraitsPerCat, TraitDictsPerCat).
+
+trait_category_json_dict(Cat-Traits, _{category:CatStr, traits:TraitDicts}) :-
+    fmt(format_term(Cat), CatStr),
+    maplist(trait_json_dict, Traits, TraitDicts).
+
+trait_json_dict(TraitVal, _{name: Trait, desc: Desc}) :-
+    %\+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_), skill(_)]),
     fmt(format_trait(TraitVal), Trait),
     default_on_fail(null, ?=(TraitVal), Desc).
 

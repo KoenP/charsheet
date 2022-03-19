@@ -87,3 +87,33 @@ class_trait(Class, Origin, Trait) :-
 choice_member_to_trait(Source, Id, ToTrait) :-
     trait_options(Source, Id, ToTrait, _).
 wrap(Functor, X, FunctorX) :- FunctorX =.. [Functor, X].
+
+%! notable_trait(?Origin, ?Trait)
+%
+%  Somewhat arbitrarily, a trait is "notable" when it's not an
+%  expertise, skill, language, tool, weapon or armor proficiency.
+notable_trait(Origin, Trait) :-
+    trait(Origin, Trait),
+    \+ member(Trait,
+              [expertise(_), skill(_), language(_), tool(_),
+               weapon(_), armor(_)]).
+
+%! notable_traits_by_category(?TraitsPerCat)
+%
+%  List "notable traits" (see notable_trait/2), arranged per category.
+notable_traits_by_category(TraitsPerCat) :-
+    findall(Cat-Trait,
+            (notable_trait(Origin,Trait),
+             origin_category_or_uncategorized(Cat,Origin)),
+            CatTraits),
+    sort(1, @=<, CatTraits, Sorted),
+    group_pairs_by_key(Sorted, TraitsPerCat).
+    
+
+%! traits_by_category(?TraitsPerCat)
+traits_by_category(TraitsPerCat) :-
+    findall(Cat-Trait,
+            (trait(Origin,Trait), origin_category_or_uncategorized(Cat,Origin)),
+            CatTraits),
+    sort(1, @=<, CatTraits, Sorted),
+    group_pairs_by_key(Sorted, TraitsPerCat).

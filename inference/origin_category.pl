@@ -18,10 +18,3 @@ origin_category_or_uncategorized(Category, Origin) :-
     !.
 origin_category_or_uncategorized(uncategorized, _).
 
-traits_by_category(TraitsPerCat) :-
-    findall(Cat-Trait,
-            (trait(Origin,Trait), origin_category_or_uncategorized(Cat,Origin)),
-            CatTraits),
-    sort(1, @=<, CatTraits, Sorted),
-    group_pairs_by_key(Sorted, TraitsPerCat).
-
