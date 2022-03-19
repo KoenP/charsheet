@@ -34,7 +34,7 @@ async function initPage() {
     // Notable traits.
     var traitList = document.getElementById("traitlist");
     sheetData.notable_traits.forEach(function (trait) {
-        const item = maybeAddTooltip(trait.trait, trait.desc);
+        const item = maybeAddTooltip(trait.name, trait.desc);
         traitList.innerHTML += `<li>${item}</li>`;
     });
 
