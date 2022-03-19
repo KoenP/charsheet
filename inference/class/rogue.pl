@@ -1,5 +1,4 @@
 class_option(rogue).
-class_shorthand(rogue, ro).
 hd_per_level(rogue, 1 d 8).
 initial_class_base_hp(rogue, 8).
 max_hp_per_level(rogue, 1 d 8).
@@ -125,7 +124,7 @@ sneak_attack(_) ?= "Beginning at 1st level, you know how to strike subtly and ex
 
 'cunning action' ?= "Starting at 2nd level, your quick thinking and agility allow you to move and act quickly. You can take a bonus action on each of your turns in combat. This action can be used only to take the Dash, Disengage, or Hide action.".
 
- 'uncanny dodge' ?= "Starting at 5th level, when an attacker that you can see hits you with an attack, you can use your reaction to halve the attack's damage against you.".
+'uncanny dodge' ?= "Starting at 5th level, when an attacker that you can see hits you with an attack, you can use your reaction to halve the attack's damage against you.".
 
 evasion ?= "Beginning at 7th level, you can nimbly dodge out of the way of certain area effects, such as a red dragon's fiery breath or an ice storm spell. When you are subjected to an effect that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail.".
 
