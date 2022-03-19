@@ -106,6 +106,7 @@ function initSpellcasting(sheetData) {
 }
 
 function initSpellcastingSection(sectionData) {
+    console.log("let's make some spellcasting sections");
     const abiMod = formatBonus(sectionData.spellcasting_ability_mod);
     const attackMod = formatBonus(sectionData.spell_attack_mod);
     const prep = (sectionData.max_prepared_spells != null)
@@ -198,22 +199,22 @@ function formatToHitOrDc(spellData) {
     return list.join(",");
 }
 
-function formatResources(resources) {
-    console.log(resources);
-    const tag = resources.tag;
-    const val = resources.val;
-    const formatResList = function (list) {
-        console.log("TEST");
-        console.log(list);
-        return list.map(formatResources).join(", ");
-    };
-    return {
-        "val": val,
-        "or": "todo",
-        "per_rest": "todo",
-        "list": formatResList(val)
-    }[tag];
-}
+//function formatResources(resources) {
+//    console.log(resources);
+//    const tag = resources.tag;
+//    const val = resources.val;
+//    const formatResList = function (list) {
+//        console.log("TEST");
+//        console.log(list);
+//        return list.map(formatResources).join(", ");
+//    };
+//    return {
+//        "val": val,
+//        "or": "todo",
+//        "per_rest": "todo",
+//        "list": formatResList(val)
+//    }[tag];
+//}
 
 function maybeAddTooltip(mainText, tooltipText) {
     if (tooltipText != null)
