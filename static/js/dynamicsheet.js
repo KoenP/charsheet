@@ -33,9 +33,12 @@ async function initPage() {
 
     // Notable traits.
     var traitList = document.getElementById("traitlist");
-    sheetData.notable_traits.forEach(function (trait) {
-        const item = maybeAddTooltip(trait.name, trait.desc);
-        traitList.innerHTML += `<li>${item}</li>`;
+    sheetData.notable_traits.forEach(function (category) {
+        traitList.innerHTML += `<b>${category.category}</b>`;
+        category.traits.forEach(function (trait) {
+            const item = maybeAddTooltip(trait.name, trait.desc);
+            traitList.innerHTML += `<li>${item}</li>`;
+        })
     });
 
     // Attack table.
