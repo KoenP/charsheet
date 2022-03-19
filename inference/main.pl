@@ -36,6 +36,7 @@
 :- [spellcasting].
 :- [class].
 :- [race].
+:- [background].
 :- [feat].
 :- [ability].
 :- [skill].
@@ -142,6 +143,10 @@ initial_class(Class) :- choice(init, 'initial class', Class), !.
 problem(multiple_initial_classes(Classes)) :-
     findall(Class, initial_class(Class), Classes),
     Classes = [_,_|_].
+
+% Pick character background.
+options(init, background, background_option).
+background(BG) :- choice(init, background, BG).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % To organize:
@@ -252,6 +257,9 @@ most_specific_race(Race) :-
 
 todo :-
     forall(todo(T), writeln_quoted_term(T)).
+
+traits :-
+    forall(trait(Origin, Trait), writeln_quoted_term(Origin:Trait)).
 
 spells :-
     forall(known_spell(Origin, Name), writeln_quoted_term(Origin:Name)).

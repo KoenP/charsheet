@@ -156,6 +156,10 @@ known_spell_saving_throw(Origin, Name, DC, Abi) :-
     spell_save_dc(Class, DC).
 %contains_saving_throw(Effects, saving_throw(Abi):Effect)
     
+%max_learnable_spell_level_for_classlevel(Class:Level, MaxSpellLevel) :-
+%    caster(Class, Factor),
+
+
 %! learnable_proper_spell(?Class, ?Name)
 %
 %  A proper spell is a spell that is not a cantrip.
@@ -177,6 +181,8 @@ learnable_proper_spell(warlock, Name) :-
     spell_data(Name, Data),
     (member(warlock, Data.classes); extend_class_spell_list(warlock, Name)),
     between(1, SlotLevel, Data.level).
+meta_todo(learnable_proper_spell,
+          "Not sure if I like how I implemented this for e.g. arcane trickster (which use another class' spell list)").
 
 %! cantrip(?Name)
 cantrip(Name) :- spell_property(Name, level, 0).
@@ -248,10 +254,12 @@ spell_slots_single_class(SpellLevel, Class, NSlots) :-
     spell_slot_level_to_slots(SpellLevel, VirtualLevel, NSlots),
     NSlots > 0.
 single_class_virtual_full_caster_level(ClassLevel, full, ClassLevel).
-single_class_virtual_full_caster_level(1, 1/2, 0).
-single_class_virtual_full_caster_level(ClassLevel, 1/2, VirtualLevel) :-
-    between(2, 9, ClassLevel),
-    VirtualLevel is ceil(ClassLevel / 2).
+single_class_virtual_full_caster_level(L, 1/N, 0) :-
+    L < N.
+single_class_virtual_full_caster_level(ClassLevel, 1/N, VirtualLevel) :-
+    %between(2, 9, ClassLevel),
+    ClassLevel >= N,
+    VirtualLevel is ceil(ClassLevel / N).
 
 %! spell_slot_level_to_slots(?SpellLevel:int, ?VirtualFullCasterLevel:int, ?NSlots:int)
 %
@@ -323,6 +331,9 @@ modify_spell_field(Field, UpdateField, Old, New) :-
     OldField = Old.get(Field),
     call(UpdateField, OldField, NewField),
     New = Old.put(Field, NewField).
+
+add_spell_effects(NewEffects, Old, New) :-
+    modify_spell_field(effects, [Es1,Es2]>>append(Es1,NewEffects,Es2), Old, New).
 
 increase_all_spell_damage_rolls(Bonus, Old, New) :-
     get_or_default(Old, effects, [], OldEffects),
