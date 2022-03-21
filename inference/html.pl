@@ -201,11 +201,11 @@ spell_origin_info(Origin, "Spellcasting ability", AbiStr) :-
     atomic_list_concat(ModFmt, ModAtom),
     format(string(AbiStr), "~w (~s)", [Abi, ModAtom]).
 spell_origin_info(Origin, "Spell save DC", DC) :-
-    known_spell_origin_class(Origin, Class),
-    spell_save_dc(Class, DC).
+    Origin =.. [BaseOrigin|_],
+    spell_save_dc(BaseOrigin, DC).
 spell_origin_info(Origin, "Spell attack modifier", AttackModStr) :-
-    known_spell_origin_class(Origin, Class),
-    spell_attack_modifier(Class, AttackMod),
+    Origin =.. [BaseOrigin|_],
+    spell_attack_modifier(BaseOrigin, AttackMod),
     format_bonus_str(AttackMod, AttackModStr, []).
 
 spell_preparation_table(Html) :-

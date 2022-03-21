@@ -76,10 +76,10 @@ meta_todo(known_spell(Origin, Name), invalid_field(ritual,Ritual)) :-
 %
 %  True iff Origin (as in a known_spell/6 Origin) refers to the class
 %  Class.
-known_spell_origin_class(Class, Class) :-
-    class_option(Class).
-known_spell_origin_class(Class:_, Class) :-
-    class_option(Class).
+%known_spell_origin_class(Class, Class) :-
+%    class_option(Class).
+%known_spell_origin_class(Class:_, Class) :-
+%    class_option(Class).
 
 %! known_spell(?Origin, ?Name)
 %
@@ -141,8 +141,8 @@ spell_save_dc(Class, DC) :-
 known_spell_to_hit(Origin, Name, ToHit) :-
     known_spell_property(Origin, Name, effects, Effects),
     contains_attack_roll(Effects, _),
-    known_spell_origin_class(Origin, Class),
-    spell_attack_modifier(Class, ToHit).
+    Origin =.. [BaseOrigin|_],
+    spell_attack_modifier(BaseOrigin, ToHit).
 
 %! known_spell_saving_throw(?Origin, ?Name:atomic, ?DC:int, ?Abi:atomic)
 %
@@ -152,8 +152,8 @@ known_spell_to_hit(Origin, Name, ToHit) :-
 known_spell_saving_throw(Origin, Name, DC, Abi) :-
     known_spell_property(Origin, Name, effects, Effects),
     contains_saving_throw(Effects, saving_throw(Abi):_),
-    known_spell_origin_class(Origin, Class),
-    spell_save_dc(Class, DC).
+    Origin =.. [BaseOrigin|_],
+    spell_save_dc(BaseOrigin, DC).
 %contains_saving_throw(Effects, saving_throw(Abi):Effect)
     
 %max_learnable_spell_level_for_classlevel(Class:Level, MaxSpellLevel) :-

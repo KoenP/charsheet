@@ -13,7 +13,7 @@ choice(init, 'initial class', rogue).
 
 choice(race(human), language, elvish).
 choice(race(human(variant)), skill, arcana).
-choice(initial_class(rogue), skill, [stealth, 'sleight of hand', perception, investigation]).
+%choice(initial_class(rogue), skill, [stealth, 'sleight of hand', perception, investigation]).
 choice(match_class(rogue:1), expertise, [stealth, investigation]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

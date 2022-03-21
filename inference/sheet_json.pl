@@ -140,12 +140,12 @@ spellcasting_section_json_dict(
       spell_attack_mod: AttackMod,
       max_prepared_spells: Prep,
       spells: Spells}) :-
-    base_spell_origin(Origin),
-    spellcasting_ability(Origin, Abi),
+    base_spell_origin(BaseOrigin),
+    spellcasting_ability(BaseOrigin, Abi),
     ability_mod(Abi, AbiMod),
-    known_spell_origin_class(BaseOrigin, Class),
-    spell_save_dc(Class, DC),
-    spell_attack_modifier(Class, AttackMod),
+    %known_spell_origin_class(BaseBaseOrigin, Class),
+    spell_save_dc(BaseOrigin, DC),
+    spell_attack_modifier(BaseOrigin, AttackMod),
     default_on_fail(null, max_prepared_spells(BaseOrigin), Prep),
     spell_list_json_dict(BaseOrigin, Spells).
 
