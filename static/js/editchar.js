@@ -6,7 +6,7 @@ async function initPage() {
     document.getElementById("chartitle").innerHTML = "Editing " + charName;
     document.getElementById("pagetitle").innerHTML = charName;
 
-    var updateData = await update();
+    var updateData = await receiveUpdate();
     updateLength = updateData.length;
 
     await updatePage(0);
@@ -41,7 +41,7 @@ async function saveChar() {
 }
 
 async function updatePage(index) {
-    var updateData = await update();
+    var updateData = await receiveUpdate();
     const abilityTableVals = await requestJson("ability_table", {});
     if(updateData[index].id == "asi or feat") {
         document.getElementById("asiorfeat").innerHTML = 
@@ -64,38 +64,38 @@ async function updatePage(index) {
                   </tr>
                   <tr class="abilityrow" id="str">
                     <td>str</td>
-                    <td><input type="number"></td>
-                    <td class="afterbonuses"></td>
+                    <td class="base"></td>
+                    <td class="afterbonuses">"><input type="number"></td>
                     <td class="mod"></td>
                   </tr>
                   <tr class="abilityrow" id="dex">
                     <td>dex</td>
-                    <td><input type="number"></td>
-                    <td class="afterbonuses"></td>
+                    <td class="base"></td>
+                    <td class="afterbonuses">"><input type="number"></td>
                     <td class="mod"></td>
                   </tr>
                   <tr class="abilityrow" id="con">
                     <td>con</td>
-                    <td><input type="number"></td>
-                    <td class="afterbonuses"></td>
+                    <td class="base"></td>
+                    <td class="afterbonuses">"><input type="number"></td>
                     <td class="mod"></td>
                   </tr>
                   <tr class="abilityrow" id="int">
                     <td>int</td>
-                    <td><input type="number"></td>
-                    <td class="afterbonuses"></td>
+                    <td class="base"></td>
+                    <td class="afterbonuses">"><input type="number"></td>
                     <td class="mod"></td>
                   </tr>
                   <tr class="abilityrow" id="wis">
                     <td>wis</td>
-                    <td><input type="number"></td>
-                    <td class="afterbonuses"></td>
+                    <td class="base"></td>
+                    <td class="afterbonuses"><input type="number"></td>
                     <td class="mod"></td>
                   </tr>
                   <tr class="abilityrow" id="cha">
                     <td>cha</td>
-                    <td><input type="number"></td>
-                    <td class="afterbonuses"></td>
+                    <td class="base"></td>
+                    <td class="afterbonuses"><input type="number"></td>
                     <td class="mod"></td>
                   </tr>`;
                   
@@ -103,10 +103,10 @@ async function updatePage(index) {
 
                 Array.from(abilityTable.getElementsByClassName("abilityrow")).forEach(function (row) {
                     let inputField     = row.getElementsByTagName("input")[0];
-                    inputField.value   = abilityTableVals.base[row.id];
+                    inputField.value   = abilityTableVals.after_bonuses[row.id];
                     inputField.oninput = updateBaseAttribute(row.id);
-                    row.getElementsByClassName("afterbonuses")[0].innerHTML
-                        = abilityTableVals.after_bonuses[row.id];
+                    row.getElementsByClassName("base")[0].innerHTML
+                        = abilityTableVals.base[row.id];
                     row.getElementsByClassName("mod")[0].innerHTML
                         = abilityTableVals.mods[row.id];
                 });
@@ -115,12 +115,12 @@ async function updatePage(index) {
             document.getElementById("asiorfeat").innerHTML = "";
             console.log("Selected FEAT");
             if(document.getElementById("feat").length != 0) document.getElementById("feat").innerHTML = "";
-            for (let i = 0; i < updateData[index].spec.feats.length; i++) {
+            updateData[index].spec.feats.forEach(function(feat) {
                 document.getElementById("feat").innerHTML +=
-                "<div><input type=\"radio\" id=\"radioasi\" name=\"feat\" value=\""+ updateData[index].spec.feats[i] +"\">" +
-                "<label for\"radioasi\">"+ updateData[index].spec.feats[i] +"</label></div> " +
+                "<div><input type=\"radio\" id=\"radioasi\" name=\"feat\" value=\""+ feat +"\">" +
+                "<label for\"radioasi\">"+ feat +"</label></div> " +
                 "";
-            };
+            });
             document.getElementById("feat").innerHTML += "<button id=\"selectBtnFeat\">Select</button>";
             let radioButtonsFeat = document.querySelectorAll('input[name="feat"]');
             document.getElementById("selectBtnFeat").addEventListener("click", () => {
@@ -158,7 +158,7 @@ async function updatePage(index) {
     }
 }
 
-async function update() {
+async function receiveUpdate() {
     var updateData =
         [
             {
@@ -193,4 +193,8 @@ async function update() {
         }
         ]
     return updateData;
+}
+
+async function sendUpdate(dataJson) {
+    console.log(dataJson);
 }
