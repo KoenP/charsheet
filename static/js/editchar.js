@@ -58,32 +58,32 @@ async function updatePage(index) {
                 document.getElementById("abilitytable").innerHTML =
                     `<tr>
                     <th>Attribute</th>
-                    "<th>Base value</th>
+                    <th>Base value</th>
                     <th>After bonuses</th>
                     <th>Modifier</th>
                   </tr>
                   <tr class="abilityrow" id="str">
                     <td>str</td>
                     <td class="base"></td>
-                    <td class="afterbonuses">"><input type="number"></td>
+                    <td class="afterbonuses"><input type="number"></td>
                     <td class="mod"></td>
                   </tr>
                   <tr class="abilityrow" id="dex">
                     <td>dex</td>
                     <td class="base"></td>
-                    <td class="afterbonuses">"><input type="number"></td>
+                    <td class="afterbonuses"><input type="number"></td>
                     <td class="mod"></td>
                   </tr>
                   <tr class="abilityrow" id="con">
                     <td>con</td>
                     <td class="base"></td>
-                    <td class="afterbonuses">"><input type="number"></td>
+                    <td class="afterbonuses"><input type="number"></td>
                     <td class="mod"></td>
                   </tr>
                   <tr class="abilityrow" id="int">
                     <td>int</td>
                     <td class="base"></td>
-                    <td class="afterbonuses">"><input type="number"></td>
+                    <td class="afterbonuses"><input type="number"></td>
                     <td class="mod"></td>
                   </tr>
                   <tr class="abilityrow" id="wis">
