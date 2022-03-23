@@ -51,12 +51,15 @@ async function updatePage(index) {
             "<label for\"radiofeat\">FEAT</label> " + 
             "<button id=\"selectBtn\">Select</button>";
         let radioButtons = document.querySelectorAll('input[name="asifeat"]');
+        var numberOfAsis = updateData[index].spec.asis;
         document.getElementById("selectBtn").addEventListener("click", () => {
             if(radioButtons[0].checked) {
-                document.getElementById("asiorfeat").innerHTML = "";
+                document.getElementById("asiorfeat").remove();
                 console.log("Selected ASI");
+                console.log(numberOfAsis);
                 document.getElementById("abilitytable").innerHTML =
-                    `<tr>
+                `<p id="numberOfAsis"></p>   
+                 <tr>
                     <th>Attribute</th>
                     <th>Base value</th>
                     <th>After bonuses</th>
@@ -99,12 +102,23 @@ async function updatePage(index) {
                     <td class="mod"></td>
                   </tr>`;
                   
+                document.getElementById("numberOfAsis").innerHTML = numberOfAsis;
                 let abilityTable = document.getElementById("abilitytable");
 
                 Array.from(abilityTable.getElementsByClassName("abilityrow")).forEach(function (row) {
                     let inputField     = row.getElementsByTagName("input")[0];
                     inputField.value   = abilityTableVals.after_bonuses[row.id];
-                    inputField.oninput = updateBaseAttribute(row.id);
+                    inputField.oninput = () => {
+                        abilityTableVals.after_bonuses[row.id] = inputField.value;
+                        numberOfAsis--;
+                        document.getElementById("numberOfAsis").innerHTML = numberOfAsis;
+                        if(numberOfAsis == 0) {
+                            Array.from(abilityTable.getElementsByClassName("abilityrow")).forEach(function (row) {
+                                row.getElementsByClassName("afterbonuses")[0].innerHTML = abilityTableVals.after_bonuses[row.id];
+                            });
+                            document.getElementById("numberOfAsis").remove();
+                        }
+                    }
                     row.getElementsByClassName("base")[0].innerHTML
                         = abilityTableVals.base[row.id];
                     row.getElementsByClassName("mod")[0].innerHTML
