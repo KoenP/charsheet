@@ -34,15 +34,16 @@ async function saveChar() {
         updateIndex++;
     }
     else {
+        document.getElementById("editmsg").innerHTML = "Done with character TODO for now!";
         updateIndex = 0;
-        await updatePage(updateIndex);
-        updateIndex++;
     }
 }
 
 async function updatePage(index) {
     var updateData = await receiveUpdate();
     const abilityTableVals = await requestJson("ability_table", {});
+    console.log("index: " + index);
+    console.log("Data length: " + updateData.length);
     if(updateData[index].id == "asi or feat") {
         document.getElementById("asiorfeat").innerHTML = 
             "<input type=\"radio\" id=\"radioasi\" name=\"asifeat\" value=\"ASI\" checked>" +
@@ -54,7 +55,7 @@ async function updatePage(index) {
         var numberOfAsis = updateData[index].spec.asis;
         document.getElementById("selectBtn").addEventListener("click", () => {
             if(radioButtons[0].checked) {
-                document.getElementById("asiorfeat").remove();
+                document.getElementById("asiorfeat").innerHTML="";
                 console.log("Selected ASI");
                 console.log(numberOfAsis);
                 document.getElementById("abilitytable").innerHTML =
@@ -117,6 +118,7 @@ async function updatePage(index) {
                                 row.getElementsByClassName("afterbonuses")[0].innerHTML = abilityTableVals.after_bonuses[row.id];
                             });
                             document.getElementById("numberOfAsis").remove();
+                            saveChar();
                         }
                     }
                     row.getElementsByClassName("base")[0].innerHTML
@@ -141,6 +143,7 @@ async function updatePage(index) {
                 radioButtonsFeat.forEach(function(radioButton) {
                     if(radioButton.checked) {
                         console.log(radioButton.value);
+                        saveChar();
                     }
                 })
             });
@@ -151,9 +154,14 @@ async function updatePage(index) {
     else {
         console.log("other update");
         if(document.getElementById("skill").innerHTML.length != 0) document.getElementById("skill").innerHTML = "";
+        var limit = updateData[index].spec.num;
+        var word
+        if(limit > 1) word = "choices";
+        else word = "choice";
+        document.getElementById("skill").innerHTML += '<div id="num"> You have ' + limit + ' ' + word + '</div>';
         updateData[index].spec.options.forEach(function(skill, indexOfSkill) {
             document.getElementById("skill").innerHTML += 
-            '<div><input type="checkbox" id="skill' + indexOfSkill + '" name="skill" value="' + skill + '">' +
+            '<div><input class="skillcheck" type="checkbox" id="skill' + indexOfSkill + '" name="skill" value="' + skill + '">' +
             '<label for="skill' + indexOfSkill + '">' + skill + '</label></div>';
         });
         document.getElementById("skill").innerHTML += "<button id=\"selectBtnSkill\">Select</button>"
@@ -164,10 +172,26 @@ async function updatePage(index) {
                 if(checkBox.checked) {
                     selectedSkills.push(checkBox.value);
                 }
-            })
-            selectedSkills.forEach(function(selectedSkill) {
-                console.log(selectedSkill);
+                
             });
+            if(selectedSkills.length > limit) {
+                alert("Too many skills selected");
+                checkBoxes.forEach(function(checkBox) {
+                    if(checkBox.checked) checkBox.checked = false;
+                });
+            }
+            else if (selectedSkills.length < limit) {
+                alert("Not enough skills selected");
+                checkBoxes.forEach(function(checkBox) {
+                    if(checkBox.checked) checkBox.checked = false;
+                });
+            }
+            else {
+                selectedSkills.forEach(function(selectedSkill) {
+                    console.log(selectedSkill);
+                    saveChar();
+                });
+            }  
         });
     }
 }
