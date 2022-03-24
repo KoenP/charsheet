@@ -1,5 +1,4 @@
 var updateIndex = 1; //1 because the initial run is done on initPage instead of saveChar
-//var updateLength;
 
 var htmlAbilityTable =
 `<p id="numberOfAsis"></p>   
@@ -60,7 +59,7 @@ initPage();
 
 //todo implement save char
 //increases index when action performed, when all actions performed print message to html
-//todo create multiple loops if updateData changes
+//todo loop only if updateData changes
 //todo add output window to bottom of html to view all character info?
 async function saveChar() {
 //    await request("save_character", {});
