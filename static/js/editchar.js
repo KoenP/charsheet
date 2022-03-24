@@ -1,5 +1,5 @@
-var updateIndex = 1;
-var updateLength;
+var updateIndex = 1; //1 because the initial run is done on initPage instead of saveChar
+//var updateLength;
 
 var htmlAbilityTable =
 `<p id="numberOfAsis"></p>   
@@ -52,7 +52,8 @@ async function initPage() {
 
     document.getElementById("chartitle").innerHTML = "Editing " + charName;
     document.getElementById("pagetitle").innerHTML = charName;
-    await updatePage(0);
+    var updateData = await receiveUpdate();
+    await updatePage(0, updateData);
 }
 
 initPage();
@@ -63,20 +64,20 @@ initPage();
 //todo add output window to bottom of html to view all character info?
 async function saveChar() {
 //    await request("save_character", {});
-    if(updateIndex < updateLength) {
-        await updatePage(updateIndex);
+    var updateData = await receiveUpdate();
+    if(updateIndex < updateData.length) {
+        await updatePage(updateIndex, updateData);
         updateIndex++;
     }
     else {
-        document.getElementById("editmsg").innerHTML = "Done with character TODO for now!";
+        document.getElementById("editmsg").innerHTML = "Done with character TODO for now!"; // todo only show when no update received
         updateIndex = 0;
+        await updatePage(updateIndex, updateData)
     }
 }
 
 //point to the correct html draw function (editing asi/feat or skill)
-async function updatePage(index) {
-    var updateData = await receiveUpdate();
-    updateLength = updateData.length;
+async function updatePage(index, updateData) {
     const abilityTableVals = await requestJson("ability_table", {});
     if(updateData[index].id == "asi or feat") {
         var numberOfAsis = updateData[index].spec.asis;
@@ -175,6 +176,7 @@ function btnAsiFeatClicked() {
                         row.getElementsByClassName("afterbonuses")[0].innerHTML = selectBtn.abilityTableVals.after_bonuses[row.id];
                     });
                     document.getElementById("numberOfAsis").innerHTML = "";
+                    abilityTable.innerHTML = "";
                     saveChar();
                 }
             }
@@ -186,28 +188,30 @@ function btnAsiFeatClicked() {
     }
     else if(radioButtons[1].checked) {
         document.getElementById("asiorfeat").innerHTML = "";
-        if(document.getElementById("feat").length != 0) document.getElementById("feat").innerHTML = "";
+        var featHTML = document.getElementById("feat")
+        if(featHTML.length != 0) featHTML.innerHTML = "";
         selectBtn.feats.forEach(function(feat, index) {
             //pre select the first option
             if(index == 0) {
-                document.getElementById("feat").innerHTML +=
+                featHTML.innerHTML +=
                 "<div><input type=\"radio\" id=\"radioasi\" name=\"feat\" value=\""+ feat +"\" checked>" +
                 "<label for\"radioasi\">"+ feat +"</label></div> " +
                 "";
             }
             else {
-                document.getElementById("feat").innerHTML +=
+                featHTML.innerHTML +=
                 "<div><input type=\"radio\" id=\"radioasi\" name=\"feat\" value=\""+ feat +"\">" +
                 "<label for\"radioasi\">"+ feat +"</label></div> " +
                 "";
             }
         });
-        document.getElementById("feat").innerHTML += "<button id=\"selectBtnFeat\">Select</button>";
+        featHTML.innerHTML += "<button id=\"selectBtnFeat\">Select</button>";
         let radioButtonsFeat = document.querySelectorAll('input[name="feat"]');
         document.getElementById("selectBtnFeat").addEventListener("click", () => {
             radioButtonsFeat.forEach(function(radioButton) {
                 if(radioButton.checked) {
                     console.log(radioButton.value);
+                    featHTML.innerHTML = "";
                     saveChar();
                 }
                 else {
@@ -225,20 +229,22 @@ function btnAsiFeatClicked() {
 //add necessary vars to selectBtnSkill for use in onclick function
 //if select button clicked move on to btnSkillClicked
 function drawSkillSelector(options, limit) {
-    if(document.getElementById("skill").innerHTML.length != 0) document.getElementById("skill").innerHTML = "";
+    var skillHTML = document.getElementById("skill");
+    if(skillHTML.innerHTML.length != 0) skillHTML.innerHTML = "";
     
     var word
     if(limit > 1) word = "choices";
     else word = "choice";
-    document.getElementById("skill").innerHTML += '<div id="num"> You have ' + limit + ' ' + word + '</div>';
+    skillHTML.innerHTML += '<div id="num"> You have ' + limit + ' ' + word + '</div>';
     options.forEach(function(skill, indexOfSkill) {
-        document.getElementById("skill").innerHTML += 
+        skillHTML.innerHTML += 
         '<div><input class="skillcheck" type="checkbox" id="skill' + indexOfSkill + '" name="skill" value="' + skill + '">' +
         '<label for="skill' + indexOfSkill + '">' + skill + '</label></div>';
     });
-    document.getElementById("skill").innerHTML += "<button id=\"selectBtnSkill\">Select</button>"
+    skillHTML.innerHTML += "<button id=\"selectBtnSkill\">Select</button>"
     var selectBtnSkill = document.getElementById("selectBtnSkill");
     selectBtnSkill.limit = limit;
+    selectBtnSkill.skillHTML = skillHTML;
     selectBtnSkill.addEventListener("click", btnSkillClicked);
 }
 
@@ -270,6 +276,7 @@ function btnSkillClicked() {
     else {
         selectedSkills.forEach(function(selectedSkill) {
             console.log(selectedSkill);
+            selectBtnSkill.skillHTML.innerHTML = "";
             saveChar();
         });
     } 
