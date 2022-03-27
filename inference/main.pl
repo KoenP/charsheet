@@ -12,7 +12,8 @@
        todo/1,
        meta_todo/2,
        problem/1,
-       resource/2.
+       resource/2,
+       content_source/2.
 
 :- op(500, xfy, or).
 :- op(400, xfy, and).
@@ -40,6 +41,7 @@
 :- [feat].
 :- [ability].
 :- [skill].
+:- [equipment].
 :- [ac].
 :- [hp].
 :- [attacks].
@@ -55,6 +57,9 @@
 %  but there is no correspoinding hd_per_level(Class, HD),
 %  then we should generate a meta_todo/2.
 meta_todo(_,_) :- false.
+
+%! content_source(Content, Source).
+content_source(_,_) :- false.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -260,6 +265,9 @@ todo :-
 
 traits :-
     forall(trait(Origin, Trait), writeln_quoted_term(Origin:Trait)).
+
+abilities :-
+    forall(ability(Abi,Score), writeln_quoted_term(Abi:Score)).
 
 spells :-
     forall(known_spell(Origin, Name), writeln_quoted_term(Origin:Name)).

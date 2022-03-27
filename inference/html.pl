@@ -286,11 +286,6 @@ format_components(Cs, Format) :-
 format_component(m(M), span(class=tooltip, [m, span(class=tooltiptext, M)])).
 format_component(C, C) :- C \= m(_).
 
-format_range(feet(X)) --> {!}, [X], [" ft"].
-format_range(miles(X)) --> {!}, [X], [" mi"].
-format_range(Short/Long) --> {!}, format_range(Short), ['/'], format_range(Long).
-format_range(X) --> [X].
-
 format_resources(Rs1 or Rs2) -->
     format_resources(Rs1), [" or "], format_resources(Rs2).
 format_resources([]) --> ["-"].

@@ -13,7 +13,8 @@ skill(Skill) :- skill_ability(Skill, _).
 skill_proficiency_bonus(Skill, Bonus) :-
     trait(skill(Skill)), !,
     level(Level),
-    calc_bonus(Level, Bonus).
+    calc_bonus(Level, Bonus1),
+    (trait(expertise(skill(Skill))) -> Bonus is 2*Bonus1 ; Bonus = Bonus1).
 skill_proficiency_bonus(Skill, 0) :-
     \+ trait(skill(Skill)).
 

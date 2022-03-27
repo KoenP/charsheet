@@ -4,6 +4,7 @@ origin_category(class(Class), Origin) :-
     class_origin_to_class(Origin, Class),
     !.
 origin_category(race(Race), race(Race)) :- !.
+origin_category(background(BG), background(BG)) :- !.
 origin_category(Category, trait(Trait)) :-
     !,
     trait(Origin, Trait),

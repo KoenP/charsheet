@@ -18,3 +18,6 @@ feat(durable) ?= "Hardy and resilient, you gain the following benefits:
     When you roll a Hit Die to regain hit points, the minimum number of hit points you regain from
     the roll equals twice your Constitution modifier (minimum of 2).".
 bonus_source(feat(durable), con+1).
+
+feat_option(lucky). % not SRD
+feat(lucky) ?= "Three times per long rest: reroll a die (own die or attack roll against you) after the roll, but before outcome is determined. Pick whichever outcome you prefer.".

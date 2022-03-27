@@ -57,6 +57,7 @@ trait_source(match_class(rogue:20), 'stroke of luck').
 % Roguish archetype: arcane trickster.
 subclass_option(rogue, 'arcane trickster').
 caster(rogue, 1/3) :- subclass(rogue('arcane trickster')).
+spellcasting_ability(rogue, int) :- subclass(rogue('arcane trickster')).
 
 % Mage hand legerdemain feature.
 trait_source(match_class(rogue('arcane trickster'):3), 'mage hand legerdemain').

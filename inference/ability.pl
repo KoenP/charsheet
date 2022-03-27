@@ -11,6 +11,10 @@ ability(wis).
 ability(int).
 ability(cha).
 
+highest_ability_from(List, Abi) :-
+    maplist([A,A-X]>>ability(A,X), List, WithScores),
+    sort(2, @>=, WithScores, [Abi-_|_]).
+
 ability_max(Ability, Max) :-
     ability(Ability),
     sum_bonuses(max_ability(Ability), Bonus),

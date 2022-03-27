@@ -1,11 +1,11 @@
 unarmored :- false.
-equipped(_) :- false.
-body_armor(_,_,_) :- false.
 
 %! ac(?AC:int)
 %
-%  Shorthand for ac/2.
-ac(AC) :- ac(_, AC).
+%  Return the highest AC for your character.
+ac(MaxAC) :-
+    findall(AC, ac(_,AC), ACs),
+    max_list(ACs, MaxAC).
 
 %! ac(?Origin, ?AC:int)
 %

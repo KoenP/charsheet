@@ -97,8 +97,8 @@ class_origin_to_class_level_(match_class(ClassF:Level), Class:Level) :-
     (Tail = [] ; Tail = [_]),
     ClassF =.. [Class|Tail].
 class_origin_to_class_level_(match_class(ClassF), Class:1) :-
-    (Tail = [] ; Tail = [_]),
-    ClassF =.. [Class|Tail].
+    %(Tail = [] ; Tail = [_]),
+    ClassF =.. [Class].
 %class_origin_to_class_level_(replaced_spell(Class:Level, _), Class:Level).
 
 %! class_origin_to_class(?Origin, ?Class:atomic)
@@ -198,7 +198,7 @@ bonus(choice(match_class(AsiLevel),'asi or feat'), Ability+N) :-
 %  the `'pact magic'` feature rather than the `spellcasting` feature,
 %  which works differently.
 caster(_,_) :- false.
-required_predicate_for_each_class(caster/2).
+%required_predicate_for_each_class(caster/2).
 
 %! spellcasting_ability(?Class:atomic, ?Ability:atomic)
 spellcasting_ability(_,_) :- false.
