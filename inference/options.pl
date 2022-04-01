@@ -161,3 +161,78 @@ inspect_spec(Origin, Id, Pred, List) :-
 %  True iff Option shouldn't be displayed to the user as a valid
 %  choice for the option with given Source and Id.
 hide_option(_,_,_) :- false.
+
+%! option_todo(?Origin, ?Id, ?Spec)
+options_todo(Origin, Id, Spec) :-
+    options(Origin, Id, Spec),
+    \+ choice(Origin, Id, _).
+
+options_spec_to_json(Origin, Id, Spec, Json) :-
+    inspect_spec(Origin, Id, Spec, Desc),
+    Id \= 'asi or feat',
+    desc_to_dict_pairs(Desc, Pairs),
+    append([origin-Origin, id-Id], Pairs, Assocs),
+    dict_pairs(Json, _, Assocs).
+options_spec_to_json(Origin, 'asi or feat', _,
+                     _{origin: Origin,
+                       id: 'asi or feat',
+                       spectype: 'asi or feat',
+                       asis: 2,
+                       feats: Feats}) :-
+    findall(Feat, selectable_feat_option(Feat), Feats).
+    
+desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
+    ((Desc = [From, N, List], (From = from ; From = unique_from)))
+    ;
+    (is_list(Desc), List=Desc, N=1).
+    
+    
+
+
+%# asi or feat
+%  asi -> ofwel 2 attribute +1, ofwel 1 attribute +2
+%  feat -> keuze uit een lijst
+%
+%  Top-level: radio buttons asi/feat
+%    -> feat geselecteerd: dropdown lijst
+%    -> asi geselecteerd hebt: tickboxes? tabel met "+" buttons
+%
+%[
+%  {
+%    origin: "rogue",
+%    id: "asi or feat",
+%    spec: {
+%        spectype: "asi_or_feat",
+%        asis: 2,
+%        feats: ["alert", "durable", ...]
+%    }
+%  }
+%]
+%
+%
+%# stel je mag 1 skill kiezen
+%[ 
+%  {
+%    origin: "rogue",
+%    id: "skill",
+%    spec: {
+%        spectype: "list",
+%        num: 1,
+%        options: [acrobatics, athletics, deception, ...]
+%    },
+%    choice: "acrobatics"
+%  }
+%]
+%
+%# stel je mag 4 skills kiezen
+%[ 
+%  {
+%    origin: "rogue",
+%    id: "skill",
+%    spec: {
+%        spectype: "list",
+%        num: 4,
+%        options: [acrobatics, athletics, deception, ...]
+%    }
+%  }
+%]

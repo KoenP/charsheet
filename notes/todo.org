@@ -1,4 +1,10 @@
 - uniekheid van traits deftig ondersteunen, bv als je al eens "feat(alert)" hebt gekozen, moet dat niet zichtbaar zijn in een lijst van opties voor een nieuwe feat.
+  
+- feats
+  - feat condities
+
+- classes
+  - multiclass condities
 
 - spellcasting
   - simpele DC based spells zoals sacred flame toevoegen aan attack table

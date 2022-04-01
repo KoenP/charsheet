@@ -50,3 +50,5 @@ choice(match_class(rogue('arcane trickster'):4), 'illusion or enchantment',
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 gain_level(5, rogue, hp_avg).
+
+gain_level(6, rogue, hp_avg).

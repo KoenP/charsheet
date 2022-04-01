@@ -1,5 +1,5 @@
 :- multifile
-    subrace/2,
+    subrace_option/2,
     racial_speed/2,
     race_shorthand/2,
     race_option/1.
@@ -13,10 +13,18 @@ race(Race) :-
     choice(race(BaseRace), subrace, Subrace),
     Race =.. [BaseRace, Subrace].
 
-options(init, 'base race', race_option).
-options(race(Race), subrace, subrace(Race)) :-
+most_specific_race(Race) :-
     race(Race),
-    subrace(Race, _).
+    \+ subrace_option(Race, _).
+
+race_has_subraces(Race) :-
+    subrace(Race, _),
+    !.
+
+options(init, 'base race', race_option).
+options(race(Race), subrace, subrace_option(Race)) :-
+    race(Race),
+    race_has_subraces(Race).
 
 racial_speed(_,_) :- false.
 race_shorthand(_,_) :- false.

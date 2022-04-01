@@ -1,7 +1,13 @@
 :- discontiguous
-       feat_option/1.
+       feat_option/1,
+       feat_option/2.
 
 feat(Feat) :- trait(feat(Feat)).
+selectable_feat_option(Feat) :-
+    feat_option(Feat).
+selectable_feat_option(Feat) :-
+    feat_option(Cond, Feat),
+    call(Cond).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % List of feats.

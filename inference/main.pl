@@ -243,11 +243,6 @@ full_restore(Max, _, Max).
 restore(N, Max, Cur, New) :-
     New is min(Cur+N, Max).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Race.
-most_specific_race(Race) :-
-    race(Race),
-    \+ subrace(Race, _).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Shorthands.

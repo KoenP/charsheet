@@ -170,7 +170,7 @@ default_asi_level(L) :-
 options_source(match_class(AsiLevel), 'asi or feat', asi_or_feat) :-
     asi_level(AsiLevel).
 asi_or_feat(feat(Feat)) :-
-    feat_option(Feat).
+    selectable_feat_option(Feat).
 asi_or_feat(Ability + 2) :-
     ability(Ability).
 asi_or_feat([Ability1 + 1, Ability2 + 1]) :-

@@ -2,7 +2,7 @@ race_option(elf).
 racial_speed(elf, 30).
 race_shorthand(el).
 
-subrace(elf, 'high elf').
+subrace_option(elf, 'high elf').
 traits_from_source(race(elf), [sense(darkvision), 
                                'fey ancestry',
                                sense('keen senses'),
