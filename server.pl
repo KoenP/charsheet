@@ -67,9 +67,9 @@ remote_query(Request) :-
     files_ex:strip_trailing_slash(PathInfo, Stripped),
     writeln("Access-Control-Allow-Origin: *"),
     remote_query(Request, Stripped).
-remote_query(_, '/todo') :-
-    findall(Entry, todo_entry_jsondict(Entry), Entries),
-    reply_json_dict(Entries).
+%remote_query(_, '/todo') :-
+%    findall(Entry, todo_entry_jsondict(Entry), Entries),
+%    reply_json_dict(Entries).
 remote_query(Request, '/query') :-
     http_parameters(Request, [q(QueryString,[])]),
     format('Content-type: text/plain~n~n'),
@@ -115,6 +115,8 @@ remote_query(Request, '/choice') :-
 remote_query(_, '/sheet') :-
     sheet_json_dict(Dict),
     reply_json_dict(Dict).
+%remote_query(_, '/todo') :-
+    
 
 abilities_table_jsondict(_{base: Base, after_bonuses: AfterBonuses, mods: Mods}) :-
     base_abilities_jsondict(Base),
@@ -130,20 +132,28 @@ ability_mods_jsondict(Dict) :-
     findall(A-M, (ability_mod(A,V), fmt(format_bonus(V),M)), Abis),
     dict_pairs(Dict, _, Abis).
 
-todo_entry_jsondict(_{origin:OriginStr, id:IdStr, spec:SpecDict}) :-
-    todo(options(Origin, Id, Spec)),
-    quoted_term_string(Origin, OriginStr),
-    quoted_term_string(Id, IdStr),
-    inspect_spec(Origin, Id, Spec, ISpec),
-    spec_to_jsondict(ISpec, SpecDict).
 
-spec_to_jsondict(N unique_from Spec, _{unique_from: _{number:N, spec:SpecDict}}) :-
-    spec_to_jsondict(Spec, SpecDict).
-spec_to_jsondict(N from Spec, _{from: _{number:N, spec:SpecDict}}) :-
-    spec_to_jsondict(Spec, SpecDict).
-spec_to_jsondict(List, StrList) :-
-    maplist(quoted_term_string, List, StrList).
+
+%todo_entry_jsondict(_{origin:OriginStr, id:IdStr, spec:SpecDict}) :-
+%    todo(options(Origin, Id, Spec)),
+%    quoted_term_string(Origin, OriginStr),
+%    quoted_term_string(Id, IdStr),
+%    inspect_spec(Origin, Id, Spec, ISpec),
+%    spec_to_jsondict(ISpec, SpecDict).
+%
+%spec_to_jsondict(N unique_from Spec, _{unique_from: _{number:N, spec:SpecDict}}) :-
+%    spec_to_jsondict(Spec, SpecDict).
+%spec_to_jsondict(N from Spec, _{from: _{number:N, spec:SpecDict}}) :-
+%    spec_to_jsondict(Spec, SpecDict).
+%spec_to_jsondict(List, StrList) :-
+%    maplist(quoted_term_string, List, StrList).
 
 quoted_term_string(T, S) :-
     term_string(T, S, [quoted(true)]).
 
+
+term_to_json(Atomic, Atomic) :- atomic(Atomic), !.
+term_to_json(List, Json) :- maplist(term_to_json, List, Json), !.
+term_to_json(Compound, _{functor: Functor, args: ArgsJson}) :-
+    Compound =.. [Functor|Args],
+    maplist(term_to_json, Args, ArgsJson).

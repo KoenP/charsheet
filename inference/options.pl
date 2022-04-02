@@ -154,7 +154,10 @@ inspect_spec(Origin, Id, N unique_from Pred, N unique_from List) :-
     inspect_spec(Origin, Id, Pred, List).
 inspect_spec(Origin, Id, Pred, List) :-
     \+ member(Pred, [_ from _, _ unique_from _]),
-    findall(X, (call(Pred, X), \+ hide_option(Origin, Id, X)), List).
+    findall(X, (call(Pred, X),
+                (\+ (hide_option(Origin, Id, X))
+                ; choice(Origin, Id, X) ; (choice(Origin,Id,L),member(X,L)))),
+            List).
 
 %! hide_option(?Source, ?Id, ?Option)
 %
@@ -171,7 +174,8 @@ options_spec_to_json(Origin, Id, Spec, Json) :-
     inspect_spec(Origin, Id, Spec, Desc),
     Id \= 'asi or feat',
     desc_to_dict_pairs(Desc, Pairs),
-    append([origin-Origin, id-Id], Pairs, Assocs),
+    choice_json(Origin, Id, ChoiceJson),
+    append([origin-Origin, id-Id, choice-ChoiceJson], Pairs, Assocs),
     dict_pairs(Json, _, Assocs).
 options_spec_to_json(Origin, 'asi or feat', _,
                      _{origin: Origin,
@@ -180,15 +184,26 @@ options_spec_to_json(Origin, 'asi or feat', _,
                        asis: 2,
                        feats: Feats}) :-
     findall(Feat, selectable_feat_option(Feat), Feats).
+
+choice_json(Origin, Id, Json) :-
+    choice(Origin, Id, Choice),
+    choice_to_json(Origin, Id, Choice, Json).
+choice_json(Origin, Id, none) :-
+    \+ choice(Origin, Id, _).
+choice_to_json(_, 'asi or feat', feat(Feat), _{choicetype: feat, feat: Feat}) :- !.
+choice_to_json(_, 'asi or feat', Abi+N, _{choicetype: asi, plus:N, abilities: [Abi]}) :- !.
+choice_to_json(_, 'asi or feat', Asis, _{choicetype: asi, plus:N, abilities: Abis}) :-
+    maplist([Abi+N,Abi,N]>>true, Asis, Abis, [N|Ns]),
+    forall(member(M,Ns), N=M),
+    !.
+choice_to_json(_, _, Term, Json) :-
+    term_to_json(Term, Json),
+    !.
     
 desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
     ((Desc = [From, N, List], (From = from ; From = unique_from)))
     ;
     (is_list(Desc), List=Desc, N=1).
-    
-    
-
-
 %# asi or feat
 %  asi -> ofwel 2 attribute +1, ofwel 1 attribute +2
 %  feat -> keuze uit een lijst
@@ -205,6 +220,15 @@ desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
 %        spectype: "asi_or_feat",
 %        asis: 2,
 %        feats: ["alert", "durable", ...]
+%    },
+%    choice: {
+%      choicetype: "asi",
+%      plus: 1,
+%      abilities: ["str", "dex"]
+%    }
+%    choice: { // OFWEL
+%      choicetype: "feat",
+%      feat: ["alert"]
 %    }
 %  }
 %]
@@ -220,7 +244,7 @@ desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
 %        num: 1,
 %        options: [acrobatics, athletics, deception, ...]
 %    },
-%    choice: "acrobatics"
+%    choice: ["acrobatics"]
 %  }
 %]
 %
@@ -232,7 +256,9 @@ desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
 %    spec: {
 %        spectype: "list",
 %        num: 4,
-%        options: [acrobatics, athletics, deception, ...]
-%    }
+%        options: ["acrobatics", "athletics", "deception", ...]
+%    },
+%    // stel ik heb al twee skills gekozen
+%    choice: ["acrobatics", "athletics"]
 %  }
 %]

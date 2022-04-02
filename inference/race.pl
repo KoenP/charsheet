@@ -18,7 +18,7 @@ most_specific_race(Race) :-
     \+ subrace_option(Race, _).
 
 race_has_subraces(Race) :-
-    subrace(Race, _),
+    subrace_option(Race, _),
     !.
 
 options(init, 'base race', race_option).

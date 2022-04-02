@@ -167,16 +167,16 @@ required_predicate_for_each_class(asi_level/1).
 default_asi_level(L) :-
     member(L, [4,8,12,16,19]).
 
-options_source(match_class(AsiLevel), 'asi or feat', asi_or_feat) :-
+options_source(match_class(AsiLevel), 'asi or feat', asi(2) or feat) :-
     asi_level(AsiLevel).
-asi_or_feat(feat(Feat)) :-
-    selectable_feat_option(Feat).
-asi_or_feat(Ability + 2) :-
-    ability(Ability).
-asi_or_feat([Ability1 + 1, Ability2 + 1]) :-
-    ability(Ability1),
-    ability(Ability2),
-    Ability1 \= Ability2.
+%asi_or_feat(feat(Feat)) :-
+%    selectable_feat_option(Feat).
+%asi_or_feat(Ability + 2) :-
+%    ability(Ability).
+%asi_or_feat([Ability1 + 1, Ability2 + 1]) :-
+%    ability(Ability1),
+%    ability(Ability2),
+%    Ability1 \= Ability2.
 
 trait(choice(match_class(AsiLevel),'asi or feat'), feat(Feat)) :-
     choice(match_class(AsiLevel), 'asi or feat', feat(Feat)).
