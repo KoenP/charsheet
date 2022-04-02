@@ -52,6 +52,7 @@ async function initPage() {
     document.getElementById("chartitle").innerHTML = "Editing " + charName;
     document.getElementById("pagetitle").innerHTML = charName;
     var updateData = await receiveUpdate();
+    updateData.forEach(function(data) {updatePage(data)});
     await updatePage(0, updateData);
 }
 
@@ -76,16 +77,16 @@ async function saveChar() {
 }
 
 //point to the correct html draw function (editing asi/feat or skill)
-async function updatePage(index, updateData) {
+async function updatePage(data) {
     const abilityTableVals = await requestJson("ability_table", {});
-    if(updateData[index].id == "asi or feat") {
-        var numberOfAsis = updateData[index].spec.asis;
-        feats = updateData[index].spec.feats;
-        drawAsiFeatSelector(abilityTableVals, feats, numberOfAsis);
+    if(data.id == "asi or feat") {
+        var numberOfAsis = data.spec.asis;
+        var feats = data.spec.feats;
+        drawAsiFeat(abilityTableVals, feats, numberOfAsis);
     }
     else {
-        var limit = updateData[index].spec.num;
-        options = updateData[index].spec.options;
+        var limit = data.spec.num;
+        var options = data.spec.options;
         drawSkillSelector(options, limit);
     }
 }
@@ -133,95 +134,66 @@ async function sendUpdate(dataJson) {
     console.log(dataJson);
 }
 
-//put elements for choice between asi or feat on the html page
-//add necessary vars to the selectBtn for use in onclick function
-//if select button clicked move on to btnAsiFeatClicked
-function drawAsiFeatSelector(abilityTableVals, feats, numberOfAsis) {
-    document.getElementById("asiorfeat").innerHTML = 
-            "<input type=\"radio\" id=\"radioasi\" name=\"asifeat\" value=\"ASI\" checked>" +
-            "<label for\"radioasi\">ASI</label> " +
-            "<input type=\"radio\" id=\"radiofeat\" name=\"asifeat\" value=\"FEAT\">" +
-            "<label for\"radiofeat\">FEAT</label> " + 
-            "<button id=\"selectBtn\">Select</button>";
-        var selectBtn = document.getElementById("selectBtn");
-        selectBtn.abilityTableVals = abilityTableVals;
-        selectBtn.feats = feats;
-        selectBtn.numberOfAsis = numberOfAsis;
-        selectBtn.addEventListener("click", btnAsiFeatClicked);
-}
-
 //check if asi or feat and put elements for choice on the html page
 //if asi savechar when all asi points spent
 //if feat savechar when feat chosen and button clicked
-function btnAsiFeatClicked() {
-    var radioButtons = document.querySelectorAll('input[name="asifeat"]');
-    var selectBtn = document.getElementById("selectBtn");
-    if(radioButtons[0].checked) {
-        document.getElementById("asiorfeat").innerHTML="";
-        console.log(selectBtn.numberOfAsis);
-        document.getElementById("abilitytable").innerHTML = htmlAbilityTable;
-        document.getElementById("numberOfAsis").innerHTML = selectBtn.numberOfAsis;
-        let abilityTable = document.getElementById("abilitytable");
+function drawAsiFeat(abilityTableVals, feats, numberOfAsis) {
+    document.getElementById("asiorfeat").innerHTML="";
+    console.log(numberOfAsis);
+    document.getElementById("abilitytable").innerHTML = htmlAbilityTable;
+    document.getElementById("numberOfAsis").innerHTML = numberOfAsis;
+    let abilityTable = document.getElementById("abilitytable");
 
-        Array.from(abilityTable.getElementsByClassName("abilityrow")).forEach(function (row) {
-            let inputField     = row.getElementsByTagName("input")[0];
-            inputField.value   = selectBtn.abilityTableVals.after_bonuses[row.id];
-            inputField.oninput = () => {
-                selectBtn.abilityTableVals.after_bonuses[row.id] = inputField.value;
-                selectBtn.numberOfAsis--;
-                document.getElementById("numberOfAsis").innerHTML = selectBtn.numberOfAsis;
-                if(selectBtn.numberOfAsis == 0) {
-                    Array.from(abilityTable.getElementsByClassName("abilityrow")).forEach(function (row) {
-                        row.getElementsByClassName("afterbonuses")[0].innerHTML = selectBtn.abilityTableVals.after_bonuses[row.id];
-                    });
-                    document.getElementById("numberOfAsis").innerHTML = "";
-                    abilityTable.innerHTML = "";
-                    saveChar();
-                }
+    Array.from(abilityTable.getElementsByClassName("abilityrow")).forEach(function (row) {
+        let inputField     = row.getElementsByTagName("input")[0];
+        inputField.value   = abilityTableVals.after_bonuses[row.id];
+        inputField.oninput = () => {
+            abilityTableVals.after_bonuses[row.id] = inputField.value;
+            numberOfAsis--;
+            document.getElementById("numberOfAsis").innerHTML = numberOfAsis;
+            if(numberOfAsis == 0) {
+                Array.from(abilityTable.getElementsByClassName("abilityrow")).forEach(function (row) {
+                    row.getElementsByClassName("afterbonuses")[0].innerHTML = abilityTableVals.after_bonuses[row.id];
+                });
+                document.getElementById("numberOfAsis").innerHTML = "";
+                saveChar();
             }
-            row.getElementsByClassName("base")[0].innerHTML
-                = selectBtn.abilityTableVals.base[row.id];
-            row.getElementsByClassName("mod")[0].innerHTML
-                = selectBtn.abilityTableVals.mods[row.id];
-        });
-    }
-    else if(radioButtons[1].checked) {
-        document.getElementById("asiorfeat").innerHTML = "";
-        var featHTML = document.getElementById("feat")
-        if(featHTML.length != 0) featHTML.innerHTML = "";
-        selectBtn.feats.forEach(function(feat, index) {
-            //pre select the first option
-            if(index == 0) {
-                featHTML.innerHTML +=
-                "<div><input type=\"radio\" id=\"radioasi\" name=\"feat\" value=\""+ feat +"\" checked>" +
-                "<label for\"radioasi\">"+ feat +"</label></div> " +
-                "";
+        }
+        row.getElementsByClassName("base")[0].innerHTML
+            = abilityTableVals.base[row.id];
+        row.getElementsByClassName("mod")[0].innerHTML
+            = abilityTableVals.mods[row.id];
+    });
+    document.getElementById("asiorfeat").innerHTML = "";
+    var featHTML = document.getElementById("feat")
+    if(featHTML.length != 0) featHTML.innerHTML = "";
+    feats.forEach(function(feat, index) {
+        if(index == 0) {
+            featHTML.innerHTML +=
+            "<div><input type=\"radio\" id=\"radioasi\" name=\"feat\" value=\""+ feat +"\" checked>" +
+            "<label for\"radioasi\">"+ feat +"</label></div> " +
+            "";
+        }
+        else {
+            featHTML.innerHTML +=
+            "<div><input type=\"radio\" id=\"radioasi\" name=\"feat\" value=\""+ feat +"\">" +
+            "<label for\"radioasi\">"+ feat +"</label></div> " +
+            "";
+        }
+    });
+    featHTML.innerHTML += "<button id=\"selectBtnFeat\">Select</button>";
+    let radioButtonsFeat = document.querySelectorAll('input[name="feat"]');
+    document.getElementById("selectBtnFeat").addEventListener("click", () => {
+        radioButtonsFeat.forEach(function(radioButton) {
+            if(radioButton.checked) {
+                console.log(radioButton.value);
+                saveChar();
             }
             else {
-                featHTML.innerHTML +=
-                "<div><input type=\"radio\" id=\"radioasi\" name=\"feat\" value=\""+ feat +"\">" +
-                "<label for\"radioasi\">"+ feat +"</label></div> " +
-                "";
+                alert("Please select a feat.")
             }
-        });
-        featHTML.innerHTML += "<button id=\"selectBtnFeat\">Select</button>";
-        let radioButtonsFeat = document.querySelectorAll('input[name="feat"]');
-        document.getElementById("selectBtnFeat").addEventListener("click", () => {
-            radioButtonsFeat.forEach(function(radioButton) {
-                if(radioButton.checked) {
-                    console.log(radioButton.value);
-                    featHTML.innerHTML = "";
-                    saveChar();
-                }
-                else {
-                    alert("Please select a feat.")
-                }
-            })
-        });
-    }
-    else {
-        alert("Please select either ASI or FEAT.")
-    }
+        })
+    });
 }
 
 //put skill selector elements in html page
@@ -229,7 +201,6 @@ function btnAsiFeatClicked() {
 //if select button clicked move on to btnSkillClicked
 function drawSkillSelector(options, limit) {
     var skillHTML = document.getElementById("skill");
-    if(skillHTML.innerHTML.length != 0) skillHTML.innerHTML = "";
     
     var word
     if(limit > 1) word = "choices";
@@ -275,7 +246,6 @@ function btnSkillClicked() {
     else {
         selectedSkills.forEach(function(selectedSkill) {
             console.log(selectedSkill);
-            selectBtnSkill.skillHTML.innerHTML = "";
             saveChar();
         });
     } 
