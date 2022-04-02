@@ -53,7 +53,7 @@ async function initPage() {
     document.getElementById("pagetitle").innerHTML = charName;
     var updateData = await receiveUpdate();
     updateData.forEach(function(data) {updatePage(data)});
-    await updatePage(0, updateData);
+    //await updatePage(0, updateData);
 }
 
 initPage();
@@ -64,16 +64,18 @@ initPage();
 //todo add output window to bottom of html to view all character info?
 async function saveChar() {
 //    await request("save_character", {});
+    document.getElementById("skill").innerHTML = "";
     var updateData = await receiveUpdate();
-    if(updateIndex < updateData.length) {
-        await updatePage(updateIndex, updateData);
-        updateIndex++;
-    }
-    else {
-        document.getElementById("editmsg").innerHTML = "Done with character TODO for now!"; // todo only show when no update received
-        updateIndex = 0;
-        await updatePage(updateIndex, updateData)
-    }
+    updateData.forEach(function(data) {updatePage(data)});
+    // if(updateIndex < updateData.length) {
+    //     await updatePage(updateIndex, updateData);
+    //     updateIndex++;
+    // }
+    // else {
+    //     //document.getElementById("editmsg").innerHTML = "Done with character TODO for now!"; // todo only show when no update received
+    //     //updateIndex = 0;
+    //     //await updatePage(updateIndex, updateData);
+    // }
 }
 
 //point to the correct html draw function (editing asi/feat or skill)
@@ -84,11 +86,12 @@ async function updatePage(data) {
         var feats = data.spec.feats;
         drawAsiFeat(abilityTableVals, feats, numberOfAsis);
     }
-    else {
+    else if(data.id == "skill") {
         var limit = data.spec.num;
         var options = data.spec.options;
         drawSkillSelector(options, limit);
     }
+    else console.log("unimplemented");
 }
 
 //static for now
@@ -150,7 +153,7 @@ function drawAsiFeat(abilityTableVals, feats, numberOfAsis) {
         inputField.oninput = () => {
             abilityTableVals.after_bonuses[row.id] = inputField.value;
             numberOfAsis--;
-            document.getElementById("numberOfAsis").innerHTML = numberOfAsis;
+            document.getElementById("numberOfAsis").innerHTML = "Ability points: " + numberOfAsis;
             if(numberOfAsis == 0) {
                 Array.from(abilityTable.getElementsByClassName("abilityrow")).forEach(function (row) {
                     row.getElementsByClassName("afterbonuses")[0].innerHTML = abilityTableVals.after_bonuses[row.id];
@@ -165,7 +168,7 @@ function drawAsiFeat(abilityTableVals, feats, numberOfAsis) {
             = abilityTableVals.mods[row.id];
     });
     document.getElementById("asiorfeat").innerHTML = "";
-    var featHTML = document.getElementById("feat")
+    var featHTML = document.getElementById("feat");
     if(featHTML.length != 0) featHTML.innerHTML = "";
     feats.forEach(function(feat, index) {
         if(index == 0) {
@@ -183,16 +186,17 @@ function drawAsiFeat(abilityTableVals, feats, numberOfAsis) {
     });
     featHTML.innerHTML += "<button id=\"selectBtnFeat\">Select</button>";
     let radioButtonsFeat = document.querySelectorAll('input[name="feat"]');
+    console.log(radioButtonsFeat);
     document.getElementById("selectBtnFeat").addEventListener("click", () => {
+        var selectedSomething = false;
         radioButtonsFeat.forEach(function(radioButton) {
             if(radioButton.checked) {
                 console.log(radioButton.value);
+                selectedSomething = true;
                 saveChar();
             }
-            else {
-                alert("Please select a feat.")
-            }
         })
+        if(!selectedSomething) alert("Please select a feat.");
     });
 }
 
