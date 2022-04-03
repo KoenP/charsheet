@@ -5,7 +5,7 @@
        choice/3,
        hide_option/3.
 
-%! options(?Source, ?Id, ?Spec)
+%! options(?CharLvl, ?Source, ?Id, ?Spec)
 %  
 %  Each options/3 clause indicates that a choice/3 needs to be made to
 %  advance the PC. Source indicates the reason why the options are

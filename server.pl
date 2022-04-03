@@ -157,3 +157,17 @@ term_to_json(List, Json) :- maplist(term_to_json, List, Json), !.
 term_to_json(Compound, _{functor: Functor, args: ArgsJson}) :-
     Compound =.. [Functor|Args],
     maplist(term_to_json, Args, ArgsJson).
+
+predicate_tree(Head, Head).
+clause_tree(Head, Tree) :-
+    catch(clause(Head, Clause), _, Clause=[]),
+    predicate_tree(Clause, Tree).
+
+%clause_tree(true, []).
+%clause_tree(false, []).
+%clause_tree().
+%clause_tree(Head, Tree) :-
+%    findall(Subtree,
+%            (clause(Head,Body), clause_tree),
+%            Tree
+%           )

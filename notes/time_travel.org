@@ -1,0 +1,54 @@
+
+
+Character growth is defined by two predicates: choice and gain_level.
+These notes are about how to generate the character TODO: how to figure out which choices have to be made, which options are available for each choice, and how to check whether a given choice is correct (perhaps that last part is not even necessary!).
+
+* With time travel
+  
+Note: this implementation will almost certainly need tabling to perform well.
+
+Global ordering of choices: all choices can deterministically be arranged into a list
+% level 1
+[ choice(init, race, human),
+  choice(race(human), subrace, variant), % dependency on previous choice, so will always come later
+  choice(init, 'initial class', rogue),
+  ...
+
+% level 3
+  choice(match_class(rogue:3), subclass, 'arcane trickster'),
+  ...
+]
+
+The system supports inspecting all character stats and bonuses for any prefix of the ordered list of choices.
+
+** indexed_choice(Ix, Origin, Id, Choice)
+   Suppose every choice has a unique index Ix.
+   Then we can query character stats and facts "at index" Ix, which means that all (and only) choices with an index less than or equal to Ix are acknowledged.
+   
+
+before_choice(match_class(rogue:3), )
+
+** How to determine order of choices
+At the top level, choices are partitioned by character level.
+Then, we construct a dependency graph of choices.
+For instance, we know that `choice(race(human), subrace, variant)` depends on `choice(init, race, human)`.
+So the latter choice should be later in the list.
+Other than that, the ordering is arbitrary and perhaps even configurable by the user.
+
+* Without time travel
+
+All choices conceptually happen simultaneously.
+Constructing a character choice-by-choice in-order will result in a correct character, but making choices out of order may result in an inconsistent character.
+
+But the main issue here is listing valid options and checking them.
+For instance, if the user has picked the "arcana" skill at some point, we want to avoid showing this option when the user gets to pick more skills from a different origin, since there is no point in showing duplicates.
+Currently, this is handled in two separate ways:
+1. The Spec in `options(Origin,Id,Spec)` lists all available options. If an option picked through the choice predicate doesn't match the Spec, then a problem is flagged. Because of this, we have to implement the Spec in such a way that the option actually picked isn't removed from the Spec.
+2. To actually hide options already picked, we have a separate hide_option(Origin,Id,Option) predicate to suppress, for instance, duplicates.
+
+This kind of works but there are some warts.
+1. We kind of need to simulate time travel anyway for replaceable spells, eldritch invocations, ... But that is genuinely simpler than pervasive time travel everywhere, and it's already implemented.
+2. How to display the options that can be selected to the user isn't necessarily difficult, but it seems a bit convoluted. Rather than just doing a findall on Spec, we have to check hide_option as well, and then special-case *again* on the option already selected by the user, as we don't want to hide that option.
+3. What we call an "option" in the context of a Spec vs in the context of hide_option is actually *not* the same thing. For instance, if `Spec = 2 unique_from skill`, then the individual options here are every possible pair of two unique skills. But in hide_option we want to assert that, for instance, arcana shouldn't appear again in the list, rather than asserting something along the lines of "suppress any list that contains arcana".
+
+Another alternative could be to just not check for validity of choices. However, that comes with the significant downside that editing a choice in the history of your character means you have to re-do everything from that point onwards, as nothing can be checked for correctness. So I think we have to reject this option.
