@@ -174,6 +174,7 @@ options_todo(Origin, Id, Spec) :-
     options(Origin, Id, Spec),
     \+ choice(Origin, Id, _).
 
+%! options_json(?Origin, ?Id, ?Json)
 options_json(Origin, Id, _{origin: OriginStr, id: IdStr, spec: SpecJson}) :-
     options(Origin, Id, Spec),
     spec_to_json(Origin, Id, Spec, SpecJson),
