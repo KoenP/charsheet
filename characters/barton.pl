@@ -27,7 +27,7 @@ choice(background(archaeologist), language, draconic).
 
 choice(init, 'initial class', rogue).
 choice(initial_class(rogue), skill, [stealth, 'sleight of hand', perception, investigation]).
-choice(match_class(rogue:1), expertise, [stealth, investigation]).
+%choice(match_class(rogue:1), expertise, [stealth, investigation]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 gain_level(2, rogue, hp_avg).

@@ -167,7 +167,7 @@ required_predicate_for_each_class(asi_level/1).
 default_asi_level(L) :-
     member(L, [4,8,12,16,19]).
 
-options_source(match_class(AsiLevel), 'asi or feat', asi(2) or feat) :-
+options_source(match_class(AsiLevel), 'asi or feat', (2 from ability) or feat) :-
     asi_level(AsiLevel).
 %asi_or_feat(feat(Feat)) :-
 %    selectable_feat_option(Feat).

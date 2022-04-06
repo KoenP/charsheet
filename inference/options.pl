@@ -3,7 +3,7 @@
        options/4,
        options_source/3,
        choice/3,
-       hide_option/3.
+       hide_base_option/3.
 
 %! options(?CharLvl, ?Source, ?Id, ?Spec)
 %  
@@ -118,9 +118,11 @@ from(N, Spec, Choice) :-
 from_(N, List, Choices) :-
     is_list(List),
     !,
+    is_list(Choices),
     length(Choices, N),
     subset(Choices, List).
 from_(N, Pred, Choices) :-
+    is_list(Choices),
     length(Choices, N),
     maplist(call(Pred), Choices).
 
@@ -152,38 +154,72 @@ inspect_spec(Origin, Id, N from Pred, N from List) :-
     inspect_spec(Origin, Id, Pred, List).
 inspect_spec(Origin, Id, N unique_from Pred, N unique_from List) :-
     inspect_spec(Origin, Id, Pred, List).
+inspect_spec(Origin, Id, Spec1 or Spec2, Desc1 or Desc2) :-
+    inspect_spec(Origin, Id, Spec1, Desc1),
+    inspect_spec(Origin, Id, Spec2, Desc2).
 inspect_spec(Origin, Id, Pred, List) :-
     \+ member(Pred, [_ from _, _ unique_from _]),
-    findall(X, (call(Pred, X),
-                (\+ (hide_option(Origin, Id, X))
-                ; choice(Origin, Id, X) ; (choice(Origin,Id,L),member(X,L)))),
-            List).
+    findall(X, (call(Pred, X), (\+ suppress_base_option(Origin, Id, X))), List).
+suppress_base_option(Origin, Id, X) :-
+    hide_base_option(Origin, Id, X), (\+ choice_member(Origin, Id, X)).
 
-%! hide_option(?Source, ?Id, ?Option)
+%! hide_base_option(?Source, ?Id, ?Option)
 %
 %  True iff Option shouldn't be displayed to the user as a valid
 %  choice for the option with given Source and Id.
-hide_option(_,_,_) :- false.
-
+hide_base_option(_,_,_) :- false.
+    
 %! option_todo(?Origin, ?Id, ?Spec)
 options_todo(Origin, Id, Spec) :-
     options(Origin, Id, Spec),
     \+ choice(Origin, Id, _).
 
-options_spec_to_json(Origin, Id, Spec, Json) :-
-    inspect_spec(Origin, Id, Spec, Desc),
-    Id \= 'asi or feat',
-    desc_to_dict_pairs(Desc, Pairs),
-    choice_json(Origin, Id, ChoiceJson),
-    append([origin-Origin, id-Id, choice-ChoiceJson], Pairs, Assocs),
-    dict_pairs(Json, _, Assocs).
-options_spec_to_json(Origin, 'asi or feat', _,
-                     _{origin: Origin,
-                       id: 'asi or feat',
-                       spectype: 'asi or feat',
-                       asis: 2,
-                       feats: Feats}) :-
-    findall(Feat, selectable_feat_option(Feat), Feats).
+options_json(Origin, Id, _{origin: OriginStr, id: IdStr, spec: SpecJson}) :-
+    options(Origin, Id, Spec),
+    spec_to_json(Origin, Id, Spec, SpecJson),
+    fmt(format_term(Origin), OriginStr),
+    fmt(format_term(Id), IdStr).
+
+% Case: `from` or `unique_from` spec.
+spec_to_json(Origin, Id, Spec,
+             _{spectype: Functor,
+               num: N,
+               spec: SubSpec1}) :-
+    Spec =.. [Functor, N, SubSpec],
+    (Functor = from ; Functor = unique_from),
+    !,
+    spec_to_json(Origin, Id, SubSpec, SubSpec1).
+% Case: `or` spec.
+spec_to_json(Origin, Id, Spec1 or Spec2,
+             _{spectype: or,
+               spec1: SubSpec1,
+               spec2: SubSpec2}) :-
+    !,
+    spec_to_json(Origin, Id, Spec1, SubSpec1),
+    spec_to_json(Origin, Id, Spec2, SubSpec2).
+% Case: any other predicate.
+spec_to_json(Origin, Id, Spec,
+             _{spectype: list, list: List}) :-
+    findall(XStr,
+            (call(Spec, X),
+             (\+ suppress_base_option(Origin, Id, X)),
+             fmt(format_term(X), XStr)),
+            List).
+
+%options_spec_to_json(Origin, Id, Spec, Json) :-
+%    inspect_spec(Origin, Id, Spec, Desc),
+%    Id \= 'asi or feat',
+%    desc_to_dict_pairs(Desc, Pairs),
+%    choice_json(Origin, Id, ChoiceJson),
+%    append([origin-Origin, id-Id, choice-ChoiceJson], Pairs, Assocs),
+%    dict_pairs(Json, _, Assocs).
+%options_spec_to_json(Origin, 'asi or feat', _,
+%                     _{origin: Origin,
+%                       id: 'asi or feat',
+%                       spectype: 'asi or feat',
+%                       asis: 2,
+%                       feats: Feats}) :-
+%    findall(Feat, selectable_feat_option(Feat), Feats).
 
 choice_json(Origin, Id, Json) :-
     choice(Origin, Id, Choice),

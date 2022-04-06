@@ -107,16 +107,16 @@ total_other_ability_bonus(Ability, Total) :-
     sumlist(Bonuses, Total).
 
 %asi(N, Abi+N) :- ability(Abi).
-asi(N, Asis) :-
-    ground(Asis),
-    !,
-    maplist([Abi+N,N]>>ability(Abi), Asis, Ns),
-    sumlist(Ns, N).
-asi(N, Asis) :-
-    split_nat(N, Ns),
-    maplist([M,Abi+M]>>ability(Abi), Ns, Asis).
-split_nat(0, []) :- !.
-split_nat(N, [M|Ns]) :-
-    between(1, N, M),
-    N1 is N-M,
-    split_nat(N1, Ns).
+%asi(N, Asis) :-
+%    ground(Asis),
+%    !,
+%    maplist([Abi+N,N]>>ability(Abi), Asis, Ns),
+%    sumlist(Ns, N).
+%asi(N, Asis) :-
+%    split_nat(N, Ns),
+%    maplist([M,Abi+M]>>ability(Abi), Ns, Asis).
+%split_nat(0, []) :- !.
+%split_nat(N, [M|Ns]) :-
+%    between(1, N, M),
+%    N1 is N-M,
+%    split_nat(N1, Ns).
