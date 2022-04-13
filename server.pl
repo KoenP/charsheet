@@ -110,6 +110,7 @@ remote_query(Request, '/choice') :-
     term_string(Source, SourceStr),
     term_string(Id, IdStr),
     term_string(Choice, ChoiceStr),
+    retractall(choice(Source, Id, _)),
     assert(choice(Source, Id, Choice)),
     reply_json_dict("success!").
 remote_query(_, '/sheet') :-

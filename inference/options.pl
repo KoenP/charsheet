@@ -178,8 +178,10 @@ options_todo(Origin, Id, Spec) :-
 options_json(Origin, Id, _{origin: OriginStr, id: IdStr, spec: SpecJson}) :-
     options(Origin, Id, Spec),
     spec_to_json(Origin, Id, Spec, SpecJson),
-    fmt(format_term(Origin), OriginStr),
-    fmt(format_term(Id), IdStr).
+    term_string(Origin, OriginStr),
+    term_string(Id, IdStr).
+    %fmt(format_term(Origin), OriginStr),
+    %fmt(format_term(Id), IdStr).
 
 % Case: `from` or `unique_from` spec.
 spec_to_json(Origin, Id, Spec,
@@ -204,7 +206,8 @@ spec_to_json(Origin, Id, Spec,
     findall(XStr,
             (call(Spec, X),
              (\+ suppress_base_option(Origin, Id, X)),
-             fmt(format_term(X), XStr)),
+             term_string(X, XStr)),
+             %fmt(format_term(X), XStr)),
             List).
 
 %options_spec_to_json(Origin, Id, Spec, Json) :-
