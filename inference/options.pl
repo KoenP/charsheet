@@ -184,6 +184,16 @@ options_json(Origin, Id, _{origin: OriginStr, id: IdStr, spec: SpecJson, choice:
     %fmt(format_term(Origin), OriginStr),
     %fmt(format_term(Id), IdStr).
 
+%! resolve_not_eligible
+%
+%  If there are any choice/3 facts for which the PC is not eligible,
+%  retract them.
+resolve_not_eligible :-
+    forall(problem(not_eligible(A,B,C)),
+           (format(user_output, "Retracted ~w!~n", [choice(A,B,C)]),
+            flush_output(user_output),
+            retractall(choice(A,B,C)))).
+
 % Case: `from` or `unique_from` spec.
 spec_to_json(Origin, Id, Spec,
              _{spectype: Functor,
