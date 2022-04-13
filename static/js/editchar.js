@@ -51,8 +51,29 @@ async function initPage() {
 
     document.getElementById("chartitle").innerHTML = "Editing " + charName;
     document.getElementById("pagetitle").innerHTML = charName;
-    var updateData = await receiveUpdate();
-    await updatePage(0, updateData);
+    var choicesDiv = document.getElementById("choices");
+    async function updatePage() {
+        const updateData = await requestJson("options", {});
+        console.log(updateData);
+        choicesDiv.innerHTML = "";
+        updateData.forEach(function(choice) {
+            choicesDiv.appendChild(optionsHtml(choice, updatePage));
+        });
+        // const abilityTableVals = await requestJson("ability_table", {});
+        // if(updateData[index].id == "asi or feat") {
+        //     var numberOfAsis = updateData[index].spec.asis;
+        //     feats = updateData[index].spec.feats;
+        //     drawAsiFeatSelector(abilityTableVals, feats, numberOfAsis);
+        // }
+        // else {
+        //     var limit = updateData[index].spec.num;
+        //     options = updateData[index].spec.options;
+        //     console.log("ud = " + updateData.map(ud => JSON.stringify(ud)));
+        //     console.log("options = " + options);
+        //     drawSkillSelector(options, limit);
+        // }
+    }
+    updatePage();
 }
 
 initPage();
@@ -61,43 +82,23 @@ initPage();
 //increases index when action performed, when all actions performed print message to html
 //todo loop only if updateData changes
 //todo add output window to bottom of html to view all character info?
-async function saveChar() {
-//    await request("save_character", {});
-    var updateData = await receiveUpdate();
-    if(updateIndex < updateData.length) {
-        await updatePage(updateIndex, updateData);
-        updateIndex++;
-    }
-    else {
-        document.getElementById("editmsg").innerHTML = "Done with character TODO for now!"; // todo only show when no update received
-        updateIndex = 0;
-        await updatePage(updateIndex, updateData)
-    }
-}
+// async function saveChar() {
+// //    await request("save_character", {});
+//     var updateData = await receiveUpdate();
+//     if(updateIndex < updateData.length) {
+//         await updatePage(updateIndex, updateData);
+//         updateIndex++;
+//     }
+//     else {
+//         document.getElementById("editmsg").innerHTML = "Done with character TODO for now!"; // todo only show when no update received
+//         updateIndex = 0;
+//         await updatePage(updateIndex, updateData)
+//     }
+// }
 
 //point to the correct html draw function (editing asi/feat or skill)
-async function updatePage(index, updateData) {
-    var choicesDiv = document.getElementById("choices");
-    choicesDiv.innerHTML = "";
-    updateData.forEach(function(choice) {
-        choicesDiv.appendChild(optionsHtml(choice));
-    });
-    // const abilityTableVals = await requestJson("ability_table", {});
-    // if(updateData[index].id == "asi or feat") {
-    //     var numberOfAsis = updateData[index].spec.asis;
-    //     feats = updateData[index].spec.feats;
-    //     drawAsiFeatSelector(abilityTableVals, feats, numberOfAsis);
-    // }
-    // else {
-    //     var limit = updateData[index].spec.num;
-    //     options = updateData[index].spec.options;
-    //     console.log("ud = " + updateData.map(ud => JSON.stringify(ud)));
-    //     console.log("options = " + options);
-    //     drawSkillSelector(options, limit);
-    // }
-}
 
-function optionsHtml(optionsData) {
+function optionsHtml(optionsData, updateEditPage) {
     const id = optionsData.id;
     const origin = optionsData.origin;
     const spec = optionsData.spec;
@@ -106,18 +107,19 @@ function optionsHtml(optionsData) {
     div.innerHTML += `<h3>Choose ${id} from ${origin}</h3>`;
     // div.appendChild(specToHtml(spec).html);
 
-    function registerChoice(choice) {
+    function registerChoiceAndUpdate(choice) {
         //console.log({source: origin.toString(), id: id.toString(), choice: choice.toString()});
         request("choice", {source: origin, id: id, choice: choice});
+        updateEditPage();
     }
-    div.appendChild(selector(spec,registerChoice).html);
+
+    div.appendChild(selector(spec, registerChoiceAndUpdate, current=optionsData.choice).html);
     return div;
 }
 
 function selector(spec, onchange, current=null, disabled=false) {
     // List case.
     if (spec.spectype === "list") {
-        console.log("current = ", current);
         var dropdown = document.createElement("select");
         var choice = current;
         dropdown.onchange = function() {
@@ -160,7 +162,6 @@ function selector(spec, onchange, current=null, disabled=false) {
         }
 
         function init() {
-            console.log("num =", spec.num);
             subspec.filter = choices;
             for (choice of choices) {
                 var sel = selector(subspec, refresh, current=choice);
@@ -180,12 +181,10 @@ function selector(spec, onchange, current=null, disabled=false) {
         }
 
         function refresh(_) {
-            console.log('before', choices);
             updateChoices();
-            console.log('after', choices);
-            div.innerHTML = "";
-            selectors = [];
-            init();
+            // div.innerHTML = "";
+            // selectors = [];
+            // init();
             onchange("[" + choices.toString() + "]");
         }
 

@@ -175,9 +175,10 @@ options_todo(Origin, Id, Spec) :-
     \+ choice(Origin, Id, _).
 
 %! options_json(?Origin, ?Id, ?Json)
-options_json(Origin, Id, _{origin: OriginStr, id: IdStr, spec: SpecJson}) :-
+options_json(Origin, Id, _{origin: OriginStr, id: IdStr, spec: SpecJson, choice: ChoiceJson}) :-
     options(Origin, Id, Spec),
     spec_to_json(Origin, Id, Spec, SpecJson),
+    choice_json(Origin, Id, Spec, ChoiceJson),
     term_string(Origin, OriginStr),
     term_string(Id, IdStr).
     %fmt(format_term(Origin), OriginStr),
@@ -225,20 +226,39 @@ spec_to_json(Origin, Id, Spec,
 %                       feats: Feats}) :-
 %    findall(Feat, selectable_feat_option(Feat), Feats).
 
-choice_json(Origin, Id, Json) :-
+choice_json(Origin, Id, Spec, Json) :-
     choice(Origin, Id, Choice),
-    choice_to_json(Origin, Id, Choice, Json).
-choice_json(Origin, Id, none) :-
+    options(Origin, Id, Spec),
+    choice_to_json(Choice, Spec, Json).
+choice_json(Origin, Id, _, null) :-
     \+ choice(Origin, Id, _).
-choice_to_json(_, 'asi or feat', feat(Feat), _{choicetype: feat, feat: Feat}) :- !.
-choice_to_json(_, 'asi or feat', Abi+N, _{choicetype: asi, plus:N, abilities: [Abi]}) :- !.
-choice_to_json(_, 'asi or feat', Asis, _{choicetype: asi, plus:N, abilities: Abis}) :-
-    maplist([Abi+N,Abi,N]>>true, Asis, Abis, [N|Ns]),
-    forall(member(M,Ns), N=M),
-    !.
-choice_to_json(_, _, Term, Json) :-
-    term_to_json(Term, Json),
-    !.
+choice_to_json(left(X), _ or _, _{choicetype: or, side: left, choice: XStr}) :-
+    !,
+    term_string(X, XStr).
+choice_to_json(right(X), _ or _, _{choicetype: or, side: right, choice: XStr}) :-
+    !,
+    term_string(X, XStr).
+choice_to_json(List, _, JsonList) :-
+    is_list(List),
+    !,
+    maplist([X,Y]>>choice_to_json(X,_,Y), List, JsonList).
+choice_to_json(X, _, XStr) :-
+    term_string(X, XStr).
+%choice_to_json(X, FromTerm, _{choicetype: list, choice: List}) :-
+%    FromTerm =.. [From, _, _],
+%    (From = from ; From = unique_from),
+%    !,
+%    (is_list(X) -> List = X; List = [X]).
+    
+%choice_to_json(_, 'asi or feat', feat(Feat), _{choicetype: feat, feat: Feat}) :- !.
+%choice_to_json(_, 'asi or feat', Abi+N, _{choicetype: asi, plus:N, abilities: [Abi]}) :- !.
+%choice_to_json(_, 'asi or feat', Asis, _{choicetype: asi, plus:N, abilities: Abis}) :-
+%    maplist([Abi+N,Abi,N]>>true, Asis, Abis, [N|Ns]),
+%    forall(member(M,Ns), N=M),
+%    !.
+%choice_to_json(_, _, Term, Json) :-
+%    term_to_json(Term, Json),
+%    !.
     
 desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
     ((Desc = [From, N, List], (From = from ; From = unique_from)))
