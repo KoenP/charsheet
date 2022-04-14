@@ -117,6 +117,8 @@ function optionsHtml(optionsData, updateEditPage) {
     return div;
 }
 
+var radioIndex = 0;
+
 function selector(spec, onchange, current=null, disabled=false) {
     // List case.
     if (spec.spectype === "list") {
@@ -150,8 +152,8 @@ function selector(spec, onchange, current=null, disabled=false) {
         return {html: dropdown, getChoice: () => choice};
     }
 
-    // Unique from case.
-    else if (spec.spectype === "unique_from") {
+    // (Unique/non-unique) from case.
+    else if (spec.spectype === "unique_from" || spec.spectype === "from") {
         var div = document.createElement("div");
         var selectors = [];
         var subspec = spec.spec;
@@ -162,7 +164,7 @@ function selector(spec, onchange, current=null, disabled=false) {
         }
 
         function init() {
-            subspec.filter = choices;
+            subspec.filter = spec.spectype === "unique_from" ? choices : [];
             for (choice of choices) {
                 var sel = selector(subspec, refresh, current=choice);
                 div.appendChild(sel.html);
@@ -182,14 +184,50 @@ function selector(spec, onchange, current=null, disabled=false) {
 
         function refresh(_) {
             updateChoices();
-            // div.innerHTML = "";
-            // selectors = [];
-            // init();
             onchange("[" + choices.toString() + "]");
         }
 
         init();
-        //const selectors = spec.spec
+        return {html: div};
+    }
+    else if (spec.spectype == "or") {
+        var div = document.createElement("div");
+        var subdiv = document.createElement("div");
+        const radioButtonName = "radio" + radioIndex;
+        radioIndex += 1;
+        var inputs = [];
+        const curCopy = current;
+
+        for (const [dir, subspec, name]
+             of [["left", spec.left, spec.leftname],
+                 ["right", spec.right, spec.rightname]]) {
+            var input = document.createElement("input");
+            console.log(name);
+            input.setAttribute("type", "radio");
+            input.setAttribute("name", radioButtonName);
+            input.setAttribute("value", name);
+            const id = radioButtonName + name;
+            input.setAttribute("id", id);
+            function selectButton() {
+                subdiv.innerHTML = "";
+                const subCurrent = (curCopy != null && curCopy.side == dir)
+                      ? curCopy.choice : null;
+                console.log(subCurrent);
+                subdiv.appendChild(selector(subspec, onchange, current=subCurrent).html);
+            }
+            input.onchange = selectButton;
+            console.log("current =", current);
+            if (current != null && current.side == dir) {
+                input.checked = true;
+                selectButton();
+            }
+            var label = document.createElement("label");
+            label.setAttribute("for", id);
+            label.innerHTML = name;
+            div.appendChild(input);
+            div.appendChild(label);
+        }
+        div.appendChild(subdiv);
         return {html: div};
     }
 

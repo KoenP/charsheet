@@ -123,7 +123,8 @@ from_(N, List, Choices) :-
     subset(Choices, List).
 from_(N, Pred, Choices) :-
     is_list(Choices),
-    length(Choices, N),
+    length(Choices, M),
+    M =< N,
     maplist(call(Pred), Choices).
 
 %! unique_from(+N:int, :Pred, ?Choices)
@@ -206,11 +207,15 @@ spec_to_json(Origin, Id, Spec,
 % Case: `or` spec.
 spec_to_json(Origin, Id, Spec1 or Spec2,
              _{spectype: or,
-               spec1: SubSpec1,
-               spec2: SubSpec2}) :-
+               left: SubSpec1,
+               right: SubSpec2,
+               leftname: LeftName,
+               rightname: RightName}) :-
     !,
     spec_to_json(Origin, Id, Spec1, SubSpec1),
-    spec_to_json(Origin, Id, Spec2, SubSpec2).
+    spec_to_json(Origin, Id, Spec2, SubSpec2),
+    term_string(Spec1, LeftName),
+    term_string(Spec2, RightName).
 % Case: any other predicate.
 spec_to_json(Origin, Id, Spec,
              _{spectype: list, list: List}) :-
@@ -242,16 +247,20 @@ choice_json(Origin, Id, Spec, Json) :-
     choice_to_json(Choice, Spec, Json).
 choice_json(Origin, Id, _, null) :-
     \+ choice(Origin, Id, _).
-choice_to_json(left(X), _ or _, _{choicetype: or, side: left, choice: XStr}) :-
+choice_to_json(X, Left or _, _{choicetype: or, side: left, choice: Json}) :-
+    ground(Left),
+    call(Left, X),
     !,
-    term_string(X, XStr).
-choice_to_json(right(X), _ or _, _{choicetype: or, side: right, choice: XStr}) :-
+    choice_to_json(X, Left, Json).
+choice_to_json(X, _ or Right, _{choicetype: or, side: right, choice: Json}) :-
+    ground(Right),
+    call(Right, X),
     !,
-    term_string(X, XStr).
-choice_to_json(List, _, JsonList) :-
+    choice_to_json(X, Right, Json).
+choice_to_json(List, Pred, JsonList) :-
     is_list(List),
     !,
-    maplist([X,Y]>>choice_to_json(X,_,Y), List, JsonList).
+    maplist([X,Y]>>choice_to_json(X,Pred,Y), List, JsonList).
 choice_to_json(X, _, XStr) :-
     term_string(X, XStr).
 %choice_to_json(X, FromTerm, _{choicetype: list, choice: List}) :-
