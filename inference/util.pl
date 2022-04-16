@@ -61,3 +61,13 @@ default_on_fail(_, Goal, X) :-
     call(Goal, X),
     !.
 default_on_fail(Default, _, Default).
+
+zip([], Ys, Ys).
+zip(Xs, [], Xs).
+zip([X|Xs], [Y|Ys], [X-Y|Zs]) :- zip(Xs, Ys, Zs).
+
+enumerate(_, [], []) :- !.
+enumerate(N, [X|Xs], [N-X|NXs]) :-
+    !,
+    M is N+1,
+    enumerate(M, Xs, NXs).

@@ -176,8 +176,11 @@ options_todo(Origin, Id, Spec) :-
     \+ choice(Origin, Id, _).
 
 %! options_json(?Origin, ?Id, ?Json)
-options_json(Origin, Id, _{origin: OriginStr, id: IdStr, spec: SpecJson, choice: ChoiceJson}) :-
+options_json(Origin, Id, _{origin: OriginStr, origin_category: CategoryStr, charlevel: CharLevel,
+                           id: IdStr, spec: SpecJson, choice: ChoiceJson}) :-
     options(Origin, Id, Spec),
+    origin_category_or_uncategorized(Category, Origin), term_string(Category, CategoryStr),
+    origin_level(Origin, CharLevel),
     spec_to_json(Origin, Id, Spec, SpecJson),
     choice_json(Origin, Id, Spec, ChoiceJson),
     term_string(Origin, OriginStr),
@@ -226,21 +229,6 @@ spec_to_json(Origin, Id, Spec,
              %fmt(format_term(X), XStr)),
             List).
 
-%options_spec_to_json(Origin, Id, Spec, Json) :-
-%    inspect_spec(Origin, Id, Spec, Desc),
-%    Id \= 'asi or feat',
-%    desc_to_dict_pairs(Desc, Pairs),
-%    choice_json(Origin, Id, ChoiceJson),
-%    append([origin-Origin, id-Id, choice-ChoiceJson], Pairs, Assocs),
-%    dict_pairs(Json, _, Assocs).
-%options_spec_to_json(Origin, 'asi or feat', _,
-%                     _{origin: Origin,
-%                       id: 'asi or feat',
-%                       spectype: 'asi or feat',
-%                       asis: 2,
-%                       feats: Feats}) :-
-%    findall(Feat, selectable_feat_option(Feat), Feats).
-
 choice_json(Origin, Id, Spec, Json) :-
     choice(Origin, Id, Choice),
     options(Origin, Id, Spec),
@@ -263,81 +251,8 @@ choice_to_json(List, Pred, JsonList) :-
     maplist([X,Y]>>choice_to_json(X,Pred,Y), List, JsonList).
 choice_to_json(X, _, XStr) :-
     term_string(X, XStr).
-%choice_to_json(X, FromTerm, _{choicetype: list, choice: List}) :-
-%    FromTerm =.. [From, _, _],
-%    (From = from ; From = unique_from),
-%    !,
-%    (is_list(X) -> List = X; List = [X]).
-    
-%choice_to_json(_, 'asi or feat', feat(Feat), _{choicetype: feat, feat: Feat}) :- !.
-%choice_to_json(_, 'asi or feat', Abi+N, _{choicetype: asi, plus:N, abilities: [Abi]}) :- !.
-%choice_to_json(_, 'asi or feat', Asis, _{choicetype: asi, plus:N, abilities: Abis}) :-
-%    maplist([Abi+N,Abi,N]>>true, Asis, Abis, [N|Ns]),
-%    forall(member(M,Ns), N=M),
-%    !.
-%choice_to_json(_, _, Term, Json) :-
-%    term_to_json(Term, Json),
-%    !.
     
 desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
     ((Desc = [From, N, List], (From = from ; From = unique_from)))
     ;
     (is_list(Desc), List=Desc, N=1).
-%# asi or feat
-%  asi -> ofwel 2 attribute +1, ofwel 1 attribute +2
-%  feat -> keuze uit een lijst
-%
-%  Top-level: radio buttons asi/feat
-%    -> feat geselecteerd: dropdown lijst
-%    -> asi geselecteerd hebt: tickboxes? tabel met "+" buttons
-%
-%[
-%  {
-%    origin: "rogue",
-%    id: "asi or feat",
-%    spec: {
-%        spectype: "asi_or_feat",
-%        asis: 2,
-%        feats: ["alert", "durable", ...]
-%    },
-%    choice: {
-%      choicetype: "asi",
-%      plus: 1,
-%      abilities: ["str", "dex"]
-%    }
-%    choice: { // OFWEL
-%      choicetype: "feat",
-%      feat: ["alert"]
-%    }
-%  }
-%]
-%
-%
-%# stel je mag 1 skill kiezen
-%[ 
-%  {
-%    origin: "rogue",
-%    id: "skill",
-%    spec: {
-%        spectype: "list",
-%        num: 1,
-%        options: [acrobatics, athletics, deception, ...]
-%    },
-%    choice: ["acrobatics"]
-%  }
-%]
-%
-%# stel je mag 4 skills kiezen
-%[ 
-%  {
-%    origin: "rogue",
-%    id: "skill",
-%    spec: {
-%        spectype: "list",
-%        num: 4,
-%        options: ["acrobatics", "athletics", "deception", ...]
-%    },
-%    // stel ik heb al twee skills gekozen
-%    choice: ["acrobatics", "athletics"]
-%  }
-%]

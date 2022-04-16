@@ -45,20 +45,68 @@ var htmlAbilityTable =
    <td class="mod"></td>
  </tr>`;
 
+function groupBy(prop, list) {
+    var groups = {};
+    for (x of list) {
+        const index = prop(x);
+        if (index in groups) {
+            groups[index].push(x);
+        }
+        else {
+            groups[index] = [x];
+        }
+    }
+    return groups;
+}
 
 async function initPage() {
     const charName = await getName();
 
     document.getElementById("chartitle").innerHTML = "Editing " + charName;
     document.getElementById("pagetitle").innerHTML = charName;
+    var sidenav = document.getElementById("sidenav");
     var choicesDiv = document.getElementById("choices");
-    async function updatePage() {
-        const updateData = await requestJson("options", {});
-        console.log(updateData);
+    var updateDataByCharlevel = {};
+    var selectedCharlevel = 1;
+    function updateMainBody() {
         choicesDiv.innerHTML = "";
-        updateData.forEach(function(choice) {
-            choicesDiv.appendChild(optionsHtml(choice, updatePage));
-        });
+        const relevantUpdateDataPerCategory
+              = groupBy(x => x.origin_category, updateDataByCharlevel[selectedCharlevel]);
+        const sortedCategories = Object.keys(relevantUpdateDataPerCategory).sort();
+        for (key of sortedCategories) {
+            const choices = relevantUpdateDataPerCategory[key];
+            var categoryHeader = document.createElement("h3");
+            categoryHeader.innerHTML = `From ${key}:`;
+            choicesDiv.appendChild(categoryHeader);
+            for (choice of choices) {
+                choicesDiv.appendChild(optionsHtml(choice, updatePage));
+            }
+        }
+    }
+    async function updatePage() {
+        // Fetch data.
+        updateDataByCharlevel = groupBy(x => x.charlevel, await requestJson("options", {}));
+        //console.log(updateData);
+
+        // Update sidenav.
+        sidenav.innerHTML = "";
+        const levels = Object.keys(updateDataByCharlevel).map(n => parseInt(n)).filter(n => !isNaN(n)).sort();
+        console.log(updateDataByCharlevel);
+        console.log(levels);
+        for (const level of levels) {
+            var link = document.createElement("a");
+            link.innerHTML = `Level ${level}`;
+            link.onclick = function(){selectedCharlevel = level; updateMainBody();};
+            sidenav.appendChild(link);
+        }
+        if ("unknown" in updateDataByCharlevel) {
+            var link = document.createElement("a");
+            link.innerHTML = "unknown";
+            link.onclick = function(){selectedCharlevel = "unknown"; updateMainBody();};
+            sidenav.innerHTML += `unknown`;
+        }
+        updateMainBody();
+
         // const abilityTableVals = await requestJson("ability_table", {});
         // if(updateData[index].id == "asi or feat") {
         //     var numberOfAsis = updateData[index].spec.asis;
@@ -104,10 +152,11 @@ function optionsHtml(optionsData, updateEditPage) {
     const spec = optionsData.spec;
     // TODO: choice, if it exists
     var div = document.createElement("div");
-    div.innerHTML += `<h3>Choose ${id} from ${origin}</h3>`;
+    div.innerHTML += `<h5>Choose ${id}</h5>`;
     // div.appendChild(specToHtml(spec).html);
 
     function registerChoiceAndUpdate(choice) {
+        console.log("registerChoiceAndUpdate");
         //console.log({source: origin.toString(), id: id.toString(), choice: choice.toString()});
         request("choice", {source: origin, id: id, choice: choice});
         updateEditPage();
@@ -125,6 +174,7 @@ function selector(spec, onchange, current=null, disabled=false) {
         var dropdown = document.createElement("select");
         var choice = current;
         dropdown.onchange = function() {
+            console.log("dropdown.onchange");
             choice = dropdown.value;
             onchange(choice);
         };
@@ -188,7 +238,7 @@ function selector(spec, onchange, current=null, disabled=false) {
         }
 
         init();
-        return {html: div};
+        return {html: div, getChoice: () => choices};
     }
     else if (spec.spectype == "or") {
         var div = document.createElement("div");
@@ -198,7 +248,7 @@ function selector(spec, onchange, current=null, disabled=false) {
         var inputs = [];
         const curCopy = current;
 
-        for (const [dir, subspec, name]
+        for (const [side, subspec, name]
              of [["left", spec.left, spec.leftname],
                  ["right", spec.right, spec.rightname]]) {
             var input = document.createElement("input");
@@ -210,14 +260,15 @@ function selector(spec, onchange, current=null, disabled=false) {
             input.setAttribute("id", id);
             function selectButton() {
                 subdiv.innerHTML = "";
-                const subCurrent = (curCopy != null && curCopy.side == dir)
-                      ? curCopy.choice : null;
+                const subCurrent
+                      = (curCopy != null && curCopy.side == side)
+                      ? curCopy.choice
+                      : null;
                 console.log(subCurrent);
                 subdiv.appendChild(selector(subspec, onchange, current=subCurrent).html);
             }
             input.onchange = selectButton;
-            console.log("current =", current);
-            if (current != null && current.side == dir) {
+            if (current != null && current.side == side) {
                 input.checked = true;
                 selectButton();
             }
@@ -228,7 +279,7 @@ function selector(spec, onchange, current=null, disabled=false) {
             div.appendChild(label);
         }
         div.appendChild(subdiv);
-        return {html: div};
+        return {html: div, getChoice: () => subCurrent};
     }
 
     return {html: document.createElement("div")};

@@ -101,6 +101,19 @@ class_origin_to_class_level_(match_class(ClassF), Class:1) :-
     ClassF =.. [Class].
 %class_origin_to_class_level_(replaced_spell(Class:Level, _), Class:Level).
 
+%! gained_level_in_class_at_charlevel(?Class, ?CharLevel)
+gained_level_in_class_at_charlevel(Class, 1) :-
+    initial_class(Class).
+gained_level_in_class_at_charlevel(Class, CharLevel) :-
+    gain_level(CharLevel, Class, _).
+
+%! reached_classlevel_at_charlevel(?ClassLevel, ?CharLevel)
+reached_classlevel_at_charlevel(Class:ClassLevel, CharLevel) :-
+    class_option(Class),
+    findall(L, gained_level_in_class_at_charlevel(Class,L), Ls),
+    enumerate(1, Ls, NLs),
+    member(ClassLevel-CharLevel, NLs).
+
 %! class_origin_to_class(?Origin, ?Class:atomic)
 %
 %  Given a class-related Origin (for a trait, or a choice, or ...),
