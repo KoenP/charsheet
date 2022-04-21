@@ -1,4 +1,4 @@
-:- dynamic base_ability/2.
+% :- table ability/2 as incremental.
 
 update_base_ability(Abi, NewScore) :-
     retract(base_ability(Abi, _)),

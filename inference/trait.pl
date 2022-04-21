@@ -6,6 +6,8 @@
        traits_from_source/2,
        choice_member_to_trait/3.
 
+% :- table trait/2 as incremental.
+
 %! trait(Source, Trait)
 %
 %  Traits are (most of) the idempotent properties (ie the properties

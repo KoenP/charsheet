@@ -1,11 +1,12 @@
 :- multifile
        options/3,
-       options/4,
        options_source/3,
        choice/3,
        hide_base_option/3.
 
-%! options(?CharLvl, ?Source, ?Id, ?Spec)
+% :- table (options/3, hide_base_option/3) as incremental.
+
+%! options(?Source, ?Id, ?Spec)
 %  
 %  Each options/3 clause indicates that a choice/3 needs to be made to
 %  advance the PC. Source indicates the reason why the options are

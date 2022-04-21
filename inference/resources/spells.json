@@ -960,7 +960,7 @@
     "casting_time":"1 action",
     "level":"1st-level",
     "school":"Enchantment",
-    "class":"Cleric, Paladin, Warlock",
+    "class":"Cleric, Paladin",
     "archetype":"Warlock: Fiend",
     "domains":"Knowledge",
     "patrons":"Fiend"

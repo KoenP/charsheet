@@ -4,6 +4,8 @@
        bonuses_from_source/2,
        bonus_options_source/4.
 
+%:- table bonus/2 as incremental.
+
 %! bonus(?Source, ?Bonus)
 %
 %  Bonuses are properties of your character that typically stack.

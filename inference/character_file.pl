@@ -4,11 +4,8 @@
        gain_level/3,
        choice/3.
 
-:- dynamic
-       name/1,
-       base_ability/2,
-       gain_level/3,
-       choice/3.
+:- dynamic name/1, base_ability/2, gain_level/3, choice/3.
+       
 
 character_definition_predicates(
     [ name/1         ,
@@ -100,3 +97,15 @@ charname_to_filename(CharName, FileName) :-
 cn2fn(CharName) --> seq_atom('characters/'),
                     seq(CharName),
                     seq_atom('.pl').
+
+%! gain_level(?CharLevel, ?Class, ?HPMode)
+%
+%  Gain a level in the given Class. HPMode determines how your HP
+%  increase is calculcated. Use hp_avg to gain the default "average"
+%  hp for the given Class. Other options yet to be implemented.
+gain_level(_,_,_) :- false.
+problem(gain_level_not_contiguous(Levels)) :-
+    findall(L, gain_level(L,_,_), Levels),
+    max_member(Highest, Levels),
+    findall(L, between(2,Highest,L), Levels2),
+    Levels \= Levels2.

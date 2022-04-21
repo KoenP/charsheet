@@ -71,6 +71,9 @@ known_spell(wizard, int, Availability, Resources, Ritual, Name) :-
     wizard_spell_availability(Name, Availability),
     spell_property(Name, ritual, Ritual).
 
+hide_known_class_spells(match_class(wizard:_), cantrip, wizard).
+hide_known_class_spells(match_class(wizard:_), 'free spell', wizard).
+
 wizard_spell_resources(Spell, []) :-
     trait(spell_mastery(Spell)), !.
 wizard_spell_resources(Spell, [per_rest(short,1)] or [slot]) :-
@@ -82,12 +85,12 @@ wizard_spell_availability(Spell, always) :-
 wizard_spell_availability(_, 'when prepared').
 
 % Learn cantrips.
-options_source(class(wizard), cantrip, 3 unique_from class_cantrip(wizard)).
+options_source(match_class(wizard:1), cantrip, 3 unique_from class_cantrip(wizard)).
 options_source(match_class(wizard:L), cantrip, class_cantrip(wizard)) :-
     L=4 ; L=10.
 
 % Learn proper spells by leveling.
-options_source(class(wizard), 'free spell',
+options_source(match_class(wizard:1), 'free spell',
                6 unique_from learnable_proper_spell(wizard)).
 options_source(match_class(wizard:L), 'free spell',
                2 unique_from learnable_proper_spell(wizard)) :-

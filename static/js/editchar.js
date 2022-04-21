@@ -1,5 +1,3 @@
-var updateIndex = 1; //1 because the initial run is done on initPage instead of saveChar
-
 var htmlAbilityTable =
 `<p id="numberOfAsis"></p>   
 <tr>
@@ -70,6 +68,8 @@ async function initPage() {
     var selectedCharlevel = 1;
     function updateMainBody() {
         choicesDiv.innerHTML = "";
+        if (selectedCharlevel === 1) {
+        }
         const relevantUpdateDataPerCategory
               = groupBy(x => x.origin_category, updateDataByCharlevel[selectedCharlevel]);
         const sortedCategories = Object.keys(relevantUpdateDataPerCategory).sort();
@@ -90,19 +90,21 @@ async function initPage() {
 
         // Update sidenav.
         sidenav.innerHTML = "";
-        const levels = Object.keys(updateDataByCharlevel).map(n => parseInt(n)).filter(n => !isNaN(n)).sort();
-        console.log(updateDataByCharlevel);
-        console.log(levels);
+        const levels = Object.keys(updateDataByCharlevel).map(n => parseInt(n)).filter(n => !isNaN(n)).sort((a,b) => a-b);
         for (const level of levels) {
-            var link = document.createElement("a");
-            link.innerHTML = `Level ${level}`;
-            link.onclick = function(){selectedCharlevel = level; updateMainBody();};
-            sidenav.appendChild(link);
+            var button = document.createElement("button");
+            button.innerHTML = `Level ${level}`;
+            button.setAttribute("type", "submit")
+            button.onclick = function(){selectedCharlevel = level; updatePage();};
+            if (selectedCharlevel === level) {
+                button.setAttribute("class", "selected");
+            }
+            sidenav.appendChild(button);
         }
         if ("unknown" in updateDataByCharlevel) {
             var link = document.createElement("a");
             link.innerHTML = "unknown";
-            link.onclick = function(){selectedCharlevel = "unknown"; updateMainBody();};
+            link.onclick = function(){selectedCharlevel = "unknown"; updatePage();};
             sidenav.innerHTML += `unknown`;
         }
         updateMainBody();
@@ -204,6 +206,9 @@ function selector(spec, onchange, current=null, disabled=false) {
 
     // (Unique/non-unique) from case.
     else if (spec.spectype === "unique_from" || spec.spectype === "from") {
+        if (spec.num === 1) {
+            return selector(spec.spec, onchange, current, disabled);
+        }
         var div = document.createElement("div");
         var selectors = [];
         var subspec = spec.spec;
@@ -516,36 +521,36 @@ function drawSkillSelector(options, limit) {
 //check if number of selected skills matches limit
 //if it doesn't match display alert message and reset form
 //else savechar
-function btnSkillClicked() {
-    var selectBtnSkill = document.getElementById("selectBtnSkill");
-    let checkBoxes = document.querySelectorAll('input[name="skill"]');
-    let selectedSkills = [];
-    checkBoxes.forEach(function(checkBox) {
-        if(checkBox.checked) {
-            selectedSkills.push(checkBox.value);
-        }
-        
-    });
-    if(selectedSkills.length > selectBtnSkill.limit) {
-        alert("Too many skills selected");
-        checkBoxes.forEach(function(checkBox) {
-            if(checkBox.checked) checkBox.checked = false;
-        });
-    }
-    else if (selectedSkills.length < selectBtnSkill.limit) {
-        alert("Not enough skills selected");
-        checkBoxes.forEach(function(checkBox) {
-            if(checkBox.checked) checkBox.checked = false;
-        });
-    }
-    else {
-        selectedSkills.forEach(function(selectedSkill) {
-            console.log(selectedSkill);
-            selectBtnSkill.skillHTML.innerHTML = "";
-            saveChar();
-        });
-    } 
-}
+// function btnSkillClicked() {
+//     var selectBtnSkill = document.getElementById("selectBtnSkill");
+//     let checkBoxes = document.querySelectorAll('input[name="skill"]');
+//     let selectedSkills = [];
+//     checkBoxes.forEach(function(checkBox) {
+//         if(checkBox.checked) {
+//             selectedSkills.push(checkBox.value);
+//         }
+//         
+//     });
+//     if(selectedSkills.length > selectBtnSkill.limit) {
+//         alert("Too many skills selected");
+//         checkBoxes.forEach(function(checkBox) {
+//             if(checkBox.checked) checkBox.checked = false;
+//         });
+//     }
+//     else if (selectedSkills.length < selectBtnSkill.limit) {
+//         alert("Not enough skills selected");
+//         checkBoxes.forEach(function(checkBox) {
+//             if(checkBox.checked) checkBox.checked = false;
+//         });
+//     }
+//     else {
+//         selectedSkills.forEach(function(selectedSkill) {
+//             console.log(selectedSkill);
+//             selectBtnSkill.skillHTML.innerHTML = "";
+//             saveChar();
+//         });
+//     } 
+// }
 
 function updateBaseAttribute(attr) {
     return async function (e) {
