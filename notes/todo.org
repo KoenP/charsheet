@@ -1,3 +1,7 @@
+- dubbele spell bij warlock: command
+
+- spells niet dupliceren in menu
+
 - uniekheid van traits deftig ondersteunen, bv als je al eens "feat(alert)" hebt gekozen, moet dat niet zichtbaar zijn in een lijst van opties voor een nieuwe feat.
   
 - feats

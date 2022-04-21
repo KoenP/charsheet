@@ -14,6 +14,6 @@ bonus_source(race(human(standard)), Ability+1) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 subrace_option(human, variant).
-bonus_options_source(race(human(variant)), asi, id, 2 unique_from ability_plus_n(1)).
+bonus_options_source(race(human(variant)), asi, id, 2 unique_from ability).
 trait_options_source(race(human(variant)), skill, wrap(skill), skill).
 trait_options_source(race(human(variant)), feat, wrap(feat), selectable_feat_option).

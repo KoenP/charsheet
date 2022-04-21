@@ -1,4 +1,4 @@
-:- dynamic base_ability/2.
+% :- table ability/2 as incremental.
 
 update_base_ability(Abi, NewScore) :-
     retract(base_ability(Abi, _)),
@@ -105,3 +105,18 @@ total_other_ability_bonus(Ability, Total) :-
             (bonus(Origin, Ability+Bon), Origin \= race(_), Origin \= choice(_, 'asi or feat')),
             Bonuses),
     sumlist(Bonuses, Total).
+
+%asi(N, Abi+N) :- ability(Abi).
+%asi(N, Asis) :-
+%    ground(Asis),
+%    !,
+%    maplist([Abi+N,N]>>ability(Abi), Asis, Ns),
+%    sumlist(Ns, N).
+%asi(N, Asis) :-
+%    split_nat(N, Ns),
+%    maplist([M,Abi+M]>>ability(Abi), Ns, Asis).
+%split_nat(0, []) :- !.
+%split_nat(N, [M|Ns]) :-
+%    between(1, N, M),
+%    N1 is N-M,
+%    split_nat(N1, Ns).

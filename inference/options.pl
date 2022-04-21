@@ -1,9 +1,10 @@
 :- multifile
        options/3,
-       options/4,
        options_source/3,
        choice/3,
-       hide_option/3.
+       hide_base_option/3.
+
+% :- table (options/3, hide_base_option/3) as incremental.
 
 %! options(?Source, ?Id, ?Spec)
 %  
@@ -118,10 +119,13 @@ from(N, Spec, Choice) :-
 from_(N, List, Choices) :-
     is_list(List),
     !,
+    is_list(Choices),
     length(Choices, N),
     subset(Choices, List).
 from_(N, Pred, Choices) :-
-    length(Choices, N),
+    is_list(Choices),
+    length(Choices, M),
+    M =< N,
     maplist(call(Pred), Choices).
 
 %! unique_from(+N:int, :Pred, ?Choices)
@@ -152,87 +156,104 @@ inspect_spec(Origin, Id, N from Pred, N from List) :-
     inspect_spec(Origin, Id, Pred, List).
 inspect_spec(Origin, Id, N unique_from Pred, N unique_from List) :-
     inspect_spec(Origin, Id, Pred, List).
+inspect_spec(Origin, Id, Spec1 or Spec2, Desc1 or Desc2) :-
+    inspect_spec(Origin, Id, Spec1, Desc1),
+    inspect_spec(Origin, Id, Spec2, Desc2).
 inspect_spec(Origin, Id, Pred, List) :-
     \+ member(Pred, [_ from _, _ unique_from _]),
-    findall(X, (call(Pred, X), \+ hide_option(Origin, Id, X)), List).
+    findall(X, (call(Pred, X), (\+ suppress_base_option(Origin, Id, X))), List).
+suppress_base_option(Origin, Id, X) :-
+    hide_base_option(Origin, Id, X), (\+ choice_member(Origin, Id, X)).
 
-%! hide_option(?Source, ?Id, ?Option)
+%! hide_base_option(?Source, ?Id, ?Option)
 %
 %  True iff Option shouldn't be displayed to the user as a valid
 %  choice for the option with given Source and Id.
-hide_option(_,_,_) :- false.
-
+hide_base_option(_,_,_) :- false.
+    
 %! option_todo(?Origin, ?Id, ?Spec)
 options_todo(Origin, Id, Spec) :-
     options(Origin, Id, Spec),
     \+ choice(Origin, Id, _).
 
-options_spec_to_json(Origin, Id, Spec, Json) :-
-    inspect_spec(Origin, Id, Spec, Desc),
-    Id \= 'asi or feat',
-    desc_to_dict_pairs(Desc, Pairs),
-    append([origin-Origin, id-Id], Pairs, Assocs),
-    dict_pairs(Json, _, Assocs).
-options_spec_to_json(Origin, 'asi or feat', _,
-                     _{origin: Origin,
-                       id: 'asi or feat',
-                       spectype: 'asi or feat',
-                       asis: 2,
-                       feats: Feats}) :-
-    findall(Feat, selectable_feat_option(Feat), Feats).
+%! options_json(?Origin, ?Id, ?Json)
+options_json(Origin, Id, _{origin: OriginStr, origin_category: CategoryStr, charlevel: CharLevel,
+                           id: IdStr, spec: SpecJson, choice: ChoiceJson}) :-
+    options(Origin, Id, Spec),
+    origin_category_or_uncategorized(Category, Origin), term_string(Category, CategoryStr),
+    origin_level(Origin, CharLevel),
+    spec_to_json(Origin, Id, Spec, SpecJson),
+    choice_json(Origin, Id, Spec, ChoiceJson),
+    term_string(Origin, OriginStr),
+    term_string(Id, IdStr).
+    %fmt(format_term(Origin), OriginStr),
+    %fmt(format_term(Id), IdStr).
+
+%! resolve_not_eligible
+%
+%  If there are any choice/3 facts for which the PC is not eligible,
+%  retract them.
+resolve_not_eligible :-
+    forall(problem(not_eligible(A,B,C)),
+           (format(user_output, "Retracted ~w!~n", [choice(A,B,C)]),
+            flush_output(user_output),
+            retractall(choice(A,B,C)))).
+
+% Case: `from` or `unique_from` spec.
+spec_to_json(Origin, Id, Spec,
+             _{spectype: Functor,
+               num: N,
+               spec: SubSpec1}) :-
+    Spec =.. [Functor, N, SubSpec],
+    (Functor = from ; Functor = unique_from),
+    !,
+    spec_to_json(Origin, Id, SubSpec, SubSpec1).
+% Case: `or` spec.
+spec_to_json(Origin, Id, Spec1 or Spec2,
+             _{spectype: or,
+               left: SubSpec1,
+               right: SubSpec2,
+               leftname: LeftName,
+               rightname: RightName}) :-
+    !,
+    spec_to_json(Origin, Id, Spec1, SubSpec1),
+    spec_to_json(Origin, Id, Spec2, SubSpec2),
+    term_string(Spec1, LeftName),
+    term_string(Spec2, RightName).
+% Case: any other predicate.
+spec_to_json(Origin, Id, Spec,
+             _{spectype: list, list: List}) :-
+    findall(XStr,
+            (call(Spec, X),
+             (\+ suppress_base_option(Origin, Id, X)),
+             term_string(X, XStr)),
+             %fmt(format_term(X), XStr)),
+            List).
+
+choice_json(Origin, Id, Spec, Json) :-
+    choice(Origin, Id, Choice),
+    options(Origin, Id, Spec),
+    choice_to_json(Choice, Spec, Json).
+choice_json(Origin, Id, _, null) :-
+    \+ choice(Origin, Id, _).
+choice_to_json(X, Left or _, _{choicetype: or, side: left, choice: Json}) :-
+    ground(Left),
+    call(Left, X),
+    !,
+    choice_to_json(X, Left, Json).
+choice_to_json(X, _ or Right, _{choicetype: or, side: right, choice: Json}) :-
+    ground(Right),
+    call(Right, X),
+    !,
+    choice_to_json(X, Right, Json).
+choice_to_json(List, Pred, JsonList) :-
+    is_list(List),
+    !,
+    maplist([X,Y]>>choice_to_json(X,Pred,Y), List, JsonList).
+choice_to_json(X, _, XStr) :-
+    term_string(X, XStr).
     
 desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
     ((Desc = [From, N, List], (From = from ; From = unique_from)))
     ;
     (is_list(Desc), List=Desc, N=1).
-    
-    
-
-
-%# asi or feat
-%  asi -> ofwel 2 attribute +1, ofwel 1 attribute +2
-%  feat -> keuze uit een lijst
-%
-%  Top-level: radio buttons asi/feat
-%    -> feat geselecteerd: dropdown lijst
-%    -> asi geselecteerd hebt: tickboxes? tabel met "+" buttons
-%
-%[
-%  {
-%    origin: "rogue",
-%    id: "asi or feat",
-%    spec: {
-%        spectype: "asi_or_feat",
-%        asis: 2,
-%        feats: ["alert", "durable", ...]
-%    }
-%  }
-%]
-%
-%
-%# stel je mag 1 skill kiezen
-%[ 
-%  {
-%    origin: "rogue",
-%    id: "skill",
-%    spec: {
-%        spectype: "list",
-%        num: 1,
-%        options: [acrobatics, athletics, deception, ...]
-%    },
-%    choice: "acrobatics"
-%  }
-%]
-%
-%# stel je mag 4 skills kiezen
-%[ 
-%  {
-%    origin: "rogue",
-%    id: "skill",
-%    spec: {
-%        spectype: "list",
-%        num: 4,
-%        options: [acrobatics, athletics, deception, ...]
-%    }
-%  }
-%]

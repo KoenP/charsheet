@@ -6,6 +6,8 @@
        traits_from_source/2,
        choice_member_to_trait/3.
 
+% :- table trait/2 as incremental.
+
 %! trait(Source, Trait)
 %
 %  Traits are (most of) the idempotent properties (ie the properties
@@ -65,7 +67,7 @@ options(Source, Id, Spec) :-
 
 % Don't display traits that have already been picked as options to the
 % user (see inspect_options/3).
-hide_option(Source, Id, Option) :-
+hide_base_option(Source, Id, Option) :-
     trait_options(Source, Id, ToTrait, _),
     call(ToTrait, Option, Trait),
     trait(Trait).

@@ -1,12 +1,14 @@
 :- multifile
        known_spell/6,
        spell_property/3,
-       extend_class_spell_list/2.
+       extend_class_spell_list/2,
+       hide_known_class_spells/3.
 
+% :- table known_spell/6 as incremental.
 
 %! known_spell(?Origin, ?Ability:atomic, ?Availability, ?Resources, ?Ritual:atomic, ?Name:atomic)
 %
-%  Known spells are those spells spells that are on your character's
+%  Known spells are those spells that are on your character's
 %  spell list, either as spells that are always castable or spells
 %  that you need to prepare. Spell learning works differently for
 %  different classes. For a druid, for instance, every learnable spell
@@ -33,7 +35,7 @@
 %    * Some traits add bonuses to spells based on their Origin, such
 %      as the `'empowered evocation'` trait, which increases the damage
 %      of wizard evocations. In this case, both the literal Origin
-%      `wizard`, as well as any Origins of the form `wizard:_` count
+%      `wizard`, as well as any Origins of the form `wizard(_)` count
 %      as "wizard spells" .
 %  * Ability is the ability used for casting the spell. For many
 %    spells this is irrelevant, but it's usually tied to the
@@ -155,10 +157,9 @@ known_spell_saving_throw(Origin, Name, DC, Abi) :-
     Origin =.. [BaseOrigin|_],
     spell_save_dc(BaseOrigin, DC).
 %contains_saving_throw(Effects, saving_throw(Abi):Effect)
-    
+
 %max_learnable_spell_level_for_classlevel(Class:Level, MaxSpellLevel) :-
 %    caster(Class, Factor),
-
 
 %! learnable_proper_spell(?Class, ?Name)
 %
@@ -183,6 +184,16 @@ learnable_proper_spell(warlock, Name) :-
     between(1, SlotLevel, Data.level).
 meta_todo(learnable_proper_spell,
           "Not sure if I like how I implemented this for e.g. arcane trickster (which use another class' spell list)").
+
+%! hide_known_class_spells(Origin, Id, Class)
+%
+%  Each clause gives rise to a set of hide_base_options/3 clauses that
+%  suppresses known spells for the matching options/3 clause.
+hide_known_class_spells(_,_,_) :- false.
+hide_base_option(Origin, Id, Spell) :-
+    hide_known_class_spells(Origin, Id, Class),
+    known_spell(SpellOrigin, Spell),
+    SpellOrigin =.. [Class|_].
 
 %! cantrip(?Name)
 cantrip(Name) :- spell_property(Name, level, 0).

@@ -101,6 +101,19 @@ class_origin_to_class_level_(match_class(ClassF), Class:1) :-
     ClassF =.. [Class].
 %class_origin_to_class_level_(replaced_spell(Class:Level, _), Class:Level).
 
+%! gained_level_in_class_at_charlevel(?Class, ?CharLevel)
+gained_level_in_class_at_charlevel(Class, 1) :-
+    initial_class(Class).
+gained_level_in_class_at_charlevel(Class, CharLevel) :-
+    gain_level(CharLevel, Class, _).
+
+%! reached_classlevel_at_charlevel(?ClassLevel, ?CharLevel)
+reached_classlevel_at_charlevel(Class:ClassLevel, CharLevel) :-
+    class_option(Class),
+    findall(L, gained_level_in_class_at_charlevel(Class,L), Ls),
+    enumerate(1, Ls, NLs),
+    member(ClassLevel-CharLevel, NLs).
+
 %! class_origin_to_class(?Origin, ?Class:atomic)
 %
 %  Given a class-related Origin (for a trait, or a choice, or ...),
@@ -167,22 +180,25 @@ required_predicate_for_each_class(asi_level/1).
 default_asi_level(L) :-
     member(L, [4,8,12,16,19]).
 
-options_source(match_class(AsiLevel), 'asi or feat', asi_or_feat) :-
+options_source(match_class(AsiLevel), 'asi or feat', (2 from ability) or feat_option) :-
     asi_level(AsiLevel).
-asi_or_feat(feat(Feat)) :-
-    selectable_feat_option(Feat).
-asi_or_feat(Ability + 2) :-
-    ability(Ability).
-asi_or_feat([Ability1 + 1, Ability2 + 1]) :-
-    ability(Ability1),
-    ability(Ability2),
-    Ability1 \= Ability2.
+%asi_or_feat(feat(Feat)) :-
+%    selectable_feat_option(Feat).
+%asi_or_feat(Ability + 2) :-
+%    ability(Ability).
+%asi_or_feat([Ability1 + 1, Ability2 + 1]) :-
+%    ability(Ability1),
+%    ability(Ability2),
+%    Ability1 \= Ability2.
 
 trait(choice(match_class(AsiLevel),'asi or feat'), feat(Feat)) :-
-    choice(match_class(AsiLevel), 'asi or feat', feat(Feat)).
-bonus(choice(match_class(AsiLevel),'asi or feat'), Ability+N) :-
-    choice(match_class(AsiLevel), 'asi or feat', Bonus),
-    (Bonus = Ability + N ; member(Ability+N, Bonus)).
+    choice(match_class(AsiLevel), 'asi or feat', Feat),
+    feat_option(Feat).
+bonus(choice(match_class(AsiLevel),'asi or feat'), Ability+1) :-
+    choice_member(match_class(AsiLevel), 'asi or feat', Ability),
+    ability(Ability).
+
+    %(Bonus = Ability + N ; member(Ability+N, Bonus)).
 
 %! caster(?Class, ?Factor)
 %

@@ -6,60 +6,65 @@
   <meta charset="UTF-8">
   <script src="js/backendconnection.js"></script>
   <script src="js/editchar.js"></script>
+  <link rel="stylesheet" href="css/edit.css">
 </head>
 
 <body>
-  <h1 id="pagetitle"></h1>
-  <button id="save" onclick="saveChar()">Next</button><!--Only for development purposes-->
-  <p><a href="sheet.html">View character sheet</a></p>
-  <div id="asiorfeat"></div>
+  <div class="sidenav" id="sidenav"></div>
 
-  <table id="abilitytable">
-<!--    <tr>
-      <th>Attribute</th>
-      <th>Base value</th>
-      <th>After bonuses</th>
-      <th>Modifier</th>
-    </tr>
-    <tr class="abilityrow" id="str">
-      <td>str</td>
-      <td><input type="number"></td>
-      <td class="afterbonuses"></td>
-      <td class="mod"></td>
-    </tr>
-    <tr class="abilityrow" id="dex">
-      <td>dex</td>
-      <td><input type="number"></td>
-      <td class="afterbonuses"></td>
-      <td class="mod"></td>
-    </tr>
-    <tr class="abilityrow" id="con">
-      <td>con</td>
-      <td><input type="number"></td>
-      <td class="afterbonuses"></td>
-      <td class="mod"></td>
-    </tr>
-    <tr class="abilityrow" id="int">
-      <td>int</td>
-      <td><input type="number"></td>
-      <td class="afterbonuses"></td>
-      <td class="mod"></td>
-    </tr>
-    <tr class="abilityrow" id="wis">
-      <td>wis</td>
-      <td><input type="number"></td>
-      <td class="afterbonuses"></td>
-      <td class="mod"></td>
-    </tr>
-    <tr class="abilityrow" id="cha">
-      <td>cha</td>
-      <td><input type="number"></td>
-      <td class="afterbonuses"></td>
-      <td class="mod"></td>
-    </tr>-->
-  </table>
-  <div id="feat"></div>
-  <div id="skill"></div>
-  <div id="editmsg"></div>
-  <div id="charstatus"></div>
+  <div class="main">
+    <h1 id="pagetitle"></h1>
+    <p><a href="sheet.html">View character sheet</a></p>
+    <div id="asiorfeat"></div>
+    
+    <table id="abilitytable">
+      <!--    <tr>
+              <th>Attribute</th>
+              <th>Base value</th>
+              <th>After bonuses</th>
+              <th>Modifier</th>
+      </tr>
+      <tr class="abilityrow" id="str">
+        <td>str</td>
+        <td><input type="number"></td>
+        <td class="afterbonuses"></td>
+        <td class="mod"></td>
+      </tr>
+      <tr class="abilityrow" id="dex">
+        <td>dex</td>
+        <td><input type="number"></td>
+        <td class="afterbonuses"></td>
+        <td class="mod"></td>
+      </tr>
+      <tr class="abilityrow" id="con">
+        <td>con</td>
+        <td><input type="number"></td>
+        <td class="afterbonuses"></td>
+        <td class="mod"></td>
+      </tr>
+      <tr class="abilityrow" id="int">
+        <td>int</td>
+        <td><input type="number"></td>
+        <td class="afterbonuses"></td>
+        <td class="mod"></td>
+      </tr>
+      <tr class="abilityrow" id="wis">
+        <td>wis</td>
+        <td><input type="number"></td>
+        <td class="afterbonuses"></td>
+        <td class="mod"></td>
+      </tr>
+      <tr class="abilityrow" id="cha">
+        <td>cha</td>
+        <td><input type="number"></td>
+        <td class="afterbonuses"></td>
+        <td class="mod"></td>
+      </tr>-->
+    </table>
+    <div id="choices"></div>
+    <div id="feat"></div>
+    <div id="skill"></div>
+    <div id="editmsg"></div>
+    <div id="charstatus"></div>
+  </div>
 </body>

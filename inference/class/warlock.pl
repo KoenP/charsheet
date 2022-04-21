@@ -68,11 +68,16 @@ known_spell(warlock, cha, always, ['pact slot'], Ritual, Name) :-
     class_level(warlock:L),
     selected_at_class_level(warlock:L, spell, Name),
     spell_property(Name, ritual, Ritual). % TODO this might be wrong.
+hide_known_class_spells(match_class(warlock:_), cantrip, warlock).
+hide_known_class_spells(match_class(warlock:_), spell, warlock).
 
 % Learn cantrips.
 options_source(match_class(warlock:1), cantrip, 2 unique_from class_cantrip(warlock)).
 options_source(match_class(warlock:L), cantrip, class_cantrip(warlock)) :-
     L = 4; L = 10.
+%hide_base_option(match_class(warlock:_), cantrip, Cantrip) :-
+%    known_spell(Origin, Cantrip),
+%    Origin =.. [warlock|_].
 
 % Learn proper spells.
 options_source(match_class(warlock), spell,
@@ -80,6 +85,9 @@ options_source(match_class(warlock), spell,
 options_source(match_class(warlock:L), spell,
                learnable_proper_spell(warlock)) :-
     between(2, 9, L) ; member(L, [11,13,15,17,19]).
+%hide_base_option(match_class(warlock:_), spell, Spell) :-
+%    known_spell(Origin, Spell),
+%    Origin =.. [warlock|_].
 
 % Replace proper spells.
 options_source(match_class(warlock:L), replace(spell),
@@ -89,6 +97,9 @@ options_source(match_class(warlock:L), replace(spell),
 options(match_class(warlock:L), replacing(spell, Name),
         learnable_proper_spell(warlock)) :-
     choice_member(match_class(warlock:L), replace(spell), Name).
+%hide_base_option(match_class(warlock:_), replacing(spell,Old), Spell) :-
+%    (known_spell(Origin, Spell),Origin =.. [warlock|_])
+%    ; Spell = Old.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Pact boons.
