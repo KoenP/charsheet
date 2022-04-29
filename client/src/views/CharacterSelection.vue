@@ -1,8 +1,8 @@
 <template>
   <div>
-    <example-drop-down v-for="charOption in characterListOptions"
-                       :disabled="loading"
-                       :key="`${charOption.id}-${charOption.origin}`"
+    <example-drop-down v-for="(charOption, index) in characterListOptions"
+                       :key="index"
+                       :disabled="applicationIsBlocked"
                        :options="charOption.spec.list"
                        :title="charOption.origin"
                        @input="selectedChoice => updateModel(selectedChoice, charOption)" />
@@ -22,7 +22,7 @@ import { fromCharacterOptionToChoice } from "../util/mapper-functions";
 
 @Component({ components: { ExampleDropDown } })
 export default class CharacterSelection extends Vue {
-  public loading = false;
+  public applicationIsBlocked = false;
 
   public async created(): Promise<void> {
     await characterOptionModule.initCharacterOptions();
@@ -40,7 +40,7 @@ export default class CharacterSelection extends Vue {
     selectedChoice: string,
     characterOption: ICharacterOption
   ): Promise<void> {
-    this.loading = true;
+    this.applicationIsBlocked = true;
     try {
       await characterOptionModule.updateCharacterOptions(
         fromCharacterOptionToChoice(characterOption, selectedChoice)
@@ -48,7 +48,7 @@ export default class CharacterSelection extends Vue {
     } catch (ex) {
       console.error(ex);
     } finally {
-      this.loading = false;
+      this.applicationIsBlocked = false;
     }
   }
 }
