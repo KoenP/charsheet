@@ -22,7 +22,6 @@ export default class ExampleDropDown extends Vue {
   public options!: string[];
   @Prop()
   public title!: string;
-
   @Prop()
   public disabled!: string;
 }

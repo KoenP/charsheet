@@ -1,18 +1,19 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import CharacterSelection from '../views/CharacterSelection.vue';
+import { Routes } from './Routes';
 
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'CharacterSelection',
+    name: Routes.CharacterSelection,
     component: CharacterSelection
   },
   {
     path: '/about',
-    name: 'About',
+    name: Routes.About,
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -21,7 +22,6 @@ const routes: Array<RouteConfig> = [
 ]
 
 const router = new VueRouter({
-  mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
