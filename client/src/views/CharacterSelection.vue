@@ -4,12 +4,16 @@
                        :disabled="loading"
                        :key="`${charOption.id}-${charOption.origin}`"
                        :options="charOption.spec.list"
-                       :title="charOption.origin"
+                       :title="dropDownTitle(charOption)"
                        @input="selectedChoice => updateModel(selectedChoice, charOption)" />
   </div>
 </template>
 
 <script lang="ts">
+    // <example-drop-down v-for="x in [0]"
+    //                    :key="${x}"
+    // >
+
 import {
   IListCharacterOption,
   isListCharacterOption,
@@ -51,7 +55,12 @@ export default class CharacterSelection extends Vue {
       this.loading = false;
     }
   }
+
+  public dropDownTitle(charOption: ICharacterOption): string {
+    return charOption.id + " from " + charOption.origin;
+  }
 }
+
 </script>
 
 <style lang="scss">
