@@ -1,50 +1,35 @@
 <template>
     <div>
-        <h4> {{id}} from {{origin}} </h4>
-        <select :disabled="disabled"
-                @change="handleChange">
-            <option disabled selected value> -- select an option -- </option>
-            <option v-for="option in options" :key="option">
-                {{option}}
-            </option>
-        </select>
-        <!--
-        <select :disabled="disabled"
-                @change="event => $emit('input',event.target.value)">
-            <option v-for="option in options"
-                    :key="option">
-            {{option}}
-            </option>
-        </select>
-        -->
-
+        <h4> {{charoption.id}} from {{charoption.origin}} </h4>
+        <ListSpec></ListSpec>
+        <ListSpec />
+        
+        <!-- ListSpecComponent disabled="false" selectedValue="undefined" :options="charoption.spec.list" /-->
     </div>
 </template>
 
-
 <script setup lang="ts">
     import { Ref, computed, ref, defineProps, defineEmits } from 'vue'
-    import { IChoice } from '@/types';
+    import { IChoice, ICharacterOption } from '@/types';
+    // import { ListSpecComponent } from './ListSpecComponent.vue'
+    import { ListSpec } from '@/components/ListSpec.vue';
 
-    const emit = defineEmits<{
-        (e: 'choice', choice: IChoice): void
-    }>()
+    // const emit = defineEmits<{
+    //     (e: 'choice', choice: IChoice): void
+    // }>()
 
     const props = defineProps<{
-        origin: string,
-        id: string,
-        options?: string[],
-        selected?: string
+        charoption: ICharacterOption
     }>()
 
     const disabled: Ref<boolean> = ref(false)
 
-    async function handleChange(event: Event) {
-        emit('choice', {source: props.origin,
-                        id: props.id,
-                        choice: event.target.value
-                       })
-    }
+    // async function handleChange(event: Event) {
+    //     emit('choice', {source: props.charoption.origin,
+    //                     id: props.charoption.id,
+    //                     choice: event.target.value
+    //                    })
+    // }
 
     // const prompt = "<option disabled selected value> -- select an option -- </option>";
 </script>

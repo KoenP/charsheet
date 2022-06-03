@@ -1,35 +1,56 @@
 <template>
   <div class="sidenav" id="sidenav">
-    <button>test</button>
+    <button v-for="level in levels" :key="level" @click="selectedLevel = level">
+      Level {{level}}
+    </button>
   </div>
   <div class="main">
-    {{charOptions}}
-    <div v-for="option in charOptions" :key="(option.origin,option.id)">
-      <OptionSelector :origin="option.origin" :id="option.id" :options="option.spec.list"
-                      @choice="api.registerChoice"
-      />
+    <div v-for="(options, category) in charOptionsAtCurrentLevelByCategory" :key="category">
+      <h2>From {{category}}</h2>
+        <div v-for="option in options" :key="(option.origin,option.id)">
+          <OptionSelector :charoption="option" @choice="registerChoice"
+          />
+        </div>
     </div>
+    {{charOptions}}
   </div>
 </template>
 
 <script setup lang="ts">
-import { api } from './request'
-import { Ref, reactive, ref, onMounted } from 'vue'
-import { ICharacterOption, IChoice } from './types'
-import OptionSelector from './components/OptionSelector.vue'
-  // todo: suppress vs code error, this is correct
+  // :origin="option.origin" :id="option.id" :options="option.spec.list"
+  import { api } from './request'
+  import { Ref, ComputedRef, computed, reactive, ref, onMounted } from 'vue'
+  import { ICharacterOption, IChoice } from './types'
+  import { nub, sortNumbers, groupBy } from './util'
+  import OptionSelector from '@/components/OptionSelector.vue'
+  import ListSpec from '@/components/ListSpec.vue'
+    // todo: suppress vs code error, this is correct
 
-const charOptions: Ref<ICharacterOption[]> = ref([]) // should this be a reactive instead of a ref?
-async function updateCharOptions(): Promise<void> {
-  api.getPossibleCharacterOptions().then(options => charOptions.value = options)
-}
+  const charOptions: Ref<ICharacterOption[]> = ref([]) // should this be a reactive instead of a ref?
+  async function updateCharOptions(): Promise<void> {
+    api.getPossibleCharacterOptions().then(options => charOptions.value = options)
+  }
 
-// async function registerChoice(choice: IChoice) {
-//   console.log(choice)
-//   api.registerChoice(choice)
-// }
+  const levels = computed(() => 
+    nub(sortNumbers(charOptions.value.map(opt => opt.charlevel))))
+  const selectedLevel: Ref<number> = ref(1)
 
-onMounted(updateCharOptions)
+  const charOptionsAtCurrentLevelByCategory
+    : ComputedRef<{[category: string]: ICharacterOption[]}>
+    = computed(function() {
+       const filteredByLevel = charOptions.value.filter(opt => opt.charlevel === selectedLevel.value)
+       return groupBy(opt => opt.origin_category, filteredByLevel)
+      })
+
+  const charOptionsForSelectedLevel = computed(() => 
+    charOptions.value.filter(opt => opt.charlevel === selectedLevel.value))
+
+  async function registerChoice(choice: IChoice) {
+    await api.registerChoice(choice)
+    await updateCharOptions()
+  }
+
+  onMounted(updateCharOptions)
 </script>
 
 <style>
