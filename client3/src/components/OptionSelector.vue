@@ -3,7 +3,7 @@
         <h4> {{charoption.id}} from {{charoption.origin}} </h4>
         <SubSelector
             :spec="charoption.spec"
-            :selected="(charoption.choice as Selection | null)"
+            :selected="charoption.choice"
             :disabled="disabled"
             @choice="selection =>
                 $emit('choice',
@@ -15,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
+    import { IChoice, ICharacterOption, Selection } from '@/types';
     import { ComputedRef, Ref, computed, ref, defineProps, defineEmits } from 'vue'
-    import { IChoice, ICharacterOption } from '@/types';
     import ListSpec from '@/components/ListSpec.vue';
     import SubSelector from './SubSelector.vue';
 

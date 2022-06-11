@@ -6,12 +6,20 @@
         :options="spec.list"
         @choice="selection => $emit('choice', selection)"
     />
+    <UniqueFromSelector
+        v-else-if="spec.spectype === 'unique_from'"
+        :selected="selected"
+        :subspec="spec.spec"
+        :num="spec.num"
+        @choice="selection => $emit('choice', selection)"
+    />
 </template>
 
 <script setup lang="ts">
-    import { ICharacterOption, Spec } from '@/types';
+    import { ICharacterOption, Spec, Selection } from '@/types';
     import { defineEmits, defineProps } from 'vue';
     import ListSpec from './ListSpec.vue';
+    import UniqueFromSelector from './UniqueFromSelector.vue';
 
     const props = defineProps<{
         spec: Spec,
