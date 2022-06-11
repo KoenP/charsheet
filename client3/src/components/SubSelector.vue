@@ -8,7 +8,7 @@
     />
     <UniqueFromSelector
         v-else-if="spec.spectype === 'unique_from'"
-        :selected="selected"
+        :selected="selected === null ? [] : selected"
         :subspec="spec.spec"
         :num="spec.num"
         @choice="selection => $emit('choice', selection)"

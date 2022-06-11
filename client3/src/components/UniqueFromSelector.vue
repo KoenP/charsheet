@@ -7,6 +7,23 @@
         :key="i"
         @choice="selected => updateSelected(selected, i)"
     />
+    <SubSelector
+        v-if="selected.length < num"
+        :selected="null"
+        :spec="subspec"
+        :disabled="false"
+        :key="selected.length"
+        @choice="appendSelected"
+    />
+    <template v-if="num - selected.length > 0">
+        <SubSelector
+            v-for="i in (num - selected.length - 1)"
+            :selected="null"
+            :spec="subspec"
+            :disabled="true"
+            :key="i + selected.length"
+        />
+    </template>
 </template>
 
 <script setup lang="ts">
@@ -29,6 +46,12 @@ import { validate } from '@babel/types';
     async function updateSelected(sel: Selection, i: number): Promise<void> {
         let newSelected =
             "[" + props.selected.map((val,j) => i === j ? sel : val).join(",") + "]"
+        console.log(newSelected)
+        emit('choice', newSelected)
+    }
+
+    async function appendSelected(sel: Selection) : Promise<void> {
+        let newSelected = "[" + props.selected.concat([sel]) + "]"
         console.log(newSelected)
         emit('choice', newSelected)
     }
