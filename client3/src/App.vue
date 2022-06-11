@@ -8,8 +8,7 @@
     <div v-for="(options, category) in charOptionsAtCurrentLevelByCategory" :key="category">
       <h2>From {{category}}</h2>
         <div v-for="option in options" :key="(option.origin,option.id)">
-          <OptionSelector :charoption="option" @choice="registerChoice"
-          />
+          <OptionSelector :charoption="option" @choice="registerChoice"/>
         </div>
     </div>
     {{charOptions}}
@@ -46,6 +45,7 @@
     charOptions.value.filter(opt => opt.charlevel === selectedLevel.value))
 
   async function registerChoice(choice: IChoice) {
+    console.log(choice)
     await api.registerChoice(choice)
     await updateCharOptions()
   }

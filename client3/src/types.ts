@@ -1,11 +1,13 @@
 export interface ICharacterOption {
   charlevel: number;
-  choice: string | null;
+  choice: Selection | null; // TODO: naming is horrible :(
   id: string;
   origin: string;
   origin_category: string;
   spec: Spec
 }
+
+export type Selection = (string | number | Selection[])
 
 export interface IListCharacterOption extends ICharacterOption{
   spec: ListSpec;
@@ -15,36 +17,36 @@ export interface IUniqueFromCharacterOption extends ICharacterOption {
   spec: UniqueFromSpec;
 }
 
-type Spec = (UniqueFromSpec | ListSpec);
+export type Spec = (UniqueFromSpec | ListSpec);
 
-type SpecType = 'list' | 'unique_from'
+export type SpecType = 'list' | 'unique_from'
 
-type SpecBase = {
+export type SpecBase = {
   spectype: SpecType;
 }
 
-interface UniqueFromSpec extends SpecBase {
+export interface UniqueFromSpec extends SpecBase {
   num: number;
   spec: Spec;
   spectype: 'unique_from';
 }
 
-interface ListSpec extends SpecBase {
+export interface ListSpec extends SpecBase {
   list: string[];
   spectype: 'list';
 } 
 
 
-export function isListCharacterOption(characterOption: ICharacterOption): boolean{
-  return characterOption.spec.spectype === 'list';
+export function isListSpec(spec: Spec): boolean{
+  return spec.spectype === 'list';
 }
 
-export function isUniqueFromCharacterOption(characterOption: ICharacterOption): boolean{
-  return characterOption.spec.spectype === 'unique_from';
+export function isUniqueFromSpec(spec: Spec): boolean{
+  return spec.spectype === 'unique_from';
 }
 
 export interface IChoice {
   source: string;
   id: string;
-  choice: string | string[];
+  choice: Selection;
 }
