@@ -1,8 +1,16 @@
 <template>
     <select :disabled="disabled"
             @change="event => $emit('choice', event.target.value)">
-        <option v-if="selected === null" disabled selected value> -- select an option -- </option>
-        <option v-for="option in filteredOptions" :key="option" :selected="option === selected">
+        <option v-if="selected === null" disabled selected value>
+            -- select an option --
+        </option>
+        <option v-else-if="!options.includes(selected)" disabled selected value>
+            -- ERROR: [{{selected}}] not a valid choice --
+        </option>
+        <option
+            v-for="option in filteredOptions"
+            :key="option"
+            :selected="option === selected">
             {{option}}
         </option>
     </select>
@@ -25,6 +33,8 @@ import OptionSelectorVue from './OptionSelector.vue';
         (e:'choice', selection:Selection): void
     }>()
 
+    // Sometimes local filters might apply (for instance if this list is part of
+    // a UniqueFromSelector).
     const filteredOptions : ComputedRef<string[]> = computed(() =>
         props.options.filter(x =>
             (!props.filter.includes(x)) || x === props.selected))

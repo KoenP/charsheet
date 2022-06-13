@@ -1,4 +1,5 @@
 <template>
+    <!-- Selectors for which a choice has already been made. -->
     <SubSelector 
         v-for="(sel, i) in selected"
         :selected="sel"
@@ -8,6 +9,11 @@
         :filter="subFilter"
         @choice="selected => updateSelected(selected, i)"
     />
+
+    <!-- 
+        If there are less than num choices already selected,
+        we add a selector to add a new choice.
+    -->
     <SubSelector
         v-if="selected.length < num"
         :selected="null"
@@ -17,6 +23,8 @@
         :filter="subFilter"
         @choice="appendSelected"
     />
+
+    <!-- Disabled selectors for unmade choices.  -->
     <template v-if="num - selected.length > 0">
         <SubSelector
             v-for="i in (num - selected.length - 1)"
@@ -40,29 +48,39 @@ import { validate } from '@babel/types';
         selected: Selection[],
         subspec: Spec,
         num: number,
-        filter: string[]
+        filter: string[],
+        unique: boolean
     }>()
 
     const emit = defineEmits<{
         (e: 'choice', selection: Selection): void
     }>()
 
+    // If this is a unique_from spec and a choice has been selected in one
+    // of this component's subselectors, it shouldn't be offered in the other
+    // subselectors.
     const subFilter: ComputedRef<string[]> = computed(function() {
-        const newElems: string[] =
-            props.selected.filter(x => typeof x === "string") as string[]
-        return props.filter.concat(newElems)
+        if (props.unique) { 
+            const newElems: string[] =
+                props.selected.filter(x => typeof x === "string") as string[]
+            return props.filter.concat(newElems)
+        }
+        else {
+            return props.filter
+        }
     })
 
+    // Update a previously made choice.
     async function updateSelected(sel: Selection, i: number): Promise<void> {
+        // TODO!! this is a horror show
         let newSelected =
             "[" + props.selected.map((val,j) => i === j ? sel : val).join(",") + "]"
-        console.log(newSelected)
         emit('choice', newSelected)
     }
 
+    // Add a new choice.
     async function appendSelected(sel: Selection) : Promise<void> {
         let newSelected = "[" + props.selected.concat([sel]) + "]"
-        console.log(newSelected)
         emit('choice', newSelected)
     }
 

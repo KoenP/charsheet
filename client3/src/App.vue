@@ -1,6 +1,11 @@
 <template>
   <div class="sidenav" id="sidenav">
-    <button v-for="level in levels" :key="level" @click="selectedLevel = level">
+    <button
+      v-for="level in levels"
+      :key="level"
+      :class="level === selectedLevel ? 'selected' : null"
+      @click="selectedLevel = level"
+    >
       Level {{level}}
     </button>
   </div>
@@ -11,7 +16,6 @@
           <OptionSelector :charoption="option" @choice="registerChoice"/>
         </div>
     </div>
-    {{charOptions}}
   </div>
 </template>
 
@@ -23,6 +27,7 @@
   import { nub, sortNumbers, groupBy } from './util'
   import OptionSelector from '@/components/OptionSelector.vue'
   import ListSpec from '@/components/ListSpec.vue'
+  import OrSelector from './components/OrSelector.vue'
     // todo: suppress vs code error, this is correct
 
   const charOptions: Ref<ICharacterOption[]> = ref([]) // should this be a reactive instead of a ref?
