@@ -4,6 +4,7 @@
         :disabled="disabled"
         :selected="(selected as string | null)"
         :options="spec.list"
+        :filter="filter"
         @choice="selection => $emit('choice', selection)"
     />
     <UniqueFromSelector
@@ -11,6 +12,7 @@
         :selected="selected === null ? [] : selected"
         :subspec="spec.spec"
         :num="spec.num"
+        :filter="filter"
         @choice="selection => $emit('choice', selection)"
     />
 </template>
@@ -24,7 +26,8 @@
     const props = defineProps<{
         spec: Spec,
         selected: Selection | null,
-        disabled: boolean
+        disabled: boolean,
+        filter?: string[]
     }>()
 
     const emit = defineEmits<{

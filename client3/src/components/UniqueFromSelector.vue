@@ -5,6 +5,7 @@
         :spec="subspec"
         :disabled="false"
         :key="i"
+        :filter="subFilter"
         @choice="selected => updateSelected(selected, i)"
     />
     <SubSelector
@@ -13,6 +14,7 @@
         :spec="subspec"
         :disabled="false"
         :key="selected.length"
+        :filter="subFilter"
         @choice="appendSelected"
     />
     <template v-if="num - selected.length > 0">
@@ -22,12 +24,13 @@
             :spec="subspec"
             :disabled="true"
             :key="i + selected.length"
+            :filter="subFilter"
         />
     </template>
 </template>
 
 <script setup lang="ts">
-    import { defineProps, defineEmits } from 'vue';
+    import { defineProps, defineEmits, ComputedRef, computed } from 'vue';
     import SubSelector from './SubSelector.vue';
     import { Selection, Spec, IUniqueFromCharacterOption } from '@/types';
 import { validate } from '@babel/types';
@@ -36,12 +39,19 @@ import { validate } from '@babel/types';
     const props = defineProps<{
         selected: Selection[],
         subspec: Spec,
-        num: number
+        num: number,
+        filter: string[]
     }>()
 
     const emit = defineEmits<{
         (e: 'choice', selection: Selection): void
     }>()
+
+    const subFilter: ComputedRef<string[]> = computed(function() {
+        const newElems: string[] =
+            props.selected.filter(x => typeof x === "string") as string[]
+        return props.filter.concat(newElems)
+    })
 
     async function updateSelected(sel: Selection, i: number): Promise<void> {
         let newSelected =

@@ -5,6 +5,7 @@
             :spec="charoption.spec"
             :selected="charoption.choice"
             :disabled="disabled"
+            :filter="[]"
             @choice="selection =>
                 $emit('choice',
                       {source: charoption.origin,
