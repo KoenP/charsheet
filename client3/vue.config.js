@@ -15,5 +15,15 @@ module.exports = defineConfig({
     //   },
     // },
     // webSocketServer: false
+  },
+
+  pages: {
+    index: {
+      entry: 'src/EditCharacter.ts'
+    },
+
+    test: {
+      entry: 'src/SelectCharacterPage.ts'
+    }
   }
 })

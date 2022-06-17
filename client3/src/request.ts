@@ -11,6 +11,10 @@ class ApiClient {
     return (await apiClient.get('request/options')).data;
   }
 
+  public async listCharacters(): Promise<string[]> {
+    return (await apiClient.get('request/list_characters')).data.list
+  }
+
   public async registerChoice(choice: IChoice): Promise<void> {
     await apiClient.post('request/choice', {}, {
       params: choice
