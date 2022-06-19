@@ -1,3 +1,77 @@
+export interface ISheetData {
+  name: string;
+  summary: CharSummary;
+  ability_table: AbilityTableData;
+  skill_table: SkillTableData;
+  languages: string[],
+  weapons: string[],
+  armor: string[],
+  tools: string[],
+  notable_traits: NotableTraitCategory[];
+  attacks: AttackTableEntry[];
+  spellcasting_sections: ISpellcastingSection[];
+}
+
+export interface ISpellcastingSection {
+  origin: string;
+  spellcasting_ability: Ability;
+  spellcasting_ability_mod: number;
+  spell_save_dc: number;
+  spell_attack_mod: number;
+  max_prepared_spells: number;
+  spells: ISpell[];
+}
+
+export interface ISpell {
+  availability: 'always' | 'when prepared',
+  level: number,
+  name: string,
+  description: string,
+  casting_time: string,
+  range: string,
+  components: string[],
+  duration: string,
+  concentration: string,
+  to_hit: number,
+  dc: number,
+  dc_abi: Ability,
+  summary: string,
+  ritual: string,
+  resources: string[]
+}
+
+export interface CharSummary {
+  class: string[];
+  race: string;
+  level: number;
+  maxhp: number;
+  ac: number;
+  initiative: number;
+  speed: number;
+  hd: string;
+  pp: number;
+  prof_bon: number;
+}
+
+export type Ability = 'str' | 'con' | 'dex' | 'int' | 'wis' | 'cha'
+export type AbilityTableData
+  = { [key in Ability]: {mod: number, score: number, st: number} }
+
+export type SkillTableData = { [key: string]: number }
+
+export interface NotableTraitCategory {
+  category: string,
+  traits: {desc: string, name: string},
+}
+
+export interface AttackTableEntry {
+  name: string;
+  range: string;
+  to_hit_or_dc: string;
+  damage: string;
+  notes: string;
+}
+
 export interface ICharacterOption {
   charlevel: number;
   choice: Selection | null; // TODO: naming is horrible :(

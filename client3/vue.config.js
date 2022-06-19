@@ -19,11 +19,15 @@ module.exports = defineConfig({
 
   pages: {
     index: {
-      entry: 'src/EditCharacter.ts'
+      entry: 'src/SelectCharacterPage.ts'
     },
 
-    test: {
-      entry: 'src/SelectCharacterPage.ts'
+    edit: {
+      entry: 'src/EditCharacterPage.ts'
+    },
+
+    sheet: {
+      entry: 'src/CharacterSheetPage.ts'
     }
   }
 })

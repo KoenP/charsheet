@@ -10,6 +10,8 @@
     </button>
   </div>
   <div class="main">
+    <p><a href="/">&lt;&lt; Back to character selection</a></p>
+    <p><a href="sheet">Show character sheet</a></p>
     <div v-for="(options, category) in charOptionsAtCurrentLevelByCategory" :key="category">
       <h2>From {{category}}</h2>
         <div v-for="option in options" :key="(option.origin,option.id)">
@@ -21,13 +23,13 @@
 
 <script setup lang="ts">
   // :origin="option.origin" :id="option.id" :options="option.spec.list"
-  import { api } from './request'
+  import { api } from '@/request'
   import { Ref, ComputedRef, computed, reactive, ref, onMounted } from 'vue'
-  import { ICharacterOption, IChoice } from './types'
-  import { nub, sortNumbers, groupBy } from './util'
+  import { ICharacterOption, IChoice } from '@/types'
+  import { nub, sortNumbers, groupBy } from '@/util'
   import OptionSelector from '@/components/OptionSelector.vue'
   import ListSpec from '@/components/ListSpec.vue'
-  import OrSelector from './components/OrSelector.vue'
+  import OrSelector from '@/components/OrSelector.vue'
     // todo: suppress vs code error, this is correct
 
   const charOptions: Ref<ICharacterOption[]> = ref([]) // should this be a reactive instead of a ref?

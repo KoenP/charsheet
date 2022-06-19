@@ -61,32 +61,18 @@ hit_dice_string(Str) :-
 
 % Ability table.
 ability_table_json_dict(Dict) :-
-    findall(Pair,
-            ability_table_cell_pair(Pair),
-            Pairs),
+    findall(Entry, ability_table_entry(Entry), Pairs),
     dict_pairs(Dict, _, Pairs).
 
-ability_table_cell_pair(Id-Val) :-
-    ability(Abi),
-    ability_table_cell_suffix_pred(Suffix, Pred),
-    Goal =.. [Pred, Abi, Val],
-    call(Goal),
-    atom_concat(Abi, Suffix, Id).
-ability_table_cell_suffix_pred(score, ability).
-ability_table_cell_suffix_pred(mod, ability_mod_str).
-ability_table_cell_suffix_pred(st, saving_throw_str).
-ability_mod_str(Abi, Str) :-
+ability_table_entry(Abi-_{score: Score, mod: Mod, st: ST}) :-
+    ability(Abi, Score),
     ability_mod(Abi, Mod),
-    fmt(format_bonus(Mod), Str).
-saving_throw_str(Abi, Str) :-
-    saving_throw(Abi, Mod),
-    fmt(format_bonus(Mod), Str).
+    saving_throw(Abi, ST).
 
 % Skill table.
 skill_table_json_dict(Dict) :-
-    findall(Skill-ModStr,
-            (skill(Skill,Mod),
-             fmt(format_bonus(Mod),ModStr)),
+    findall(Skill-Mod,
+            skill(Skill,Mod),
             Pairs),
     dict_pairs(Dict, _, Pairs).
 

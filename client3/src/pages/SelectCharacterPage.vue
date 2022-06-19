@@ -7,11 +7,11 @@
         Or select a saved character:
         <ul>
             <li
-            v-for="char in characterList"
-            :key="char"
-            class="charbtn"
+                v-for="char in characterList"
+                :key="char"
+                class="charbtn"
             >
-                <button>{{char}}</button>
+                <button @click="selectSavedCharacter(char)">{{char}}</button>
             </li>
         </ul>
     </div>
@@ -19,9 +19,14 @@
 
 <script setup lang="ts">
     import { Ref, ref, onMounted } from 'vue'
-    import { api } from './request'
+    import { api } from '@/request'
 
     const characterList: Ref<string[]> = ref([])
+    
+    async function selectSavedCharacter(char:string): Promise<void> {
+        await api.selectSavedCharacter(char)
+        window.location.href = 'edit'
+    }
 
     onMounted(() => api.listCharacters().then(chars => characterList.value = chars))
 </script>

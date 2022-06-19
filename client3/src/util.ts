@@ -21,3 +21,7 @@ export function groupBy<Elem> (getKey: (arg: Elem) => Key, arr: Elem[])
     }
     return map
 }
+
+export function formatModifier(mod: number): string {
+    return (mod >= 0 ? "+" : "") + mod.toString()
+}
