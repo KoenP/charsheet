@@ -21,9 +21,10 @@ sheet_json_dict(_{name: Name,
     findall(X, trait(tools(X)), Tools),
     notable_traits_json_dict(NotableTraits),
     attack_table_json_dict(Attacks),
-    findall([Lvl,N], spell_slots(Lvl,N), SpellSlots),
+    spell_slot_dict(SpellSlots),
     pact_magic_json_dict(PactMagic),
     findall(X, spellcasting_section_json_dict(X), SpellcastingSections).
+
 
 call_snd(Id-Goal, Id-Result) :-
     Goal =.. [Pred|Args],
@@ -112,7 +113,10 @@ attack_table_json_dict_entry(_{name: Name,
     fmt(format_list(NotesVal), Notes).
 
 % Spellcasting section.
-
+spell_slot_dict(Dict) :-
+    findall(Atom-N, (spell_slots(Lvl,N), atom_number(Atom,Lvl)), SpellSlots),
+    dict_pairs(Dict, _, SpellSlots).
+    
 %spell_slots_dict_entry(PactMagicStr, N) :-
 %    pact_magic_slots(N),
 %    pact_magic_slot_level(Level),

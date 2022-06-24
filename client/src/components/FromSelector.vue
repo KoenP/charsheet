@@ -41,7 +41,6 @@
     import { defineProps, defineEmits, ComputedRef, computed } from 'vue';
     import SubSelector from './SubSelector.vue';
     import { Selection, Spec, IUniqueFromCharacterOption } from '@/types';
-import { validate } from '@babel/types';
 
     // TODO: define type for this, it's shared with ListSpec etc.
     const props = defineProps<{

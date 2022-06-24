@@ -23,6 +23,10 @@
         <option disabled selected value> -- select an option -- </option>
         <option v-for="option in classOptions" :key="option">{{option}}</option>
       </select>
+      <ul class="todo">
+        <li> Check multiclass requirements.  </li>
+        <li> Default select base class or class of previous level.  </li>
+      </ul>
     </template>
 
     <template v-else>
@@ -88,6 +92,13 @@
 </script>
 
 <style>
+.todo:before {
+  content: "TODO: ";
+}
+.todo {
+  color: gray;
+}
+
 .sidenav {
     height: 100%;
     width: 160px;

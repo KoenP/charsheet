@@ -100,6 +100,22 @@
             </table>
 
             <h2>Spellcasting</h2>
+            <table v-if="Object.keys(sheet.spell_slots) > 0 || sheet.pact_magic !== null">
+                <caption><h4>Spell slots</h4></caption>
+                <tr><th>Level</th><th v-for="lvl in 9" :key="lvl">{{lvl}}</th></tr>
+                <tr v-if="Object.keys(sheet.spell_slots) > 0">
+                    <th>Spell slots</th>
+                    <td v-for="lvl in 9" :key="lvl">
+                        <input type="checkbox" v-for="i in spellSlotsForSpellLevel(lvl)" :key="i"/>
+                    </td>
+                </tr>
+                <tr v-if="sheet.pact_magic !== null">
+                    <th>Pact slots</th>
+                    <td v-for="lvl in 9" :key="lvl">
+                        <input type="checkbox" v-for="i in pactSlotsAtSpellLevel(lvl)" :key="i"/>
+                    </td>
+                </tr>
+            </table>
 
             <div
                 v-for="section in sheet.spellcasting_sections"
@@ -121,7 +137,9 @@
                         <th>Res</th>
                     </tr>
                     <tr v-for="spell in section.spells" :key="spell.name">
-                        <td>{{formatAvailability(spell)}}</td>
+                        <td>
+                            <span v-html="formatAvailability(spell)"></span>
+                        </td>
                         <td>{{spell.level}}</td>
                         <td>{{spell.name}}</td>
                         <td>{{spell.casting_time}}</td>
@@ -184,11 +202,21 @@
     const sheet: Ref<ISheetData | null> = ref(null)
 
     function formatAvailability(spell: ISpell): string {
-        return "TODO"
-        // return {
-        //     'always': "✓",
-        //     'when prepared': `<input type="checkbox">`
-        // }[spell.availability]
+        //return "TODO"
+        return spell.availability === 'always'
+            ? "✓"
+            : '<input type="checkbox">' // "when prepared" case
+    }
+
+    function spellSlotsForSpellLevel(lvl: number): number {
+        const nullToZero = (x: any) => x === null ? 0 : x
+        return nullToZero(sheet.value.spell_slots?.[lvl])
+    }
+
+    function pactSlotsAtSpellLevel(lvl: number): number {
+        return sheet.value.pact_magic.slot_level === lvl
+            ? sheet.value.pact_magic.slot_count 
+            : 0
     }
 
     function formatToHitOrDc(spell: ISpell): string {
