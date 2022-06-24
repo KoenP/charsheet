@@ -1,6 +1,13 @@
 <template>
     <div>
-        <button>Create a new character</button>
+        Create a new character:
+        <p>
+            <input type="text" v-model="newCharName" placeholder="Enter new character name">
+            <button @click="createNewCharacter(newCharName)"
+                    :disabled="newCharName === ''">
+                Create
+            </button>
+        </p>
     </div>
 
     <div>
@@ -22,9 +29,16 @@
     import { api } from '@/request'
 
     const characterList: Ref<string[]> = ref([])
+
+    const newCharName: Ref<string> = ref("")
     
     async function selectSavedCharacter(char:string): Promise<void> {
         await api.selectSavedCharacter(char)
+        window.location.href = 'edit'
+    }
+
+    async function createNewCharacter(name: string): Promise<void> {
+        await api.createNewCharacter(name)
         window.location.href = 'edit'
     }
 

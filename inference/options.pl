@@ -186,8 +186,6 @@ options_json(Origin, Id, _{origin: OriginStr, origin_category: CategoryStr, char
     choice_json(Origin, Id, Spec, ChoiceJson),
     term_string(Origin, OriginStr),
     term_string(Id, IdStr).
-    %fmt(format_term(Origin), OriginStr),
-    %fmt(format_term(Id), IdStr).
 
 %! resolve_not_eligible
 %

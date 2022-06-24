@@ -7,6 +7,10 @@ const apiClient = axios.create({
 });
 
 class ApiClient {
+  public async getCurrentCharName(): Promise<string> {
+    return (await apiClient.get('request/name')).data
+  }
+
   public async getPossibleCharacterOptions(): Promise<ICharacterOption[]> {
     return (await apiClient.get('request/options')).data;
   }
@@ -15,9 +19,25 @@ class ApiClient {
     return (await apiClient.get('request/list_characters')).data.list
   }
 
+  public async listClassOptions(): Promise<string[]> {
+    return (await apiClient.get('request/list_class_options')).data
+  }
+
   public async selectSavedCharacter(char: string): Promise<void> {
     return (await apiClient.post('request/load_character', {}, {
       params: {name: char}
+    }))
+  }
+
+  public async gainLevel(className: string): Promise<void> {
+    return (await apiClient.post('request/gain_level', {}, {
+      params: {class: className}
+    }))
+  }
+
+  public async createNewCharacter(name: string): Promise<void> {
+    return (await apiClient.post('request/new_character', {}, {
+      params: {name: name}
     }))
   }
 

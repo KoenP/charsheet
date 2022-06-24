@@ -2,6 +2,7 @@
     <template v-if="sheet !== null">
         <div class="container">
             <header>
+                <button @click="editCharacter" style="float:right">edit</button>
                 <h1>{{sheet.name}}</h1>
             </header>
             <article>
@@ -176,9 +177,9 @@
 
 <script setup lang="ts">
     import { ref, Ref, onMounted } from 'vue';
-    import { api } from '@/request.ts';
+    import { api } from '@/request';
     import { ISpell, ISheetData, CharSummary, Ability, AbilityTableData, SkillTableData, NotableTrait, AttackTableEntry } from '@/types.ts';
-    import { formatModifier } from '@/util.ts'
+    import { formatModifier } from '@/util'
 
     const sheet: Ref<ISheetData | null> = ref(null)
 
@@ -191,8 +192,6 @@
     }
 
     function formatToHitOrDc(spell: ISpell): string {
-        console.log(spell.to_hit)
-        console.log(spell.dc)
         const list = notNullSingleton(spell.to_hit)
             .map(formatModifier)
             .concat(notNullSingleton(spell.dc)
@@ -200,9 +199,14 @@
         return list.join(",");
     }
 
-    function notNullSingleton(val) {
+    function notNullSingleton(val: any) {
         return (val !== null) ? [val] : [];
     }
+
+    async function editCharacter(): Promise<void> {
+        window.location.href = 'edit'
+    }
+    
     onMounted(async function () {
         sheet.value = await api.sheet()
     })

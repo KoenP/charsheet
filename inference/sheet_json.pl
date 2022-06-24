@@ -40,12 +40,17 @@ summary_json_dict(Dict) :-
         maxhp-max_hp,
         ac-ac,
         initiative-initiative,
-        speed-speed,
-        hd-hit_dice_string,
+        speed-default_empty_string(speed),
+        hd-default_empty_string(hit_dice_string),
         pp-passive_perception,
         prof_bon-proficiency_bonus ],
     maplist(call_snd, IdGoals, Pairs),
     dict_pairs(Dict, _, Pairs).
+
+default_empty_string(Pred, X) :-
+    call(Pred, X),
+    !.
+default_empty_string(_, "").
 
 classes_str(Str) :-
     findall(ClassLevel, class_level(ClassLevel), ClassLevels),
@@ -53,7 +58,9 @@ classes_str(Str) :-
 
 race_str(Str) :-
     most_specific_race(Race),
+    !,
     fmt(format_term(Race), Str).
+race_str("").
 
 hit_dice_string(Str) :-
     hit_dice(HD),

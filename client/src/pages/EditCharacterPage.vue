@@ -8,16 +8,31 @@
     >
       Level {{level}}
     </button>
+    <button @click="selectedLevel = 'level up'">
+      Level up!
+    </button>
   </div>
   <div class="main">
+    <h1>{{charName}}</h1>
     <p><a href="/">&lt;&lt; Back to character selection</a></p>
     <p><a href="sheet">Show character sheet</a></p>
-    <div v-for="(options, category) in charOptionsAtCurrentLevelByCategory" :key="category">
-      <h2>From {{category}}</h2>
-        <div v-for="option in options" :key="(option.origin,option.id)">
-          <OptionSelector :charoption="option" @choice="registerChoice"/>
-        </div>
-    </div>
+
+    <template v-if="selectedLevel === 'level up'">
+      Level up as 
+      <select @change="event => gainLevel(event.target.value)">
+        <option disabled selected value> -- select an option -- </option>
+        <option v-for="option in classOptions" :key="option">{{option}}</option>
+      </select>
+    </template>
+
+    <template v-else>
+      <div v-for="(options, category) in charOptionsAtCurrentLevelByCategory" :key="category">
+        <h2>From {{category}}</h2>
+          <div v-for="option in options" :key="(option.origin,option.id)">
+            <OptionSelector :charoption="option" @choice="registerChoice"/>
+          </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -30,16 +45,20 @@
   import OptionSelector from '@/components/OptionSelector.vue'
   import ListSpec from '@/components/ListSpec.vue'
   import OrSelector from '@/components/OrSelector.vue'
-    // todo: suppress vs code error, this is correct
+
+  const charName: Ref<string> = ref("")
 
   const charOptions: Ref<ICharacterOption[]> = ref([]) // should this be a reactive instead of a ref?
   async function updateCharOptions(): Promise<void> {
-    api.getPossibleCharacterOptions().then(options => charOptions.value = options)
+    charOptions.value = await api.getPossibleCharacterOptions()
+    classOptions.value = await api.listClassOptions()
   }
+
+  const classOptions: Ref<string[]> = ref([])
 
   const levels = computed(() => 
     nub(sortNumbers(charOptions.value.map(opt => opt.charlevel))))
-  const selectedLevel: Ref<number> = ref(1)
+  const selectedLevel: Ref<number | 'level up'> = ref(1)
 
   const charOptionsAtCurrentLevelByCategory
     : ComputedRef<{[category: string]: ICharacterOption[]}>
@@ -52,12 +71,20 @@
     charOptions.value.filter(opt => opt.charlevel === selectedLevel.value))
 
   async function registerChoice(choice: IChoice) {
-    console.log(choice)
     await api.registerChoice(choice)
     await updateCharOptions()
   }
 
-  onMounted(updateCharOptions)
+  async function gainLevel(className: string) {
+    await api.gainLevel(className)
+    await updateCharOptions()
+    selectedLevel.value = levels.value.slice(-1)[0]
+  }
+
+  onMounted(async function () {
+    charName.value = await api.getCurrentCharName()
+    updateCharOptions()
+  })
 </script>
 
 <style>

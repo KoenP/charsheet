@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-    // TODO: rename ListSpec -> ...
+    // TODO: rename ListSpec -> ListSelector
     import { Ref, computed, ref, defineProps, defineEmits, ComputedRef } from 'vue'
     import { IChoice, ICharacterOption } from '@/types';
 import OptionSelectorVue from './OptionSelector.vue';
