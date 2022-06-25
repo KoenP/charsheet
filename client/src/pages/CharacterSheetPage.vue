@@ -100,10 +100,10 @@
             </table>
 
             <h2>Spellcasting</h2>
-            <table v-if="Object.keys(sheet.spell_slots) > 0 || sheet.pact_magic !== null">
+            <table v-if="Object.keys(sheet.spell_slots).length > 0 || sheet.pact_magic !== null">
                 <caption><h4>Spell slots</h4></caption>
                 <tr><th>Level</th><th v-for="lvl in 9" :key="lvl">{{lvl}}</th></tr>
-                <tr v-if="Object.keys(sheet.spell_slots) > 0">
+                <tr v-if="Object.keys(sheet.spell_slots).length > 0">
                     <th>Spell slots</th>
                     <td v-for="lvl in 9" :key="lvl">
                         <input type="checkbox" v-for="i in spellSlotsForSpellLevel(lvl)" :key="i"/>
@@ -144,7 +144,7 @@
                         <td>{{spell.name}}</td>
                         <td>{{spell.casting_time}}</td>
                         <td>{{spell.range}}</td>
-                        <td>{{spell.components}}</td>
+                        <td v-html="formatComponents(spell.components)"></td>
                         <td>{{spell.duration}}</td>
                         <td>{{spell.concentration}}</td>
                         <td>{{formatToHitOrDc(spell)}}</td>
@@ -196,7 +196,7 @@
 <script setup lang="ts">
     import { ref, Ref, onMounted } from 'vue';
     import { api } from '@/request';
-    import { ISpell, ISheetData, CharSummary, Ability, AbilityTableData, SkillTableData, NotableTrait, AttackTableEntry } from '@/types.ts';
+    import { ISpell, ISheetData, CharSummary, Ability, AbilityTableData, SkillTableData, NotableTrait, AttackTableEntry, PrologTerm } from '@/types.ts';
     import { formatModifier } from '@/util'
 
     const sheet: Ref<ISheetData | null> = ref(null)
@@ -226,6 +226,26 @@
                     .map(dc => `DC ${dc} (${spell.dc_abi})`));
         return list.join(",");
     }
+
+    function formatComponents(cpts: PrologTerm[]): string {
+        function formatComponent(cpt: PrologTerm): string {
+            return typeof cpt === "string"
+                ? cpt
+                : htmlTooltip(cpt.functor, cpt.args[0])
+        }
+        return cpts.map(formatComponent).join('')
+    }
+
+    function htmlTooltip(content: string, tooltiptext: string) {
+        return `<div class='tooltip'>${content}<span class='tooltiptext'>${tooltiptext}</span></div>`
+    }
+
+                            //<div :class="trait.desc !== null ? 'tooltip' : null">
+                            //    {{trait.name}}
+                            //    <span class="tooltiptext" v-if="trait.desc !== null">
+                            //        {{trait.desc}}
+                            //    </span>
+                            //</div>
 
     function notNullSingleton(val: any) {
         return (val !== null) ? [val] : [];

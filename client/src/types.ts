@@ -29,7 +29,7 @@ export interface ISpell {
   description: string,
   casting_time: string,
   range: string,
-  components: string[],
+  components: Array<string | {functor: 'm', args: string[]}>,
   duration: string,
   concentration: string,
   to_hit: number,
@@ -144,3 +144,5 @@ export interface IChoice {
   id: string;
   choice: Selection;
 }
+
+type PrologTerm = string | PrologTerm[] | {functor: string, args: PrologTerm[]}

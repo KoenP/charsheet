@@ -8,8 +8,11 @@
     >
       Level {{level}}
     </button>
-    <button @click="selectedLevel = 'level up'">
-      Level up!
+    <button
+      @click="selectedLevel = 'level up'"
+      :class="selectedLevel === 'level up' ? 'selected' : null"
+    >
+      +
     </button>
   </div>
   <div class="main">
@@ -37,6 +40,10 @@
           </div>
       </div>
     </template>
+
+    <ul class="todo">
+      <li>Don't update the whole edit page every time.</li>
+    </ul>
   </div>
 </template>
 
@@ -97,6 +104,7 @@
 }
 .todo {
   color: gray;
+  font-size: 8pt;
 }
 
 .sidenav {
@@ -136,21 +144,9 @@
     color: #ffffff;
 }
 
-.sidenav a {
-    padding: 6px 8px 6px 16px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-}
-
-.sidenav a:hover {
-    color: #f1f1f1;
-}
-
 .main {
-    margin-left: 160px;
-    padding: 0px 10px;
+  margin-left: 160px;
+  padding: 0px 10px;
 }
 
 

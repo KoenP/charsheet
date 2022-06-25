@@ -176,7 +176,7 @@ spell_json_dict(BaseOrigin,
     CastingTime   = Data.casting_time,
     RangeVal      = Data.range,
     fmt(format_range(RangeVal), Range),
-    Components    = "todo", %Data.components,
+    term_to_json(Data.components, Components),
     Duration      = Data.duration,
     Concentration = Data.concentration,
     maplist(term_string, ResourcesVal, ResourcesStrs),
@@ -200,3 +200,19 @@ resources_json(List, _{tag: list, val: JsonList}) :-
     maplist(resources_json, List, JsonList),
     !.
 resources_json(X, _{tag: val, val: X}).
+
+%! term_to_json(+List, -Json)
+%
+%  One-way conversion from terms to a canonical JSON representation of Prolog
+%  terms.
+%term_to_json(List, Jsons) :-
+%    is_list(List),
+%    !,
+%    maplist(term_to_json, List, Jsons).
+%term_to_json(Atomic, Atomic) :-
+%    atomic(Atomic), !.
+%term_to_json(Compound, _{functor: Functor, args: ArgsJson}) :-
+%    Compound =.. [Functor | Args],
+%    Args \= [],
+%    !,
+%    maplist(term_to_json, Args, ArgsJson).
