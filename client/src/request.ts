@@ -1,6 +1,6 @@
 import axios from 'axios';
 import qs from 'qs';
-import { ICharacterOption, IChoice, ISheetData } from './types';
+import { ICharacterOption, IChoice, ISheetData, AbilityTableData, Ability } from './types';
 
 const apiClient = axios.create({
   paramsSerializer: qs.stringify,
@@ -13,6 +13,10 @@ class ApiClient {
 
   public async getPossibleCharacterOptions(): Promise<ICharacterOption[]> {
     return (await apiClient.get('request/options')).data;
+  }
+
+  public async getAbilityTable(): Promise<AbilityTableData> {
+    return (await apiClient.get('request/ability_table')).data;
   }
 
   public async listCharacters(): Promise<string[]> {
@@ -50,6 +54,13 @@ class ApiClient {
       params: choice
     })
   }
+
+  public async registerBaseAbilityUpdate(ability: Ability, value: number): Promise<void> {
+    await apiClient.post('request/set_base_abilities', {}, {
+      params: {[ability]: value}
+    })
+  }
+
 }
 
 export const api = new ApiClient();

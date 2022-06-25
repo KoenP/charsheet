@@ -72,8 +72,9 @@ ability_table_json_dict(Dict) :-
     findall(Entry, ability_table_entry(Entry), Pairs),
     dict_pairs(Dict, _, Pairs).
 
-ability_table_entry(Abi-_{score: Score, mod: Mod, st: ST}) :-
+ability_table_entry(Abi-_{score: Score, base: Base, mod: Mod, st: ST}) :-
     ability(Abi, Score),
+    base_ability(Abi, Base),
     ability_mod(Abi, Mod),
     saving_throw(Abi, ST).
 

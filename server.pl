@@ -90,7 +90,7 @@ remote_query(_, '/save_character') :-
     write_character_file,
     reply_json_dict("success!").
 remote_query(_, '/ability_table') :-
-    abilities_table_jsondict(Dict),
+    ability_table_json_dict(Dict),
     reply_json_dict(Dict).
 remote_query(Request, '/set_base_abilities') :-
     member(search(Params), Request),
@@ -128,20 +128,6 @@ remote_query(_, '/list_class_options') :- % TODO: filter for available class opt
     findall(O, class_option(O), Options),
     reply_json_dict(Options).
     
-abilities_table_jsondict(_{base: Base, after_bonuses: AfterBonuses, mods: Mods}) :-
-    base_abilities_jsondict(Base),
-    final_abilities_jsondict(AfterBonuses),
-    ability_mods_jsondict(Mods).
-base_abilities_jsondict(Dict) :-
-    findall(A-V, base_ability(A,V), Abis),
-    dict_pairs(Dict, _, Abis).
-final_abilities_jsondict(Dict) :-
-    findall(A-V, ability(A,V), Abis),
-    dict_pairs(Dict, _, Abis).
-ability_mods_jsondict(Dict) :-
-    findall(A-M, (ability_mod(A,V), fmt(format_bonus(V),M)), Abis),
-    dict_pairs(Dict, _, Abis).
-
 quoted_term_string(T, S) :-
     term_string(T, S, [quoted(true)]).
 

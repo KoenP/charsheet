@@ -55,7 +55,7 @@ export interface CharSummary {
 
 export type Ability = 'str' | 'con' | 'dex' | 'int' | 'wis' | 'cha'
 export type AbilityTableData
-  = { [key in Ability]: {mod: number, score: number, st: number} }
+  = { [key in Ability]: {mod: number, base: number, score: number, st: number} }
 
 export type SkillTableData = { [key: string]: number }
 

@@ -33,6 +33,14 @@
     </template>
 
     <template v-else>
+      <div v-if="selectedLevel === 1">
+        <h2>Abilities</h2>
+        <AbilityTable
+          :abilityTableData="abilityTableData"
+          @updateBaseAbility="registerBaseAbilityUpdate"
+          :lock="lock"
+        />
+      </div>
       <div v-for="(options, category) in charOptionsAtCurrentLevelByCategory" :key="category">
         <h2>From {{category}}</h2>
           <div v-for="option in options" :key="(option.origin,option.id)">
@@ -51,21 +59,27 @@
   // :origin="option.origin" :id="option.id" :options="option.spec.list"
   import { api } from '@/request'
   import { Ref, ComputedRef, computed, reactive, ref, onMounted } from 'vue'
-  import { ICharacterOption, IChoice } from '@/types'
+  import { ICharacterOption, IChoice, AbilityTableData, Ability } from '@/types'
   import { nub, sortNumbers, groupBy } from '@/util'
   import OptionSelector from '@/components/OptionSelector.vue'
   import ListSpec from '@/components/ListSpec.vue'
   import OrSelector from '@/components/OrSelector.vue'
+  import AbilityTable from '@/components/AbilityTable.vue'
 
   const charName: Ref<string> = ref("")
-
   const charOptions: Ref<ICharacterOption[]> = ref([]) // should this be a reactive instead of a ref?
+  const classOptions: Ref<string[]> = ref([])
+  const abilityTableData: Ref<AbilityTableData | null> = ref(null)
+  const lock: Ref<boolean> = ref(false)
+
   async function updateCharOptions(): Promise<void> {
+    lock.value = true
+    // TODO: look at this shit. In a different order the ability table data doesn't load. Why. Whywhywhywhywhy
     charOptions.value = await api.getPossibleCharacterOptions()
     classOptions.value = await api.listClassOptions()
+    abilityTableData.value = await api.getAbilityTable()
+    lock.value = false
   }
-
-  const classOptions: Ref<string[]> = ref([])
 
   const levels = computed(() => 
     nub(sortNumbers(charOptions.value.map(opt => opt.charlevel))))
@@ -86,6 +100,11 @@
     await updateCharOptions()
   }
 
+  async function registerBaseAbilityUpdate(ability: Ability, value: number): Promise<void> {
+    await api.registerBaseAbilityUpdate(ability, value)
+    await updateCharOptions()
+  }
+
   async function gainLevel(className: string) {
     await api.gainLevel(className)
     await updateCharOptions()
@@ -94,7 +113,7 @@
 
   onMounted(async function () {
     charName.value = await api.getCurrentCharName()
-    updateCharOptions()
+    await updateCharOptions()
   })
 </script>
 
