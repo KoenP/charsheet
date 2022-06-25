@@ -86,6 +86,10 @@ saving_throw(Ability, Bonus) :-
     (class_saving_throw(Class, Ability)
     -> Bonus is Mod + ProfBon
     ;  Bonus = Mod).
+saving_throw(Ability, Bonus) :-
+    % Make this predicate not fail if we don't have an initial class yet.
+    ability_mod(Ability, Bonus),
+    \+ initial_class(_).
 
 total_racial_ability_bonus(Ability, Total) :-
     ability(Ability), % ground

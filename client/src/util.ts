@@ -22,6 +22,14 @@ export function groupBy<Elem> (getKey: (arg: Elem) => Key, arr: Elem[])
     return map
 }
 
+export function rangeInclusive(l: number, h: number): number[] {
+    const rng = Array(h-l+1)
+    for (let i = 0; i <= h - l; i++) {
+        rng[i] = l + i
+    }
+    return rng
+}
+
 export function formatModifier(mod: number): string {
     return (mod >= 0 ? "+" : "") + mod.toString()
 }

@@ -51,6 +51,8 @@
 
     <ul class="todo">
       <li>Don't update the whole edit page every time.</li>
+      <li>asi or feat doesn't initialize properly</li>
+      <li>invalid ability increases are still being shown</li>
     </ul>
   </div>
 </template>
@@ -60,7 +62,7 @@
   import { api } from '@/request'
   import { Ref, ComputedRef, computed, reactive, ref, onMounted } from 'vue'
   import { ICharacterOption, IChoice, AbilityTableData, Ability } from '@/types'
-  import { nub, sortNumbers, groupBy } from '@/util'
+  import { nub, sortNumbers, groupBy, rangeInclusive } from '@/util'
   import OptionSelector from '@/components/OptionSelector.vue'
   import ListSpec from '@/components/ListSpec.vue'
   import OrSelector from '@/components/OrSelector.vue'
@@ -81,8 +83,12 @@
     lock.value = false
   }
 
-  const levels = computed(() => 
-    nub(sortNumbers(charOptions.value.map(opt => opt.charlevel))))
+  // List of levels to display in the sidebar. The `.concat([1])` is to make
+  // sure we always at least show level 1, even if the data hasn't come in yet.
+  const levels = computed(() =>
+    rangeInclusive(1, Math.max(...charOptions.value.map(opt => opt.charlevel).concat([1]))))
+
+  // Level that's currently selected in the sidebar.
   const selectedLevel: Ref<number | 'level up'> = ref(1)
 
   const charOptionsAtCurrentLevelByCategory
