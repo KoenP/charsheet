@@ -26,12 +26,13 @@
                     <h4>Abilities</h4>
                 </caption>
                 <tr><th></th><th>Score</th><th>Mod</th><th>ST</th></tr>
-                <tr v-for="(data,ability) in sheet.ability_table"
+                <!-- tr v-for="(data,ability) in sheet.ability_table" -->
+                <tr v-for="ability in ['str','dex','con','int','wis','cha']"
                     :key="ability">
                     <th>{{ability}}</th>
-                    <td>{{data.score}}</td>
-                    <td>{{formatModifier(data.mod)}}</td>
-                    <td>{{formatModifier(data.st)}}</td>
+                    <td>{{sheet.ability_table[ability].score}}</td>
+                    <td>{{formatModifier(sheet.ability_table[ability].mod)}}</td>
+                    <td>{{formatModifier(sheet.ability_table[ability].st)}}</td>
                 </tr>
             </table>
 

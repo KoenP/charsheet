@@ -52,6 +52,13 @@ subclass_level(Subclass:Level) :-
     Subclass =.. [Class, _],
     class_level(Class:Level).
 
+%! base_class(+Class, -BaseClass)
+%
+%  Extract the base class from a class.
+base_class(Class, BaseClass) :-
+    Class =.. [BaseClass|_],
+    class_option(BaseClass).
+
 %! subclass_option(?Class, ?Subclass)
 subclass_option(_,_) :- false.
 options_source(match_class(Class:ClassLevel), subclass, subclass_option(Class)) :-
@@ -109,8 +116,9 @@ gained_level_in_class_at_charlevel(Class, CharLevel) :-
 
 %! reached_classlevel_at_charlevel(?ClassLevel, ?CharLevel)
 reached_classlevel_at_charlevel(Class:ClassLevel, CharLevel) :-
-    class_option(Class),
-    findall(L, gained_level_in_class_at_charlevel(Class,L), Ls),
+    base_class(Class, BaseClass),
+    class_option(BaseClass),
+    findall(L, gained_level_in_class_at_charlevel(BaseClass,L), Ls),
     enumerate(1, Ls, NLs),
     member(ClassLevel-CharLevel, NLs).
 

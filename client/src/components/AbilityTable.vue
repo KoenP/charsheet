@@ -17,7 +17,7 @@
                         @change="event => $emit('updateBaseAbility', abi, event.target.value)">
                 </td>
                 <td>{{abilityTableData[abi]['score']}}</td>
-                <td>{{abilityTableData[abi]['mod']}}</td>
+                <td>{{formatModifier(abilityTableData[abi]['mod'])}}</td>
             </tr>
         </template>
     </table>
@@ -29,8 +29,9 @@
 </template>
 
 <script setup lang="ts">
-    import {defineProps, defineEmits} from 'vue';
-    import {Ability, AbilityTableData} from '@/types'
+    import { defineProps, defineEmits } from 'vue';
+    import { Ability, AbilityTableData } from '@/types'
+    import { formatModifier } from '@/util';
 
     const props = defineProps<{
         abilityTableData: AbilityTableData | null,

@@ -1,7 +1,7 @@
 <template>
   <div class="sidenav" id="sidenav">
     <button
-      v-for="level in levels"
+      v-for="level in charLevel"
       :key="level"
       :class="level === selectedLevel ? 'selected' : null"
       @click="selectedLevel = level"
@@ -73,20 +73,22 @@
   const classOptions: Ref<string[]> = ref([])
   const abilityTableData: Ref<AbilityTableData | null> = ref(null)
   const lock: Ref<boolean> = ref(false)
+  // List of levels to display in the sidebar. The `.concat([1])` is to make
+  // sure we always at least show level 1, even if the data hasn't come in yet.
+  // const levels = computed(() =>
+  //   rangeInclusive(1, Math.max(...charOptions.value.map(opt => opt.charlevel).concat([1]))))
+  const charLevel: Ref<number | null> = ref(null)
 
-  async function updateCharOptions(): Promise<void> {
+
+  async function update(): Promise<void> {
     lock.value = true
     // TODO: look at this shit. In a different order the ability table data doesn't load. Why. Whywhywhywhywhy
     charOptions.value = await api.getPossibleCharacterOptions()
     classOptions.value = await api.listClassOptions()
     abilityTableData.value = await api.getAbilityTable()
+    charLevel.value = await api.getCurLevel()
     lock.value = false
   }
-
-  // List of levels to display in the sidebar. The `.concat([1])` is to make
-  // sure we always at least show level 1, even if the data hasn't come in yet.
-  const levels = computed(() =>
-    rangeInclusive(1, Math.max(...charOptions.value.map(opt => opt.charlevel).concat([1]))))
 
   // Level that's currently selected in the sidebar.
   const selectedLevel: Ref<number | 'level up'> = ref(1)
@@ -103,23 +105,23 @@
 
   async function registerChoice(choice: IChoice) {
     await api.registerChoice(choice)
-    await updateCharOptions()
+    await update()
   }
 
   async function registerBaseAbilityUpdate(ability: Ability, value: number): Promise<void> {
     await api.registerBaseAbilityUpdate(ability, value)
-    await updateCharOptions()
+    await update()
   }
 
   async function gainLevel(className: string) {
     await api.gainLevel(className)
-    await updateCharOptions()
-    selectedLevel.value = levels.value.slice(-1)[0]
+    await update()
+    selectedLevel.value = charLevel.value as number
   }
 
   onMounted(async function () {
     charName.value = await api.getCurrentCharName()
-    await updateCharOptions()
+    await update()
   })
 </script>
 

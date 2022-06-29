@@ -27,6 +27,10 @@ class ApiClient {
     return (await apiClient.get('request/list_class_options')).data
   }
 
+  public async getCurLevel(): Promise<number> {
+    return (await apiClient.get('request/cur_level')).data
+  }
+
   public async selectSavedCharacter(char: string): Promise<void> {
     return (await apiClient.post('request/load_character', {}, {
       params: {name: char}

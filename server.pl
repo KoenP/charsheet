@@ -124,6 +124,9 @@ remote_query(Request, '/gain_level') :-
     assert(gain_level(NewLevel, Class, hp_avg)), % TODO: option to roll for HP/manually specify
     write_character_file,
     reply_json_dict("success!").
+remote_query(_, '/cur_level') :-
+    level(Level),
+    reply_json_dict(Level).
 remote_query(_, '/list_class_options') :- % TODO: filter for available class options
     findall(O, class_option(O), Options),
     reply_json_dict(Options).
