@@ -1,0 +1,5 @@
+This is a program to generate character sheets for Dungeons & Dragons, 5th edition, with advanced automation features.
+
+The core of the program is an inference engine written in Prolog (rooted at `server.pl`). The user can interact with the inference engine directly through a Prolog interpreter (such as SWI-Prolog), or through a web interface written in TypeScript and the Vue 3 framework (rooted in the `client` directory).
+
+To run the inference engine, install SWI-Prolog (swi-prolog.org/)

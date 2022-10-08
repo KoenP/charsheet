@@ -1,0 +1,94 @@
+Info 0    [21:20:02.038] Starting TS Server
+Info 1    [21:20:02.038] Version: 4.8.2
+Info 2    [21:20:02.038] Arguments: /snap/node/6619/bin/node /usr/local/lib/node_modules/typescript/lib/tsserver.js --logFile /home/koen/charsheet/client/.log/tsserver.log --logVerbosity info --cancellationPipeName /tmp/d536cf37697bacb4b02eca11e2091d3b/tscancellation*
+Info 3    [21:20:02.038] Platform: linux NodeVersion: 16 CaseSensitive: true
+Info 4    [21:20:02.038] ServerMode: undefined syntaxOnly: false hasUnknownServerMode: undefined
+Info 5    [21:20:02.048] Format host information updated
+Info 6    [21:20:02.055] Search path: /home/koen/charsheet/client/src
+Info 7    [21:20:02.055] For info: /home/koen/charsheet/client/src/request.ts :: Config file name: /home/koen/charsheet/client/tsconfig.json
+Info 8    [21:20:02.056] Creating configuration project /home/koen/charsheet/client/tsconfig.json
+Info 9    [21:20:02.073] Config: /home/koen/charsheet/client/tsconfig.json : {
+ "rootNames": [
+  "/home/koen/charsheet/client/src/CharacterSheetPage.ts",
+  "/home/koen/charsheet/client/src/EditCharacterPage.ts",
+  "/home/koen/charsheet/client/src/SelectCharacterPage.ts",
+  "/home/koen/charsheet/client/src/main.ts",
+  "/home/koen/charsheet/client/src/request.ts",
+  "/home/koen/charsheet/client/src/shims-vue.d.ts",
+  "/home/koen/charsheet/client/src/types.ts",
+  "/home/koen/charsheet/client/src/util.ts"
+ ],
+ "options": {
+  "target": 99,
+  "module": 99,
+  "strict": true,
+  "jsx": 1,
+  "moduleResolution": 2,
+  "skipLibCheck": true,
+  "esModuleInterop": true,
+  "allowSyntheticDefaultImports": true,
+  "forceConsistentCasingInFileNames": true,
+  "useDefineForClassFields": true,
+  "sourceMap": true,
+  "baseUrl": "/home/koen/charsheet/client",
+  "types": [
+   "webpack-env"
+  ],
+  "paths": {
+   "@/*": [
+    "src/*"
+   ]
+  },
+  "lib": [
+   "lib.esnext.d.ts",
+   "lib.dom.d.ts",
+   "lib.dom.iterable.d.ts",
+   "lib.scripthost.d.ts"
+  ],
+  "pathsBasePath": "/home/koen/charsheet/client",
+  "configFilePath": "/home/koen/charsheet/client/tsconfig.json"
+ }
+}
+Info 10   [21:20:02.078] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 11   [21:20:03.447] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 1 structureChanged: true structureIsReused:: Not Elapsed: 1368.9933219999075ms
+Info 12   [21:20:03.448] Project '/home/koen/charsheet/client/tsconfig.json' (Configured)
+Info 13   [21:20:03.448] 	Files (78)
+
+Info 14   [21:20:03.448] -----------------------------------------------
+Info 15   [21:20:04.347] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 16   [21:20:04.357] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 2 structureChanged: false structureIsReused:: Completely Elapsed: 9.997296996414661ms
+Info 17   [21:20:04.357] Different program with same set of files
+Info 18   [21:20:05.511] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 19   [21:20:05.523] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 3 structureChanged: false structureIsReused:: Completely Elapsed: 11.46950600296259ms
+Info 20   [21:20:05.523] Different program with same set of files
+Info 21   [21:20:07.171] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 22   [21:20:07.185] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 4 structureChanged: false structureIsReused:: Completely Elapsed: 14.038859993219376ms
+Info 23   [21:20:07.185] Different program with same set of files
+Info 24   [21:20:07.803] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 25   [21:20:07.813] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 5 structureChanged: false structureIsReused:: Completely Elapsed: 9.674632996320724ms
+Info 26   [21:20:07.813] Different program with same set of files
+Info 27   [21:20:08.608] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 28   [21:20:08.618] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 6 structureChanged: false structureIsReused:: Completely Elapsed: 9.839809000492096ms
+Info 29   [21:20:08.618] Different program with same set of files
+Info 30   [21:20:14.340] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 31   [21:20:14.355] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 7 structureChanged: false structureIsReused:: Completely Elapsed: 15.036559998989105ms
+Info 32   [21:20:14.355] Different program with same set of files
+Info 33   [21:20:22.034] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 34   [21:20:22.043] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 8 structureChanged: false structureIsReused:: Completely Elapsed: 8.582185000181198ms
+Info 35   [21:20:22.043] Different program with same set of files
+Info 36   [21:20:31.492] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 37   [21:20:31.525] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 9 structureChanged: false structureIsReused:: Completely Elapsed: 33.063221998512745ms
+Info 38   [21:20:31.525] Different program with same set of files
+Info 39   [21:23:15.835] Format host information updated
+Info 40   [21:23:20.118] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 41   [21:23:20.134] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 10 structureChanged: false structureIsReused:: Completely Elapsed: 16.13848500698805ms
+Info 42   [21:23:20.134] Different program with same set of files
+Info 43   [21:23:22.575] Format host information updated
+Info 44   [21:23:22.758] Starting updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json
+Info 45   [21:23:22.781] Finishing updateGraphWorker: Project: /home/koen/charsheet/client/tsconfig.json Version: 11 structureChanged: false structureIsReused:: Completely Elapsed: 22.165702000260353ms
+Info 46   [21:23:22.781] Different program with same set of files
+Info 47   [21:23:46.802] DirectoryWatcher:: Triggered with /home/koen/charsheet/client/src/#request.ts# 0:: WatchInfo: /home/koen/charsheet/client/src 1 undefined Config: /home/koen/charsheet/client/tsconfig.json WatchType: Wild card directory
+Info 48   [21:23:46.804] Project: /home/koen/charsheet/client/tsconfig.json Detected file add/remove of non supported extension: /home/koen/charsheet/client/src/#request.ts#
+Info 49   [21:23:46.804] Elapsed:: 2.135607995092869ms DirectoryWatcher:: Triggered with /home/koen/charsheet/client/src/#request.ts# 0:: WatchInfo: /home/koen/charsheet/client/src 1 undefined Config: /home/koen/charsheet/client/tsconfig.json WatchType: Wild card directory
+Info 50   [21:23:46.804] DirectoryWatcher:: Triggered with /home/koen/charsheet/client/src/#request.ts# 0:: WatchInfo: /home/koen/charsheet/client/src 1 undefined Project: /home/koen/charsheet/client/tsconfig.json WatchType: Failed Lookup Locations
+Info 51   [21:23:46.805] Elapsed:: 0.7443360015749931ms DirectoryWatcher:: Triggered with /home/koen/charsheet/client/src/#request.ts# 0:: WatchInfo: /home/koen/charsheet/client/src 1 undefined Project: /home/koen/charsheet/client/tsconfig.json WatchType: Failed Lookup Locations

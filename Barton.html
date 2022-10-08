@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html><head>
+<title id="nametitle">Barton</title>
+<link rel="stylesheet" href="Barton_files/charsheet.css">
+<script src="Barton_files/backendconnection.js"></script>
+<script src="Barton_files/dynamicsheet.js"></script>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+</head>
+<body>
+<div class="container"><header>
+
+<h1 id="nameheader">Barton</h1>
+
+</header><article>
+<div>
+
+<table id="summary" style="padding: 4px">
+<tbody><tr><th>Race</th><td><human id="race">human (variant)</human></td></tr>
+<tr><th>Class</th><td id="class">rogue:5</td></tr>
+<tr><th>Level</th><td id="level">5</td></tr>
+<tr><th>Max HP</th><td id="maxhp">43</td></tr>
+<tr><th>AC</th><td id="ac">17</td></tr>
+<tr><th>Initiative</th><td id="initiative">5</td></tr>
+<tr><th>Speed</th><td id="speed">30</td></tr>
+<tr><th>HD</th><td id="hd">5d8</td></tr>
+<tr><th>PP</th><td id="pp">12</td></tr>
+<tr><th>Prof Bon</th><td id="prof_bon">3</td></tr>
+</tbody></table>
+
+</div>
+
+<table id="abilities">
+<caption>
+
+<h4>Abilities</h4>
+
+</caption>
+<tbody><tr><th></th><th>Score</th><th>Mod</th><th>ST</th></tr>
+<tr><th>STR</th><td id="strscore">8</td><td id="strmod">-1</td><td id="strst">-1</td></tr>
+<tr><th>DEX</th><td id="dexscore">20</td><td id="dexmod">+5</td><td id="dexst">+8</td></tr>
+<tr><th>CON</th><td id="conscore">16</td><td id="conmod">+3</td><td id="const">+3</td></tr>
+<tr><th>INT</th><td id="intscore">16</td><td id="intmod">+3</td><td id="intst">+6</td></tr>
+<tr><th>WIS</th><td id="wisscore">8</td><td id="wismod">-1</td><td id="wisst">-1</td></tr>
+<tr><th>CHA</th><td id="chascore">12</td><td id="chamod">+1</td><td id="chast">+1</td></tr>
+</tbody></table>
+
+<table id="skills">
+<caption>
+
+<h4>Skills</h4>
+
+</caption>
+<tbody><tr><th></th><th>Skill</th><th>Score</th></tr>
+<tr><td rowspan="1"><b>STR</b></td><td>athletics</td><td id="athletics">-1</td></tr>
+<tr><td rowspan="3"><b>DEX</b></td><td>acrobatics</td><td id="acrobatics">+5</td></tr>
+<tr><td>sleight of hand</td><td id="sleight of hand">+8</td></tr>
+<tr><td>stealth</td><td id="stealth">+11</td></tr>
+<tr><td rowspan="5"><b>WIS</b></td><td>animal handling</td><td id="animal handling">-1</td></tr>
+<tr><td>insight</td><td id="insight">-1</td></tr>
+<tr><td>medicine</td><td id="medicine">-1</td></tr>
+<tr><td>perception</td><td id="perception">+2</td></tr>
+<tr><td>survival</td><td id="survival">+2</td></tr>
+<tr><td rowspan="5"><b>INT</b></td><td>arcana</td><td id="arcana">+6</td></tr>
+<tr><td>history</td><td id="history">+6</td></tr>
+<tr><td>investigation</td><td id="investigation">+9</td></tr>
+<tr><td>nature</td><td id="nature">+3</td></tr>
+<tr><td>religion</td><td id="religion">+3</td></tr>
+<tr><td rowspan="4"><b>CHA</b></td><td>deception</td><td id="deception">+1</td></tr>
+<tr><td>intimidation</td><td id="intimidation">+1</td></tr>
+<tr><td>performance</td><td id="performance">+1</td></tr>
+<tr><td>persuasion</td><td id="persuasion">+1</td></tr>
+</tbody></table>
+
+<p>
+
+</p><h2>Proficiencies</h2>
+
+<div id="proficiencies">
+<ul>
+<li id="languages"><b>Languages: </b>common, elvish, draconic</li>
+<li id="weapons"><b>Weapons: </b>simple, hand crossbow, longsword, rapier, shortsword</li>
+<li id="armor"><b>Armor: </b>light</li>
+<li id="tools"><b>Tools: </b></li>
+</ul>
+</div>
+<p></p>
+
+<p>
+
+</p><h2>Notable traits</h2>
+
+<div id="traits">
+<ul id="traitlist">
+
+<b>uncategorized</b><li><div class="tooltip">
+                  feat: lucky
+                  <span class="tooltiptext">
+                    Three times per long rest: reroll a die (own die or 
+attack roll against you) after the roll, but before outcome is 
+determined. Pick whichever outcome you prefer.
+                  </span>
+                </div></li><b>background (archaeologist)</b><li><div class="tooltip">
+                  historical knowledge
+                  <span class="tooltiptext">
+                    Can determine purpose and origin of ruin or dungeon. Can determine value of old objects.
+                  </span>
+                </div></li><b>class (rogue)</b><li><div class="tooltip">
+                  sneak attack (3d6)
+                  <span class="tooltiptext">
+                    Beginning at 1st level, you know how to strike 
+subtly and exploit a foe's distraction. Once per turn, you can deal an 
+extra 1d6 damage to one creature you hit with an attack if you have 
+advantage on the attack roll. The attack must use a finesse or a ranged 
+weapon. You don't need advantage on the attack roll if another enemy of 
+the target is within 5 feet of it, that enemy isn't incapacitated, and 
+you don't have disadvantage on the attack roll. The amount of the extra 
+damage increases as you gain levels in this class, as shown in the Sneak
+ Attack column of the Rogue table.
+                  </span>
+                </div></li><li><div class="tooltip">
+                  thieves' cant
+                  <span class="tooltiptext">
+                    During your rogue training you learned thieves' 
+cant, a secret mix of dialect, jargon, and code that allows you to hide 
+messages in seemingly normal conversation. Only another creature that 
+knows thieves' cant understands such messages. It takes four times 
+longer to convey such a message than it does to speak the same idea 
+plainly. In addition, you understand a set of secret signs and symbols 
+used to convey short, simple messages, such as whether an area is 
+dangerous or the territory of a thieves' guild, whether loot is nearby, 
+or whether the people in an area are easy marks or will provide a safe 
+house for thieves on the run.
+                  </span>
+                </div></li><li><div class="tooltip">
+                  cunning action
+                  <span class="tooltiptext">
+                    Starting at 2nd level, your quick thinking and 
+agility allow you to move and act quickly. You can take a bonus action 
+on each of your turns in combat. This action can be used only to take 
+the Dash, Disengage, or Hide action.
+                  </span>
+                </div></li><li><div class="tooltip">
+                  uncanny dodge
+                  <span class="tooltiptext">
+                    Starting at 5th level, when an attacker that you can
+ see hits you with an attack, you can use your reaction to halve the 
+attack's damage against you.
+                  </span>
+                </div></li><li><div class="tooltip">
+                  mage hand legerdemain
+                  <span class="tooltiptext">
+                    Starting at 3rd level, when you cast Mage Hand, you 
+can make the spectral hand invisible, and you can perform the following 
+additional tasks with it: You can stow one object the hand is holding in
+ a container worn or carried by another creature. You can retrieve an 
+object in a container worn or carried by another creature. You can use 
+thieves' tools to pick locks and disarm traps at range. You can perform 
+one of these tasks without being noticed by a creature if you succeed on
+ a Dexterity (Sleight of Hand) check contested by the creature's Wisdom 
+(Perception) check. In addition, you can use the bonus action granted by
+ your Cunning Action to control the hand.
+                  </span>
+                </div></li></ul>
+</div>
+<p></p>
+
+<table id="attacks">
+<caption> <h4>Attacks</h4> </caption>
+<tbody><tr><th></th><th>Range</th><th>To Hit</th><th>Damage</th><th>Notes</th></tr>
+</tbody><tr><td>rapier</td><td>5 ft</td><td>+8</td><td>1d8+5 piercing</td><td>finesse</td></tr><tr><td>light crossbow</td><td>80 ft/320 ft</td><td>+8</td><td>1d8+5 piercing</td><td>ammunition, loading, twohanded</td></tr></table>
+
+<div id="spellcasting"><h2>Spellcasting</h2>
+  <div id="spellslots">
+  <table><tr><th>lvl 1</th></tr><tr><td><input type="checkbox"><input type="checkbox"><input type="checkbox"></td></tr></table></div>
+</div>
+
+<!-- 
+<p>
+
+<h2>Spellcasting</h2>
+
+<table id="spell_slots">
+<caption>
+
+<h4>Spell slots</h4>
+
+</caption>
+</table>
+
+<p>
+
+<h3 id="classspellslots"></h3>
+
+<ul id="classspellcasting">
+
+</ul>
+
+<table id="spells">
+<caption>
+
+<h4>Spells</h4>
+
+</caption>
+<tr><th>Prep'd</th><th>Lvl</th><th>Src</th><th>Spell</th><th>CT</th><th>Rng</th><th>Cpts</th><th>Dur</th><th>Conc</th><th>To Hit/DC</th><th>Effect (summary)</th><th>Res</th></tr>
+</table>
+
+</p></p>
+-->
+
+</article></div>
+
+
+</body></html>

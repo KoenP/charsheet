@@ -23,7 +23,7 @@
     </table>
     <ul class="todo">
         <li>Looks like trash</li>
-        <li>Fix flickering</li>
+        <li>Fix flickering (this is due to the "locking" system, this approach doesn't work well)</li>
         <li>Updating this is currently extremely fragile. Check comment in EditCharacterPage.vue</li>
     </ul>
 </template>

@@ -1,0 +1,51 @@
+?- todo.
+options(match_class(rogue:4),'asi or feat',asi_or_feat).
+options(initial_class(rogue),skill,4 unique_from class_skill(rogue)).
+options(race(human(variant)),feat,feat_option).
+options(race(human(variant)),asi,2 unique_from ability_plus_n(1)).
+options(init,background,background_option).
+problem:choice_does_not_match_spec(match_class(rogue:1),expertise,[stealth,investigation]).
+true.
+
+?- inspect_options(initial_class(rogue),skill,X).
+X = 4 unique_from [acrobatics, athletics, deception, insight, intimidation, investigation, perception, performance|...] [write]
+X = 4 unique_from [acrobatics, athletics, deception, insight, intimidation, investigation, perception, performance, persuasion, 'sleight of hand', stealth] .
+
+
+# asi or feat
+  asi -> ofwel 2 attribute +1, ofwel 1 attribute +2
+  feat -> keuze uit een lijst
+
+  Top-level: radio buttons asi/feat
+    -> feat geselecteerd: dropdown lijst
+    -> asi geselecteerd hebt: tickboxes? tabel met "+" buttons
+
+[
+  {
+    origin: "rogue",
+    id: "asi or feat",
+    spec: []
+  }
+]
+
+
+# stel je mag 1 skill kiezen
+[ 
+  {
+    origin: "rogue",
+    id: "skill",
+    spec: [acrobatics, athletics, deception, ...]
+  }
+]
+
+# stel je mag 4 skills kiezen
+[ 
+  {
+    origin: "rogue",
+    id: "skill",
+    spec: {
+        tag
+    }
+  }
+]
+

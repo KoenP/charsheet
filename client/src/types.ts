@@ -75,7 +75,7 @@ export interface AttackTableEntry {
 export interface ICharacterOption {
   charlevel: number;
   choice: Selection | null; // TODO: naming is horrible :(
-  id: string;
+  id: strng;
   origin: string;
   origin_category: string;
   spec: Spec
