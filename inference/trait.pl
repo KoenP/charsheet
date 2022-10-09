@@ -93,12 +93,15 @@ wrap(Functor, X, FunctorX) :- FunctorX =.. [Functor, X].
 %! notable_trait(?Origin, ?Trait)
 %
 %  Somewhat arbitrarily, a trait is "notable" when it's not an
-%  expertise, skill, language, tool, weapon or armor proficiency.
+%  expertise, skill, language, tool, weapon, armor or shield proficiency.
 notable_trait(Origin, Trait) :-
     trait(Origin, Trait),
     \+ member(Trait,
               [expertise(_), skill(_), language(_), tool(_),
-               weapon(_), armor(_)]).
+               weapon(_), armor(_), shield]).
+
+notable_traits :-
+    forall(notable_trait(_,T), writeln_quoted_term(T)).
 
 %! notable_traits_by_category(?TraitsPerCat)
 %

@@ -10,8 +10,9 @@ skill(Skill, Score) :-
 %! skill(?Skill:atomic)
 skill(Skill) :- skill_ability(Skill, _).
 
+%! skill_proficiency_bonus(?Skill:atomic, -Bonus:int)
 skill_proficiency_bonus(Skill, Bonus) :-
-    trait(skill(Skill)), !,
+    trait(skill(Skill)),
     level(Level),
     calc_bonus(Level, Bonus1),
     (trait(expertise(skill(Skill))) -> Bonus is 2*Bonus1 ; Bonus = Bonus1).

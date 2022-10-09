@@ -6,6 +6,7 @@
 
 :- [race/elf].
 :- [race/human].
+:- [race/dwarf].
 
 race(Race) :-
     choice(_, 'base race', Race).

@@ -15,11 +15,12 @@
 :- discontiguous
        required_predicate_for_each_class/1.
 
+:- [class/cleric].
+:- [class/gambler].
 :- [class/rogue].
 :- [class/sorcerer].
 :- [class/warlock].
 :- [class/wizard].
-:- [class/gambler].
 
 %! class_level(?ClassLevel)
 %
