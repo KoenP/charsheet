@@ -12,7 +12,7 @@ skill(Skill) :- skill_ability(Skill, _).
 
 %! skill_proficiency_bonus(?Skill:atomic, -Bonus:int)
 skill_proficiency_bonus(Skill, Bonus) :-
-    trait(skill(Skill)),
+    proficient_at_skill(Skill),
     level(Level),
     calc_bonus(Level, Bonus1),
     (trait(expertise(skill(Skill))) -> Bonus is 2*Bonus1 ; Bonus = Bonus1).
@@ -40,3 +40,15 @@ skill_ability(deception         , cha).
 skill_ability(intimidation      , cha).
 skill_ability(performance       , cha).
 skill_ability(persuasion        , cha).
+
+%! proficient_at_skill(?Skill:atomic)
+%
+%  Checks whether character is proficient at given Skill.
+%  When queried with a variable, each skill will only show up once.
+proficient_at_skill(Skill) :-
+    skill(Skill),
+    proficient_at_skill_(Skill).
+proficient_at_skill_(Skill) :-
+    trait(skill(Skill)),
+    !.
+    
