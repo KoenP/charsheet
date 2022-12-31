@@ -1,3 +1,5 @@
+:- discontiguous cleric_domain_spell/2.
+
 class_option(cleric).
 hd_per_level(cleric, 1 d 8).
 initial_class_base_hp(cleric, 8).
@@ -12,6 +14,37 @@ asi_level(cleric:L) :-
 class_saving_throw(cleric, wis).
 class_saving_throw(cleric, cha).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Spellcasting.
+
+% Clerics get to pick cantrips.
+known_spell(cleric, wis, always, [], no, Name) :-
+    class_choice(cleric, cantrip, Name).
+options_source(class(cleric), cantrip, 3 unique_from class_cantrip(cleric)).
+options_source(match_class(cleric:L), cantrip, class_cantrip(cleric)) :-
+    L=4; L=10.
+
+% Clerics know all proper spells on their spell list.
+% These always need to be prepared, with the exception of domain spells.
+known_spell(cleric, wis, 'when prepared', [slot], Ritual, Name) :-
+    learnable_proper_spell(cleric, Name),
+    subclass(Class), Class =.. [cleric, Domain],
+    \+ cleric_domain_spell(Domain, Name),
+    spell_property(Name, ritual, Ritual).
+
+% Domain spells are always prepared.
+known_spell(cleric, wis, always, [slot], Ritual, Name) :-
+    subclass(Class), Class =.. [cleric, Domain],
+    cleric_domain_spell(Domain, Name),
+    learnable_proper_spell(cleric, Name),
+    spell_property(Name, ritual, Ritual).
+
+% Add domain spells to the cleric spell list.
+extend_class_spell_list(cleric, Spell) :-
+    subclass(Class),
+    Class =.. [cleric, Domain],
+    cleric_domain_spell(Domain, Spell).
+    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features.
 traits_from_source(initial_class(cleric),
@@ -47,11 +80,18 @@ meta_todo(cleric, "All features for >lvl 5 and all descriptions").
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Knowledge domain.
 subclass_option(cleric, knowledge).
-extend_class_spell_list(cleric, Spell) :-
-    subclass(cleric(knowledge)),
-    member(Spell, [command, identify, augury, suggestion,
-                   nondetection, 'speak with dead', 'arcane eye', confusion,
-                   'legend lore', scrying]).
+
+cleric_domain_spell(knowledge, command).
+cleric_domain_spell(knowledge, identify).
+cleric_domain_spell(knowledge, augury).
+cleric_domain_spell(knowledge, suggestion).
+cleric_domain_spell(knowledge, nondetection).
+cleric_domain_spell(knowledge, 'speak with dead').
+cleric_domain_spell(knowledge, 'arcane eye').
+cleric_domain_spell(knowledge, confusion).
+cleric_domain_spell(knowledge, 'legend lore').
+cleric_domain_spell(knowledge, scrying).
+
 % Blessings of Knowledge
 trait_source(match_class(cleric(knowledge)), 'blessings of knowledge').
 trait_options(trait('blessings of knowledge'), language, wrap(skill),
@@ -62,7 +102,7 @@ trait_options(trait('blessings of knowledge'), skill, wrap(skill),
     match_class(cleric(knowledge)).
 trait(trait('blessings of knowledge'), expertise(skill(Skill))) :-
     choice_member(trait('blessings of knowledge'), skill, Skill).
-meta_todo(nontermination, "why can't the blessings of knowledge trait options refer to the blessings of knowledge trait without causing an infinite loop?").
+meta_todo(nontermination, "why can't the blessings of knowledge trait options refer to the blessings of knowledge trait without causing an infinite loop? [later note: I don't know what this is about, I can't reproduce a nontermination issue here]").
 meta_todo(trait('blessings of knowledge'), "Technically it's not expertise, but mechanically I'm not sure it's worth making a distinction here. In particular if it's not expertise, I'm not sure how/whether it stacks with expertise.").
 
 % Knowledge of the ages.

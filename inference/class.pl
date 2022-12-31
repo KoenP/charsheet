@@ -105,8 +105,8 @@ class_origin_to_class_level_(match_class(ClassF:Level), Class:Level) :-
     (Tail = [] ; Tail = [_]),
     ClassF =.. [Class|Tail].
 class_origin_to_class_level_(match_class(ClassF), Class:1) :-
-    %(Tail = [] ; Tail = [_]),
-    ClassF =.. [Class].
+    (Tail = [] ; Tail = [_]),
+    ClassF =.. [Class|Tail].
 %class_origin_to_class_level_(replaced_spell(Class:Level, _), Class:Level).
 
 %! gained_level_in_class_at_charlevel(?Class, ?CharLevel)
@@ -138,6 +138,13 @@ find_origin_class(Origin, Class) :-
 find_origin_class(trait(Trait), Class) :-
     trait(TraitOrigin, Trait),
     find_origin_class(TraitOrigin, Class).
+
+%! class_choice(?Class:atomic, ?Id, ?Choice)
+%
+%  A choice originating from a class-based option.
+class_choice(Class, Id, Choice) :-
+    choice_member(Origin, Id, Choice),
+    class_origin_to_class(Origin, Class).
 
 %! multiclass
 %

@@ -51,4 +51,13 @@ proficient_at_skill(Skill) :-
 proficient_at_skill_(Skill) :-
     trait(skill(Skill)),
     !.
-    
+
+% The program should be able to deal with the same skill being
+% selected more than once. Nevertheless, if the character has the same
+% skill more than once and at least one of the times it is the result
+% of a choice, we flag it as a problem.
+problem(selected_same_skill_more_than_once(Skill)) :-
+    Origin1 = choice(_,_),
+    trait(Origin1, skill(Skill)),
+    trait(Origin2, skill(Skill)),
+    Origin1 \= Origin2.

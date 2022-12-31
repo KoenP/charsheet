@@ -1,7 +1,8 @@
-:- multifile extend_spell_data/3.
+:- dynamic spell_auto_data/2.
+:- multifile spell_auto_data/2, extend_spell_data/3.
 :- discontiguous add_spell_effect/2, known_spell_effect/3.
 
-:- [spell_auto_data].
+:- [resources/spells/srd].
 
 %! spell_property(?Name:atomic, ?Field:atomic, ?Val)
 %

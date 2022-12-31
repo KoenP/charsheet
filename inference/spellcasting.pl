@@ -174,16 +174,46 @@ learnable_proper_spell(Class, Name) :-
     Class \= warlock,
     findall(L, spell_slots_single_class(L, Class, _), SlotLevels), % TODO this is inefficient
     max_member(MaxSlotLevel, SlotLevels),
-    spell_data(Name, SpellData),
-    (member(Class, SpellData.classes); extend_class_spell_list(Class, Name)),
-    between(1, MaxSlotLevel, SpellData.level).
+    on_extended_class_spell_list(Class, Name),
+    spell_property(Name, level, SpellLevel),
+    between(1, MaxSlotLevel, SpellLevel).
 learnable_proper_spell(warlock, Name) :-
     pact_magic_slot_level(SlotLevel),
-    spell_data(Name, Data),
-    (member(warlock, Data.classes); extend_class_spell_list(warlock, Name)),
-    between(1, SlotLevel, Data.level).
+    on_extended_class_spell_list(warlock, Name),
+    spell_property(Name, level, SpellLevel),
+    between(1, SlotLevel, SpellLevel).
+meta_todo(learnable_proper_spell, "Inefficiency in implementation").
 meta_todo(learnable_proper_spell,
           "Not sure if I like how I implemented this for e.g. arcane trickster (which use another class' spell list)").
+
+%! on_extended_class_spell_list(+Class, +Spell)
+%
+%  Query whether a spell is on the extended_class_spell_list/2.
+on_extended_class_spell_list(Class, Spell) :-
+    % If we know which spell we're looking for, don't construct the whole list.
+    ground(Spell),
+    !,
+    class(Class),
+    ( spell_property(Spell, classes, Classes), member(Class, Classes), !
+    ; extend_class_spell_list(Class, Spell), !).
+on_extended_class_spell_list(Class, Spell) :-
+    extended_class_spell_list(Class, Spells),
+    member(Spell, Spells).
+
+%! extended_class_spell_list(?Class, ?SpellSet)
+%
+%  The extended spell list for a class is the list of spells available
+%  to that class in general, plus the spells added to that list
+%  through choices specific to the current character (usually through
+%  the subclass).
+extended_class_spell_list(Class, SpellSet) :-
+    class(Class),
+    findall(Spell,
+            (spell_property(Spell,classes,Classes),member(Class,Classes)),
+            BaseSpells),
+    findall(Spell, extend_class_spell_list(Class,Spell), ExtensionSpells),
+    append(BaseSpells, ExtensionSpells, AllSpells),
+    sort(0, @<, AllSpells, SpellSet).
 
 %! hide_known_class_spells(Origin, Id, Class)
 %
