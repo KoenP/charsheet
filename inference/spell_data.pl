@@ -71,8 +71,8 @@ contains_saving_throw(Effects, saving_throw(Abi):Effect) :-
 %! unique_effects(+Effects, ?UniqueEffects)
 %
 %  Effects may contain terms of the form `N * Effect`, where `N` is a
-%  natural number. For each such element in Effects, UniqueEffects
-%  contains simply Effect.
+%  natural number. For each such term in Effects where `N=1`,
+%  UniqueEffects contains simply Effect.
 unique_effects(Effects, UniqueEffects) :-
     maplist(just_once, Effects, UniqueEffects).
 just_once(_*X, X).
