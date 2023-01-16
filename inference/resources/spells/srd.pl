@@ -1,9 +1,15 @@
 :- use_module(library(http/json)).
 
+raw_data(SpellName, Data) :-
+    open('inference/resources/spells/srd.json', read, In),
+    json:json_read_dict(In, SpellDicts),
+    member(Data, SpellDicts),
+    to_lowercase_atom(Data.name, SpellName).
+
 register_srd_spells :-
     open('inference/resources/spells/srd.json', read, In),
     json:json_read_dict(In, SpellDicts),
-    maplist(spell_data_damage_with_cantrip_scaling, SpellDicts, Out).
+    maplist(register_spell, SpellDicts).
 
 register_spell(Data) :-
     to_lowercase_atom(Data.name, Name),
@@ -12,6 +18,7 @@ register_spell(Data) :-
     parse_range(Data.range, Range),
     maplist(spell_data_class, Data.classes, Classes),
     spell_data_damage_with_cantrip_scaling(Data, DamageCantripScaling),
+    spell_data_damage_at_slot_level(Data, DamageSlotLevel),
     assert(spell_auto_data(Name,
                            properties{ level: Data.level,
                                        higher_level: HigherLevel,          
@@ -24,7 +31,8 @@ register_spell(Data) :-
                                        ritual: Data.ritual,
                                        desc: Data.desc,
                                        classes: Classes,
-                                       damage_with_cantrip_scaling: DamageCantripScaling
+                                       damage_with_cantrip_scaling: DamageCantripScaling,
+                                       damage_at_slot_level: DamageSlotLevel
                                      })).
 
 spell_data_class(Dict, Class) :-
@@ -62,45 +70,42 @@ parse_range(Str, Atom) :-
 wrap_list(List, List) :- is_list(List), !.
 wrap_list(X, [X]) :- \+ is_list(X).
 
-% TODO hier zat ik: bug bij acid splash
 spell_data_damage_with_cantrip_scaling(Data, damage(Type, BaseRoll)) :-
-    DmgDict = Data.get(damage),
-    DmgScalingDict = DmgDict.get(damage_at_character_level),
-    to_lowercase_atom(DmgDict.get(damage_type).get(name), Type),
-    parse_roll(DmgScalingDict.get(1), BaseRoll).
-spell_data_damage_with_cantrip_scaling(Data, false) :-
-    \+ (DmgDict = Data.get(damage), DmgDict.get(damage_at_character_level)).
-
-%spell_data_damage_list(Data, Damage) :-
-%    wrap_list(Data.get(damage), DamageDicts),
-%    DamageDicts = [DmgDict|_],
-%    spell_data_damage_scaling_type_and_range(DmgDict, ScalingType, )
-%    maplist(spell_data_damage, DamageDicts, Damage).
-%
-%spell_data_damage(DamageDict, damage(Type, Term)) :-
-%    to_lowercase_atom(DamageDict.damage_type.name, Type),
-%    spell_data_damage_scaling_type_and_range(DamageDict, ScalingType, Low-High)
-%
-%spell_data_damage_scaling_type_and_range(Dict, ScalingType, Low-High) :-
-%    (ScalingType = damage_at_slot_level; ScalingType = damage_at_character_level),
-%    dict_keys(Dict.get(ScalingType), Keys),
-%    Keys = [Low|_],
-%    last(Keys, High).
-
-parse_roll(String, Roll) :-
-    string_chars(String, Chars),
-    maplist(try_atom_number, Chars, CharNumbers),
-    phrase(format_dice(CharNumbers), Roll).
-
-try_atom_number(Atom, Number) :-
-    atom_number(Atom, Number),
+    Data.get(damage) = _{ damage_at_character_level: DmgScalingDict, 
+                          damage_type: DmgType },
+    to_lowercase_atom(DmgType.get(name), Type),
+    term_string(BaseRoll, DmgScalingDict.get('1')),
     !.
-try_atom_number(Atom, Atom).
+spell_data_damage_with_cantrip_scaling(_, false) :- !.
 
+spell_data_damage_at_slot_level(Data, ParsedDict) :-
+    wrap_list(Data.get(damage), DamageDicts),
+    maplist(damage_at_slot_level_term, DamageDicts, Terms),
+    merge_damage_dicts(Terms, ParsedDict),
+    !.
+spell_data_damage_at_slot_level(_, []).
 
-% Complications:
-% - Damage at slot level vs at character level
-% - Multiple damage types (for example 'flame strike')
-% - Add modifier ("+ MOD")
+damage_at_slot_level_term(_{ damage_type: TypeDict,
+                             damage_at_slot_level: ScalingDict
+                           },
+                          ParsedDict) :-
+    to_lowercase_atom(TypeDict.get(name), Type),
+    dict_pairs(ScalingDict, _, Pairs),
+    findall(Lvl-damage(Type, Roll),
+            (member(LvlAtom-RollStr,Pairs), atom_number(LvlAtom,Lvl), term_string(Roll,RollStr)),
+            NewPairs),
+    dict_pairs(ParsedDict, _, NewPairs).
 
-% :- register_srd_spells.
+merge_damage_dicts([D|Ds], Out) :-
+    merge_damage_dicts(Ds, DRest),
+    merge_damage_dicts(D, DRest, Out).
+merge_damage_dicts([D], D).
+merge_damage_dicts(D1, D2, Out) :-
+    dict_pairs(D1, _, Pairs1), dict_pairs(D2, _, Pairs2),
+    merge_damage_lists(Pairs1, Pairs2, NewPairs),
+    dict_pairs(Out, _, NewPairs).
+merge_damage_lists([L-Dmg1|R1], [L-Dmg2|R2], [L-(Dmg1+Dmg2)|R]) :-
+    merge_damage_lists(R1, R2, R).
+merge_damage_lists([], [], []).
+
+:- register_srd_spells.
