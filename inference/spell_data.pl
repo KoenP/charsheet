@@ -50,6 +50,17 @@ spell_data(Name, Data) :-
 add_dict_field(Field:Val, Old, New) :-
     New = Old.put(Field,Val).
 
+%! spell_base_damage_formula(?Spell, ?Damage)
+%
+%  Damage is a term `damage(Type, Formula)` that represents the damage
+%  done by the Spell at the character's current level, without upcasting.
+spell_base_damage_formula(Spell, damage(Type, N d D)) :-
+    spell_property(Spell, damage_with_cantrip_scaling, damage(Type, _ d D)),
+    cantrip_scale(N).
+spell_base_damage_formula(Spell, Damage) :-
+    spell_property(Spell, damage_at_slot_level, Dict),
+    dict_pairs(Dict, _, [_-Damage|_]).
+
 %! spell_auto_data(?Name:atomic, ?Data:dict)
 %
 %  Like spell_data/2, but less complete. This is the data that is

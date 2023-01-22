@@ -108,4 +108,4 @@ merge_damage_lists([L-Dmg1|R1], [L-Dmg2|R2], [L-(Dmg1+Dmg2)|R]) :-
     merge_damage_lists(R1, R2, R).
 merge_damage_lists([], [], []).
 
-:- register_srd_spells.
+:- \+ spell_auto_data(_,_) -> register_srd_spells; true.
