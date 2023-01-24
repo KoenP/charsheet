@@ -19,6 +19,9 @@ register_spell(Data) :-
     maplist(spell_data_class, Data.classes, Classes),
     spell_data_damage_with_cantrip_scaling(Data, DamageCantripScaling),
     spell_data_damage_at_slot_level(Data, DamageSlotLevel),
+    spell_data_aoe(Data, AOE),
+    spell_data_dc(Data, DC),
+    spell_data_attack_type(Data, AttackType),
     assert(spell_auto_data(Name,
                            properties{ level: Data.level,
                                        higher_level: HigherLevel,          
@@ -32,8 +35,16 @@ register_spell(Data) :-
                                        desc: Data.desc,
                                        classes: Classes,
                                        damage_with_cantrip_scaling: DamageCantripScaling,
-                                       damage_at_slot_level: DamageSlotLevel
+                                       damage_at_slot_level: DamageSlotLevel,
+                                       area_of_effect: AOE,
+                                       dc: DC,
+                                       attack_type: AttackType
                                      })).
+
+spell_auto_property(Spell, Field, Value) :-
+    spell_auto_data(Spell, Data),
+    Data.get(Field) = Value,
+    Value \= false.
 
 spell_data_class(Dict, Class) :-
     to_lowercase_atom(Dict.index, Class).
@@ -107,5 +118,26 @@ merge_damage_dicts(D1, D2, Out) :-
 merge_damage_lists([L-Dmg1|R1], [L-Dmg2|R2], [L-(Dmg1+Dmg2)|R]) :-
     merge_damage_lists(R1, R2, R).
 merge_damage_lists([], [], []).
+
+% in(20 ft sphere):
+spell_data_aoe(Data, Size ft Type) :-
+    Data.get(area_of_effect) = _{type: TypeStr, size: Size},
+    !,
+    string_to_atom(TypeStr, Type).
+spell_data_aoe(_, false).
+
+spell_data_dc(Data, Abi else Succ) :-
+    Data.get(dc) = DCDict,
+    !,
+    DCDict.get(dc_type).get(index) = AbiStr,
+    string_to_atom(AbiStr, Abi),
+    DCDict.get(dc_success) = SuccStr,
+    string_to_atom(SuccStr, Succ).
+spell_data_dc(_, false).
+
+spell_data_attack_type(Data, Type) :-
+    Data.get(attack_type) = Str,
+    string_to_atom(Str, Type). 
+spell_data_attack_type(_, false).
 
 :- \+ spell_auto_data(_,_) -> register_srd_spells; true.

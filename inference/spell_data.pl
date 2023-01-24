@@ -1,6 +1,6 @@
 :- dynamic spell_auto_data/2.
 :- multifile spell_auto_data/2, extend_spell_data/3.
-:- discontiguous add_spell_effect/2, known_spell_effect/3.
+:- discontiguous add_spell_effect/2, known_spell_effect/3, suppress_autoderived_spell_effect/1.
 
 :- [resources/spells/srd].
 
@@ -50,10 +50,37 @@ spell_data(Name, Data) :-
 add_dict_field(Field:Val, Old, New) :-
     New = Old.put(Field,Val).
 
+%! autoderived_spell_effect(?Spell, ?Effect)
+%
+%  For each Spell, Effect represents a best-effort attempt to derive a
+%  structured spell description from the JSON sources. It's not
+%  guaranteed to be correct and can be suppressed by
+%  suppress_autoderived_spell_effect/1.
+autoderived_spell_effect(Spell, Effect) :-
+    spell_auto_data(Spell, Data),
+    spell_base_damage_formula(Spell, Damage),
+    findall(Field-Value,
+            (member(Field, [area_of_effect, dc, attack_type]),
+             Data.get(Field) = Value,
+             Value \= false),
+            Aspects_),
+    append(Aspects_, [damage - Damage], Aspects),
+    process_spell_aspects(Aspects, Effect).
+process_spell_aspects([area_of_effect - (Range ft Shape) | Aspects], in(Range ft Shape) : Effect) :-
+    process_spell_aspects(Aspects, Effect).
+process_spell_aspects([dc - (Abi else Success) | Aspects], saving_throw(Abi) : EffectExpr) :-
+    (Success = none -> EffectExpr = Effect ; EffectExpr = (Effect else Success)),
+    process_spell_aspects(Aspects, Effect).
+process_spell_aspects([attack_type - Type | Aspects], spell_attack_roll(Type) : Effect) :-
+    process_spell_aspects(Aspects, Effect).
+process_spell_aspects([damage - Damage], Damage).
+
 %! spell_base_damage_formula(?Spell, ?Damage)
 %
 %  Damage is a term `damage(Type, Formula)` that represents the damage
-%  done by the Spell at the character's current level, without upcasting.
+%  done by the Spell at the character's current level, without
+%  upcasting or any character-specific bonuses (other than character
+%  level).
 spell_base_damage_formula(Spell, damage(Type, N d D)) :-
     spell_property(Spell, damage_with_cantrip_scaling, damage(Type, _ d D)),
     cantrip_scale(N).
@@ -93,6 +120,8 @@ just_once(X, X) :- X \= _*_.
 extend_spell_data(Name, effects, Effects) :-
     spell_auto_data(Name, _), % ground Name
     findall(Effect, add_spell_effect(Name, Effect), Effects).
+    
+
 
 %! known_spell_effect(?Origin, ?Name:atomic, ?Effect)
 %
@@ -129,6 +158,7 @@ add_spell_effect('detect magic', "sense presence of magic within 30 ft").
 add_spell_effect('detect magic', "use action to see faint aura around visible magical creature or object and learn its school of magic").
 add_spell_effect('detect magic', "penetrate most barriers, but blocked by 1 ft stone, 1 inch common metal, thin sheet of lead, 3 ft wood or dirt").
 
+suppress_autoderived_spell_effect('eldritch blast').
 add_spell_effect('eldritch blast', N*(spell_attack_roll(ranged):damage(force, 1 d 10))) :-
     cantrip_scale(N).
 
@@ -141,10 +171,6 @@ add_spell_effect(fireball,
                   saving_throw(dex):
                    (damage(fire,8 d 6) else 'half damage')).
 
-add_spell_effect('fire bolt',
-                  spell_attack_roll(ranged):damage(fire, N d 10)) :-
-    cantrip_scale(N).
-
 add_spell_effect(frostbite,
                  saving_throw(con):damage(cold,N d 6)) :-
     cantrip_scale(N).
@@ -152,11 +178,9 @@ add_spell_effect(frostbite,
 add_spell_effect('misty step', "teleport 30 ft").
 
 %extend_spell_data('scorching ray', damage rolls, [on_hit: fire(2 d 6)]).
-add_spell_effect('scorching ray',
-                 3 * (spell_attack_roll(ranged):damage(fire, 2 d 6))).
+suppress_autoderived_spell_effect('scorching ray').
+add_spell_effect('scorching ray', 3 * ADEffect) :- autoderived_spell_effect('scorching ray', ADEffect).
 
 add_spell_effect('see invisibility',
                  "see invisible creatures and objects, see through Ethereal").
 
-add_spell_effect(shatter,
-                 in(10 ft sphere):saving_throw(con):(damage(thunder, 3 d 8) else 'half damage')).

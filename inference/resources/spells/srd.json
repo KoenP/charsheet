@@ -13544,6 +13544,7 @@
     "concentration": false,
     "casting_time": "1 action",
     "level": 2,
+    "attack_type": "ranged",
     "damage": {
       "damage_type": {
         "index": "fire",
