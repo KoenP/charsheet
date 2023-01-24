@@ -299,57 +299,6 @@ display_spell_effects(Data, Effects) :-
     !.
 display_spell_effects(_, "-").
 
-format_effects([]) --> [].
-format_effects([E|Es]) -->
-    format_effect(E),
-    ["; "],
-    format_effects(Es).
-
-format_effect(Damage) -->
-    {Damage = damage(_,_), !},
-    format_damage_roll(Damage).
-format_effect(spell_attack_roll(_):Effects) -->
-    {is_list(Effects), !},
-    ["["],
-    format_effects(Effects),
-    ["] on hit"].
-format_effect(spell_attack_roll(_):Effect) -->
-    format_effect(Effect),
-    [" on hit"].
-format_effect(in(Area):Effect) -->
-    ["in "],
-    format_area(Area),
-    [": "],
-    format_effect(Effect),
-    {!}.
-format_effect(1*Es) --> {!}, format_effect(Es).
-format_effect(N*Es) -->
-    {!},
-    [N],
-    [" times "],
-    format_effect(Es).
-format_effect(saving_throw(Abi):(E1 else E2)) -->
-    {!},
-    ["saving throw ("],
-    [Abi],
-    [") -> "],
-    format_effect(E1),
-    [" on fail, else "],
-    format_effect(E2).
-format_effect(saving_throw(Abi):Effect) -->
-    {!},
-    ["saving throw ("],
-    [Abi],
-    [") -> "],
-    format_effect(Effect),
-    [" on fail"].
-format_effect(damage(Type,Roll)) -->
-    {!},
-    format_damage_roll(damage(Type,Roll)).
-format_effect(E) -->
-    format_term(E).
-    
-format_area(N ft Shape) --> [N], [" ft "], [Shape].
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -71,3 +71,9 @@ enumerate(N, [X|Xs], [N-X|NXs]) :-
     !,
     M is N+1,
     enumerate(M, Xs, NXs).
+
+simplify_product(0*_, 0).
+simplify_product(X*0, 0) :- X \= 0.
+simplify_product(1*X, X).
+simplify_product(X*1, X) :- X \= 1.
+simplify_product(X*Y, X*Y) :- X \= 1, Y \= 1.

@@ -103,7 +103,7 @@ damage_at_slot_level_term(_{ damage_type: TypeDict,
     to_lowercase_atom(TypeDict.get(name), Type),
     dict_pairs(ScalingDict, _, Pairs),
     findall(Lvl-damage(Type, Roll),
-            (member(LvlAtom-RollStr,Pairs), atom_number(LvlAtom,Lvl), term_string(Roll,RollStr)),
+            (member(LvlAtom-RollStr,Pairs), atom_number(LvlAtom,Lvl), term_string(Roll,RollStr,[variable_names([])])), % TODO: parse and handle "+ MOD"
             NewPairs),
     dict_pairs(ParsedDict, _, NewPairs).
 

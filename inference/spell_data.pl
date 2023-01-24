@@ -50,6 +50,24 @@ spell_data(Name, Data) :-
 add_dict_field(Field:Val, Old, New) :-
     New = Old.put(Field,Val).
 
+%! spell_effect(?Spell, ?Effect)
+spell_effect(Spell, AutoEffect) :-
+    autoderived_spell_effect(Spell, AutoEffect),
+    \+ suppress_autoderived_spell_effect(Spell).
+spell_effect(Spell, Effect) :-
+    add_spell_effect(Spell, Effect).
+
+
+%spell_effects(Spell, Effects) :-
+%    suppress_autoderived_spell_effect(Spell),
+%    findall(E, add_spell_effect(Spell, E), Effects).
+%spell_effects(Spell, [AutoEffect|AddedEffects]) :-
+%    spell_auto_data(Spell, _),
+%    \+ suppress_autoderived_spell_effect(Spell),
+%    autoderived_spell_effect(Spell, AutoEffect),
+%    findall(E, add_spell_effect(Spell, E), AddedEffects).
+    
+
 %! autoderived_spell_effect(?Spell, ?Effect)
 %
 %  For each Spell, Effect represents a best-effort attempt to derive a
@@ -82,10 +100,10 @@ process_spell_aspects([damage - Damage], Damage).
 %  upcasting or any character-specific bonuses (other than character
 %  level).
 spell_base_damage_formula(Spell, damage(Type, N d D)) :-
-    spell_property(Spell, damage_with_cantrip_scaling, damage(Type, _ d D)),
+    spell_auto_property(Spell, damage_with_cantrip_scaling, damage(Type, _ d D)),
     cantrip_scale(N).
 spell_base_damage_formula(Spell, Damage) :-
-    spell_property(Spell, damage_at_slot_level, Dict),
+    spell_auto_property(Spell, damage_at_slot_level, Dict),
     dict_pairs(Dict, _, [_-Damage|_]).
 
 %! spell_auto_data(?Name:atomic, ?Data:dict)
@@ -119,9 +137,7 @@ just_once(X, X) :- X \= _*_.
 %! extend_spell_data(+Name:atomic, ?Field:atomic, ?Val)
 extend_spell_data(Name, effects, Effects) :-
     spell_auto_data(Name, _), % ground Name
-    findall(Effect, add_spell_effect(Name, Effect), Effects).
-    
-
+    findall(Effect, spell_effect(Name, Effect), Effects).
 
 %! known_spell_effect(?Origin, ?Name:atomic, ?Effect)
 %
@@ -138,11 +154,6 @@ known_spell_effect(_,_,_) :- false.
 %
 %  Add an entry to the `effects` field of the spell data.
 add_spell_effect('acid splash', "up to two targets within 5 ft of eachother").
-add_spell_effect('acid splash', saving_throw(dex): damage(acid, N d 6)) :-
-    cantrip_scale(N).
-
-add_spell_effect('burning hands',
-                 in(15 ft cone):saving_throw(dex):(damage(fire, 3 d 6) else 'half damage')).
 
 known_spell_effect(Origin, counterspell, Effect) :-
     known_spell(Origin, Ability, _, _, _, counterspell),
@@ -159,17 +170,14 @@ add_spell_effect('detect magic', "use action to see faint aura around visible ma
 add_spell_effect('detect magic', "penetrate most barriers, but blocked by 1 ft stone, 1 inch common metal, thin sheet of lead, 3 ft wood or dirt").
 
 suppress_autoderived_spell_effect('eldritch blast').
-add_spell_effect('eldritch blast', N*(spell_attack_roll(ranged):damage(force, 1 d 10))) :-
-    cantrip_scale(N).
+add_spell_effect('eldritch blast', Effect) :-
+    cantrip_scale(N),
+    simplify_product(N*(spell_attack_roll(ranged):damage(force, 1 d 10)), Effect),
+    !.
 
 add_spell_effect('false life', 'temp hp' + (1 d 4 + 4)).
 
 add_spell_effect('find familiar', test).
-
-add_spell_effect(fireball,
-                 in(20 ft sphere):
-                  saving_throw(dex):
-                   (damage(fire,8 d 6) else 'half damage')).
 
 add_spell_effect(frostbite,
                  saving_throw(con):damage(cold,N d 6)) :-
@@ -179,7 +187,8 @@ add_spell_effect('misty step', "teleport 30 ft").
 
 %extend_spell_data('scorching ray', damage rolls, [on_hit: fire(2 d 6)]).
 suppress_autoderived_spell_effect('scorching ray').
-add_spell_effect('scorching ray', 3 * ADEffect) :- autoderived_spell_effect('scorching ray', ADEffect).
+add_spell_effect('scorching ray', 3 * ADEffect) :-
+    autoderived_spell_effect('scorching ray', ADEffect).
 
 add_spell_effect('see invisibility',
                  "see invisible creatures and objects, see through Ethereal").
