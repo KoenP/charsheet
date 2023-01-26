@@ -2,7 +2,8 @@
        known_spell/6,
        spell_property/3,
        extend_class_spell_list/2,
-       hide_known_class_spells/3.
+       hide_known_class_spells/3,
+       prepare_spell/2.
 
 % :- table known_spell/6 as incremental.
 
@@ -42,7 +43,7 @@
 %    Origin. Because I'm not 100% sure it's _always_ tied to the
 %    origin, I decided to register it as a separate argument here.
 %  * Availability indicates whether the spell is always prepared
-%    (`always`) or has to be explicitly prepared (`prepare`). If it
+%    (`always`) or has to be explicitly prepared (`when prepared`). If it
 %    has to be prepared, we look at the Origin to check which list of
 %    prepared spells this spell belongs to.
 %  * Resources indicates which resources the spell consumes when
@@ -118,6 +119,13 @@ known_spell_property(Origin, Name, Field, Val) :-
 known_spell_property_or_error(Origin, Name, Field, Val) :-
     known_spell_data(Origin, Name, Data),
     Val = Data.(Field).
+
+%! known_spell_prepared(?Origin, ?Spell)
+known_spell_prepared(Origin, Spell) :-
+    known_spell(Origin, _, always, _, _, Spell).
+known_spell_prepared(Origin, Spell) :-
+    prepare_spell(Origin, Spell),
+    known_spell(Origin, _, 'when prepared', _, _, Spell).
 
 %! spell_attack_modifier(?Class:atomic, ?Mod:int)
 %

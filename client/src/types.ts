@@ -23,7 +23,7 @@ export interface ISpellcastingSection {
 }
 
 export interface ISpell {
-  availability: 'always' | 'when prepared',
+  prepared: boolean,
   level: number,
   name: string,
   description: string,

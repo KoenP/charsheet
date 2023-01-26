@@ -154,7 +154,7 @@ spell_list_json_dict(BaseOrigin, SpellsSorted) :-
     sort(level, @=<, SpellsUnsorted, SpellsSorted).
 
 spell_json_dict(BaseOrigin,
-                _{availability: Availability,
+                _{prepared: Prepared,
                   level: Level,
                   name: Name,
                   description: Description,
@@ -170,7 +170,8 @@ spell_json_dict(BaseOrigin,
                   ritual: Ritual,
                   resources: ResourcesStrs}) :-
     (Origin =.. [BaseOrigin,_] ; Origin = BaseOrigin),
-    known_spell(Origin, _Ability, Availability, ResourcesVal, Ritual, Name),
+    known_spell(Origin, _Ability, _, ResourcesVal, Ritual, Name),
+    (known_spell_prepared(Origin, Name) -> Prepared=true; Prepared=false),
     known_spell_data(Origin, Name, Data),
     Level         = Data.level,
     Description   = Data.desc,

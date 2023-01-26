@@ -123,9 +123,12 @@
                 :key="section.origin"
             >
                 <h3>{{section.origin}} spells</h3>
+                <button @click="showOnlyPreparedSpells = !showOnlyPreparedSpells">
+                  Toggle only prepared spells
+                </button>
                 <table class="spelltable">
                     <tr>
-                        <th>Prep'd</th>
+                        <th v-if="!showOnlyPreparedSpells">Prep'd</th>
                         <th>Lvl</th>
                         <th>Spell</th>
                         <th>CT</th>
@@ -137,12 +140,16 @@
                         <th>Effect (summary)</th>
                         <th>Res</th>
                     </tr>
-                    <tr v-for="spell in section.spells" :key="spell.name">
-                        <td>
-                            <span v-html="formatAvailability(spell)"></span>
-                        </td>
+                    <tr v-for="spell in section.spells.filter(spell => !showOnlyPreparedSpells || spell.prepared)" :key="spell.name">
+                        <td v-if="!showOnlyPreparedSpells"> <span v-html="formatPrepared(spell)"></span> </td>
                         <td>{{spell.level}}</td>
-                        <td>{{spell.name}}</td>
+                        <td>
+                          <div class="tooltip">
+                            {{spell.name}}
+                            <span class="tooltiptext" v-html=formatSpellDescription(spell.description)>
+                            </span>
+                          </div>
+                        </td>
                         <td>{{spell.casting_time}}</td>
                         <td>{{spell.range}}</td>
                         <td v-html="formatComponents(spell.components)"></td>
@@ -154,41 +161,6 @@
                     </tr>
                 </table>
             </div>
-
-
-            <!-- 
-            <p>
-
-            <h2>Spellcasting</h2>
-
-            <table id="spell_slots">
-            <caption>
-
-            <h4>Spell slots</h4>
-
-            </caption>
-            </table>
-
-            <p>
-
-            <h3 id="classspellslots"></h3>
-
-            <ul id="classspellcasting">
-
-            </ul>
-
-            <table id="spells">
-            <caption>
-
-            <h4>Spells</h4>
-
-            </caption>
-            <tr><th>Prep'd</th><th>Lvl</th><th>Src</th><th>Spell</th><th>CT</th><th>Rng</th><th>Cpts</th><th>Dur</th><th>Conc</th><th>To Hit/DC</th><th>Effect (summary)</th><th>Res</th></tr>
-            </table>
-
-            </p></p>
-            -->
-
             </article>
         </div>
     </template>
@@ -202,11 +174,11 @@
 
     const sheet: Ref<ISheetData | null> = ref(null)
 
-    function formatAvailability(spell: ISpell): string {
+    const showOnlyPreparedSpells: boolean = ref(true)
+
+    function formatPrepared(spell: ISpell): string {
         //return "TODO"
-        return spell.availability === 'always'
-            ? "✓"
-            : '<input type="checkbox">' // "when prepared" case
+        return spell.prepared ? '✓' : '' // "when prepared" case
     }
 
     function spellSlotsForSpellLevel(lvl: number): number {
@@ -239,6 +211,10 @@
 
     function htmlTooltip(content: string, tooltiptext: string) {
         return `<div class='tooltip'>${content}<span class='tooltiptext'>${tooltiptext}</span></div>`
+    }
+
+    function formatSpellDescription(desc: string[]) {
+        return desc.map(paragraph => `<p>${paragraph}</p>`).join('');
     }
 
                             //<div :class="trait.desc !== null ? 'tooltip' : null">
@@ -330,28 +306,28 @@
     /* From https://www.w3schools.com/css/css_tooltip.asp */
     /* Tooltip container */
     .tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
     }
 
     /* Tooltip text */
     .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 560px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-    
-    /* Position the tooltip text - see examples below! */
-    position: absolute;
-    z-index: 1;
-
-    top: 0%;
-    left: 100%;
-    /* margin-left: -300px; /* Use half of the width (120/2 = 60), to center the tooltip */
+        visibility: hidden;
+        width: 560px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+        
+        /* Position the tooltip text - see examples below! */
+        position: absolute;
+        z-index: 1;
+        
+        top: 0%;
+        left: 100%;
+        /* margin-left: -300px; /* Use half of the width (120/2 = 60), to center the tooltip */
     }
     .tooltiptext {
         font-size: 12px;
@@ -360,6 +336,6 @@
 
     /* Show the tooltip text when you mouse over the tooltip container */
     .tooltip:hover .tooltiptext {
-    visibility: visible;
+        visibility: visible;
     }
 </style>
