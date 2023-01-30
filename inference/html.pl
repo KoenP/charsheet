@@ -149,7 +149,7 @@ attack_table(Table) :-
 attack_table_row(tr([td(Name), td(Range), td(ToHitOrDC), td(DamageFmt), td(FNotes)])) :-
     attack(Name, RangeVal, ToHitOrDCVal, Damage, Notes),
     format_list(Notes, FNotes, []),
-    fmt(format_measure(RangeVal), Range),
+    fmt(format_range(RangeVal), Range),
     format_to_hit_or_dc(ToHitOrDCVal, ToHitOrDC, []),
     format_damage(Damage, DamageFmt, []).
 
@@ -221,15 +221,15 @@ spell_preparation_table_row(tr([td(Class), td(Prep), td(MaxLvl)])) :-
 
 spell_table(Origin, Table) :-
     table('spells', 'Spells', [Header|Rows], Table),
-    Header = tr([th('Prep\'d'), th('Lvl'), th('Src'), th('Spell'), th('CT'),
+    Header = tr([th('Lvl'), th('Src'), th('Spell'), th('CT'),
                  th('Rng'), th('Cpts'), th('Dur'), th('Conc'), th('To Hit/DC'),
                  th('Effect (summary)'), th('Res')]),
     findall(Row, spell_table_row(Origin, _, _, Row), Rows).
     %spell_table_rows(Rows).
 
 spell_table_row(Origin, Name, SpellLevel, tr(Row)) :-
-    known_spell(Origin, Ability, AvailabilityVal, ResourcesVal, _Ritual, Name),
-    format_spell_availability(AvailabilityVal, Availability),
+    known_spell_prepared(Origin, Name),
+    known_spell(Origin, Ability, _Availability, ResourcesVal, _Ritual, Name),
     known_spell_data(Origin, Name, Data),
     SpellLevel = Data.level,
     spell_origin_shorthand(Origin, OriginShorthand),
@@ -238,7 +238,7 @@ spell_table_row(Origin, Name, SpellLevel, tr(Row)) :-
     format_components(Data.components, Components),
     spell_to_hit_or_dc(Ability, Data, ToHitOrDC),
     display_spell_effects(Data, Effects),
-    RowFields = [Availability, SpellLevel, OriginShorthand,
+    RowFields = [SpellLevel, OriginShorthand,
                  div(class=tooltip, [Name, span(class=tooltiptext, Data.desc)]),
                  Data.casting_time, Range, Components, Data.duration, Data.concentration,
                  ToHitOrDC, Effects, Resources
@@ -246,13 +246,21 @@ spell_table_row(Origin, Name, SpellLevel, tr(Row)) :-
     maplist(wrap(td), RowFields, Row).
 
 spell_origin_shorthand(Class, Shorthand) :-
-    class_shorthand(Class, Shorthand).
+    class_shorthand(Class, Shorthand), !.
 spell_origin_shorthand(Race, Shorthand) :-
-    race_shorthand(Race, Shorthand).
+    race_shorthand(Race, Shorthand), !.
 spell_origin_shorthand(Origin:Elaboration,
                        [Shorthand, div(class=tooltip, ["*", span(class=tooltiptext, ElabFmt)])]) :-
     spell_origin_shorthand(Origin, Shorthand),
+    !,
     format_term(Elaboration, ElabFmt, []).
+spell_origin_shorthand(Compound,
+                       [Shorthand, div(class=tooltip, ["*", span(class=tooltiptext, ElabFmt)])]) :-
+    Compound =.. [Origin, Elaboration],
+    spell_origin_shorthand(Origin, Shorthand),
+    !,
+    format_term(Elaboration, ElabFmt, []).
+spell_origin_shorthand(_, "").
 
 format_spell_availability(always, "✓") :- !.
 format_spell_availability('when prepared', input(type=checkbox, [])) :- !.

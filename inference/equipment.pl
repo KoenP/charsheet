@@ -2,6 +2,10 @@
 
 equipped(_) :- false.
 
+wearing_armor :-
+    equipped(Armor),
+    body_armor(Armor, _, _).
+
 body_armor('studded leather', light, ac(12)).
 body_armor(Armor+N, Weight, ac(AC)) :-
     body_armor(Armor, Weight, ac(BaseAC)),
@@ -18,7 +22,8 @@ weapon(rapier, martial, melee,
        [damage(piercing, 1 d 8)], [finesse]).
 weapon('light crossbow', simple, ranged(feet(80) / feet(320)),
        [damage(piercing, 1 d 8)], [ammunition, loading, twohanded]).
-
+weapon(longbow, martial, ranged(feet(150) / feet(600)),
+       [damage(piercing, 1 d 8)], [ammunition, heavy, twohanded]).
 
 
 % Possibilities
@@ -30,3 +35,11 @@ weapon('light crossbow', simple, ranged(feet(80) / feet(320)),
 
 % A javelin is counted as a melee weapon with thrown property -> thrown simply modifies that it can also be used at range.
 % A dart is counted as a ranged weapon with thrown property -> thrown here just indicates that it uses STR and not DEX (unless it's also finesse!).
+
+weapon_onehanded(Weapon) :-
+    weapon(Weapon, _, _, _, Notes),
+    \+ member(twohanded, Notes).
+weapon_melee(Weapon) :-
+    weapon(Weapon, _, melee, _, _).
+weapon_ranged(Weapon) :-
+    weapon(Weapon, _, ranged(_), _, _).

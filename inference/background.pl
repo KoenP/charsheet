@@ -21,3 +21,17 @@ traits_from_source(background(archaeologist),
 trait_options_source(background(archaeologist), language, wrap(language), language).
 
 'historical knowledge' ?= "Can determine purpose and origin of ruin or dungeon. Can determine value of old objects.".
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Outlander (NOT SRD!).
+background_option(outlander).
+traits_from_source(background(outlander), [skill(athletics), skill(survival), wanderer]).
+trait_options_source(background(outlander), language, wrap(language), language).
+meta_todo(background(outlander), "plays a musical instrument").
+wanderer ?= "You have an excellent memory for maps and geography, and you can always recall the general layout of terrain, settlements, and other features aorund you. In addition, you can find food and fresh water for yourself and up to five other people each day, provided that the land offers berries, small game, water, and so forth.".
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Sage.
+background_option(sage).
+traits_from_source(background(sage), [skill(arcana), skill(history)]).
+trait_options_source(background(sage), language, 2 unique_from language).

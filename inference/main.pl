@@ -44,6 +44,7 @@
 :- [equipment].
 :- [ac].
 :- [hp].
+:- [fighting_style].
 :- [attacks].
 :- [languages].
 :- [html].
@@ -257,6 +258,11 @@ spells :-
 
 mtodo :-
     forall(meta_todo(S,T), writeln_quoted_term(S->T)).
+
+template :-
+    forall(todo(options(Origin, Id, _)),
+           (inspect_options(Origin, Id, Opts),
+            writeln_quoted_term(choice(Origin, Id, Opts)))).
 
 problems :-
     forall(problem(P), writeln_quoted_term(P)).

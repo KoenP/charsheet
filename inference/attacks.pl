@@ -1,4 +1,4 @@
-:- multifile attack/5.
+:- multifile attack/5, add_weapon_note/2.
 
 %! attack(?Name, ?Range, ?ToHitOrDC, ?DamageFormula, ?Notes)
 attack(Cantrip, Range, to_hit(ToHit), [DamageDice], []) :-
@@ -31,12 +31,20 @@ attack(RangedWeapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
     weapon(RangedWeapon, _, ranged(Range), DamageRolls, Notes),
     weapon_attack_modifier(ranged(Range), Notes, _, Mod),
     weapon_proficiency_bonus(RangedWeapon, ProfBon),
-    ToHit is Mod + ProfBon,
+    other_bonuses_to_hit(RangedWeapon, OtherBonuses),
+    ToHit is Mod + ProfBon + OtherBonuses,
     add_bonus_to_first_die(Mod, DamageRolls, FinalDamageRolls).
 
 add_bonus_to_first_die(Bonus, [damage(Type,Roll)|Rolls], [damage(Type,NewRoll)|Rolls]) :-
     simplify_dice_sum(Roll+Bonus, NewRoll).
-    
+
+attack_notes(Weapon, Notes) :-
+    weapon(Weapon, _, _, _, WeaponNotes),
+    findall(Note,
+            bonus(add_weapon_note(Weapon, Note)),
+            BonusNotes),
+    append(WeaponNotes, BonusNotes, Notes).
+
 
 weapon_melee_range(Weapon, feet(MeleeRange)) :-
     weapon(Weapon,_,_,_,Notes),
@@ -62,3 +70,10 @@ weapon_proficiency_bonus(Weapon, ProfBon) :-
     !,
     proficiency_bonus(ProfBon).
 weapon_proficiency_bonus(_, 0).
+
+%extended_weapon_notes(Weapon)
+
+other_bonuses_to_hit(Weapon, TotalBonus) :-
+    weapon(Weapon, _, _, _, _),
+    findall(B, bonus(to_hit(Weapon) + B), Bonuses),
+    sum_list(Bonuses, TotalBonus).

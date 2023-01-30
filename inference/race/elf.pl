@@ -14,9 +14,9 @@ bonus_source(race(elf), dex+2).
 
 bonus_source(race(elf('high elf')), int+1).
 traits_from_source(race(elf('high elf')), [weapon(longsword),
-                                      weapon(shortsword),
-                                      weapon(shortbow),
-                                      weapon(longbow)]).
+                                           weapon(shortsword),
+                                           weapon(shortbow),
+                                           weapon(longbow)]).
 
 meta_todo(race(elf('high elf')), learnable_cantrip(wizard)).
 meta_todo(race(elf('high elf')), language).

@@ -14,6 +14,7 @@ register_srd_spells :-
 register_spell(Data) :-
     to_lowercase_atom(Data.name, Name),
     spell_data_higher_level(Data.higher_level, HigherLevel),
+    string_to_atom(Data.school.index, School),
     spell_data_components(Data, Components),
     parse_range(Data.range, Range),
     maplist(spell_data_class, Data.classes, Classes),
@@ -25,7 +26,7 @@ register_spell(Data) :-
     assert(spell_auto_data(Name,
                            properties{ level: Data.level,
                                        higher_level: HigherLevel,          
-                                       school: Data.school.index,
+                                       school: School,
                                        components: Components,
                                        range: Range,
                                        casting_time: Data.casting_time,

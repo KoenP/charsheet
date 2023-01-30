@@ -17,6 +17,7 @@
 
 :- [class/cleric].
 :- [class/gambler].
+:- [class/ranger].
 :- [class/rogue].
 :- [class/sorcerer].
 :- [class/warlock].
@@ -101,6 +102,7 @@ class_origin_to_class_level_(subclass(Subclass), Class:Lvl) :-
     Subclass =.. [Class, _],
     choose_subclass_level(Class:Lvl).
 class_origin_to_class_level_(initial_class(Class), Class:1).
+class_origin_to_class_level_(multiclass_into(Class), Class:1).
 class_origin_to_class_level_(match_class(ClassF:Level), Class:Level) :-
     (Tail = [] ; Tail = [_]),
     ClassF =.. [Class|Tail].
@@ -151,6 +153,14 @@ class_choice(Class, Id, Choice) :-
 %  True iff your character has more than one class.
 multiclass :-
     findall(C, class(C), [_,_|_]).
+
+%! multiclass_into(Class)
+%
+%  True iff your character has Class as one of its classes, but not as
+%  its initial_class/1.
+multiclass_into(Class) :-
+    class(Class),
+    \+ initial_class(Class).
 
 %! hd_per_level(?Class, ?Dice)
 %

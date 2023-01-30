@@ -3,7 +3,8 @@
        spell_property/3,
        extend_class_spell_list/2,
        hide_known_class_spells/3,
-       prepare_spell/2.
+       prepare_spell/2,
+       spell_origin/1.
 
 % :- table known_spell/6 as incremental.
 
