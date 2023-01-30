@@ -15,6 +15,7 @@
 :- discontiguous
        required_predicate_for_each_class/1.
 
+:- [class/barbarian].
 :- [class/cleric].
 :- [class/gambler].
 :- [class/ranger].
