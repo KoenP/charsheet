@@ -7,6 +7,7 @@ wearing_armor :-
     body_armor(Armor, _, _).
 
 body_armor('studded leather', light, ac(12)).
+body_armor('half plate', medium, ac(15)).
 body_armor(Armor+N, Weight, ac(AC)) :-
     body_armor(Armor, Weight, ac(BaseAC)),
     AC is BaseAC + N.

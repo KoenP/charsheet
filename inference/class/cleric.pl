@@ -33,7 +33,7 @@ known_spell(cleric, wis, 'when prepared', [slot], Ritual, Name) :-
     spell_property(Name, ritual, Ritual).
 
 % Domain spells are always prepared.
-known_spell(cleric, wis, always, [slot], Ritual, Name) :-
+known_spell(cleric(Domain), wis, always, [slot], Ritual, Name) :-
     subclass(Class), Class =.. [cleric, Domain],
     cleric_domain_spell(Domain, Name),
     learnable_proper_spell(cleric, Name),

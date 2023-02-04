@@ -1,3 +1,12 @@
+% Inventory:
+% 300 gp worth of diamonds
+% schematics found in quickling camp
+% interplanar travel machine components
+% 37 gp
+
+equipped('half plate' + 1).
+equipped(shield).
+
 name('Torban the Tenacious').
 base_ability(str,13).
 base_ability(dex,10).
@@ -27,8 +36,20 @@ gain_level(5, cleric, hp_avg).
 gain_level(6, cleric, hp_avg).
 gain_level(7, cleric, hp_avg).
 
-prepare_spell(cleric, banishment).
+prepare_spell(cleric, 'healing word').
+prepare_spell(cleric, sanctuary).
+prepare_spell(cleric, 'detect poison and disease').
 
+prepare_spell(cleric, 'spiritual weapon').
+prepare_spell(cleric, 'prayer of healing').
+prepare_spell(cleric, 'hold person').
+
+prepare_spell(cleric, 'remove curse').
+prepare_spell(cleric, revivify).
+prepare_spell(cleric, 'spirit guardians').
+prepare_spell(cleric, 'dispel magic').
+
+prepare_spell(cleric, banishment).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % might not be correct

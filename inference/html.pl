@@ -224,7 +224,9 @@ spell_table(Origin, Table) :-
     Header = tr([th('Lvl'), th('Src'), th('Spell'), th('CT'),
                  th('Rng'), th('Cpts'), th('Dur'), th('Conc'), th('To Hit/DC'),
                  th('Effect (summary)'), th('Res')]),
-    findall(Row, spell_table_row(Origin, _, _, Row), Rows).
+    findall(Level-Row, spell_table_row(Origin, _, Level, Row), URows),
+    sort(URows, LRows),
+    findall(R, member(_-R, LRows), Rows).
     %spell_table_rows(Rows).
 
 spell_table_row(Origin, Name, SpellLevel, tr(Row)) :-
