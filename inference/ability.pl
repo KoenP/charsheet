@@ -52,6 +52,16 @@ initial_ability(Ability, Score) :-
     total_racial_ability_bonus(Ability, Bonus),
     Score is Base + Bonus.
 
+%! ability_after_feats(?Ability:atomic, ?Score:int)
+%
+%  Your character's ability Score for the given Ability, after
+%  counting bonuses from race, ability score increases, and feats.
+ability_after_feats(Ability, Score) :-
+    ability_after_levelup_asis(Ability, AfterAsis),
+    total_other_ability_bonus(Ability, Bonus),
+    ability_max(Ability, Max),
+    Score is min(AfterAsis+Bonus, Max).
+
 %! ability_after_levelup_asis(?Ability:atomic, ?Score:int)
 %
 %  Your character's ability Score for the given Ability, after
@@ -68,15 +78,26 @@ problem(ability_score_exceeds_maximum(Ability, Score)) :-
     ability_max(Ability, Max),
     Score > Max.
 
-%! ability_after_feats(?Ability:atomic, ?Score:int)
-%
-%  Your character's ability Score for the given Ability, after
-%  counting bonuses from race, ability score increases, and feats.
-ability_after_feats(Ability, Score) :-
-    ability_after_levelup_asis(Ability, AfterAsis),
-    total_other_ability_bonus(Ability, Bonus),
-    ability_max(Ability, Max),
-    Score is min(AfterAsis+Bonus, Max).
+total_racial_ability_bonus(Ability, Total) :-
+    ability(Ability), % ground
+    findall(Bon, (bonus(Origin, Ability + Bon), origin_category(race(_), Origin)), Bonuses),
+    sumlist(Bonuses, Total).
+total_asi_ability_bonus(Ability, Total) :-
+    ability(Ability),
+    findall(Bon,
+            (bonus(Origin, Ability+Bon), Origin = choice(_, 'asi or feat')),
+              % Omitting the intermediate Origin variable causes a warning in swipl which,
+              % I think, is a bug in swipl.
+            Bonuses),
+    sumlist(Bonuses, Total).
+total_other_ability_bonus(Ability, Total) :-
+    ability(Ability),
+    findall(Bon,
+            (bonus(Origin, Ability+Bon),
+             \+ origin_category(race(_), Origin),
+             Origin \= choice(_, 'asi or feat')),
+            Bonuses),
+    sumlist(Bonuses, Total).
 
 %! saving_throw(?Ability:atomic, ?Bonus:int)
 saving_throw(Ability, Bonus) :-
@@ -90,25 +111,6 @@ saving_throw(Ability, Bonus) :-
     % Make this predicate not fail if we don't have an initial class yet.
     ability_mod(Ability, Bonus),
     \+ initial_class(_).
-
-total_racial_ability_bonus(Ability, Total) :-
-    ability(Ability), % ground
-    findall(Bon, bonus(race(_), Ability + Bon), Bonuses),
-    sumlist(Bonuses, Total).
-total_asi_ability_bonus(Ability, Total) :-
-    ability(Ability),
-    findall(Bon,
-            (bonus(Origin, Ability+Bon), Origin = choice(_, 'asi or feat')),
-              % Omitting the intermediate Origin variable causes a warning in swipl which,
-              % I think, is a bug in swipl.
-            Bonuses),
-    sumlist(Bonuses, Total).
-total_other_ability_bonus(Ability, Total) :-
-    ability(Ability),
-    findall(Bon,
-            (bonus(Origin, Ability+Bon), Origin \= race(_), Origin \= choice(_, 'asi or feat')),
-            Bonuses),
-    sumlist(Bonuses, Total).
 
 %asi(N, Abi+N) :- ability(Abi).
 %asi(N, Asis) :-
