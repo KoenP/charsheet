@@ -59,7 +59,7 @@ trait_source(class(cleric), spellcasting_focus(divine)).
 trait_source(class(cleric), ritual_casting(cleric)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Level 2 features.
+% Features from leveling up.
 resource('channel divinity', 'channel divinity', N) :-
     class_level(cleric:Lvl),
     ordered_lookup_largest_leq([2 -> 1, 6 -> 2, 18 -> 3], Lvl, N).
@@ -67,17 +67,42 @@ trait_source(match_class(cleric:2), 'channel divinity').
 trait_source(match_class(cleric:2), channel_divinity('turn undead')).
 meta_todo(cleric, "'channel divinity' has specific multiclassing rules").
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Level 5 features.
 trait_source(match_class(cleric:5), destroy_undead(cr(CR))) :-
     class_level(cleric:L),
     ordered_lookup_largest_leq([5->1/2, 8->1, 11->2, 14->3, 17->4], L, CR).
 
-meta_todo(cleric, "All features for >lvl 5 and all descriptions").
+trait_source(match_class(cleric:10), 'divine intervention').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DOMAINS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Life domain.
+subclass_option(cleric, life).
+
+cleric_domain_spell(life, bless).
+cleric_domain_spell(life, 'cure wounds').
+cleric_domain_spell(life, 'lesser restoration').
+cleric_domain_spell(life, 'spiritual weapon').
+cleric_domain_spell(life, 'beacon of hope').
+cleric_domain_spell(life, revivify).
+cleric_domain_spell(life, 'death ward').
+cleric_domain_spell(life, 'guardian of faith').
+cleric_domain_spell(life, 'mass cure wounds').
+cleric_domain_spell(life, 'raise dead').
+
+trait_source(match_class(cleric(life):1), armor(heavy)).
+trait_source(match_class(cleric(life):1), 'disciple of life').
+bonus_source(trait('disciple of life'),
+             modify_spell(_, HealingSpell, increase_all_spell_healing_rolls(Bonus))) :-
+    spell_property(HealingSpell, level, Level),
+    Level >= 1,
+    spell_property(HealingSpell, effects, Effects),
+    subterm_member(heal(_), Effects),
+    Bonus is 2 + Level.
+
+'disciple of life' ?= "Starting at 1st level, your healing spells are more effective. Whenever you use a spell of 1st level or higher to restore hit points to a creature, the creature regains additional hit points equal to 2 + the spell's level.".
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Knowledge domain.
@@ -135,3 +160,5 @@ If the creature fails its save, you can read its surface thoughts (those foremos
 During that time, you can use your action to end this effect and cast the Suggestion spell on the creature without expending a spell slot. The target automatically fails its saving throw against the spell.".
 
 destroy_undead(_) ?= "Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold, as shown in the Destroy Undead table.".
+
+'divine intervention' ?= "Beginning at 10th level, you can call on your deity to intervene on your behalf when your need is great. Imploring your deity's aid requires you to use your action. Describe the assistance you seek, and roll percentile dice. If you roll a number equal to or lower than your cleric level, your deity intervenes. The GM chooses the nature of the intervention; the effect of any cleric spell or cleric domain spell would be appropriate. If your deity intervenes, you can't use this feature again for 7 days. Otherwise, you can use it again after you finish a long rest. At 20th level, your call for intervention succeeds automatically, no roll required.".

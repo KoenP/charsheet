@@ -50,6 +50,7 @@
 :- [html].
 :- [character_file].
 :- [sheet_json].
+:- [test].
 
 %! meta_todo(Source, Todo)
 %
@@ -177,8 +178,6 @@ passive_perception(PP) :-
     PP is 10 + Perception.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Todo.
-todo(problem:P) :- problem(P).
 
 name(_) :- false.
 problem('pick a name!') :- \+ name(_).

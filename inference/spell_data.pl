@@ -150,11 +150,6 @@ extend_spell_data(Name, effects, Effects) :-
 %  has been learned.
 known_spell_effect(_,_,_) :- false.
 
-%! add_spell_effect(?Name:atomic, ?Effect)
-%
-%  Add an entry to the `effects` field of the spell data.
-add_spell_effect('acid splash', "up to two targets within 5 ft of eachother").
-
 known_spell_effect(Origin, counterspell, Effect) :-
     known_spell(Origin, Ability, _, _, _, counterspell),
     atomics_to_string(
@@ -163,6 +158,11 @@ known_spell_effect(Origin, counterspell, Effect) :-
          " check"],
         Effect).
 
+%! add_spell_effect(?Name:atomic, ?Effect)
+%
+%  Add an entry to the `effects` field of the spell data.
+add_spell_effect('acid splash', "up to two targets within 5 ft of eachother").
+add_spell_effect('cure wounds', heal(1 d 8 + mod)).
 add_spell_effect(darkvision, "grant 60 ft darkvision").
 
 add_spell_effect('detect magic', "sense presence of magic within 30 ft").

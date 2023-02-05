@@ -2,7 +2,9 @@
        options/3,
        options_source/3,
        choice/3,
+       ignore/2,
        hide_base_option/3.
+:- dynamic ignore/2.
 
 % :- table (options/3, hide_base_option/3) as incremental.
 
@@ -16,11 +18,19 @@
 %  A todo is generated for every options/3 clause without matching
 %  choice/3 clause.
 options(_,_,_) :- false.
+
+%! todo(?Todo)
 todo(options(Origin, Id, Spec)) :-
     % Generate a todo for each options clause without corresponding choice clause.
     options(Origin, Id, Spec),
-    \+ choice(Origin, Id, _).
+    \+ (choice(Origin, Id, _); ignore(Origin, Id)).
+todo(problem:P) :- problem(P).
 
+%! ignore(?Origin, ?Id)
+%
+%  Indicate that you deliberately don't want to pick an option for a
+%  given options/3 with the matching Origin and Id.
+ignore(_,_) :- false.
 
 %! options_source(?Source, ?Id, ?Spec)
 %

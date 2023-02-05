@@ -5,6 +5,7 @@
        hide_known_class_spells/3,
        prepare_spell/2,
        spell_origin/1.
+:- dynamic prepare_spell/2.
 
 % :- table known_spell/6 as incremental.
 
@@ -98,11 +99,22 @@ known_spell(Origin, Name) :-
 known_spell_data(Origin, Name, Data) :-
     known_spell(Origin, Name),
     spell_data(Name, GenericData),
+    substitute_effect_variables(Origin, GenericData, SubstData),
     findall(Mod,
             (bonus(modify_spell(Origin, Name, Mod));
              known_spell_mod(Origin, Name, Mod)),
             Mods),
-    sequence(Mods, GenericData, Data).
+    sequence(Mods, SubstData, Data).
+
+substitute_effect_variables(Origin, Data, Data.put(effects, NewEffects)) :-
+    map_matching_subterms(match_effect_variable_substitution(Origin),
+                          Data.effects,
+                          NewEffects).
+match_effect_variable_substitution(Origin, Formula + mod, NewFormula) :-
+    spellcasting_ability(Origin, Ability),
+    ability_mod(Ability, Mod),
+    simplify_dice_sum(Formula + Mod, NewFormula).
+    
 
 %! known_spell_property(?Origin:atomic, ?Name:atomic, ?Field:atomic, ?Val)
 %
@@ -389,6 +401,14 @@ increase_all_spell_damage_rolls(Bonus, Old, New) :-
     get_or_default(Old, effects, [], OldEffects),
     map_matching_subterms({Bonus}/[damage(El,OldRoll),damage(El,NewRoll)]
                             >> simplify_dice_sum(OldRoll+Bonus, NewRoll),
+                          OldEffects,
+                          NewEffects),
+    New = Old.put(effects, NewEffects).
+
+increase_all_spell_healing_rolls(Bonus, Old, New) :-
+    get_or_default(Old, effects, [], OldEffects),
+    map_matching_subterms({Bonus}/[heal(OldFormula),heal(NewFormula)]
+                          >> simplify_dice_sum(OldFormula + Bonus, NewFormula),
                           OldEffects,
                           NewEffects),
     New = Old.put(effects, NewEffects).

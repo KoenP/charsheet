@@ -1,4 +1,4 @@
-:- multifile equipped/1.
+:- dynamic equipped/1.
 
 equipped(_) :- false.
 

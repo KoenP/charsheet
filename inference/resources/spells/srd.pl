@@ -17,6 +17,8 @@ register_spell(Data) :-
     string_to_atom(Data.school.index, School),
     spell_data_components(Data, Components),
     parse_range(Data.range, Range),
+    yesno(Data.concentration, Concentration),
+    yesno(Data.ritual, Ritual),
     maplist(spell_data_class, Data.classes, Classes),
     spell_data_damage_with_cantrip_scaling(Data, DamageCantripScaling),
     spell_data_damage_at_slot_level(Data, DamageSlotLevel),
@@ -31,8 +33,8 @@ register_spell(Data) :-
                                        range: Range,
                                        casting_time: Data.casting_time,
                                        duration: Data.duration,
-                                       concentration: Data.concentration,
-                                       ritual: Data.ritual,
+                                       concentration: Concentration,
+                                       ritual: Ritual,
                                        desc: Data.desc,
                                        classes: Classes,
                                        damage_with_cantrip_scaling: DamageCantripScaling,
@@ -63,6 +65,9 @@ spell_data_component(_, Component, Atom) :-
 to_lowercase_atom(Str, Atom) :-
     string_lower(Str, Lower),
     string_to_atom(Lower, Atom).
+
+yesno(true, yes).
+yesno(false, no).
 
 parse_range("Self", self) :- !.
 parse_range("Touch", touch) :- !.

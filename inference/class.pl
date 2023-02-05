@@ -244,7 +244,9 @@ caster(_,_) :- false.
 %required_predicate_for_each_class(caster/2).
 
 %! spellcasting_ability(?Class:atomic, ?Ability:atomic)
-spellcasting_ability(_,_) :- false.
+spellcasting_ability(Compound, Abi) :-
+    Compound =.. [Class,_|_],
+    spellcasting_ability(Class, Abi).
 
 %! max_prepared_spells(?Class:atomic, ?N:int)
 %
