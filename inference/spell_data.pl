@@ -183,7 +183,11 @@ add_spell_effect(frostbite,
                  saving_throw(con):damage(cold,N d 6)) :-
     cantrip_scale(N).
 
+add_spell_effect('mass cure wounds', heal(3 d 8 + mod) upto "6 creatures").
+
 add_spell_effect('misty step', "teleport 30 ft").
+
+add_spell_effect('prayer of healing', heal(2 d 8 + mod) upto "6 creatures").
 
 %extend_spell_data('scorching ray', damage rolls, [on_hit: fire(2 d 6)]).
 suppress_autoderived_spell_effect('scorching ray').

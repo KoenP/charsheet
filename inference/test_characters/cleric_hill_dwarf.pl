@@ -38,15 +38,24 @@ test_char_level(
      trait('dwarven toughness'),
      trait(sense(darkvision)),
      trait(stonecunning),
+     trait(armor(heavy)), % test a life domain feature
 
      findall(L-N, spell_slots(L,N), [1-2]),
+     spell_save_dc(cleric, 13), % = 8 + 3 (wis) + 2 (prof bon)
+     spell_attack_modifier(cleric, 5), % = 3 (wis) + 2 (prof bon)
+     max_prepared_spells(cleric, 4), % = 3 (wis) + 1 (cleric level)
+
+     attack('sacred flame', feet(60), saving_throw(13,dex), [damage(radiant,1 d 8)], []),
 
      known_spell(cleric, wis, always, [], no, 'sacred flame'),
      known_spell(cleric, wis, always, [], no, 'spare the dying'),
      known_spell(cleric, wis, always, [], no, guidance),
 
-     % domain spell
-     %known_spell(cleric, wis, always, [slot], no, 'cure wounds'),
+     % Domain spell are always prepared
+     known_spell(cleric(life), wis, always, [slot], no, 'cure wounds'),
+     known_spell(cleric(life), wis, always, [slot], no, bless),
+     known_spell_property(cleric(life), 'cure wounds', effects,
+                          [heal(1 d 8 + 6)]), % = 3 (wis) + 2 + 1 (spell level)
 
      % Clerics know all spells on their spell list; testing just a few here
      known_spell(cleric, wis, 'when prepared', [slot], no, bane),
@@ -62,6 +71,7 @@ test_char_level(
      ac(18),
      findall(L-N, spell_slots(L,N), [1-3]),
      resource('channel divinity', 'channel divinity', 2),
+     max_prepared_spells(cleric, 5), % = 3 (wis) + 2 (cleric level)
      trait(channel_divinity('turn undead'))
     ]).
 
@@ -72,10 +82,15 @@ test_char_level(
     [max_hp(30), % = 8 (base) + 2*5 (lvlup) + 3*3 (con) + 3 (dwarven toughness)
      ac(18),
      findall(L-N, spell_slots(L,N), [1-4, 2-2]),
+     max_prepared_spells(cleric, 6), % = 3 (wis) + 3 (cleric level)
 
-     % Test that we have access to some lvl 2 spells
+     % Test that we have access to some lvl 2 spells.
      known_spell(cleric, wis, 'when prepared', [slot], no, 'continual flame'),
-     known_spell(cleric, wis, 'when prepared', [slot], no, 'hold person')
+     known_spell(cleric, wis, 'when prepared', [slot], no, 'hold person'),
+
+     % Domain spells are always prepared.
+     known_spell(cleric(life), wis, always, [slot], no, 'lesser restoration'),
+     known_spell(cleric(life), wis, always, [slot], no, 'spiritual weapon')
     ]).
 
 test_char_level(
@@ -84,7 +99,8 @@ test_char_level(
     [gain_level(4, cleric, hp_avg),
      choice(match_class(cleric:4), 'asi or feat', [wis, str]),
      choice(match_class(cleric:4), cantrip, mending),
-     prepare_spell(cleric, 'cure wounds')
+     prepare_spell(cleric, 'cure wounds'),
+     prepare_spell(cleric, 'prayer of healing')
     ],
     [max_hp(39), % = 8 (base) + 3*5 (lvlup) + 4*3 (con) + 4 (dwarven toughness)
      ac(18),
@@ -95,8 +111,76 @@ test_char_level(
      ability(wis,18), % +1 from hill dwarf, + 1 from asi
      ability(cha,9),
      findall(L-N, spell_slots(L,N), [1-4, 2-3]),
-     known_spell(cleric, wis, always, [], no, mending)
+     max_prepared_spells(cleric, 8), % = 4 (wis) + 4 (cleric level)
+     spell_save_dc(cleric, 14), % = 8 + 4 (wis) + 2 (prof bon)
+     spell_attack_modifier(cleric, 6), % = 4 (wis) + 2 (prof bon)
+     attack('sacred flame', feet(60), saving_throw(14,dex), [damage(radiant,1 d 8)], []),
+     known_spell(cleric, wis, always, [], no, mending),
+     known_spell_property(cleric(life), 'cure wounds', effects,
+                          [heal(1 d 8 + 7)]) % = 4 (wis) + 2 + 1 (spell level)
     ]).
+
+test_char_level(
+    chd,
+    5,
+    [gain_level(5, cleric, hp_avg)],
+    [spell_save_dc(cleric, 15), % = 8 + 4 (wis) + 3 (prof bon)
+     spell_attack_modifier(cleric, 7), % = 4 (wis) + 3 (prof bon)
+     trait(destroy_undead(cr(1/2))),
+     attack('sacred flame', feet(60), saving_throw(15,dex), [damage(radiant,2 d 8)], [])
+    ]).
+
+test_char_level(
+    chd,
+    6,
+    [gain_level(6, cleric, hp_avg)],
+    [known_spell_property(cleric(life), 'cure wounds', effects,
+                          [heal(1 d 8 + 7), (target=other) -> self_heal(3)]),
+     known_spell_property(cleric, 'prayer of healing', effects,
+                          [heal(2 d 8 + 8) upto "6 creatures", (target=other) -> self_heal(4)])
+    ]).
+
+test_char_level(chd, L, [gain_level(L, cleric, hp_avg)], []) :-
+    between(7,16,L).
+
+test_char_level(
+    chd,
+    17,
+    [gain_level(17, cleric, hp_avg)],
+    [known_spell_property(cleric(life), 'cure wounds', effects,
+                          [heal(15), % = 8 (supreme healing) + 4 (wis) + 2 + 1 (spell lvl)
+                           (target=other) -> self_heal(3)]), 
+     known_spell_property(cleric, 'prayer of healing', effects,
+                          [heal(24) upto "6 creatures",
+                           (target=other) -> self_heal(4)])]).
+
+%test_char_level(
+%    chd,
+%    7,
+%    [gain_level(7, cleric, hp_avg)],
+%    []).
+%
+%test_char_level(
+%    chd,
+%    8,
+%    [gain_level(8, cleric, hp_avg),
+%     ignore(match_class(cleric:8), 'asi or feat')
+%    ],
+%    []).
+%
+%test_char_level(
+%    chd,
+%    9,
+%    [gain_level(9, cleric, hp_avg)],
+%    []).
+%
+%test_char_level(
+%    chd,
+%    10,
+%    [gain_level(10, cleric, hp_avg),
+%     ignore(match_class(cleric:10), cantrip)
+%    ],
+%    []).
     
 %
 %gain_level(3, cleric, hp_avg).

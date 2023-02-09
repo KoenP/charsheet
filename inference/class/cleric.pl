@@ -48,7 +48,7 @@ extend_class_spell_list(cleric, Spell) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features.
 traits_from_source(initial_class(cleric),
-                   [armor(light), armor(medium), shield,
+                   [armor(light), armor(medium), armor(shield),
                     weapon(simple)]).
 
 trait_options_source(initial_class(cleric), skill, wrap(skill),
@@ -71,7 +71,9 @@ trait_source(match_class(cleric:5), destroy_undead(cr(CR))) :-
     class_level(cleric:L),
     ordered_lookup_largest_leq([5->1/2, 8->1, 11->2, 14->3, 17->4], L, CR).
 
-trait_source(match_class(cleric:10), 'divine intervention').
+trait_source(match_class(cleric:10), divine_intervention(Pct pct)) :-
+    class_level(cleric:Level),
+    (Level < 20 -> Pct = Level ; Pct = 100).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DOMAINS
@@ -98,11 +100,40 @@ bonus_source(trait('disciple of life'),
              modify_spell(_, HealingSpell, increase_all_spell_healing_rolls(Bonus))) :-
     spell_property(HealingSpell, level, Level),
     Level >= 1,
-    spell_property(HealingSpell, effects, Effects),
-    subterm_member(heal(_), Effects),
+    healing_spell(HealingSpell),
     Bonus is 2 + Level.
+trait_source(match_class(cleric(life):2), channel_divinity(preserve_life(Pool))) :-
+    class_level(cleric:L),
+    Pool is 5*L.
+trait_source(match_class(cleric(life):6), 'blessed healer').
+bonus_source(trait('blessed healer'),
+             modify_spell(_, HealingSpell, add_spell_effects([(target=other)->self_heal(HP)]))) :-
+    spell_property(HealingSpell, level, Level),
+    Level >= 1,
+    \+ spell_property(HealingSpell, range, self),
+    healing_spell(HealingSpell),
+    HP is 2 + Level.
+custom_format(self_heal(HP)) --> [" heal self for "], format_number(HP).
+
+trait_source(match_class(cleric(life):8), divine_strike(N d 8)) :-
+    class_level(cleric:L),
+    (L < 14 -> N = 1; N = 2).
+trait_source(match_class(cleric(life):17), 'supreme healing').
+bonus_source(trait('supreme healing'),
+             modify_spell(_, HealingSpell, apply_supreme_healing)) :-
+    spell_property(HealingSpell, effects, Effects),
+    subterm_member(heal(Formula), Effects),
+    subterm_member(_ d _, Formula). % Only applies to healing spells for which you have to roll.
+apply_supreme_healing(Old, Old.put(effects, NewEffects)) :-
+    map_matching_subterms(heal_roll_max, Old.get(effects), NewEffects).
+heal_roll_max(heal(Formula), heal(NewFormula)) :-
+    map_matching_subterms(roll_max, Formula, MaxedRolls),
+    simplify_dice_sum(MaxedRolls, NewFormula).
 
 'disciple of life' ?= "Starting at 1st level, your healing spells are more effective. Whenever you use a spell of 1st level or higher to restore hit points to a creature, the creature regains additional hit points equal to 2 + the spell's level.".
+'blessed healer' ?= "Beginning at 6th level, the healing spells you cast on others heal you as well. When you cast a spell of 1st level or higher that restores hit points to a creature other than you, you regain hit points equal to 2 + the spell's level.".
+'divine strike' ?= "At 8th level, you gain the ability to infuse your weapon strikes with divine energy. Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 radiant damage to the target. When you reach 14th level, the extra damage increases to 2d8.".
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Knowledge domain.
@@ -161,4 +192,4 @@ During that time, you can use your action to end this effect and cast the Sugges
 
 destroy_undead(_) ?= "Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold, as shown in the Destroy Undead table.".
 
-'divine intervention' ?= "Beginning at 10th level, you can call on your deity to intervene on your behalf when your need is great. Imploring your deity's aid requires you to use your action. Describe the assistance you seek, and roll percentile dice. If you roll a number equal to or lower than your cleric level, your deity intervenes. The GM chooses the nature of the intervention; the effect of any cleric spell or cleric domain spell would be appropriate. If your deity intervenes, you can't use this feature again for 7 days. Otherwise, you can use it again after you finish a long rest. At 20th level, your call for intervention succeeds automatically, no roll required.".
+divine_intervention(_) ?= "Beginning at 10th level, you can call on your deity to intervene on your behalf when your need is great. Imploring your deity's aid requires you to use your action. Describe the assistance you seek, and roll percentile dice. If you roll a number equal to or lower than your cleric level, your deity intervenes. The GM chooses the nature of the intervention; the effect of any cleric spell or cleric domain spell would be appropriate. If your deity intervenes, you can't use this feature again for 7 days. Otherwise, you can use it again after you finish a long rest. At 20th level, your call for intervention succeeds automatically, no roll required.".

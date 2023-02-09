@@ -1,21 +1,33 @@
+:- multifile custom_format//1.
+
 fmt(Spec, Out) :-
     phrase(Spec, Phrase),
     atomics_to_string(Phrase, Out).
 
+format_term(T) --> custom_format(T), {!}.
+format_term(X d Y) --> format_dice(X d Y), {!}.
+format_term(1 / 2) --> {!}, ["½"].
+format_term(X / Y) --> {!}, [X], ['/'], [Y].
+format_term(X : Y) --> {!}, format_term(X), [':'], format_term(Y).
+format_term(X + Y) --> {!}, format_term(X), ['+'], format_term(Y).
+format_term(X = Y) --> {!}, format_term(X), ['='], format_term(Y).
+format_term(X -> Y) --> {!}, format_term(X), ['→'], format_term(Y).
+format_term(X pct) --> {!}, format_term(X), ['%'].
+format_term(X upto Y) --> {!}, format_term(X), [' up to '], format_term(Y).
+format_term(cr(X)) --> {!}, ['CR '], format_term(X).
+format_term(Number) --> format_number(Number), {!}.
+format_term(Atom) --> {atom(Atom), !}, format_atom(Atom).
+format_term(String) --> {string(String), !}, [String].
+format_term(List) --> {is_list(List), !}, format_list(List).
 format_term(Compound) -->
-    {\+ is_list(Compound), Compound =.. [Ftor|Tms], \+ member(Ftor, ['/', ':', 'd', '+']), Tms \= []},
+    {Compound =.. [Ftor|Tms], Tms \= []},
+    %{\+ is_list(Compound), Compound =.. [Ftor|Tms], \+ member(Ftor, ['/', ':', 'd', '+', pct, cr, upto]), Tms \= []},
     format_atom(Ftor),
     [' ('],
     format_terms(Tms),
     [')'].
-format_term(X d Y) --> format_dice(X d Y).
-format_term(X / Y) --> [X], ['/'], [Y].
-format_term(X : Y) --> format_term(X), [':'], format_term(Y).
-format_term(X + Y) --> format_term(X), ['+'], format_term(Y).
-format_term(Number) --> {number(Number), number_chars(Number, Chars)}, seq(Chars).
-format_term(Atom) --> {atom(Atom)}, format_atom(Atom).
-format_term(String) --> {string(String)}, [String].
-format_term(List) --> format_list(List).
+
+format_number(Number) --> {number(Number), !, number_chars(Number, Chars)}, seq(Chars). 
 
 format_atom(Atom) -->
     {atom_chars(Atom, Chars)},

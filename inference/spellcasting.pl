@@ -284,6 +284,13 @@ base_spell_origin(BaseOrigin) :-
 %    findall(Mod, bonus(modify_spell_property(Origin,Name,Prop,Mod)), Mods),
 %    sequence(Mods, GenericVal, Val).
 
+%! healing_spell(?Spell)
+%
+%  True iff Spell has a `heal(_)` term in its effect list.
+healing_spell(Spell) :-
+    spell_property(Spell, effects, Effects),
+    subterm_member(heal(_), Effects).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Spell slots.
 

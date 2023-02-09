@@ -15,6 +15,7 @@
        resource/2,
        content_source/2.
 
+:- op(600, xfx, upto).
 :- op(500, xfy, or).
 :- op(400, xfy, and).
 :- op(700, xfx, else).
@@ -24,6 +25,7 @@
 :- op(1000, xfx, ?=).
 :- op(1000, xfx, ?=).
 :- op(650, xfx, ft).
+:- op(100, xf, pct).
 
 :- [util].
 :- [dice].

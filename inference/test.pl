@@ -19,7 +19,7 @@ test_character_level(Facts, Expectations) :-
     forall(member(Fact,Facts), assert(Fact)),
     forall(member(E,Expectations), test_expectation(E)),
     findall(Problem, (problem(Problem), write('Problem: '), writeln(Problem)), []),
-    findall(Todo, (todo(Todo), write('Todo: '), writeln(Todo)), []).
+    findall(Todo, (todo(Todo), write('Todo: '), writeln(Todo)), _).
 test_expectation(Expectation) :-
     call(Expectation)
     -> true

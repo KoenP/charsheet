@@ -1,10 +1,15 @@
 % TODO: documentation and cleanup
 :- op(400, xfx, d).
 
-%! roll_avg(?Roll, ?Avg:int)
+%! roll_avg(?Roll, -Avg:int)
 %
 %  The average value of a die, rounded up.
 roll_avg(X d Y, Avg) :- Avg is ceiling(X * (Y+1) / 2).
+
+%! roll_max(?Roll, -Max:int)
+%
+%  The maximum value of a die roll.
+roll_max(X d Y, Max) :- Max is X*Y.
 
 %! simplify_dice_sum(?Sum, ?Simplified)
 %
