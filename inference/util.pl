@@ -11,6 +11,10 @@ select_subterm(X, T1, Y, T2) :-
     select_subterm(X, SubT, Y, NewSubT),
     T2 =.. [Functor|NewArgs].
 
+select_first_subterm(X, T1, Y, T2) :-
+    select_subterm(X, T1, Y, T2),
+    !.
+
 select_all_matching_members(_, [], _, []) :- !.
 select_all_matching_members(X, [X|Xs], Y, [Y|Ys]) :-
     select_all_matching_members(X, Xs, Y, Ys).

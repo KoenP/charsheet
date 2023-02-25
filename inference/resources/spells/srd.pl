@@ -25,6 +25,7 @@ register_spell(Data) :-
     spell_data_aoe(Data, AOE),
     spell_data_dc(Data, DC),
     spell_data_attack_type(Data, AttackType),
+    get_or_default(Data, material, false, Material),
     assert(spell_auto_data(Name,
                            properties{ level: Data.level,
                                        higher_level: HigherLevel,          
@@ -41,7 +42,8 @@ register_spell(Data) :-
                                        damage_at_slot_level: DamageSlotLevel,
                                        area_of_effect: AOE,
                                        dc: DC,
-                                       attack_type: AttackType
+                                       attack_type: AttackType,
+                                       material: Material
                                      })).
 
 spell_auto_property(Spell, Field, Value) :-

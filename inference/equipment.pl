@@ -21,6 +21,8 @@ weapon_proficiency(Weapon) :-
 %! weapon(?Name, ?WeaponClass, ?Rangedness, ?DamageFormula, ?Notes)
 weapon(rapier, martial, melee,
        [damage(piercing, 1 d 8)], [finesse]).
+weapon(quarterstaff, simple, melee,
+       [damage(bludgeoning, 1 d 6)], [versatile(1 d 8)]).
 weapon('light crossbow', simple, ranged(feet(80) / feet(320)),
        [damage(piercing, 1 d 8)], [ammunition, loading, twohanded]).
 weapon(longbow, martial, ranged(feet(150) / feet(600)),

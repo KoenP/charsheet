@@ -63,6 +63,7 @@ trait_source(class(cleric), ritual_casting(cleric)).
 resource('channel divinity', 'channel divinity', N) :-
     class_level(cleric:Lvl),
     ordered_lookup_largest_leq([2 -> 1, 6 -> 2, 18 -> 3], Lvl, N).
+on_rest(long, 'channel divinity', full_restore).
 trait_source(match_class(cleric:2), 'channel divinity').
 trait_source(match_class(cleric:2), channel_divinity('turn undead')).
 meta_todo(cleric, "'channel divinity' has specific multiclassing rules").

@@ -197,3 +197,9 @@ add_spell_effect('scorching ray', 3 * ADEffect) :-
 add_spell_effect('see invisibility',
                  "see invisible creatures and objects, see through Ethereal").
 
+attack_variant(Name:shillelagh, Range, to_hit(ToHit), [damage(bludgeoning, 1 d 8 + Mod)], [magical]) :-
+    (Name = quarterstaff ; Name = club),
+    attack(Name, Range, _, _, _),
+    ability_mod(wis, Mod),
+    proficiency_bonus(ProfBon),
+    ToHit is Mod + ProfBon.

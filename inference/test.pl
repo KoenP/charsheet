@@ -2,6 +2,7 @@
 :- dynamic most_recent_test_character/1.
 
 :- [test_characters/cleric_hill_dwarf].
+:- [test_characters/druid_elf].
 :- [test_characters/ranger_human].
 
 % test_char_level(?Name, ?Level, ?Facts, ?Expectations)

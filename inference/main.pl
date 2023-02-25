@@ -26,6 +26,7 @@
 :- op(1000, xfx, ?=).
 :- op(650, xfx, ft).
 :- op(100, xf, pct).
+:- op(1000, xf, qq).
 
 :- [util].
 :- [dice].
@@ -298,3 +299,10 @@ describe_new_learnable_spells(Class:Level) :-
 
 describe_class_cantrips(Class) :-
     forall(class_cantrip(Class, Spell), describe_spell(Spell)).
+
+qq(Pred) :-
+    current_predicate(Pred/Arity),
+    length(Args, Arity),
+    Functor =.. [Pred|Args],
+    call(Functor),
+    forall(member(Arg,Args), writeln(Arg)).

@@ -1,4 +1,4 @@
-:- multifile attack/5, add_weapon_note/2.
+:- multifile attack/5, attack_variant/5, add_weapon_note/2.
 
 %! attack(?Name, ?Range, ?ToHitOrDC, ?DamageFormula, ?Notes)
 attack(Cantrip, Range, to_hit(ToHit), [DamageDice], []) :-
@@ -34,6 +34,16 @@ attack(RangedWeapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
     other_bonuses_to_hit(RangedWeapon, OtherBonuses),
     ToHit is Mod + ProfBon + OtherBonuses,
     add_bonus_to_first_die(Mod, DamageRolls, FinalDamageRolls).
+
+%! attack_variant(?Id, ?Range, ?ToHit, ?DamageFormula)
+%
+%  `Id = Name:_`, where `attack(Name,_,_,_,_)`.
+attack_variant(Name:twohanded, Range, ToHit,
+               [damage(Type,NewDmgTerm)|Terms], []) :-
+    attack(Name, Range, ToHit, [damage(Type,Formula)|Terms], Notes),
+    member(versatile(NewBaseDmg), Notes),
+    select_first_subterm(_ d _, Formula, NewBaseDmg, NewDmgTerm).
+
 
 add_bonus_to_first_die(Bonus, [damage(Type,Roll)|Rolls], [damage(Type,NewRoll)|Rolls]) :-
     simplify_dice_sum(Roll+Bonus, NewRoll).

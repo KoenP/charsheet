@@ -14,6 +14,8 @@ format_term(X = Y) --> {!}, format_term(X), ['='], format_term(Y).
 format_term(X -> Y) --> {!}, format_term(X), ['→'], format_term(Y).
 format_term(X pct) --> {!}, format_term(X), ['%'].
 format_term(X upto Y) --> {!}, format_term(X), [' up to '], format_term(Y).
+format_term(hours(1)) --> {!}, ['1 hour'].
+format_term(hours(N)) --> {!}, format_term(N), [' hours'].
 format_term(cr(X)) --> {!}, ['CR '], format_term(X).
 format_term(Number) --> format_number(Number), {!}.
 format_term(Atom) --> {atom(Atom), !}, format_atom(Atom).

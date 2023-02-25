@@ -10,7 +10,7 @@
 
 %! trait(Source, Trait)
 %
-%  Traits are (most of) the idempotent properties (ie the properties
+%  Traits are (most of) the named and idempotent properties (ie the properties
 %  that don't stack) of your character.
 %
 %  Examples:
