@@ -47,6 +47,7 @@ sum_to_list(X + Y, [DY|List]) :-
 normalize_dice_sum_term(N d X, N d X) :- X \= 1.
 normalize_dice_sum_term(N    , N d 1) :- number(N).
 add_up_dice([0 d _ | Ds], Dice) :-
+    !,
     add_up_dice(Ds, Dice).
 add_up_dice([D|Ds], Dice) :-
     add_up_dice(Ds, RestDice),

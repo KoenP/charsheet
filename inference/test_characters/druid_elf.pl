@@ -14,6 +14,7 @@ test_char_level(
      choice(init, 'base race', elf),
      choice(race(elf), subrace, 'high elf'),
      choice(race(elf('high elf')), cantrip, 'fire bolt'),
+     choice(race(elf('high elf')), language, gnomish),
 
      choice(init, 'initial class', druid),
      choice(class(druid), cantrip, [shillelagh, druidcraft]),
@@ -21,12 +22,24 @@ test_char_level(
     ],
     [max_hp(10), % 8 (base druid) + 2 (con mod)
      ac(12), % 10 + 2 (dex mod)
+     speed(30),
      ability(str,10),
      ability(dex,15), % elf bonus + 2
      ability(con,14),
-     ability(int,13), % elf bonus + 1
+     ability(int,13), % high elf bonus + 1
      ability(wis,16),
      ability(cha,9),
+     
+     % racial traits
+     trait(race(elf), sense(darkvision)),
+     trait(trait(sense('keen senses')), skill(perception)),
+     trait(race(elf('high elf')), weapon(longsword)),
+     trait(race(elf('high elf')), weapon(shortsword)),
+     trait(race(elf('high elf')), weapon(shortbow)),
+     trait(race(elf('high elf')), weapon(longbow)),
+     
+     \+ resource('wild shape', _, _),
+
      attack_variant(quarterstaff:shillelagh, feet(5), to_hit(5),
                     [damage(bludgeoning, 1 d 8 + 3)], [magical]),
      attack_variant(quarterstaff:twohanded, feet(5), to_hit(2),

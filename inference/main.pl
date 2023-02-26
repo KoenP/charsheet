@@ -196,7 +196,7 @@ problem('pick a name!') :- \+ name(_).
 %
 %  Name is a finite resource your character has, such as sorcery
 %  points, second wind, ...
-resource(_,_,_).
+resource(_,_,_) :- false.
 
 %! resource(?Name, ?Max)
 %

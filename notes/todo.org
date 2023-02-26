@@ -1,36 +1,33 @@
-- dubbele spell bij warlock: command
+- Tooltips leesbaarder maken (paragrafen, evt html of markdown opmaak)
 
-- spells niet dupliceren in menu
+- Resources. TODO: need to rethink resources
+  * needs new name (clashes with builtin)
+  * good hard think about arcane recovery needed: it can restore a
+    finite resource in a short rest, but only once per long rest, and
+    you get to pick which slots get restored.
 
-- uniekheid van traits deftig ondersteunen, bv als je al eens "feat(alert)" hebt gekozen, moet dat niet zichtbaar zijn in een lijst van opties voor een nieuwe feat.
-  
+- lijst van atomen die ik wil hernoemen
+  * full_restore -> 'full restore'
+  * hp_max -> 'hp max'
+
 - feats
   - feat condities
 
 - classes
   - multiclass condities
 
-- spellcasting
-  - simpele DC based spells zoals sacred flame toevoegen aan attack table
-    
-- backgrounds
 - equipment en equipment effecten toevoegen
 
 - leesbare error messages
 - effecten van short en long rests registreren
-- "asserted"/GM fiat traits toevoegen
-- manuele overrides toevoegen
 - ergens een lijst van talen toevoegen; of meer algemeen: omgaan met het idee "kies van deze lijst, of vul gewoon zelf iets in"
 - consistentie "ft" vs "feet" functor
 
-- onderscheid tussen initial class exclusive traits en reguliere level 1 traits (zie https://5thsrd.org/rules/multiclassing/#proficiencies)
-
-  
 * Huidige todo
 
 * Lange termijn
 Swipl in-browser
-JavaScript interactieve editor om character te maken
+JavaScript interactieve editor om character te maken -> angular rework
 Interactieve character sheet met automatisch spellcasten, resting, ...
 Visueel aangeven welke traits geautomatiseerd worden en een toggle geven om automatisatie uit te zetten
 A4 character sheet generatie

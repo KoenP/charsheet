@@ -24,4 +24,12 @@ options_source(race(elf('high elf')), cantrip, class_cantrip(wizard)).
 known_spell(race(elf('high elf')), int, always, [], no, Cantrip) :-
     choice(race(elf('high elf')), cantrip, Cantrip).
 
-trait_options_source(race('high elf'), language, wrap(language), language).
+trait_options_source(race(elf('high elf')), language, wrap(language), language).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DESCRIPTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+'fey ancestry' ?= "You have advantage on saving throws against being charmed, and magic can’t put you to sleep.".
+'keen senses' ?= "You have proficiency in the Perception skill.".
+'trance' ?= "Elves don’t need to sleep. Instead, they meditate deeply, remaining semiconscious, for 4 hours a day. (The Common word for such meditation is \"trance.\") While meditating, you can dream after a fashion; such dreams are actually mental exercises that have become reflexive through years of practice. After resting in this way, you gain the same benefit that a human does from 8 hours of sleep.".
