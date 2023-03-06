@@ -18,7 +18,7 @@
 :- [class/barbarian].
 :- [class/cleric].
 :- [class/druid].
-:- [class/gambler].
+:- [class/fighter].
 :- [class/ranger].
 :- [class/rogue].
 :- [class/sorcerer].

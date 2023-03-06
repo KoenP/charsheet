@@ -30,7 +30,9 @@
 
 :- [util].
 :- [dice].
+:- [damage_formula].
 :- [format].
+:- [attacks].
 :- [options].
 :- [replace].
 :- [trait].
@@ -48,7 +50,6 @@
 :- [ac].
 :- [hp].
 :- [fighting_style].
-:- [attacks].
 :- [languages].
 :- [html].
 :- [character_file].

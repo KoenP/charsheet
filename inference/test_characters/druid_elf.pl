@@ -55,3 +55,5 @@ test_char_level(
     2,
     [gain_level(2, druid, hp_avg)],
     []).
+
+% TODO: expand this test
