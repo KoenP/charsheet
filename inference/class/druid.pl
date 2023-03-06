@@ -102,8 +102,8 @@ options_source(match_class(druid(land):2), cantrip, class_cantrip(druid)).
 trait_source(match_class(druid(land):2), natural_recovery(Total)) :-
     class_level(druid:L),
     Total is ceiling(L / 2).
-resource('natural recovery', 'natural recovery', 1) :-
-    trait(natural_recovery(_)).
+resource('natural recovery', 'spell slot total', Slots) :-
+    trait(natural_recovery(Slots)).
 on_rest(long, 'natural recovery', full_restore).
 
 trait_options_source(

@@ -48,12 +48,50 @@ test_char_level(
 
      known_spell(race(elf('high elf')), int, always, [], no, 'fire bolt'),
      known_spell(druid, wis, always, [], no, shillelagh),
-     known_spell(druid, wis, always, [], no, druidcraft)]).
+     known_spell(druid, wis, always, [], no, druidcraft),
+
+     known_spell(druid, wis, 'when prepared', [slot], no, 'animal friendship'),
+     known_spell(druid, wis, 'when prepared', [slot], no, 'charm person'),
+     known_spell(druid, wis, 'when prepared', [slot], no, goodberry),
+
+     % don't know any circle spells yet
+     \+ known_spell(druid, wis, always, [slot], no, barkskin),
+     \+ known_spell(druid, wis, always, [slot], no, 'mirror image'),
+     \+ known_spell(druid, wis, always, [slot], no, 'hold person')]).
 
 test_char_level(
     drelf,
     2,
-    [gain_level(2, druid, hp_avg)],
-    []).
+    [gain_level(2, druid, hp_avg),
+     choice(match_class(druid:2),subclass,land),
+     choice(match_class(druid(land):2), cantrip, guidance)
+    ],
+    [max_hp(17), % 8 (base) + 1*5 (levelup) + 2*2 (con mod)
 
-% TODO: expand this test
+     resource('natural recovery', 'spell slot total', 1),
+     resource('wild shape', 'wild shape', 2),
+     trait(wild_shape([cr(1/4),hours(1),'no swimming speed','no flying speed'])),
+
+     known_spell(druid, wis, always, [], no, guidance),
+     % don't know any circle spells yet
+     \+ known_spell(druid, wis, always, [slot], no, barkskin),
+     \+ known_spell(druid, wis, always, [slot], no, 'mirror image'),
+     \+ known_spell(druid, wis, always, [slot], no, 'hold person')
+    ]).
+
+test_char_level(
+    drelf,
+    3,
+    [gain_level(3, druid, hp_avg),
+     choice(match_class(druid(land):3),'circle spells',forest)
+
+    ],
+    [resource('natural recovery', 'spell slot total', 2),
+     resource('wild shape', 'wild shape', 2),
+     trait(wild_shape([cr(1/4),hours(1),'no swimming speed','no flying speed'])),
+
+     % know only forest circle spells
+     known_spell(druid, wis, always, [slot], no, barkskin),
+     \+ known_spell(druid, wis, always, [slot], no, 'mirror image'),
+     \+ known_spell(druid, wis, always, [slot], no, 'hold person')
+    ]).
