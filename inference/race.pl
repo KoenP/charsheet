@@ -5,6 +5,7 @@
     race_option/1.
 
 :- [race/elf].
+:- [race/half_orc].
 :- [race/human].
 :- [race/dwarf].
 
