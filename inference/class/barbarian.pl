@@ -37,8 +37,7 @@ resource(rage, rage, Max) :-
 meta_todo(barbarian, "how to handle 'unlimited' rages in UI").
 on_rest(long, rage, full_restore) :- trait(rage).
 
-trait_source(match_class(barbarian:1), 'unarmored defense').
-bonus_source(trait('unarmored defense'), 'unarmored ac' = 10 + dex + con).
+trait_source(barbarian >: 1, unarmored_defense(10 + dex + con + shield)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features gained from leveling up.

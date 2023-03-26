@@ -46,6 +46,7 @@
 :- [race].
 :- [background].
 :- [feat].
+:- [fighting_style].
 :- [ability].
 :- [skill].
 :- [equipment].

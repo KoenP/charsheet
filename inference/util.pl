@@ -1,3 +1,7 @@
+sumall(X, Pred, Sum) :-
+    findall(X, Pred, Xs),
+    sum_list(Xs, Sum).
+
 subterm_member(X, T) :-
     select_subterm(X, T, _, _).
 

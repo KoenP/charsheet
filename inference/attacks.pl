@@ -18,22 +18,16 @@ attack(Cantrip, Range, saving_throw(DC, Abi), [DamageDice], Notes) :-
        DamageDice = damage(_,_)),
        Notes = [Str],
        format(string(Str), "on save: ~w", Alt)).
-attack(MeleeWeapon, MeleeRange, to_hit(ToHit), FinalDamageRolls, Notes) :-
-    equipped(MeleeWeapon),
-    weapon(MeleeWeapon, _, melee, DamageRolls, Notes),
-    weapon_attack_modifier(melee, Notes, _, Mod),
-    weapon_proficiency_bonus(MeleeWeapon, ProfBon),
-    ToHit is Mod + ProfBon,
-    add_bonus_to_first_die(Mod, DamageRolls, FinalDamageRolls),
-    weapon_melee_range(MeleeWeapon, MeleeRange).
-attack(RangedWeapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
-    equipped(RangedWeapon),
-    weapon(RangedWeapon, _, ranged(Range), DamageRolls, Notes),
-    weapon_attack_modifier(ranged(Range), Notes, _, Mod),
-    weapon_proficiency_bonus(RangedWeapon, ProfBon),
-    other_bonuses_to_hit(RangedWeapon, OtherBonuses),
-    ToHit is Mod + ProfBon + OtherBonuses,
-    add_bonus_to_first_die(Mod, DamageRolls, FinalDamageRolls).
+attack(Weapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
+    has(Weapon),
+    expand_to_sum(Weapon, BaseWeapon + Enchantment),
+    weapon(BaseWeapon, _, _, BaseDamageRolls, Notes),
+    weapon_attack_ability_and_modifier(BaseWeapon, _, Mod),
+    weapon_proficiency_bonus(BaseWeapon, ProfBon),
+    weapon_range(Weapon, Range),
+    other_bonuses_to_hit(BaseWeapon, OtherBonuses),
+    ToHit is Mod + ProfBon + OtherBonuses + Enchantment,
+    add_bonus_to_first_die(Mod + Enchantment, BaseDamageRolls, FinalDamageRolls).
 
 %! attack_variant(?Id, ?Range, ?ToHit, ?DamageFormula)
 %
@@ -44,9 +38,9 @@ attack_variant(Name:twohanded, Range, ToHit,
     member(versatile(NewBaseDmg), Notes),
     select_first_subterm(_ d _, Formula, NewBaseDmg, NewDmgTerm).
 
-
 add_bonus_to_first_die(Bonus, [damage(Type,Roll)|Rolls], [damage(Type,NewRoll)|Rolls]) :-
-    simplify_dice_sum(Roll+Bonus, NewRoll).
+    EvaldBonus is Bonus,
+    simplify_dice_sum(Roll+EvaldBonus, NewRoll).
 
 attack_notes(Weapon, Notes) :-
     weapon(Weapon, _, _, _, WeaponNotes),
@@ -55,33 +49,45 @@ attack_notes(Weapon, Notes) :-
             BonusNotes),
     append(WeaponNotes, BonusNotes, Notes).
 
-
-weapon_melee_range(Weapon, feet(MeleeRange)) :-
-    weapon(Weapon,_,_,_,Notes),
+%! weapon_range(?Weapon, ?Range)
+%
+%  Range is either a term `feet(N)` or `feet(N) / feet(M)` where N and
+%  M are numbers. In theory you could have a different unit of length
+%  instead of feet.
+weapon_range(Weapon, feet(Range)) :-
+    weapon(Weapon, _, melee, _, Notes),
     findall(Ft, (member(reach(feet(Ft)),Notes); bonus(reach+feet(Ft))), Fts),
     sum_list(Fts, Bonus),
-    MeleeRange is 5 + Bonus.
+    Range is 5 + Bonus.
+weapon_range(Weapon, Range) :-
+    weapon(Weapon, _, ranged(Range), _, _).
 
-weapon_attack_modifier(_, Notes, Abi, Mod) :-
-    member(finesse, Notes),
-    highest_ability_from([str,dex], Abi),
-    ability_mod(Abi, Mod).
-weapon_attack_modifier(melee, Notes, str, Mod) :-
-    \+ member(finesse, Notes),
-    ability_mod(str, Mod).
-weapon_attack_modifier(ranged(_), Notes, Abi, Mod) :-
-    \+ member(finesse, Notes),
-    (member(thrown, Notes)
-     -> Abi = str, ability_mod(str, Mod)
-     ;  Abi = dex, ability_mod(dex, Mod)).
-    
+%! weapon_attack_ability_and_modifier(?Weapon, ?Abi, ?Mod)
+%
+%  Determine the ability and corresponding ability modifier used to
+%  make attack and damage rolls with the given weapon.
+%  Automatically picks the best one.
+weapon_attack_ability_and_modifier(Weapon, Abi, Mod) :-
+    findall(A, weapon_ability_candidate(Weapon, A), Abis),
+    highest_ability_from(Abis, Abi, Mod).
+
+%! weapon_ability_candidate(?Weapon, ?Ability)
+%
+%  True iff Ability can be used to calculate to hit and damage for
+%  attacks with Weapon.
+weapon_ability_candidate(Weapon, str) :- weapon(Weapon, _, melee, _, _).
+weapon_ability_candidate(Weapon, Abi) :- bonus(use_ability(Weapon, Abi)).
+weapon_ability_candidate(Weapon, dex) :-
+    weapon(Weapon, _, _, _, Notes), member(finesse, Notes).
+
+%! weapon_proficiency_bonus(?Weapon, ?ProfBon)
+%
+%  Calculate the proficiency bonus with Weapon (0 if not proficient).
 weapon_proficiency_bonus(Weapon, ProfBon) :-
     weapon_proficiency(Weapon),
     !,
     proficiency_bonus(ProfBon).
 weapon_proficiency_bonus(_, 0).
-
-%extended_weapon_notes(Weapon)
 
 other_bonuses_to_hit(Weapon, TotalBonus) :-
     weapon(Weapon, _, _, _, _),

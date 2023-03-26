@@ -4,6 +4,7 @@
 :- [test_characters/cleric_hill_dwarf].
 :- [test_characters/druid_elf].
 :- [test_characters/ranger_human].
+:- [test_characters/armor_tests].
 
 % test_char_level(?Name, ?Level, ?Facts, ?Expectations)
 test_char_level(_,_,_,_) :- false.

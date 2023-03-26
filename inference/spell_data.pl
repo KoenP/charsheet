@@ -183,6 +183,8 @@ add_spell_effect(frostbite,
                  saving_throw(con):damage(cold,N d 6)) :-
     cantrip_scale(N).
 
+bonus_source(known_spell(_,'mage armor'), ac_formula(13 + dex + shield)).
+
 add_spell_effect('mass cure wounds', heal(3 d 8 + mod) upto "6 creatures").
 
 add_spell_effect('misty step', "teleport 30 ft").

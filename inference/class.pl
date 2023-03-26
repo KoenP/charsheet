@@ -20,6 +20,7 @@
 :- [class/cleric].
 :- [class/druid].
 :- [class/fighter].
+:- [class/monk].
 :- [class/ranger].
 :- [class/rogue].
 :- [class/sorcerer].

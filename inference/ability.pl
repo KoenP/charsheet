@@ -11,9 +11,9 @@ ability(wis).
 ability(int).
 ability(cha).
 
-highest_ability_from(List, Abi) :-
+highest_ability_from(List, Abi, Mod) :-
     maplist([A,A-X]>>ability(A,X), List, WithScores),
-    sort(2, @>=, WithScores, [Abi-_|_]).
+    sort(2, @>=, WithScores, [Abi-Mod|_]).
 
 ability_max(Ability, Max) :-
     ability(Ability),

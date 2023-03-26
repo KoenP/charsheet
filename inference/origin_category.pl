@@ -37,6 +37,9 @@ origin_level(match_class(C), Level) :-
     C \= _:_,
     !,
     reached_classlevel_at_charlevel(C:1, Level).
+origin_level(Class >: ClassLevel, Level) :-
+    !,
+    origin_level(match_class(Class:ClassLevel), Level).
 origin_level(race(_), 1) :- !.
 origin_level(background(_), 1) :- !.
 origin_level(_, unknown) :- !.

@@ -117,7 +117,7 @@ trait_source(match_class(sorcerer('draconic bloodline')), language(draconic)).
 trait_source(match_class(sorcerer('draconic bloodline')), 'draconic resilience').
 bonus_source(trait('draconic resilience'), 'max hp'+Level) :-
     class_level(sorcerer:Level).
-bonus_source(trait('draconic resilience'), 'unarmored ac' = 13 + dex).
+bonus_source(trait('draconic resilience'), ac_formula(13 + dex + shield)).
 
 % Elemental affinity.
 trait_source(match_class(sorcerer('draconic bloodline'):6),

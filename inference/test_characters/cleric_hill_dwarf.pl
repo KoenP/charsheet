@@ -23,8 +23,8 @@ test_char_level(
      %choice(trait('blessings of knowledge'), language, [giant, celestial]),
      choice(class(cleric), cantrip, ['sacred flame', 'spare the dying', guidance]),
 
-     equipped('half plate' + 1),
-     equipped(shield)],
+     has('half plate' + 1),
+     has(shield)],
     [ability(str,13),
      ability(dex,10),
      ability(con,16), % +2 from dwarf
@@ -34,7 +34,7 @@ test_char_level(
 
      max_hp(12), % = 8 (cleric base hp) + 3 (con) + 1 (dwarven toughness)
      speed(25),
-     ac(18), % = 15 (half plate) + 1 (half plate enchantment) + 2 (shield) + 0 (dex)
+     ac(armor('half plate' + 1), 16, [shield:2]), % = 15 (half plate) + 1 (half plate enchantment) + 2 (shield) + 0 (dex)
      trait('dwarven toughness'),
      trait(sense(darkvision)),
      trait(stonecunning),
@@ -68,7 +68,7 @@ test_char_level(
     2,
     [gain_level(2, cleric, hp_avg)],
     [max_hp(21), % = 8 (base) + 1*5 (lvlup) + 2*3 (con) + 2 (dwarven toughness)
-     ac(18),
+     ac(armor('half plate' + 1), 16, [shield:2]), % = 15 (half plate) + 1 (half plate enchantment) + 2 (shield) + 0 (dex)
      findall(L-N, spell_slots(L,N), [1-3]),
      resource('channel divinity', 'channel divinity', 2),
      max_prepared_spells(cleric, 5), % = 3 (wis) + 2 (cleric level)
@@ -80,7 +80,7 @@ test_char_level(
     3,
     [gain_level(3, cleric, hp_avg)],
     [max_hp(30), % = 8 (base) + 2*5 (lvlup) + 3*3 (con) + 3 (dwarven toughness)
-     ac(18),
+     ac(armor('half plate' + 1), 16, [shield:2]), % = 15 (half plate) + 1 (half plate enchantment) + 2 (shield) + 0 (dex)
      findall(L-N, spell_slots(L,N), [1-4, 2-2]),
      max_prepared_spells(cleric, 6), % = 3 (wis) + 3 (cleric level)
 
@@ -103,7 +103,7 @@ test_char_level(
      prepare_spell(cleric, 'prayer of healing')
     ],
     [max_hp(39), % = 8 (base) + 3*5 (lvlup) + 4*3 (con) + 4 (dwarven toughness)
-     ac(18),
+     ac(armor('half plate' + 1), 16, [shield:2]), % = 15 (half plate) + 1 (half plate enchantment) + 2 (shield) + 0 (dex)
      ability(str,14), % +1 from asi
      ability(dex,10),
      ability(con,16), % +2 from dwarf

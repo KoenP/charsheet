@@ -1,10 +1,18 @@
-:- dynamic equipped/1.
+:- dynamic has/1.
 
-equipped(_) :- false.
+has(_) :- false.
 
-wearing_armor :-
-    equipped(Armor),
-    body_armor(Armor, _, _).
+expand_to_sum(Item    , Item + 0) :- Item \= _+_.
+expand_to_sum(Item + N, Item + N).
+
+% TODO user should select a single shield they like to not explode the
+% options for calculating AC
+shield_ac(shield + N, AC) :- has(shield + N), AC is 2 + N.
+shield_ac(shield, 2) :- has(shield).
+
+is_shield(shield).
+is_shield(Shield + _) :- is_shield(Shield).
+is_shield(ShieldF) :- ShieldF =.. [shield|_].
 
 body_armor('studded leather', light, ac(12)).
 body_armor('half plate', medium, ac(15)).
@@ -23,6 +31,8 @@ weapon(rapier, martial, melee,
        [damage(piercing, 1 d 8)], [finesse]).
 weapon(quarterstaff, simple, melee,
        [damage(bludgeoning, 1 d 6)], [versatile(1 d 8)]).
+weapon(javelin, simple, melee,
+       [damage(piercing(1 d 6))], [thrown(feet(30) / feet(120))]).
 weapon('light crossbow', simple, ranged(feet(80) / feet(320)),
        [damage(piercing, 1 d 8)], [ammunition, loading, twohanded]).
 weapon(longbow, martial, ranged(feet(150) / feet(600)),
