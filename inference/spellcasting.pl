@@ -190,22 +190,24 @@ known_spell_saving_throw(Origin, Name, DC, Abi) :-
 %  Class, using the single class spell slot formula.
 %  We use a separate but analogous calculation for warlocks using pact
 %  magic slots.
-learnable_proper_spell(Class, Name) :-
+learnable_proper_spell(Class, Spell) :-
+    learnable_spell_level(Class, MaxSpellLevel),
+    on_extended_class_spell_list(Class, Spell),
+    spell_property(Spell, level, SpellLevel),
+    between(1, MaxSpellLevel, SpellLevel).
+meta_todo(learnable_proper_spell,
+          "Not sure if I like how I implemented this for e.g. arcane trickster (which use another class' spell list)").
+    
+learnable_spell_level(Class, SpellLevel) :-
     class(Class),
     Class \= warlock,
     findall(L, spell_slots_single_class(L, Class, _), SlotLevels), % TODO this is inefficient
-    max_member(MaxSlotLevel, SlotLevels),
-    on_extended_class_spell_list(Class, Name),
-    spell_property(Name, level, SpellLevel),
-    between(1, MaxSlotLevel, SpellLevel).
-learnable_proper_spell(warlock, Name) :-
-    pact_magic_slot_level(SlotLevel),
-    on_extended_class_spell_list(warlock, Name),
-    spell_property(Name, level, SpellLevel),
-    between(1, SlotLevel, SpellLevel).
-meta_todo(learnable_proper_spell, "Inefficiency in implementation").
-meta_todo(learnable_proper_spell,
-          "Not sure if I like how I implemented this for e.g. arcane trickster (which use another class' spell list)").
+    max_member(SpellLevel, SlotLevels).
+learnable_spell_level(warlock, SpellLevel) :-
+    pact_magic_slot_level(SpellLevel).
+meta_todo(learnable_spell_level, "Inefficiency in implementation").
+
+    
 
 %! on_extended_class_spell_list(+Class, +Spell)
 %

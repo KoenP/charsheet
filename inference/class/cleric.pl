@@ -21,7 +21,7 @@ class_saving_throw(cleric, cha).
 known_spell(cleric, wis, always, [], no, Name) :-
     class_choice(cleric, cantrip, Name).
 options_source(class(cleric), cantrip, 3 unique_from class_cantrip(cleric)).
-options_source(match_class(cleric:L), cantrip, class_cantrip(cleric)) :-
+options_source(cleric >: L, cantrip, class_cantrip(cleric)) :-
     L=4; L=10.
 
 % Clerics know all proper spells on their spell list.
@@ -64,15 +64,15 @@ resource('channel divinity', 'channel divinity', N) :-
     class_level(cleric:Lvl),
     ordered_lookup_largest_leq([2 -> 1, 6 -> 2, 18 -> 3], Lvl, N).
 on_rest(long, 'channel divinity', full_restore).
-trait_source(match_class(cleric:2), 'channel divinity').
-trait_source(match_class(cleric:2), channel_divinity('turn undead')).
+trait_source(cleric >: 2, 'channel divinity').
+trait_source(cleric >: 2, channel_divinity('turn undead')).
 meta_todo(cleric, "'channel divinity' has specific multiclassing rules").
 
-trait_source(match_class(cleric:5), destroy_undead(cr(CR))) :-
+trait_source(cleric >: 5, destroy_undead(cr(CR))) :-
     class_level(cleric:L),
     ordered_lookup_largest_leq([5->1/2, 8->1, 11->2, 14->3, 17->4], L, CR).
 
-trait_source(match_class(cleric:10), divine_intervention(Pct pct)) :-
+trait_source(cleric >: 10, divine_intervention(Pct pct)) :-
     class_level(cleric:Level),
     (Level < 20 -> Pct = Level ; Pct = 100).
 
@@ -95,18 +95,18 @@ cleric_domain_spell(life, 'guardian of faith').
 cleric_domain_spell(life, 'mass cure wounds').
 cleric_domain_spell(life, 'raise dead').
 
-trait_source(match_class(cleric(life):1), armor(heavy)).
-trait_source(match_class(cleric(life):1), 'disciple of life').
+trait_source(cleric(life) >: 1, armor(heavy)).
+trait_source(cleric(life) >: 1, 'disciple of life').
 bonus_source(trait('disciple of life'),
              modify_spell(_, HealingSpell, increase_all_spell_healing_rolls(Bonus))) :-
     spell_property(HealingSpell, level, Level),
     Level >= 1,
     healing_spell(HealingSpell),
     Bonus is 2 + Level.
-trait_source(match_class(cleric(life):2), channel_divinity(preserve_life(Pool))) :-
+trait_source(cleric(life) >: 2, channel_divinity(preserve_life(Pool))) :-
     class_level(cleric:L),
     Pool is 5*L.
-trait_source(match_class(cleric(life):6), 'blessed healer').
+trait_source(cleric(life) >: 6, 'blessed healer').
 bonus_source(trait('blessed healer'),
              modify_spell(_, HealingSpell, add_spell_effects([(target=other)->self_heal(HP)]))) :-
     spell_property(HealingSpell, level, Level),
@@ -116,10 +116,10 @@ bonus_source(trait('blessed healer'),
     HP is 2 + Level.
 custom_format(self_heal(HP)) --> [" heal self for "], format_number(HP).
 
-trait_source(match_class(cleric(life):8), divine_strike(N d 8)) :-
+trait_source(cleric(life) >: 8, divine_strike(N d 8)) :-
     class_level(cleric:L),
     (L < 14 -> N = 1; N = 2).
-trait_source(match_class(cleric(life):17), 'supreme healing').
+trait_source(cleric(life) >: 17, 'supreme healing').
 bonus_source(trait('supreme healing'),
              modify_spell(_, HealingSpell, apply_supreme_healing)) :-
     spell_property(HealingSpell, effects, Effects),
@@ -152,21 +152,21 @@ cleric_domain_spell(knowledge, 'legend lore').
 cleric_domain_spell(knowledge, scrying).
 
 % Blessings of Knowledge
-trait_source(match_class(cleric(knowledge)), 'blessings of knowledge').
+trait_source(cleric(knowledge) >: 1, 'blessings of knowledge').
 trait_options(trait('blessings of knowledge'), language, wrap(skill),
               2 unique_from language) :-
-    match_class(cleric(knowledge)).
+    cleric(knowledge) >: 1.
 trait_options(trait('blessings of knowledge'), skill, wrap(skill),
               2 unique_from from_list([arcana,history,nature,religion])) :-
-    match_class(cleric(knowledge)).
+    cleric(knowledge) >: 1.
 trait(trait('blessings of knowledge'), expertise(skill(Skill))) :-
     choice_member(trait('blessings of knowledge'), skill, Skill).
 meta_todo(nontermination, "why can't the blessings of knowledge trait options refer to the blessings of knowledge trait without causing an infinite loop? [later note: I don't know what this is about, I can't reproduce a nontermination issue here]").
 meta_todo(trait('blessings of knowledge'), "Technically it's not expertise, but mechanically I'm not sure it's worth making a distinction here. In particular if it's not expertise, I'm not sure how/whether it stacks with expertise.").
 
 % Knowledge of the ages.
-trait_source(match_class(cleric(knowledge):2), 'knowledge of the ages').
-trait_source(match_class(cleric(knowledge):2), channel_divinity('read thoughts')).
+trait_source(cleric(knowledge) >: 2, 'knowledge of the ages').
+trait_source(cleric(knowledge) >: 2, channel_divinity('read thoughts')).
     
 meta_todo(cleric(knowledge), "Complete this subclass implementation.").
 

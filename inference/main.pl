@@ -27,6 +27,8 @@
 :- op(650, xfx, ft).
 :- op(100, xf, pct).
 :- op(1000, xf, qq).
+:- op(500, xfx, >:).
+:- op(500, fx, ^).
 
 :- [util].
 :- [dice].
