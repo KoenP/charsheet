@@ -70,7 +70,7 @@ test_char_level(
     [max_hp(21), % = 8 (base) + 1*5 (lvlup) + 2*3 (con) + 2 (dwarven toughness)
      ac(armor('half plate' + 1), 16, [shield:2]), % = 15 (half plate) + 1 (half plate enchantment) + 2 (shield) + 0 (dex)
      findall(L-N, spell_slots(L,N), [1-3]),
-     resource('channel divinity', 'channel divinity', 2),
+     resource('channel divinity', 'channel divinity', 1),
      max_prepared_spells(cleric, 5), % = 3 (wis) + 2 (cleric level)
      trait(channel_divinity('turn undead'))
     ]).
@@ -98,7 +98,7 @@ test_char_level(
     4,
     [gain_level(4, cleric, hp_avg),
      choice(match_class(cleric:4), 'asi or feat', [wis, str]),
-     choice(match_class(cleric:4), cantrip, mending),
+     choice(cleric >: 4, cantrip, mending),
      prepare_spell(cleric, 'cure wounds'),
      prepare_spell(cleric, 'prayer of healing')
     ],

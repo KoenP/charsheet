@@ -11,9 +11,12 @@ ability(wis).
 ability(int).
 ability(cha).
 
-highest_ability_from(List, Abi, Mod) :-
+highest_ability_from(List, Abi, Val) :-
     maplist([A,A-X]>>ability(A,X), List, WithScores),
-    sort(2, @>=, WithScores, [Abi-Mod|_]).
+    sort(2, @>=, WithScores, [Abi-Val|_]).
+highest_ability_mod_from(List, Abi, Mod) :-
+    highest_ability_from(List, Abi, _),
+    ability_mod(Abi, Mod).
 
 ability_max(Ability, Max) :-
     ability(Ability),
@@ -42,6 +45,15 @@ ability_mod(Abil, Mod) :-
     mf(Val, Mod).
 mf(Val, Mod) :-
     floor( (Val-10) / 2, Mod ).
+
+%! add_ability_mod_and_profbon(Val, Abi, Sum)
+%
+%  Convenience predicate that adds the ability modifier for Abi and
+%  the proficiency bonus to some value Val, producing Sum.
+add_ability_mod_and_profbon(Val, Abi, Sum) :-
+    ability_mod(Abi, Mod),
+    proficiency_bonus(ProfBon),
+    Sum is Val + Mod + ProfBon.
 
 %! initial_ability(?Ability:atomic, ?Score:int)
 %
@@ -102,11 +114,11 @@ total_other_ability_bonus(Ability, Total) :-
 %! saving_throw(?Ability:atomic, ?Bonus:int)
 saving_throw(Ability, Bonus) :-
     ability_mod(Ability, Mod),
-    initial_class(Class),
     proficiency_bonus(ProfBon),
-    (class_saving_throw(Class, Ability)
-    -> Bonus is Mod + ProfBon
-    ;  Bonus = Mod).
+    ((trait(saving_throw(Ability)), !)
+     -> Bonus is Mod + ProfBon
+     ;  Bonus = Mod
+    ).
 saving_throw(Ability, Bonus) :-
     % Make this predicate not fail if we don't have an initial class yet.
     ability_mod(Ability, Bonus),

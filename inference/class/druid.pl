@@ -51,8 +51,8 @@ trait_source(match_class(druid:18), 'timeless body').
 trait_source(match_class(druid:18), 'beast spells').
 
 trait_source(match_class(druid:20), archdruid).
-bonus_source(trait(archdruid),
-             modify_spell(Druidic, _, archdruid_ignore_components)) :-
+bonus(trait(archdruid), modify_spell(Druidic, _, archdruid_ignore_components)) :-
+    trait(archdruid),
     Druidic =.. [druid|_].
 archdruid_ignore_components(Data, Data.put(components,NewComponents)) :-
     findall(m(M),

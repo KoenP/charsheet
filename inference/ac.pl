@@ -23,9 +23,9 @@ ac_formula(Origin, Formula) :-
     bonus(Origin, ac_formula(Formula)).
 ac_formula(unarmored, 10 + dex + shield).
     
-%! eval_ac_formula(?Formula, ?AC:int)
+%! eval_ac_formula(?Formula, ?AC:int, ?Options)
 %
-%  Evaluate an AC formula to an integer.
+%  Evaluate an AC formula to an integer, and a list of options of the form `Id:Modifier`.
 eval_ac_formula(A + B, AC, Options) :-
     eval_ac_formula(A, X, Opts1),
     eval_ac_formula(B, Y, Opts2),

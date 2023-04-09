@@ -19,15 +19,25 @@ attack(Cantrip, Range, saving_throw(DC, Abi), [DamageDice], Notes) :-
        Notes = [Str],
        format(string(Str), "on save: ~w", Alt)).
 attack(Weapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
-    has(Weapon),
+    (has(Weapon) ; Weapon = unarmed),
     expand_to_sum(Weapon, BaseWeapon + Enchantment),
-    weapon(BaseWeapon, _, _, BaseDamageRolls, Notes),
+    weapon(BaseWeapon, _, _, _, _),
+    weapon_base_damage_rolls(BaseWeapon, BaseDamageRolls),
     weapon_attack_ability_and_modifier(BaseWeapon, _, Mod),
     weapon_proficiency_bonus(BaseWeapon, ProfBon),
     weapon_range(Weapon, Range),
+    attack_notes(BaseWeapon, Notes),
     other_bonuses_to_hit(BaseWeapon, OtherBonuses),
     ToHit is Mod + ProfBon + OtherBonuses + Enchantment,
     add_bonus_to_first_die(Mod + Enchantment, BaseDamageRolls, FinalDamageRolls).
+
+weapon_base_damage_rolls(Weapon, Rolls) :-
+    bonus(attack_damage_rolls(Weapon, Rolls)),
+    !.
+weapon_base_damage_rolls(Weapon, Rolls) :-
+    weapon(Weapon, _, _, Rolls, _).
+
+weapon(unarmed, unarmed, melee, [damage(bludgeoning,1)], []).
 
 %! attack_variant(?Id, ?Range, ?ToHit, ?DamageFormula)
 %
@@ -37,6 +47,7 @@ attack_variant(Name:twohanded, Range, ToHit,
     attack(Name, Range, ToHit, [damage(Type,Formula)|Terms], Notes),
     member(versatile(NewBaseDmg), Notes),
     select_first_subterm(_ d _, Formula, NewBaseDmg, NewDmgTerm).
+meta_todo(versatile, "Also shows up when it's strictly worse than the onehanded variant.").
 
 add_bonus_to_first_die(Bonus, [damage(Type,Roll)|Rolls], [damage(Type,NewRoll)|Rolls]) :-
     EvaldBonus is Bonus,
@@ -69,7 +80,7 @@ weapon_range(Weapon, Range) :-
 %  Automatically picks the best one.
 weapon_attack_ability_and_modifier(Weapon, Abi, Mod) :-
     findall(A, weapon_ability_candidate(Weapon, A), Abis),
-    highest_ability_from(Abis, Abi, Mod).
+    highest_ability_mod_from(Abis, Abi, Mod).
 
 %! weapon_ability_candidate(?Weapon, ?Ability)
 %
@@ -84,7 +95,7 @@ weapon_ability_candidate(Weapon, dex) :-
 %
 %  Calculate the proficiency bonus with Weapon (0 if not proficient).
 weapon_proficiency_bonus(Weapon, ProfBon) :-
-    weapon_proficiency(Weapon),
+    (weapon_proficiency(Weapon) ; Weapon = unarmed),
     !,
     proficiency_bonus(ProfBon).
 weapon_proficiency_bonus(_, 0).

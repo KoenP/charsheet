@@ -21,6 +21,7 @@
 :- [class/druid].
 :- [class/fighter].
 :- [class/monk].
+:- [class/paladin].
 :- [class/ranger].
 :- [class/rogue].
 :- [class/sorcerer].
@@ -206,6 +207,9 @@ required_predicate_for_each_class(max_hp_per_level/2).
 %  saving throws for Ability.
 class_saving_throw(_,_) :- false.
 required_predicate_for_each_class(class_saving_throw/2).
+trait_source(Class >: 1, saving_throw(Abi)) :-
+    ^Class,
+    class_saving_throw(Class, Abi).
 
 %! choose_subclass_level(?ClassLevel)
 %

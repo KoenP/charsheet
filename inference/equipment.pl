@@ -1,3 +1,4 @@
+:- multifile weapon/5.
 :- dynamic has/1.
 
 has(_) :- false.
@@ -27,10 +28,12 @@ weapon_proficiency(Weapon) :-
     trait(weapon(WeaponClass)).
     
 %! weapon(?Name, ?WeaponClass, ?Rangedness, ?DamageFormula, ?Notes)
-weapon(rapier, martial, melee,
-       [damage(piercing, 1 d 8)], [finesse]).
+weapon(club, simple, melee,
+       [damage(bludgeoning, 1 d 4)], [light]).
 weapon(quarterstaff, simple, melee,
        [damage(bludgeoning, 1 d 6)], [versatile(1 d 8)]).
+weapon(rapier, martial, melee,
+       [damage(piercing, 1 d 8)], [finesse]).
 weapon(javelin, simple, melee,
        [damage(piercing(1 d 6))], [thrown(feet(30) / feet(120))]).
 weapon('light crossbow', simple, ranged(feet(80) / feet(320)),

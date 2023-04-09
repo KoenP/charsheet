@@ -202,6 +202,7 @@ add_spell_effect('see invisibility',
 attack_variant(Name:shillelagh, Range, to_hit(ToHit), [damage(bludgeoning, 1 d 8 + Mod)], [magical]) :-
     (Name = quarterstaff ; Name = club),
     attack(Name, Range, _, _, _),
+    known_spell(_, shillelagh),
     ability_mod(wis, Mod),
     proficiency_bonus(ProfBon),
     ToHit is Mod + ProfBon.
