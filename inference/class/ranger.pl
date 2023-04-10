@@ -20,12 +20,12 @@ trait_options_source(initial_class(ranger), skill, wrap(skill),
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1 features (you get these when multiclassing into ranger).
-traits_from_source(match_class(ranger:1),
+traits_from_source(ranger >: 1,
                    [weapon(simple), weapon(martial),
                     armor(light), armor(medium), armor(shield)]).
 trait_options_source(multiclass_into(ranger), skill, wrap(skill),
                      class_skill(ranger)).
-trait_options_source(match_class(ranger:1), 'favored enemy',
+trait_options_source(ranger >: 1, 'favored enemy',
                      wrap(favored_enemy),
                      from_list(
                          [aberration, beast, celestial, construct,
@@ -36,25 +36,25 @@ meta_todo('favored enemy', "select two races as favored enemies").
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features from leveling up.
-trait_options_source(match_class(ranger:L), 'natural explorer',
+trait_options_source(ranger >: L, 'natural explorer',
                      wrap(natural_explorer),
                      from_list(
                          [arctic, coast, desert, forest, grassland,
                           mountain, swamp
                          ])) :-
     member(L, [1, 6, 10]).
-trait_options_source(match_class(ranger:2), 'fighting style',
+trait_options_source(ranger >: 2, 'fighting style',
                      wrap(fighting_style),
                      from_list([archery, defense, dueling,
                                 'two-weapon fighting'])).
 
-trait_source(match_class(ranger:3), 'primeval awareness').
-trait_source(match_class(ranger:5), 'extra attack').
-trait_source(match_class(ranger:8), 'land\'s stride').
-trait_source(match_class(ranger:10), 'hide in plain sight').
-trait_source(match_class(ranger:14), vanish).
-trait_source(match_class(ranger:18), 'feral senses').
-trait_source(match_class(ranger:20), 'foe slayer').
+trait_source(ranger >: 3, 'primeval awareness').
+trait_source(ranger >: 5, 'extra attack').
+trait_source(ranger >: 8, 'land\'s stride').
+trait_source(ranger >: 10, 'hide in plain sight').
+trait_source(ranger >: 14, vanish).
+trait_source(ranger >: 18, 'feral senses').
+trait_source(ranger >: 20, 'foe slayer').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Spellcasting.
@@ -65,20 +65,20 @@ known_spell(ranger, wis, always, [slot], Ritual, Spell) :-
     spell_property(Spell, ritual, Ritual).
 
 % Learn new spells.
-options_source(match_class(ranger:2), spell,
+options_source(ranger >: 2, spell,
                2 unique_from learnable_proper_spell(ranger)).
-options_source(match_class(ranger:L), spell, learnable_proper_spell(ranger)) :-
+options_source(ranger >: L, spell, learnable_proper_spell(ranger)) :-
     between(3, 19, L),
     odd(L).
 
 % Replace old spells.
-options_source(match_class(ranger:L), replace(spell),
+options_source(ranger >: L, replace(spell),
                selected_at_class_level(ranger:Prev, spell)) :-
     between(3, 20, L),
     Prev is L-1.
-options(match_class(ranger:L), replacing(spell, Name),
+options(ranger >: L, replacing(spell, Name),
         learnable_proper_spell(ranger)) :-
-    choice_member(match_class(ranger:L), replace(spell), Name).
+    choice_member(ranger >: L, replace(spell), Name).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RANGER ARCHETYPES
@@ -86,17 +86,17 @@ options(match_class(ranger:L), replacing(spell, Name),
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Hunter
-subclass_option(ranger, 'hunter').
-trait_options_source(match_class(ranger('hunter'):3), 'hunter\'s prey',
+subclass_option(ranger, hunter).
+trait_options_source(ranger(hunter) >: 3, 'hunter\'s prey',
                      wrap(hunters_prey),
                      from_list(['colossus slayer', 'giant killer',
                                 'horde breaker'])).
-trait_options_source(match_class(ranger('hunter'):7), 'defensive tactics',
+trait_options_source(ranger(hunter) >: 7, 'defensive tactics',
                      wrap(defensive_tactics),
                      ['escape the horde', 'multiattack defense', 'steel will']).
-trait_options_source(match_class(ranger('hunter'):11), multiattack,
+trait_options_source(ranger(hunter) >: 11, multiattack,
                      wrap(multiattack), [volley, 'whirlwind attack']).
-trait_options_source(match_class(ranger('hunter'):15),
+trait_options_source(ranger(hunter) >: 15,
                      'hunter\s superior defense',
                      wrap(hunters_superior_defense),
                      [evasion, 'stand against the tide', 'uncanny dodge']).

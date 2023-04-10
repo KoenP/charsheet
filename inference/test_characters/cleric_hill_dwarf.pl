@@ -97,7 +97,7 @@ test_char_level(
     chd,
     4,
     [gain_level(4, cleric, hp_avg),
-     choice(match_class(cleric:4), 'asi or feat', [wis, str]),
+     choice(cleric >: 4, 'asi or feat', [wis, str]),
      choice(cleric >: 4, cantrip, mending),
      prepare_spell(cleric, 'cure wounds'),
      prepare_spell(cleric, 'prayer of healing')
@@ -164,7 +164,7 @@ test_char_level(
 %    chd,
 %    8,
 %    [gain_level(8, cleric, hp_avg),
-%     ignore(match_class(cleric:8), 'asi or feat')
+%     ignore(cleric >: 8, 'asi or feat')
 %    ],
 %    []).
 %
@@ -178,7 +178,7 @@ test_char_level(
 %    chd,
 %    10,
 %    [gain_level(10, cleric, hp_avg),
-%     ignore(match_class(cleric:10), cantrip)
+%     ignore(cleric >: 10, cantrip)
 %    ],
 %    []).
     
@@ -186,7 +186,7 @@ test_char_level(
 %gain_level(3, cleric, hp_avg).
 %
 %gain_level(4, cleric, hp_avg).
-%choice(match_class(cleric:4), 'asi or feat', [wis,str]).
+%choice(cleric >: 4, 'asi or feat', [wis,str]).
 %
 %gain_level(5, cleric, hp_avg).
 %gain_level(6, cleric, hp_avg).

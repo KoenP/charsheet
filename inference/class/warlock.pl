@@ -14,7 +14,7 @@ class_saving_throw(warlock, cha).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features gained for picking this class as initial class.
-trait_options_source(initial_class(warlock), skill, wrap(skill),
+trait_options_source(^warlock, skill, wrap(skill),
                      2 unique_from from_list(
                          [arcana, deception, history, intimidation,
                           investigation, nature, religion])).
@@ -22,23 +22,23 @@ trait_options_source(initial_class(warlock), skill, wrap(skill),
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features from leveling up (except pact magic and pact boons, which
 % have their own sections).
-traits_from_source(match_class(warlock), [armor(light), weapon(simple)]).
-trait_source(match_class(warlock), spellcasting_focus(arcane)).
+traits_from_source(warlock >: 1, [armor(light), weapon(simple)]).
+trait_source(warlock >: 1, spellcasting_focus(arcane)).
 
 % Mystic arcanum.
-trait_source(match_class(warlock:11), 'mystic arcanum').
-options_source(match_class(warlock:WarlockLevel), 'arcanum spell',
+trait_source(warlock >: 11, 'mystic arcanum').
+options_source(warlock >: WarlockLevel, 'arcanum spell',
                [Spell]>>spell_property(Spell, level, SpellLevel)) :-
     member(WarlockLevel-SpellLevel, [11-6, 13-7, 15-8, 17-9]).
 known_spell(warlock('mystic arcanum'), cha, always, [per_rest(long, 1)], todo, Spell) :-
     choice_member(_, 'arcanum spell', Spell).
 
 % Eldritch master.
-trait_source(match_class(warlock:20), 'eldritch master').
+trait_source(warlock >: 20, 'eldritch master').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Pact magic.
-trait_source(match_class(warlock), 'pact magic').
+trait_source(warlock >: 1, 'pact magic').
 
 %! pact_magic_slots(?N)
 %
@@ -68,42 +68,42 @@ known_spell(warlock, cha, always, ['pact slot'], Ritual, Name) :-
     class_level(warlock:L),
     selected_at_class_level(warlock:L, spell, Name),
     spell_property(Name, ritual, Ritual). % TODO this might be wrong.
-hide_known_class_spells(match_class(warlock:_), cantrip, warlock).
-hide_known_class_spells(match_class(warlock:_), spell, warlock).
+hide_known_class_spells(warlock >: _, cantrip, warlock).
+hide_known_class_spells(warlock >: _, spell, warlock).
 
 % Learn cantrips.
-options_source(match_class(warlock:1), cantrip, 2 unique_from class_cantrip(warlock)).
-options_source(match_class(warlock:L), cantrip, class_cantrip(warlock)) :-
+options_source(warlock >: 1, cantrip, 2 unique_from class_cantrip(warlock)).
+options_source(warlock >: L, cantrip, class_cantrip(warlock)) :-
     L = 4; L = 10.
-%hide_base_option(match_class(warlock:_), cantrip, Cantrip) :-
+%hide_base_option(warlock >: _, cantrip, Cantrip) :-
 %    known_spell(Origin, Cantrip),
 %    Origin =.. [warlock|_].
 
 % Learn proper spells.
-options_source(match_class(warlock), spell,
+options_source(warlock >: 1, spell,
                2 unique_from learnable_proper_spell(warlock)).
-options_source(match_class(warlock:L), spell,
+options_source(warlock >: L, spell,
                learnable_proper_spell(warlock)) :-
     between(2, 9, L) ; member(L, [11,13,15,17,19]).
-%hide_base_option(match_class(warlock:_), spell, Spell) :-
+%hide_base_option(warlock >: _, spell, Spell) :-
 %    known_spell(Origin, Spell),
 %    Origin =.. [warlock|_].
 
 % Replace proper spells.
-options_source(match_class(warlock:L), replace(spell),
+options_source(warlock >: L, replace(spell),
                selected_at_class_level(warlock:Prev, spell)) :-
     between(2, 20, L),
     Prev is L-1.
-options(match_class(warlock:L), replacing(spell, Name),
+options(warlock >: L, replacing(spell, Name),
         learnable_proper_spell(warlock)) :-
-    choice_member(match_class(warlock:L), replace(spell), Name).
-%hide_base_option(match_class(warlock:_), replacing(spell,Old), Spell) :-
+    choice_member(warlock >: L, replace(spell), Name).
+%hide_base_option(warlock >: _, replacing(spell,Old), Spell) :-
 %    (known_spell(Origin, Spell),Origin =.. [warlock|_])
 %    ; Spell = Old.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Pact boons.
-trait_options_source(match_class(warlock:3),
+trait_options_source(warlock >: 3,
                      'pact boon',
                      wrap(pact_boon),
                      from_list([chain, blade, tome])).
@@ -155,7 +155,7 @@ known_spell(warlock(eldritch_invocation(Inv)),
 
 
 % Actually add the selected invocations as traits.
-trait(match_class(warlock:Level), eldritch_invocation(Inv)) :-
+trait(warlock >: Level, eldritch_invocation(Inv)) :-
     find_choice_level(warlock:Level, 'eldritch invocation', Inv).
 
 % Eldritch invocation options and effects.
@@ -171,7 +171,7 @@ known_spell(warlock(eldritch_invocation('armor of shadows')), cha, always, [], n
     trait(eldritch_invocation('armor of shadows')).
 
 eldritch_invocation_option('ascendant step') :-
-    match_class(warlock:9).
+    warlock >: 9.
 known_spell(warlock(eldritch_invocation('ascendant step')),
             cha, always, [], no, levitate) :-
     trait(eldritch_invocation('ascendant step')).
@@ -186,7 +186,7 @@ traits_from_source(trait(eldritch_invocation('beguiling influence')),
                    [skill(deception), skill(persuasion)]).
 
 eldritch_invocation_option('bewitching whispers') :-
-    match_class(warlock:7).
+    warlock >: 7.
 known_spell(warlock(eldritch_invocation('bewitching whispers')),
             cha, always, ['pact slot', per_rest(long, 1)], no, compulsion) :-
     trait(eldritch_invocation('bewitching whispers')).
@@ -208,7 +208,7 @@ known_spell(warlock(eldritch_invocation('book of ancient secrets')),
 % TODO: add transcribe option
 
 eldritch_invocation_option('chains of carceri') :-
-    match_class(warlock:15),
+    warlock >: 15,
     trait(pact_boon(chain)).
 known_spell(warlock(eldritch_invocation('chains of carceri')),
             cha, always, [], no, 'hold monster') :-
@@ -231,7 +231,7 @@ trait_source(trait(eldritch_invocation('devil\'s sight')),
              sense('devil\'s sight')).
 
 eldritch_invocation_option('dreadful word') :-
-    match_class(warlock:7).
+    warlock >: 7.
 known_spell(warlock(eldritch_invocation('dreadful word')),
             cha, always, ['pact slot', per_rest(long,1)], no, confusion) :-
     eldinv('dreadful word').
@@ -252,7 +252,7 @@ eldritch_invocation_option('eyes of the rune keeper').
 eldritch_invocation_option('gaze of two minds').
 
 eldritch_invocation_option(lifedrinker) :-
-    match_class(warlock:12),
+    warlock >: 12,
     trait(pact_boon(blade)).
 % TODO: lifedrinker damage bonus
 
@@ -262,17 +262,17 @@ known_spell(warlock(eldritch_invocation('mask of many faces')),
     eldinv('mask of many faces').
 
 eldritch_invocation_option('master of myriad forms') :-
-    match_class(warlock:15).
+    warlock >: 15.
 known_spell(warlock(eldritch_invocation('master of myriad forms')),
             cha, always, [], no, 'alter self') :-
     eldinv('master of myriad forms').
 
 eldritch_invocation_option('minions of chaos') :-
-    match_class(warlock:9).
+    warlock >: 9.
 eldinv_spell('minions of chaos', ['pact slot', per_rest(long,1)], 'conjure elemental').
 
 eldritch_invocation_option('mire the mind') :-
-    match_class(warlock:5).
+    warlock >: 5.
 known_spell(warlock(eldritch_invocation('mire the mind')),
             cha, always, ['pact slot', per_rest(long,1)], no, slow) :-
     eldinv('mire the mind').
@@ -285,7 +285,7 @@ eldritch_invocation_option('one with shadows').
 % TODO: add an "action"
 
 eldritch_invocation_option('otherwordly leap') :-
-    match_class(warlock:9).
+    warlock >: 9.
 eldinv_spell('otherworldly leap', [], jump).
 eldinv_deletes_spell_component('otherworldly leap', m(_)).
 
@@ -303,23 +303,23 @@ apply_repelling_blast(OldEffects, NewEffects) :-
     append(L, ["push up to 10 ft away"], E2).
 
 eldritch_invocation_option('sculptor of flesh') :-
-    match_class(warlock:7).
+    warlock >: 7.
 eldinv_spell('sculptor of flesh', ['pact slot', per_rest(long,1)], polymorph).
 
 eldritch_invocation_option('sign of ill omen') :-
-    match_class(warlock:5).
+    warlock >: 5.
 eldinv_spell('sign of ill omen', ['pact slot', per_rest(long,1)], 'bestow curse').
 
 eldritch_invocation_option('thief of five fates').
 eldinv_spell('thief of five fates', ['pact slot', per_rest(long,1)], bane).
 
 eldritch_invocation_option('thirsting blade') :-
-    match_class(warlock:5),
+    warlock >: 5,
     trait(pact_boon(blade)).
 % TODO
 
 eldritch_invocation_option('visions of distant realms') :-
-    match_class(warlock:15).
+    warlock >: 15.
 eldinv_spell('visions of distant realms', [], 'arcane eye').
 
 eldritch_invocation_option('voice of the chain master') :-
@@ -327,11 +327,11 @@ eldritch_invocation_option('voice of the chain master') :-
 % TODO
 
 eldritch_invocation_option('whispers of the grave') :-
-    match_class(warlock:9).
+    warlock >: 9.
 eldinv_spell('whispers of the grave', [], 'speak with dead').
 
 eldritch_invocation_option('witch sight') :-
-    match_class(warlock:15).
+    warlock >: 15.
 trait_source(trait(eldritch_invocation('witch sight')), sense('witch sight')).
 
 
@@ -347,12 +347,12 @@ extend_class_spell_list(warlock, Spell) :-
                   'scorching ray', fireball, 'stinking cloud', 'fire shield',
                   'wall of fire', 'flame strike', hallow]).
 
-trait_source(match_class(warlock(fiend):1), 'dark one\'s blessing').
-trait_source(match_class(warlock(fiend):6), 'dark one\'s own luck').
+trait_source(warlock(fiend) >: 1, 'dark one\'s blessing').
+trait_source(warlock(fiend) >: 6, 'dark one\'s own luck').
 resource('dark one\'s own luck', 'dark one\'s own luck', 1) :-
     trait('dark one\'s own luck').
-trait_source(match_class(warlock(fiend):10), 'fiendish resilience').
-trait_source(match_class(warlock(fiend):14), 'hurl through hell').
+trait_source(warlock(fiend) >: 10, 'fiendish resilience').
+trait_source(warlock(fiend) >: 14, 'hurl through hell').
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

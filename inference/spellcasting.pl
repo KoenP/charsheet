@@ -21,7 +21,7 @@
 %  * Origin is typically a class or a race. The Origin is not
 %    registered to the same level of detail as the Source of a trait/2
 %    or bonus/2. We typically just note `wizard` or `'high elf'`
-%    rather than choice(match_class(wizard:2), spell) or
+%    rather than choice(wizard >: 2, spell) or
 %    choice(race('high elf'), cantrip) as the Origin.
 %    Some classes can learn the same spell multiple times through
 %    different means. For example, warlocks can learn 'hold monster'

@@ -64,7 +64,7 @@ test_char_level(
     2,
     [gain_level(2, druid, hp_avg),
      choice(druid >: 2,subclass,land),
-     choice(match_class(druid(land):2), cantrip, guidance)
+     choice(druid(land) >: 2, cantrip, guidance)
     ],
     [max_hp(17), % 8 (base) + 1*5 (levelup) + 2*2 (con mod)
 
@@ -83,7 +83,7 @@ test_char_level(
     drelf,
     3,
     [gain_level(3, druid, hp_avg),
-     choice(match_class(druid(land):3),'circle spells',forest)
+     choice(druid(land) >: 3,'circle spells',forest)
 
     ],
     [resource('natural recovery', 'spell slot total', 2),

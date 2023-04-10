@@ -20,12 +20,12 @@ trait_options_source(initial_class(gambler), skill, wrap(skill),
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features from leveling up.
-traits_from_source(match_class(gambler:1),
+traits_from_source(gambler >: 1,
                    [armor(light), weapon(simple),
                     weapon('hand crossbow'), weapon(rapier),
                     tool('deck of cards'), tool(dice)]).
 
-trait_source(match_class(gambler:1), card_throwing(N)) :-
+trait_source(gambler >: 1, card_throwing(N)) :-
     class_level(gambler:L),
     ordered_lookup_largest_leq([1->1, 5->2, 11->3, 17->4], L, N).
 
@@ -37,9 +37,9 @@ attack('throw card', feet(20)/feet(40), to_hit(ToHit), [damage(piercing,1)], Not
     format(string(NCardsNote), 'throw ~d cards', NCards),
     (NCards == 1 -> Notes = [] ; Notes = [NCardsNote]).
 
-trait_source(match_class(gambler:1), 'deck infusion').
-trait_source(match_class(gambler:1), 'basic deck infusion').
-trait_source(match_class(gambler:1), 'draw hand').
+trait_source(gambler >: 1, 'deck infusion').
+trait_source(gambler >: 1, 'basic deck infusion').
+trait_source(gambler >: 1, 'draw hand').
 
 meta_todo('enhanced deck infusion', 'need to implement gambler spellcasting').
 

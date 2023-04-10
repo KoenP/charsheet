@@ -31,9 +31,11 @@ origin_level(class(C), Level) :-
     !,
     reached_classlevel_at_charlevel(C:1, Level).
 origin_level(match_class(C:L), Level) :-
+    % TODO delete
     !,
     reached_classlevel_at_charlevel(C:L, Level).
 origin_level(match_class(C), Level) :-
+    % TODO delete
     C \= _:_,
     !,
     reached_classlevel_at_charlevel(C:1, Level).

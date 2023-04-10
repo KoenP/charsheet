@@ -40,7 +40,7 @@ on_rest(long, 'arcane recovery', full_restore) :-
 spell_mastery_candidate(Level, Spell) :-
     known_spell(wizard, Spell),
     spell_property(Spell, level, Level).
-trait_options_source(match_class(wizard:18),
+trait_options_source(wizard >: 18,
                      spell_mastery(L),
                      wrap(spell_mastery),
                      spell_mastery_candidate(L)) :-
@@ -54,7 +54,7 @@ bonus_source(trait(spell_mastery(Spell)),
 signature_spell_candidate(Spell) :-
     known_spell(wizard, Spell),
     spell_property(Spell, level, 3).
-trait_options_source(match_class(wizard:20),
+trait_options_source(wizard >: 20,
                      'signature spell', wrap(signature_spell),
                      2 unique_from signature_spell_candidate).
 
@@ -71,8 +71,8 @@ known_spell(wizard, int, Availability, Resources, Ritual, Name) :-
     wizard_spell_availability(Name, Availability),
     spell_property(Name, ritual, Ritual).
 
-hide_known_class_spells(match_class(wizard:_), cantrip, wizard).
-hide_known_class_spells(match_class(wizard:_), 'free spell', wizard).
+hide_known_class_spells(wizard >: _, cantrip, wizard).
+hide_known_class_spells(wizard >: _, 'free spell', wizard).
 
 wizard_spell_resources(Spell, []) :-
     trait(spell_mastery(Spell)), !.
@@ -85,14 +85,14 @@ wizard_spell_availability(Spell, always) :-
 wizard_spell_availability(_, 'when prepared').
 
 % Learn cantrips.
-options_source(match_class(wizard:1), cantrip, 3 unique_from class_cantrip(wizard)).
-options_source(match_class(wizard:L), cantrip, class_cantrip(wizard)) :-
+options_source(wizard >: 1, cantrip, 3 unique_from class_cantrip(wizard)).
+options_source(wizard >: L, cantrip, class_cantrip(wizard)) :-
     L=4 ; L=10.
 
 % Learn proper spells by leveling.
-options_source(match_class(wizard:1), 'free spell',
+options_source(wizard >: 1, 'free spell',
                6 unique_from learnable_proper_spell(wizard)).
-options_source(match_class(wizard:L), 'free spell',
+options_source(wizard >: L, 'free spell',
                2 unique_from learnable_proper_spell(wizard)) :-
     between(2, 20, L).
 
@@ -107,10 +107,10 @@ problem(selected_same_wizard_spell_more_than_once(Spell)) :-
 % Arcane tradition: school of evocation
 subclass_option(wizard, evocation).
 
-trait_source(match_class(wizard(evocation):2), 'evocation savant').
-trait_source(match_class(wizard(evocation):2), 'sculpt spells').
+trait_source(wizard(evocation) >: 2, 'evocation savant').
+trait_source(wizard(evocation) >: 2, 'sculpt spells').
 
-trait_source(match_class(wizard(evocation):6), 'potent cantrip'). % TODO
+trait_source(wizard(evocation) >: 6, 'potent cantrip'). % TODO
 bonus_source(trait('potent cantrip'), modify_spell(_, Cantrip, Goal)) :-
     known_spell(_, Cantrip),
     spell_data(Cantrip, Data),
@@ -123,7 +123,7 @@ apply_potent_cantrip(OldEffects, NewEffects) :-
                    saving_throw(Abi):(damage(Element,Dice) else 'half damage'),
                    NewEffects).
     
-trait_source(match_class(wizard(evocation):10), 'empowered evocation').
+trait_source(wizard(evocation) >: 10, 'empowered evocation').
 bonus_source(trait('empowered evocation'),
              modify_spell(wizard, Spell, Goal)) :-
     known_spell(wizard, Spell),
@@ -143,7 +143,7 @@ apply_empowered_evocation(OldEffects, NewEffects) :-
     atomics_to_string(["add +", Bonus, " to one damage roll"], New),
     append(OldEffects, [New], NewEffects).
 
-trait_source(match_class(wizard(evocation):14), overchannel).
+trait_source(wizard(evocation) >: 14, overchannel).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
