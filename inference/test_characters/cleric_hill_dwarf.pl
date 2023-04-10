@@ -17,7 +17,7 @@ test_char_level(
      choice(race(dwarf), subrace, 'hill dwarf'),
 
      choice(init, 'initial class', cleric),
-     choice(match_class(cleric:1), subclass, life),
+     choice(cleric >: 1, subclass, life),
      choice(initial_class(cleric), skill, [medicine, religion]),
      %choice(trait('blessings of knowledge'), skill, [arcana, nature]),
      %choice(trait('blessings of knowledge'), language, [giant, celestial]),

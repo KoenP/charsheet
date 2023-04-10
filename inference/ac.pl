@@ -43,7 +43,7 @@ eval_ac_formula(shield, 0, [Shield:AC]) :-
     trait(armor(shield)),
     shield_ac(Shield, AC).
 eval_ac_formula(shield, 0, []) :-
-    \+ trait(armor(shield)).
+    \+ (trait(armor(shield)), shield_ac(_, _)).
 
 %! unarmored_defense_formula(?Origin, ?Formula)
 %

@@ -9,7 +9,7 @@ test_char_level(
      base_ability(wis,16),
      base_ability(cha,9),
 
-     equipped(quarterstaff),
+     has(quarterstaff),
 
      choice(init, 'base race', elf),
      choice(race(elf), subrace, 'high elf'),
@@ -63,7 +63,7 @@ test_char_level(
     drelf,
     2,
     [gain_level(2, druid, hp_avg),
-     choice(match_class(druid:2),subclass,land),
+     choice(druid >: 2,subclass,land),
      choice(match_class(druid(land):2), cantrip, guidance)
     ],
     [max_hp(17), % 8 (base) + 1*5 (levelup) + 2*2 (con mod)

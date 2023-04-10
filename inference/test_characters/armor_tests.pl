@@ -16,7 +16,7 @@ test_char_level(
     ],
     [ac_formula(unarmored, 10 + dex + shield),
      ac_formula(unarmored_defense(monk), 10 + dex + wis),
-     ac(unarmored, 13, [shield+1 : 3]),
+     ac(unarmored, 13, []),
      ac(unarmored_defense(monk), 18, [])
     ]).
 
@@ -84,7 +84,7 @@ test_char_level(
      has(shield + 1),
 
      choice(init, 'initial class', sorcerer),
-     choice(match_class(sorcerer:1), subclass, 'draconic bloodline')
+     choice(sorcerer >: 1, subclass, 'draconic bloodline')
     ],
     [ac_formula(trait('draconic resilience'), 13 + dex + shield),
      ac(trait('draconic resilience'), 16, []) % no shield proficiency
