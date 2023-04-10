@@ -34,7 +34,7 @@ known_spell(cleric, wis, 'when prepared', [slot], Ritual, Name) :-
 
 % Domain spells are always prepared.
 known_spell(cleric(Domain), wis, always, [slot], Ritual, Name) :-
-    subclass(Class), Class =.. [cleric, Domain],
+    subclass(cleric(Domain)),
     cleric_domain_spell(Domain, Name),
     learnable_proper_spell(cleric, Name),
     spell_property(Name, ritual, Ritual).
@@ -60,12 +60,11 @@ trait_source(class(cleric), ritual_casting(cleric)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features from leveling up.
-resource('channel divinity', 'channel divinity', N) :-
+trait_source(cleric >: 2, 'channel divinity (cleric)').
+trait_source(cleric >: 2, channel_divinity('turn undead')).
+bonus_source(cleric >: 2, channel_divinity_uses(N)) :-
     class_level(cleric:Lvl),
     ordered_lookup_largest_leq([2 -> 1, 6 -> 2, 18 -> 3], Lvl, N).
-on_rest(long, 'channel divinity', full_restore).
-trait_source(cleric >: 2, 'channel divinity').
-trait_source(cleric >: 2, channel_divinity('turn undead')).
 meta_todo(cleric, "'channel divinity' has specific multiclassing rules").
 
 trait_source(cleric >: 5, destroy_undead(cr(CR))) :-
@@ -174,7 +173,7 @@ meta_todo(cleric(knowledge), "Complete this subclass implementation.").
 % DESCRIPTIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-'channel divinity' ?= "At 2nd level, you gain the ability to channel divine energy directly from your deity, using that energy to fuel magical effects. You start with two such effects: Turn Undead and an effect determined by your domain. Some domains grant you additional effects as you advance in levels, as noted in the domain description.
+'channel divinity (cleric)' ?= "At 2nd level, you gain the ability to channel divine energy directly from your deity, using that energy to fuel magical effects. You start with two such effects: Turn Undead and an effect determined by your domain. Some domains grant you additional effects as you advance in levels, as noted in the domain description.
 When you use your Channel Divinity, you choose which effect to create. You must then finish a short or long rest to use your Channel Divinity again. Some Channel Divinity effects require saving throws. When you use such an effect from this class, the DC equals your cleric spell save DC.
 Beginning at 6th level, you can use your Channel Divinity twice between rests, and beginning at 18th level, you can use it three times between rests. When you finish a short or long rest, you regain your expended uses.".
 

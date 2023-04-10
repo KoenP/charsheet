@@ -382,13 +382,18 @@ full_caster_spell_slot_table(9, [17]).
 
 %! default_max_prepared_spells(?Class:atomic, -N:integer)
 %
-%  The default formula for determining how many spells a full caster
+%  The default formula for determining how many spells a caster
 %  can prepare for the given class.
 default_max_prepared_spells(Class, N) :-
+    caster(Class, Casterness),
+    caster_denominator(Casterness, Denom),
     spellcasting_ability(Class, Ability),
     ability_mod(Ability, Mod),
     class_level(Class:Level),
-    N is Level + Mod.
+    N is max(1, floor(Level / Denom) + Mod).
+
+caster_denominator(full, 1).
+caster_denominator(1/N, N).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Helper predicates for modifying spell data.

@@ -43,6 +43,7 @@
 :- [spell_data].
 :- [spellcasting].
 :- [class].
+:- [multiclassing].
 :- [race].
 :- [background].
 :- [feat].

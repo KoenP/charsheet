@@ -37,7 +37,7 @@ monk_weapon(Weapon) :-
 bonus_source(trait(martial_arts(_)), use_ability(Weapon, dex)) :-
     monk_weapon(Weapon).
 bonus(trait(martial_arts(1 d N)),
-      attack_damage_rolls(Weapon,[damage(Type,1 d N)])) :-
+      override_attack_damage_rolls(Weapon,[damage(Type,1 d N)])) :-
     trait(martial_arts(1 d N)),
     monk_weapon(Weapon),
     weapon(Weapon, _, _, [damage(Type,Die)], _),

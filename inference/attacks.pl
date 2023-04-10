@@ -22,17 +22,24 @@ attack(Weapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
     (has(Weapon) ; Weapon = unarmed),
     expand_to_sum(Weapon, BaseWeapon + Enchantment),
     weapon(BaseWeapon, _, _, _, _),
-    weapon_base_damage_rolls(BaseWeapon, BaseDamageRolls),
+    %weapon_base_damage_rolls(BaseWeapon, BaseDamageRolls),
     weapon_attack_ability_and_modifier(BaseWeapon, _, Mod),
     weapon_proficiency_bonus(BaseWeapon, ProfBon),
-    weapon_range(Weapon, Range),
+    base_weapon_range(BaseWeapon, Range),
     attack_notes(BaseWeapon, Notes),
     other_bonuses_to_hit(BaseWeapon, OtherBonuses),
     ToHit is Mod + ProfBon + OtherBonuses + Enchantment,
-    add_bonus_to_first_die(Mod + Enchantment, BaseDamageRolls, FinalDamageRolls).
+    weapon_damage_rolls(BaseWeapon, Mod, Enchantment, FinalDamageRolls).
+    %add_bonus_to_first_die(Mod + Enchantment, BaseDamageRolls, FinalDamageRolls).
+
+weapon_damage_rolls(BaseWeapon, Mod, Enchantment, FinalRolls) :-
+    weapon_base_damage_rolls(BaseWeapon, BaseRolls),
+    findall(R, bonus(extra_damage_roll(BaseWeapon,R)), AdditionalRolls),
+    append(BaseRolls, AdditionalRolls, AllRolls),
+    add_bonus_to_first_die(Mod + Enchantment, AllRolls, FinalRolls).
 
 weapon_base_damage_rolls(Weapon, Rolls) :-
-    bonus(attack_damage_rolls(Weapon, Rolls)),
+    bonus(override_attack_damage_rolls(Weapon, Rolls)),
     !.
 weapon_base_damage_rolls(Weapon, Rolls) :-
     weapon(Weapon, _, _, Rolls, _).
@@ -60,18 +67,18 @@ attack_notes(Weapon, Notes) :-
             BonusNotes),
     append(WeaponNotes, BonusNotes, Notes).
 
-%! weapon_range(?Weapon, ?Range)
+%! base_weapon_range(?Weapon, ?Range)
 %
 %  Range is either a term `feet(N)` or `feet(N) / feet(M)` where N and
 %  M are numbers. In theory you could have a different unit of length
 %  instead of feet.
-weapon_range(Weapon, feet(Range)) :-
-    weapon(Weapon, _, melee, _, Notes),
+base_weapon_range(BaseWeapon, feet(Range)) :-
+    weapon(BaseWeapon, _, melee, _, Notes),
     findall(Ft, (member(reach(feet(Ft)),Notes); bonus(reach+feet(Ft))), Fts),
     sum_list(Fts, Bonus),
     Range is 5 + Bonus.
-weapon_range(Weapon, Range) :-
-    weapon(Weapon, _, ranged(Range), _, _).
+base_weapon_range(BaseWeapon, Range) :-
+    weapon(BaseWeapon, _, ranged(Range), _, _).
 
 %! weapon_attack_ability_and_modifier(?Weapon, ?Abi, ?Mod)
 %

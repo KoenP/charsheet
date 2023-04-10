@@ -52,7 +52,7 @@ class(Class) :- class_level(Class:_).
 %  subclass option with a choice/3 clause.
 subclass(Subclass) :-
     class(Class),
-    choice(match_class(Class:_), subclass, Sub),
+    choice(Class >: _, subclass, Sub),
     Subclass =.. [Class, Sub].
 subclass_level(Subclass:Level) :-
     subclass(Subclass),
@@ -68,7 +68,7 @@ base_class(Class, BaseClass) :-
 
 %! subclass_option(?Class, ?Subclass)
 subclass_option(_,_) :- false.
-options_source(match_class(Class:ClassLevel), subclass, subclass_option(Class)) :-
+options_source(Class >: ClassLevel, subclass, subclass_option(Class)) :-
     choose_subclass_level(Class:ClassLevel).
 
 %! match_class(?X)

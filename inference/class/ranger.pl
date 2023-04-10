@@ -3,7 +3,7 @@ hd_per_level(ranger, 1 d 10).
 initial_class_base_hp(ranger, 10).
 max_hp_per_level(ranger, 1 d 10).
 caster(ranger, 1/2).
-spellcasting_ability(ranger, wisdom).
+spellcasting_ability(ranger, wis).
 choose_subclass_level(ranger:3).
 class_saving_throw(ranger, str).
 class_saving_throw(ranger, dex).
