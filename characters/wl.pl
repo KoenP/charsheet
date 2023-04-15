@@ -1,15 +1,44 @@
-% rhurad khada
-% Contract: dead three (bane, bhaal, myrkel (?)) -> cult
-%   Maken vd paniek gebruik om moorden te plegen die niet worden vervolgd.
-%   Zoek hun lair en los het op.
-%
-% Shark god: Sekolah
-%
-% Hellriders
-% Sleep safe under companion's light
-% bound by mortal covenant, 
+/*
+SESSIE 1
+%%%%%%%%
+the companion vernietigde de stad Eltorel
 
-equipped('studded leather armor').
+naar baldur's gate gevlucht
+
+rhurad khada -> Shark god: Sekolah
+Contract: dead three (bane, bhaal, myrkel (?)) -> cult
+  Maken vd paniek gebruik om moorden te plegen die niet worden vervolgd.
+  Zoek hun lair en los het op.
+
+Hellriders
+Sleep safe under companion's light
+bound by mortal covenant, 
+
+
+SESSIE 2
+%%%%%%%%
+Cult badhuis -> niks gevonden
+Veel lichamen in park gevonden
+
+Gevecht in park -> cultists met symbool van Bane
+
+1 inspiration
+
+
+SESSIE 3
+%%%%%%%%
+PCs
+- Sir Bashook Barcadioth (Tristan)
+- Baba Anoush (swtst)
+- Milo Greenbottle (andere Koen)
+- Brom Pot (Kirsten)
+- Pia Deepclaw (Femke)
+
+We beginnen met short rest in tavern (Elfsong tavern).
+Drinken rare groene brandy; gelatinous cube's acid brandy.
+*/
+
+has('studded leather armor').
 
 name("Alexander Sunstone").
 
@@ -88,6 +117,9 @@ At Higher Levels. When you cast this spell using a spell slot of 3rd or 4th leve
                                  attack_type: false}).
 
 feat_option(metamagic_adept(_,_)).
+resource(metamagic, 'sorcery points', 2) :-
+    trait(feat(metamagic_adept(_,_))).
+on_rest(long, metamagic, full_restore).
 
 feat(metamagic_adept(_,_)) ?= "You've learned how to exert your will on your spells to alter how they function:
 
