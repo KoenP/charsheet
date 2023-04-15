@@ -20,10 +20,10 @@ trait_options_source(initial_class(barbarian), skill, wrap(skill),
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1 features (you get these when multiclassing into barbarian).
-traits_from_source(match_class(barbarian:1),
+traits_from_source(barbarian >: 1,
                    [armor(shield), weapon(simple), weapon(martial)]).
 
-trait_source(match_class(barbarian:1), rage(damage + N)) :-
+trait_source(barbarian >: 1, rage(damage + N)) :-
     class_level(barbarian:L),
     ordered_lookup_largest_leq([1 -> 2, 9 -> 3, 16 -> 4], L, N).
 resource(rage, rage, Max) :-
@@ -37,24 +37,23 @@ resource(rage, rage, Max) :-
 meta_todo(barbarian, "how to handle 'unlimited' rages in UI").
 on_rest(long, rage, full_restore) :- trait(rage).
 
-trait_source(match_class(barbarian:1), 'unarmored defense').
-bonus_source(trait('unarmored defense'), 'unarmored ac' = 10 + dex + con).
+trait_source(barbarian >: 1, unarmored_defense(10 + dex + con + shield)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features gained from leveling up.
-trait_source(match_class(barbarian:2), 'reckless attack').
-trait_source(match_class(barbarian:2), 'danger sense').
-trait_source(match_class(barbarian:5), 'extra attack').
-trait_source(match_class(barbarian:5), 'fast movement').
+trait_source(barbarian >: 2, 'reckless attack').
+trait_source(barbarian >: 2, 'danger sense').
+trait_source(barbarian >: 5, 'extra attack').
+trait_source(barbarian >: 5, 'fast movement').
 bonus_source(trait('fast movement'), speed + 10).
-trait_source(match_class(barbarian:7), 'feral instinct').
-trait_source(match_class(barbarian:9), brutal_critical(N)) :-
+trait_source(barbarian >: 7, 'feral instinct').
+trait_source(barbarian >: 9, brutal_critical(N)) :-
     class_level(barbarian:L),
     ordered_lookup_largest_leq([9->1, 13->2, 17->3], L, N).
-trait_source(match_class(barbarian:11), 'relentless rage').
-trait_source(match_class(barbarian:15), 'persistent rage').
-trait_source(match_class(barbarian:18), 'indomitable might').
-trait_source(match_class(barbarian:20), 'primal champion').
+trait_source(barbarian >: 11, 'relentless rage').
+trait_source(barbarian >: 15, 'persistent rage').
+trait_source(barbarian >: 18, 'indomitable might').
+trait_source(barbarian >: 20, 'primal champion').
 bonus_source(trait('primal champion'), str + 4).
 bonus_source(trait('primal champion'), con + 4).
 bonus_source(trait('primal champion'), max_ability(str) + 4).
@@ -64,10 +63,10 @@ bonus_source(trait('primal champion'), max_ability(con) + 4).
 % SUBCLASSES                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subclass_option(barbarian, berserker).
-trait_source(match_class(barbarian(berserker):3), frenzy).
-trait_source(match_class(barbarian(berserker):6), 'mindless rage').
-trait_source(match_class(barbarian(berserker):10), 'intimidating presence').
-trait_source(match_class(barbarian(berserker):14), retaliation).
+trait_source(barbarian(berserker) >: 3, frenzy).
+trait_source(barbarian(berserker) >: 6, 'mindless rage').
+trait_source(barbarian(berserker) >: 10, 'intimidating presence').
+trait_source(barbarian(berserker) >: 14, retaliation).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DESCRIPTIONS                                                                 %

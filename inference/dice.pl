@@ -66,3 +66,5 @@ list_to_sum([DX|Xs], Sum + X) :-
     list_to_sum(Xs, Sum),
     normalize_dice_sum_term(X, DX).
 
+strictly_worse(N d M1, N d M2) :- M1 < M2.
+strictly_worse(N1 d M, N2 d M) :- N1 < N2.

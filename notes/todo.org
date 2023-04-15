@@ -10,6 +10,8 @@
   * full_restore -> 'full restore'
   * hp_max -> 'hp max'
 
+- zou volledig `match_class` moeten verwijderen in favor of >:
+
 - feats
   - feat condities
 
@@ -22,6 +24,8 @@
 - effecten van short en long rests registreren
 - ergens een lijst van talen toevoegen; of meer algemeen: omgaan met het idee "kies van deze lijst, of vul gewoon zelf iets in"
 - consistentie "ft" vs "feet" functor
+
+- "overriding" traits, bv "improved" vs "superior" critical bij fighter class
 
 * Huidige todo
 

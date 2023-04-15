@@ -22,7 +22,7 @@ Veel lichamen in park gevonden
 
 Gevecht in park -> cultists met symbool van Bane
 
-1 inspiration
+1 inspiration -> used
 
 
 SESSIE 3
@@ -36,9 +36,44 @@ PCs
 
 We beginnen met short rest in tavern (Elfsong tavern).
 Drinken rare groene brandy; gelatinous cube's acid brandy.
+
+Hebben ons binnen gebullshit als Zodj (of hoe zijn naam ook alweer gespeld wordt).
+Hebben geheime deur gevonden.
+Vies water met kak in :( en nog koud ook
+
+3 deuren
+- W: buff dude met schedel als hoofd (bhaal)
+- Z: handen van een skelet, houdt schreeuwende schedel vast (myrkel)
+- O: lange man gekleed in armor met bucket helm; gauntlet aan rechterhand is zwart geverfd en heeft kettingen vast (bane)
+
+Battle voorbij zuidelijke deur.
+3 spellbooks in sarcofaag gevonden.
+
+Bane deur: battle met twee armored priestachtige types
+We redden de irritante nobleman.
+
+
 */
 
-has('studded leather armor').
+/*
+# HIT POINTS
+19 / 19
+
+# HIT DICE (d8)
+[ ] [ ]
+
+# SORCERY POINTS
+[ ] [ ]
+
+# SPELL SLOTS
+[ ] [ ]
+
+# INVENTORY
+
+- keyring cultist (7 keys)
+*/
+
+has('studded leather').
 
 name("Alexander Sunstone").
 
@@ -58,21 +93,21 @@ choice(race(human(variant)), feat,
        metamagic_adept('careful spell', 'empowered spell')).
 
 choice(init, 'initial class', warlock).
-choice(match_class(warlock:1), subclass, fiend).
+choice(warlock >: 1, subclass, fiend).
 
 choice(init, background, sage).
 %choice(background(sage), language, [gnomish, infernal]).
 trait(background(sage), language(gnomish)).
 trait(background(sage), language(infernal)).
 
-choice(match_class(warlock:1), cantrip, ['eldritch blast','minor illusion']).
+choice(warlock >: 1, cantrip, ['eldritch blast','minor illusion']).
 
 
 
-choice(match_class(warlock),
+choice(warlock >: 1,
        spell,
        [hex, 'burning hands']).
-choice(initial_class(warlock), skill, [deception,intimidation]).
+choice(^warlock, skill, [deception,intimidation]).
 
 % Variant human with feat: metamagic
 
@@ -85,11 +120,11 @@ choice(initial_class(warlock), skill, [deception,intimidation]).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 gain_level(2, warlock, hp_avg).
 
-choice(match_class(warlock:2),
+choice(warlock >: 2,
        'eldritch invocation',
        ['agonizing blast','mask of many faces']).
 
-choice(match_class(warlock:2), spell, 'charm person').
+choice(warlock >: 2, spell, 'charm person').
 
 
 

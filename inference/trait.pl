@@ -89,6 +89,15 @@ class_trait(Class, Origin, Trait) :-
 choice_member_to_trait(Source, Id, ToTrait) :-
     trait_options(Source, Id, ToTrait, _).
 wrap(Functor, X, FunctorX) :- FunctorX =.. [Functor, X].
+deep_wrap(NestedFunctors, X, NestedFunctorsX) :-
+    NestedFunctors =.. [Functor, SubNestedFunctors],
+    !,
+    deep_wrap(SubNestedFunctors, X, SubX),
+    NestedFunctorsX =.. [Functor, SubX].
+deep_wrap(Atom, X, AtomX) :-
+    Atom =.. [Atom],
+    !,
+    wrap(Atom, X, AtomX).
 
 %! notable_trait(?Origin, ?Trait)
 %

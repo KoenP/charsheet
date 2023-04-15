@@ -12,14 +12,14 @@ class_saving_throw(sorcerer, cha).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features (you don't gain these when multiclassing into sorcerer).
-traits_from_source(initial_class(sorcerer),
+traits_from_source(^sorcerer,
                    [weapon(dagger),
                     weapon(dart),
                     weapon(sling),
                     weapon(quarterstaff),
                     weapon('light crossbow')]).
 
-trait_options_source(initial_class(sorcerer), skill, wrap(skill),
+trait_options_source(^sorcerer, skill, wrap(skill),
                      2 unique_from from_list([arcana       ,
                                               deception    ,
                                               insight      ,
@@ -34,8 +34,8 @@ trait_source(class(sorcerer), spellcasting_focus(arcane)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sorcerer spellcasting features.
-trait_source(class(sorcerer:2), 'font of magic').
-trait_options_source(class(sorcerer:3), metamagic, wrap(metamagic),
+trait_source(sorcerer >: 2, 'font of magic').
+trait_options_source(sorcerer >: 3, metamagic, wrap(metamagic),
                      2 unique_from from_list(['careful spell',
                                               'distant spell',
                                               'empowered spell',
@@ -44,7 +44,7 @@ trait_options_source(class(sorcerer:3), metamagic, wrap(metamagic),
                                               'quickened spell',
                                               'subtle spell',
                                               'twinned spell'])).
-trait_source(class(sorcerer:20), 'sorcerous restoration').
+trait_source(sorcerer >: 20, 'sorcerous restoration').
 
 %  Calculate the maximum number of sorcery points your character has available.
 resource(metamagic, 'sorcery point', Max) :-
@@ -66,22 +66,22 @@ known_spell(sorcerer, cha, always, [slot], Ritual, Name) :-
 
 % Learn cantrips.
 options_source(class(sorcerer), cantrip, 4 unique_from class_cantrip(sorcerer)).
-options_source(match_class(sorcerer:L), cantrip, class_cantrip(sorcerer)) :- L=4 ; L=10.
+options_source(sorcerer >: L, cantrip, class_cantrip(sorcerer)) :- L=4 ; L=10.
    
 % Learn proper spells.
 options_source(class(sorcerer), spell,
                2 unique_from learnable_proper_spell(sorcerer)).
-options_source(match_class(sorcerer:L), spell,
+options_source(sorcerer >: L, spell,
                learnable_proper_spell(sorcerer)) :-
     member(L, [2,3,4,5,6,7,8,9,10,11,13,15,17]).
 
 % Replace proper spells.
-options_source(match_class(sorcerer:L), replace(spell),
+options_source(sorcerer >: L, replace(spell),
                selected_at_class_level(sorcerer:Prev, spell)) :-
     between(2, 20, L),
     Prev is L-1.
-options(match_class(sorcerer:L), replacing(spell, Name), learnable_proper_spell(sorcerer)) :-
-    choice_member(match_class(sorcerer:L), replace(spell), Name).
+options(sorcerer >: L, replacing(spell, Name), learnable_proper_spell(sorcerer)) :-
+    choice_member(sorcerer >: L, replace(spell), Name).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sorcerous origin: draconic bloodline.
@@ -106,21 +106,21 @@ dragon_ancestor_element(Elem) :-
 dragon_ancestor_option(Color) :- dragon_ancestor_element(Color, _).
 
 
-trait_options_source(match_class(sorcerer('draconic bloodline')),
+trait_options_source(sorcerer('draconic bloodline') >: 1,
                      'dragon ancestor',
                      wrap(dragon_ancestor),
                      dragon_ancestor_option).
 
-trait_source(match_class(sorcerer('draconic bloodline')), language(draconic)).
+trait_source(sorcerer('draconic bloodline') >: 1, language(draconic)).
 
 % Draconic resilience.
-trait_source(match_class(sorcerer('draconic bloodline')), 'draconic resilience').
+trait_source(sorcerer('draconic bloodline') >: 1, 'draconic resilience').
 bonus_source(trait('draconic resilience'), 'max hp'+Level) :-
     class_level(sorcerer:Level).
-bonus_source(trait('draconic resilience'), 'unarmored ac' = 13 + dex).
+bonus_source(trait('draconic resilience'), ac_formula(13 + dex + shield)).
 
 % Elemental affinity.
-trait_source(match_class(sorcerer('draconic bloodline'):6),
+trait_source(sorcerer('draconic bloodline') >: 6,
              elemental_affinity(Element)) :-
     trait(dragon_ancestor(Color)),
     dragon_ancestor_element(Color, Element).
@@ -146,10 +146,10 @@ apply_elemental_affinity(OldEffects, NewEffects) :-
     append(OldEffects, [New], NewEffects).
 
 % Dragon wings.
-trait_source(match_class(sorcerer('draconic bloodline'):14), 'dragon wings').
+trait_source(sorcerer('draconic bloodline') >: 14, 'dragon wings').
 
 % Draconic presence.
-trait_source(match_class(sorcerer('draconic bloodline'):18), 'draconic presence').
+trait_source(sorcerer('draconic bloodline') >: 18, 'draconic presence').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DESCRIPTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

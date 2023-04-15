@@ -1,17 +1,27 @@
-fighting_style(archery) ?= "You gain a +2 bonus to attack rolls you make with ranged weapons.".
+:- discontiguous fighting_style/1.
+
+fighting_style(archery).
 bonus_source(trait(fighting_style(archery)), to_hit(Weapon) + 2) :-
-    weapon_ranged(Weapon).
+    weapon(Weapon, _, ranged(_), _, _).
 
+fighting_style(defense).
+bonus_source(trait(fighting_style(defense)), ac_formula(armor(_)) + 1).
 fighting_style(defense) ?= "While you are wearing armor, you gain a +1 bonus to AC.".
-bonus_source(trait(fighting_style(defense)), ac + 1) :-
-    wearing_armor.
 
-fighting_style(dueling) ?= "When you are wielding a melee weapon in one hand and no other weapons, you gain a +2 bonus to damage rolls with that weapon.".
+fighting_style(dueling).
+attack_variant(Weapon:dueling, melee, ToHit, NewDamage, ["when no other weapon equipped"]) :-
+    trait(fighting_style(dueling)),
+    attack(Weapon, melee, ToHit, Damage, Notes),
+    \+ member(twohanded, Notes),
+    add_bonus_to_first_damage_roll(Damage, 2, NewDamage).
 
-bonus_source(trait(fighting_style(dueling)),
-             add_weapon_note(OneHandedMelee,
-                             "+2 damage if no other weapon equipped")) :-
-    weapon_onehanded(OneHandedMelee),
-    weapon_melee(OneHandedMelee).
+fighting_style('great weapon fighting').
+bonus_source(trait(fighting_style('great weapon fighting')),
+             add_weapon_note(Weapon, "may reroll 1 or 2 on a damage die")) :-
+    weapon(Weapon, _, melee, _, Notes),
+    intersection([twohanded, versatile], Notes, [_|_]).
 
+fighting_style(protection).
+
+fighting_style('two-weapon fighting').
 fighting_style('two-weapon fighting') ?= "When you engage in two-weapon fighting, you can add your ability modifier to the damage of the second attack.".

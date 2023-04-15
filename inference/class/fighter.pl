@@ -20,14 +20,14 @@ trait_options_source(initial_class(fighter), skill, wrap(skill),
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1 features.
-traits_from_source(match_class(fighter:1),
+traits_from_source(fighter >: 1,
                    [armor(light), armor(medium), armor(shield),
                     weapon(simple), weapon(martial)]).
 
-trait_options_source(match_class(fighter:1), 'fighting style',
+trait_options_source(fighter >: 1, 'fighting style',
                      wrap(fighting_style), fighting_style).
 
-trait_source(match_class(fighter:1), second_wind(1 d 10 + L)) :-
+trait_source(fighter >: 1, second_wind(1 d 10 + L)) :-
     class_level(fighter:L).
 resource('second wind', 'second wind', 1) :-
     trait(second_wind(_)).
@@ -35,46 +35,18 @@ on_rest(short, 'second wind', full_restore) :-
     trait(second_wind(_)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Fighting styles.
-fighting_style(archery).
-bonus_source(trait(fighting_style(archery)), to_hit(Weapon) + 2) :-
-    weapon(Weapon, _, ranged(_), _, _).
-
-fighting_style(defense).
-bonus_source(trait(fighting_style(defense)), ac + 1) :-
-    wearing_armor.
-fighting_style(defense) ?= "While you are wearing armor, you gain a +1 bonus to AC.".
-
-fighting_style(dueling).
-attack_variant(Weapon:dueling, melee, ToHit, NewDamage, ["when no other weapon equipped"]) :-
-    trait(fighting_style(dueling)),
-    attack(Weapon, melee, ToHit, Damage, Notes),
-    \+ member(twohanded, Notes),
-    add_bonus_to_first_damage_roll(Damage, 2, NewDamage).
-
-fighting_style('great weapon fighting').
-bonus_source(trait(fighting_style('great weapon fighting')),
-             add_weapon_note(Weapon, "may reroll 1 or 2 on a damage die")) :-
-    weapon(Weapon, _, melee, _, Notes),
-    intersection([twohanded, versatile], Notes, [_|_]).
-
-fighting_style(protection).
-
-fighting_style('two-weapon fighting').
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Traits from leveling up.
-trait_source(match_class(fighter:2), 'action surge').
+trait_source(fighter >: 2, 'action surge').
 resource('action surge', 'action surge', N) :-
     class_level(fighter:L),
     ordered_lookup_largest_leq([2 -> 1, 17 -> 2], L, N).
 on_rest(short, 'action surge', full_restore).
 
-trait_source(match_class(fighter:5), extra_attack(N)) :-
+trait_source(fighter >: 5, extra_attack(N)) :-
     class_level(fighter:L),
     ordered_lookup_largest_leq([5 -> 2, 11 -> 3, 20 -> 4], L, N).
 
-trait_source(match_class(fighter:9), indomitable).
+trait_source(fighter >: 9, indomitable).
 resource(indomitable, reroll, N) :-
     class_level(fighter:L),
     ordered_lookup_largest_leq([9 -> 1, 13 -> 2, 17 -> 3], L, N).
@@ -83,12 +55,12 @@ resource(indomitable, reroll, N) :-
 % MARTIAL ARCHETYPES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subclass_option(fighter, champion).
-trait_source(match_class(fighter(champion):3), 'improved critical').
-trait_source(match_class(fighter(champion):7), 'remarkable athlete').
-trait_options_source(match_class(fighter(champion):10), 'fighting style',
+trait_source(fighter(champion) >: 3, 'improved critical').
+trait_source(fighter(champion) >: 7, 'remarkable athlete').
+trait_options_source(fighter(champion) >: 10, 'fighting style',
                      wrap(fighting_style), fighting_style).
-trait_source(match_class(fighter(champion):15), 'superior critical').
-trait_source(match_class(fighter(champion):18), survivor(HP)) :-
+trait_source(fighter(champion) >: 15, 'superior critical').
+trait_source(fighter(champion) >: 18, survivor(HP)) :-
     ability_mod(con, Mod),
     HP is 5 + Mod.
 

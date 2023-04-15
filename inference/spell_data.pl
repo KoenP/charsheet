@@ -183,6 +183,8 @@ add_spell_effect(frostbite,
                  saving_throw(con):damage(cold,N d 6)) :-
     cantrip_scale(N).
 
+bonus_source(known_spell(_,'mage armor'), ac_formula(13 + dex + shield)).
+
 add_spell_effect('mass cure wounds', heal(3 d 8 + mod) upto "6 creatures").
 
 add_spell_effect('misty step', "teleport 30 ft").
@@ -200,6 +202,7 @@ add_spell_effect('see invisibility',
 attack_variant(Name:shillelagh, Range, to_hit(ToHit), [damage(bludgeoning, 1 d 8 + Mod)], [magical]) :-
     (Name = quarterstaff ; Name = club),
     attack(Name, Range, _, _, _),
+    known_spell(_, shillelagh),
     ability_mod(wis, Mod),
     proficiency_bonus(ProfBon),
     ToHit is Mod + ProfBon.

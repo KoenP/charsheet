@@ -24,11 +24,11 @@ trait_options_source(initial_class(rogue), skill, wrap(skill),
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1 features (you get these when multiclassing into rogue).
-traits_from_source(match_class(rogue:1), [armor(light), tool('thieves\' tools')]).
-trait_options_source(match_class(rogue:1), skill, wrap(skill), class_skill(rogue)) :-
+traits_from_source(rogue >: 1, [armor(light), tool('thieves\' tools')]).
+trait_options_source(rogue >: 1, skill, wrap(skill), class_skill(rogue)) :-
     \+ initial_class(rogue).
 
-trait_options_source(match_class(rogue:L), expertise, rogue_expertise_to_trait,
+trait_options_source(rogue >: L, expertise, rogue_expertise_to_trait,
                      2 unique_from rogue_expertise_option) :-
     L = 1 ; L = 6.
 rogue_expertise_option('thieves\' tools').
@@ -36,22 +36,22 @@ rogue_expertise_option(Skill) :- trait(skill(Skill)).
 rogue_expertise_to_trait('thieves\' tools', expertise(tool('thieves\' tools'))).
 rogue_expertise_to_trait(Skill, expertise(skill(Skill))) :- skill(Skill).
 
-trait_source(match_class(rogue:1), sneak_attack(N d 6)) :-
+trait_source(rogue >: 1, sneak_attack(N d 6)) :-
     class_level(rogue:L),
     N is ceil(L/2).
 
-trait_source(match_class(rogue:1), 'thieves\' cant').
+trait_source(rogue >: 1, 'thieves\' cant').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features from leveling up.
-trait_source(match_class(rogue:2), 'cunning action').
-trait_source(match_class(rogue:5), 'uncanny dodge').
-trait_source(match_class(rogue:7), evasion).
-trait_source(match_class(rogue:11), 'reliable talent').
-trait_source(match_class(rogue:14), sense(blindsense)).
-trait_source(match_class(rogue:15), 'slippery mind').
-trait_source(match_class(rogue:18), elusive).
-trait_source(match_class(rogue:20), 'stroke of luck').
+trait_source(rogue >: 2, 'cunning action').
+trait_source(rogue >: 5, 'uncanny dodge').
+trait_source(rogue >: 7, evasion).
+trait_source(rogue >: 11, 'reliable talent').
+trait_source(rogue >: 14, sense(blindsense)).
+trait_source(rogue >: 15, 'slippery mind').
+trait_source(rogue >: 18, elusive).
+trait_source(rogue >: 20, 'stroke of luck').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Roguish archetype: arcane trickster.
@@ -60,7 +60,7 @@ caster(rogue, 1/3) :- subclass(rogue('arcane trickster')).
 spellcasting_ability(rogue, int) :- subclass(rogue('arcane trickster')).
 
 % Mage hand legerdemain feature.
-trait_source(match_class(rogue('arcane trickster'):3), 'mage hand legerdemain').
+trait_source(rogue('arcane trickster') >: 3, 'mage hand legerdemain').
 known_spell(rogue('arcane trickster'), int, always, [], no, 'mage hand') :-
     trait('mage hand legerdemain').
 bonus_source(trait('mage hand legerdemain'),
@@ -72,28 +72,28 @@ bonus_source(trait('mage hand legerdemain'),
     Goal = modify_spell_field(effects, [Es1,Es2]>>append(Es1,BonusFeatures,Es2)).
 
 % Other features.
-trait_source(match_class(rogue('arcane trickster'):9), 'magical ambush').
-trait_source(match_class(rogue('arcane trickster'):13), 'versatile trickster').
+trait_source(rogue('arcane trickster') >: 9, 'magical ambush').
+trait_source(rogue('arcane trickster') >: 13, 'versatile trickster').
 bonus_source(trait('versatile trickster'),
              modify_spell(rogue('arcane trickster'),
                           'mage hand',
                           add_spell_effects(['distract creature within 5 ft for advantage on attack rolls until end of turn']))).
-trait_source(match_class(rogue('arcane trickster'):17), 'spell thief').
+trait_source(rogue('arcane trickster') >: 17, 'spell thief').
 
 
 % Learn cantrips.
 known_spell(rogue('arcane trickster'), int, always, [], no, Cantrip) :-
-    choice_member(match_class(rogue('arcane trickster'):_), cantrip, Cantrip).
-options_source(match_class(rogue('arcane trickster'):3), cantrip,
+    choice_member(rogue('arcane trickster') >: _, cantrip, Cantrip).
+options_source(rogue('arcane trickster') >: 3, cantrip,
                2 unique_from class_cantrip(wizard)).
-options_source(match_class(rogue('arcane trickster'):10), cantrip,
+options_source(rogue('arcane trickster') >: 10, cantrip,
                class_cantrip(wizard)).
 
 % Learn or replace unconstrained proper spells.
 known_spell(rogue('arcane trickster'), int, always, [slot], no, Name) :-
     class_level(rogue:L),
     selected_at_class_level(rogue:L, 'unconstrained spell', Name).
-options_source(match_class(rogue('arcane trickster'):L), 'unconstrained spell',
+options_source(rogue('arcane trickster') >: L, 'unconstrained spell',
                learnable_proper_spell(rogue)) :-
     member(L, [3, 8, 14, 20]).
 
@@ -101,9 +101,9 @@ options_source(match_class(rogue('arcane trickster'):L), 'unconstrained spell',
 known_spell(rogue('arcane trickster'), int, always, [slot], no, Name) :-
     class_level(rogue:L),
     selected_at_class_level(rogue:L, 'illusion or enchantment', Name).
-options_source(match_class(rogue('arcane trickster'):3), 'illusion or enchantment',
+options_source(rogue('arcane trickster') >: 3, 'illusion or enchantment',
                2 unique_from learnable_arcane_trickster_spell).
-options_source(match_class(rogue('arcane trickster'):L), 'illusion or enchantment',
+options_source(rogue('arcane trickster') >: L, 'illusion or enchantment',
                learnable_arcane_trickster_spell) :-
     member(L, [4,7,8,10,11,13,14,16,19,20]).
 learnable_arcane_trickster_spell(Spell) :-
@@ -111,7 +111,7 @@ learnable_arcane_trickster_spell(Spell) :-
     spell_property(Spell, school, School),
     (School = illusion ; School = enchantment).
 extend_class_spell_list(rogue, Spell) :-
-    match_class(rogue('arcane trickster')),
+    rogue('arcane trickster') >: 3,
     spell_property(Spell, classes, Classes),
     member(wizard, Classes).
 
@@ -139,7 +139,7 @@ elusive ?= "Beginning at 18th level, you are so evasive that attackers rarely ga
 
 'stroke of luck' ?= "At 20th level, you have an uncanny knack for succeeding when you need to. If your attack misses a target within range, you can turn the miss into a hit. Alternatively, if you fail an ability check, you can treat the d20 roll as a 20.Once you use this feature, you can't use it again until you finish a short or long rest.".
 
-'mage hand legerdemain' ?= "Starting at 3rd level, when you cast Mage Hand, you can make the spectral hand invisible, and you can perform the following additional tasks with it: You can stow one object the hand is holding in a container worn or carried by another creature. You can retrieve an object in a container worn or carried by another creature. You can use thieves' tools to pick locks and disarm traps at range. You can perform one of these tasks without being noticed by a creature if you succeed on a Dexterity (Sleight of Hand) check contested by the creature's Wisdom (Perception) check. In addition, you can use the bonus action granted by your Cunning Action to control the hand.".
+'mage hand legerdemain' ?= "Starting at 3rd level, when you cast Mage Hand, you can make the spectral hand invisible, and you can perform the following additional tasks with it >:  You can stow one object the hand is holding in a container worn or carried by another creature. You can retrieve an object in a container worn or carried by another creature. You can use thieves' tools to pick locks and disarm traps at range. You can perform one of these tasks without being noticed by a creature if you succeed on a Dexterity (Sleight of Hand check contested by the creature's Wisdom (Perception) check. In addition, you can use the bonus action granted by your Cunning Action to control the hand.".
 
 'magical ambush' ?= "Starting at 9th level, if you are hidden from a creature when you cast a spell on it, the creature has disadvantage on any saving throw it makes against the spell this turn.".
 

@@ -16,9 +16,12 @@
        required_predicate_for_each_class/1.
 
 :- [class/barbarian].
+:- [class/bard].
 :- [class/cleric].
 :- [class/druid].
 :- [class/fighter].
+:- [class/monk].
+:- [class/paladin].
 :- [class/ranger].
 :- [class/rogue].
 :- [class/sorcerer].
@@ -49,7 +52,7 @@ class(Class) :- class_level(Class:_).
 %  subclass option with a choice/3 clause.
 subclass(Subclass) :-
     class(Class),
-    choice(match_class(Class:_), subclass, Sub),
+    choice(Class >: _, subclass, Sub),
     Subclass =.. [Class, Sub].
 subclass_level(Subclass:Level) :-
     subclass(Subclass),
@@ -65,10 +68,12 @@ base_class(Class, BaseClass) :-
 
 %! subclass_option(?Class, ?Subclass)
 subclass_option(_,_) :- false.
-options_source(match_class(Class:ClassLevel), subclass, subclass_option(Class)) :-
+options_source(Class >: ClassLevel, subclass, subclass_option(Class)) :-
     choose_subclass_level(Class:ClassLevel).
 
 %! match_class(?X)
+%
+%  TODO: delete
 %
 %  Determine whether your character matches a class/subclass (level) requirement.
 %  If, for example, your character has class_level(warlock:3) with the
@@ -91,6 +96,16 @@ match_class(C:L1) :-
 match_class(C) :-
     class(C) ; subclass(C).
 
+%! >:(?Class, ?Level)
+%
+%  Shorthand notation for `match_class(Class:Level)`.
+Class >: Level :- match_class(Class:Level).
+
+%! ^(?Class)
+%
+%  Shorthand notation for `initial_class(Class)`.
+^ Class :- initial_class(Class).
+
 %! class_origin_to_class_level(?Origin, ?Level:int)
 %
 %  Given a class-related Origin (for a trait, or a choice, or ...),
@@ -105,6 +120,8 @@ class_origin_to_class_level_(subclass(Subclass), Class:Lvl) :-
     choose_subclass_level(Class:Lvl).
 class_origin_to_class_level_(initial_class(Class), Class:1).
 class_origin_to_class_level_(multiclass_into(Class), Class:1).
+class_origin_to_class_level_(ClassF >: Level, X) :-
+    class_origin_to_class_level_(match_class(ClassF:Level), X).
 class_origin_to_class_level_(match_class(ClassF:Level), Class:Level) :-
     (Tail = [] ; Tail = [_]),
     ClassF =.. [Class|Tail].
@@ -192,6 +209,9 @@ required_predicate_for_each_class(max_hp_per_level/2).
 %  saving throws for Ability.
 class_saving_throw(_,_) :- false.
 required_predicate_for_each_class(class_saving_throw/2).
+trait_source(Class >: 1, saving_throw(Abi)) :-
+    ^Class,
+    class_saving_throw(Class, Abi).
 
 %! choose_subclass_level(?ClassLevel)
 %
@@ -208,8 +228,8 @@ required_predicate_for_each_class(asi_level/1).
 default_asi_level(L) :-
     member(L, [4,8,12,16,19]).
 
-options_source(match_class(AsiLevel), 'asi or feat', (2 from ability) or feat_option) :-
-    asi_level(AsiLevel).
+options_source(Class >: Level, 'asi or feat', (2 from ability) or feat_option) :-
+    asi_level(Class:Level).
 %asi_or_feat(feat(Feat)) :-
 %    selectable_feat_option(Feat).
 %asi_or_feat(Ability + 2) :-
@@ -219,11 +239,11 @@ options_source(match_class(AsiLevel), 'asi or feat', (2 from ability) or feat_op
 %    ability(Ability2),
 %    Ability1 \= Ability2.
 
-trait(choice(match_class(AsiLevel),'asi or feat'), feat(Feat)) :-
-    choice(match_class(AsiLevel), 'asi or feat', Feat),
+trait(choice(AsiLevel,'asi or feat'), feat(Feat)) :-
+    choice(AsiLevel, 'asi or feat', Feat),
     feat_option(Feat).
-bonus(choice(match_class(AsiLevel),'asi or feat'), Ability+1) :-
-    choice_member(match_class(AsiLevel), 'asi or feat', Ability),
+bonus(choice(AsiLevel,'asi or feat'), Ability+1) :-
+    choice_member(AsiLevel, 'asi or feat', Ability),
     ability(Ability).
 
     %(Bonus = Ability + N ; member(Ability+N, Bonus)).

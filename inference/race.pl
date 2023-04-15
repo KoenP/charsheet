@@ -4,9 +4,12 @@
     race_shorthand/2,
     race_option/1.
 
-:- [race/elf].
-:- [race/human].
 :- [race/dwarf].
+:- [race/elf].
+:- [race/half_orc].
+:- [race/halfling].
+:- [race/human].
+% :- [race/tiefling].
 
 race(Race) :-
     choice(_, 'base race', Race).

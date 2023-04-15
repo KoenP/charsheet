@@ -21,7 +21,7 @@
 %  * Origin is typically a class or a race. The Origin is not
 %    registered to the same level of detail as the Source of a trait/2
 %    or bonus/2. We typically just note `wizard` or `'high elf'`
-%    rather than choice(match_class(wizard:2), spell) or
+%    rather than choice(wizard >: 2, spell) or
 %    choice(race('high elf'), cantrip) as the Origin.
 %    Some classes can learn the same spell multiple times through
 %    different means. For example, warlocks can learn 'hold monster'
@@ -190,22 +190,24 @@ known_spell_saving_throw(Origin, Name, DC, Abi) :-
 %  Class, using the single class spell slot formula.
 %  We use a separate but analogous calculation for warlocks using pact
 %  magic slots.
-learnable_proper_spell(Class, Name) :-
+learnable_proper_spell(Class, Spell) :-
+    learnable_spell_level(Class, MaxSpellLevel),
+    on_extended_class_spell_list(Class, Spell),
+    spell_property(Spell, level, SpellLevel),
+    between(1, MaxSpellLevel, SpellLevel).
+meta_todo(learnable_proper_spell,
+          "Not sure if I like how I implemented this for e.g. arcane trickster (which use another class' spell list)").
+    
+learnable_spell_level(Class, SpellLevel) :-
     class(Class),
     Class \= warlock,
     findall(L, spell_slots_single_class(L, Class, _), SlotLevels), % TODO this is inefficient
-    max_member(MaxSlotLevel, SlotLevels),
-    on_extended_class_spell_list(Class, Name),
-    spell_property(Name, level, SpellLevel),
-    between(1, MaxSlotLevel, SpellLevel).
-learnable_proper_spell(warlock, Name) :-
-    pact_magic_slot_level(SlotLevel),
-    on_extended_class_spell_list(warlock, Name),
-    spell_property(Name, level, SpellLevel),
-    between(1, SlotLevel, SpellLevel).
-meta_todo(learnable_proper_spell, "Inefficiency in implementation").
-meta_todo(learnable_proper_spell,
-          "Not sure if I like how I implemented this for e.g. arcane trickster (which use another class' spell list)").
+    max_member(SpellLevel, SlotLevels).
+learnable_spell_level(warlock, SpellLevel) :-
+    pact_magic_slot_level(SpellLevel).
+meta_todo(learnable_spell_level, "Inefficiency in implementation").
+
+    
 
 %! on_extended_class_spell_list(+Class, +Spell)
 %
@@ -380,13 +382,18 @@ full_caster_spell_slot_table(9, [17]).
 
 %! default_max_prepared_spells(?Class:atomic, -N:integer)
 %
-%  The default formula for determining how many spells a full caster
+%  The default formula for determining how many spells a caster
 %  can prepare for the given class.
 default_max_prepared_spells(Class, N) :-
+    caster(Class, Casterness),
+    caster_denominator(Casterness, Denom),
     spellcasting_ability(Class, Ability),
     ability_mod(Ability, Mod),
     class_level(Class:Level),
-    N is Level + Mod.
+    N is max(1, floor(Level / Denom) + Mod).
+
+caster_denominator(full, 1).
+caster_denominator(1/N, N).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Helper predicates for modifying spell data.

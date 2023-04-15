@@ -27,12 +27,12 @@ trait_options_source(initial_class(druid), skill, wrap(skill),
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features from leveling up.
-traits_from_source(match_class(druid:1),
+traits_from_source(druid >: 1,
                    [armor(light), armor(medium), armor(shield),
                     language(druidic)]).
-trait_source(match_class(druid:1), 'no metal armor').
+trait_source(druid >: 1, 'no metal armor').
 
-trait_source(match_class(druid:2), wild_shape([cr(CR),hours(Hours)|Constraints])) :-
+trait_source(druid >: 2, wild_shape([cr(CR),hours(Hours)|Constraints])) :-
     wild_shape_cr(CR),
     class_level(druid:Level),
     Hours is floor(Level/2),
@@ -47,12 +47,12 @@ resource('wild shape', 'wild shape', 2) :-
     \+ trait(archdruid).
 on_rest(short, 'wild shape', full_restore).
 
-trait_source(match_class(druid:18), 'timeless body').
-trait_source(match_class(druid:18), 'beast spells').
+trait_source(druid >: 18, 'timeless body').
+trait_source(druid >: 18, 'beast spells').
 
-trait_source(match_class(druid:20), archdruid).
-bonus_source(trait(archdruid),
-             modify_spell(Druidic, _, archdruid_ignore_components)) :-
+trait_source(druid >: 20, archdruid).
+bonus(trait(archdruid), modify_spell(Druidic, _, archdruid_ignore_components)) :-
+    trait(archdruid),
     Druidic =.. [druid|_].
 archdruid_ignore_components(Data, Data.put(components,NewComponents)) :-
     findall(m(M),
@@ -70,7 +70,7 @@ meta_todo(archdruid, "implement more robust way to check material cost").
 known_spell(druid, wis, always, [], no, Spell) :-
     class_choice(druid, cantrip, Spell).
 options_source(class(druid), cantrip, 2 unique_from class_cantrip(druid)).
-options_source(match_class(druid:L), cantrip, class_cantrip(druid)) :-
+options_source(druid >: L, cantrip, class_cantrip(druid)) :-
     L=4; L=10.
 
 % Druids know all proper spells on their spell list.
@@ -98,25 +98,25 @@ extend_class_spell_list(druid, Spell) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subclass_option(druid, land).
 custom_format(druid(land)) --> ["druid (circle of the land)"].
-options_source(match_class(druid(land):2), cantrip, class_cantrip(druid)).
-trait_source(match_class(druid(land):2), natural_recovery(Total)) :-
+options_source(druid(land) >: 2, cantrip, class_cantrip(druid)).
+trait_source(druid(land) >: 2, natural_recovery(Total)) :-
     class_level(druid:L),
     Total is ceiling(L / 2).
-resource('natural recovery', 'natural recovery', 1) :-
-    trait(natural_recovery(_)).
+resource('natural recovery', 'spell slot total', Slots) :-
+    trait(natural_recovery(Slots)).
 on_rest(long, 'natural recovery', full_restore).
 
 trait_options_source(
-    match_class(druid(land):3),
+    druid(land) >: 3,
     'circle spells',
     wrap(circle_spells),
     from_list([arctic,coast,desert,forest,grassland,mountain,swamp])).
 
-trait_source(match_class(druid(land):6), 'land\'s stride').
+trait_source(druid(land) >: 6, 'land\'s stride').
 
-trait_source(match_class(druid(land):10), 'nature\'s ward').
+trait_source(druid(land) >: 10, 'nature\'s ward').
 
-trait_source(match_class(druid(land):14), 'nature\'s sanctuary').
+trait_source(druid(land) >: 14, 'nature\'s sanctuary').
 
 druid_circle_spell(arctic, 'hold person').
 druid_circle_spell(arctic, 'spike growth').
