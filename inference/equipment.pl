@@ -1,4 +1,5 @@
 :- multifile weapon/5.
+:- multifile has/1.
 :- dynamic has/1.
 
 has(_) :- false.

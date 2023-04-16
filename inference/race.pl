@@ -9,7 +9,7 @@
 :- [race/half_orc].
 :- [race/halfling].
 :- [race/human].
-:- [race/tiefling].
+% :- [race/tiefling].
 
 race(Race) :-
     choice(_, 'base race', Race).
