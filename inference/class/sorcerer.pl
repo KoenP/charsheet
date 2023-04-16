@@ -89,27 +89,13 @@ options(sorcerer >: L, replacing(spell, Name), learnable_proper_spell(sorcerer))
 subclass_option(sorcerer, 'draconic bloodline').
 
 % Dragon ancestor.
-dragon_ancestor_element(black, acid).
-dragon_ancestor_element(blue, lightning).
-dragon_ancestor_element(brass, fire).
-dragon_ancestor_element(bronze, lightning).
-dragon_ancestor_element(copper, acid).
-dragon_ancestor_element(gold, fire).
-dragon_ancestor_element(green, poison).
-dragon_ancestor_element(red, fire).
-dragon_ancestor_element(silver, cold).
-dragon_ancestor_element(white, cold).
-dragon_ancestor_element(Elem) :-
-    trait(dragon_ancestor(Color)),
-    dragon_ancestor_element(Color, Elem).
-
-dragon_ancestor_option(Color) :- dragon_ancestor_element(Color, _).
-
-
 trait_options_source(sorcerer('draconic bloodline') >: 1,
                      'dragon ancestor',
-                     wrap(dragon_ancestor),
-                     dragon_ancestor_option).
+                     wrap(draconic_bloodline),
+                     dragon_color).
+draconic_bloodline_element(Element) :-
+    trait(draconic_bloodline(Color)),
+    dragon_element(Color, Element).
 
 trait_source(sorcerer('draconic bloodline') >: 1, language(draconic)).
 
@@ -122,12 +108,12 @@ bonus_source(trait('draconic resilience'), ac_formula(13 + dex + shield)).
 % Elemental affinity.
 trait_source(sorcerer('draconic bloodline') >: 6,
              elemental_affinity(Element)) :-
-    trait(dragon_ancestor(Color)),
-    dragon_ancestor_element(Color, Element).
+    trait(draconic_bloodline(Color)),
+    dragon_element(Color, Element).
 
 bonus_source(trait(elemental_affinity(Element)),
              modify_spell(_, Name, Goal)) :-
-    dragon_ancestor_element(Element),
+    draconic_bloodline_element(Element),
     known_spell(_, Name),
     spell_property(Name, effects, Effects),
     subterm_member(damage(Element,_), Effects),
@@ -135,7 +121,7 @@ bonus_source(trait(elemental_affinity(Element)),
 
 apply_elemental_affinity(OldEffects, NewEffects) :-
     \+ contains_multiple_damage_rolls(OldEffects),
-    dragon_ancestor_element(Element),
+    draconic_bloodline_element(Element),
     ability_mod(cha, Bonus),
     select_subterm(damage(Element,Dice), OldEffects, damage(Element,NewDice), NewEffects),
     simplify_dice_sum(Dice + Bonus, NewDice).
@@ -193,7 +179,7 @@ Spell Points
 
 Converting a Spell Slot to Sorcery Points. As a bonus action on your turn, you can expend one spell slot and gain a number of sorcery points equal to the slot's level.".
 
-dragon_ancestor(_) ?= "You have a specific dragon type as your ancestor. Whenever you make a Charisma check when interacting with dragons, your proficiency bonus is doubled if it applies to the check.".
+draconic_bloodline(_) ?= "You have a specific dragon type as your ancestor. Whenever you make a Charisma check when interacting with dragons, your proficiency bonus is doubled if it applies to the check.".
 
 'draconic resilience' ?= "As magic flows through your body, it causes physical traits of your dragon ancestors to emerge. At 1st level, your hit point maximum increases by 1 and increases by 1 again whenever you gain a level in this class.
 Additionally, parts of your skin are covered by a thin sheen of dragon-like scales. When you aren't wearing armor, your AC equals 13 + your Dexterity modifier. ".

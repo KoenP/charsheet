@@ -1,4 +1,5 @@
 race_option(dwarf).
+race_shorthand(dwarf, dw).
 racial_speed(dwarf, 25).
 bonus_source(race(dwarf), con+2).
 trait_source(race(dwarf), sense(darkvision)).

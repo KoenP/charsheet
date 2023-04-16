@@ -12,7 +12,8 @@ test_char_level(
      name(testpaladin)],
     [\+ spell_slots(_,_),
      attack(greataxe+1, feet(5), to_hit(7), [damage(slashing, 1 d 12 + 5)], [heavy, twohanded]),
-     \+ known_spell(_,_)] % no spell slots -> no known spells
+     known_spell(race(tiefling), thaumaturgy),
+     \+ known_spell(paladin, _)]
 ).
 
 test_char_level(
@@ -23,7 +24,7 @@ test_char_level(
     [attack(greataxe+1, feet(5), to_hit(7), [damage(slashing, 1 d 12 + 5)],
             [heavy, twohanded, "may reroll 1 or 2 on a damage die"]),
      max_prepared_spells(paladin, 4), % cha mod + half paladin level
-     \+ (known_spell(_, Spell), spell_property(Spell, level, 0)), % don't know cantrips
+     \+ (known_spell(paladin, Spell), spell_property(Spell, level, 0)), % don't know cantrips as paladin
      \+ known_spell(_, 'find steed'), % don't know higher level paladin spells yet
      known_spell(paladin, 'cure wounds')] % know level-appropriate paladin spells
 ).
@@ -33,9 +34,10 @@ test_char_level(
     3,
     [gain_level(3, paladin, hp_avg),
      choice(paladin >: 3, subclass, devotion)],
-    [known_spell(paladin(devotion), sanctuary),
-     known_spell(paladin(devotion), 'protection from evil and good'),  
+    [known_spell(paladin(devotion), cha, always, [slot], no, sanctuary),
+     known_spell(paladin(devotion), cha, always, [slot], no, 'protection from evil and good'),  
      \+ known_spell(_, 'lesser restoration'),  
+     known_spell(race(tiefling), 'hellish rebuke'),
      resource('channel divinity', 'channel divinity', 1),
      trait(channel_divinity('sacred weapon')),
      trait(channel_divinity('turn the unholy'))]

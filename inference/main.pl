@@ -30,6 +30,7 @@
 :- op(500, xfx, >:).
 :- op(500, fx, ^).
 
+:- [dragon_ancestry].
 :- [util].
 :- [dice].
 :- [damage_formula].

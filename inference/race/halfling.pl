@@ -1,4 +1,5 @@
 race_option(halfling).
+race_shorthand(halfling, hf).
 racial_speed(halfling, 25).
 bonus_source(race(halfling), dex+2).
 trait_source(race(halfling), lucky).

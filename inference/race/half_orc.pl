@@ -1,14 +1,15 @@
-race_option('half orc').
-racial_speed('half orc', 30).
-bonus_source(race('half orc'), str+2).
-bonus_source(race('half orc'), con+1).
-trait_source(race('half orc'), sense(darkvision)).
-trait_source(race('half orc'), menacing).
-trait_source(race('half orc'), 'savage attacks').
-traits_from_source(race('half orc'),
+race_option('half-orc').
+race_shorthand('half-orc', ho).
+racial_speed('half-orc', 30).
+bonus_source(race('half-orc'), str+2).
+bonus_source(race('half-orc'), con+1).
+trait_source(race('half-orc'), sense(darkvision)).
+trait_source(race('half-orc'), menacing).
+trait_source(race('half-orc'), 'savage attacks').
+traits_from_source(race('half-orc'),
                    [language(common), language(orcish)]).
 
-trait_source(race('half orc'), 'relentless endurance').
+trait_source(race('half-orc'), 'relentless endurance').
 resource('relentless endurance', 'relentless endurance', 1) :-
     trait('relentless endurance').
 on_rest(long, 'relentless endurance', full_restore).
