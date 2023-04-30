@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, pipe, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,16 +10,28 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
   listCharacters(): Observable<string[]> {
-    return this.getRequest('request/list_characters');
+    return this.http.get<{list: string[]}>('http://localhost:8000/request/list_characters', {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      })
+    }).pipe(map(obj => obj.list));
   }
 
-  getRequest(path: string): Observable<any> {
-    return this.http.get('localhost:8000/' + path, {
+  loadCharacter(name: string): Observable<string> {
+    return this.http.get<string>(
+      'http://localhost:8000/request/load_character?name=' + name, {
       headers: new HttpHeaders({
-        'Content-Type': 'json',
-        'Access-Control-Allow-Origin': '*'
+        'Accept': 'application/json'
       })
     });
-    // TODO hier zat ik: CORS bullshit
+  }
+
+  sheet(): Observable<any> {
+    return this.http.get<any>(
+      'http://localhost:8000/request/sheet', {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      })
+    });
   }
 }

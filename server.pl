@@ -134,8 +134,8 @@ remote_query(_, '/list_class_options') :- % TODO: filter for available class opt
 quoted_term_string(T, S) :-
     term_string(T, S, [quoted(true)]).
 
-term_to_json(Atomic, Atomic) :- atomic(Atomic), !.
-term_to_json(List, Json) :- maplist(term_to_json, List, Json), !.
-term_to_json(Compound, _{functor: Functor, args: ArgsJson}) :-
-    Compound =.. [Functor|Args],
-    maplist(term_to_json, Args, ArgsJson).
+%term_to_json(Atomic, Atomic) :- atomic(Atomic), !.
+%term_to_json(List, Json) :- maplist(term_to_json, List, Json), !.
+%term_to_json(Compound, _{functor: Functor, args: ArgsJson}) :-
+%    Compound =.. [Functor|Args],
+%    maplist(term_to_json, Args, ArgsJson).

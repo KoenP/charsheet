@@ -7,7 +7,9 @@
   Or select an existing one:
   <ul>
     <li *ngFor="let char of characterList$ | async">
-      test: {{ char }}
+      <button (click)="selectChar(char)" class="linkbutton" type="button">
+        {{ char }}
+      </button>
     </li>
   </ul>
 </div>

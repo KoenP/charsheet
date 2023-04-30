@@ -17,4 +17,10 @@ export class CharacterSelectionComponent implements OnInit {
     this.characterList$ = this.api.listCharacters();
     this.characterList$.subscribe(list => console.log(list));
   }
+  
+  selectChar(char: string) {
+    this.api.loadCharacter(char).subscribe(_ => 
+      window.location.href = 'sheet'
+    );
+  }
 }

@@ -28,8 +28,7 @@ options_source(cleric >: L, cantrip, class_cantrip(cleric)) :-
 % These always need to be prepared, with the exception of domain spells.
 known_spell(cleric, wis, 'when prepared', [slot], Ritual, Name) :-
     learnable_proper_spell(cleric, Name),
-    subclass(Class), Class =.. [cleric, Domain],
-    \+ cleric_domain_spell(Domain, Name),
+    \+ (subclass(Class), Class =.. [cleric, Domain], cleric_domain_spell(Domain, Name)),
     spell_property(Name, ritual, Ritual).
 
 % Domain spells are always prepared.

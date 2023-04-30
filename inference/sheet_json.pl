@@ -114,9 +114,8 @@ attack_table_json_dict_entry(_{name: Name,
     fmt(format_list(NotesVal), Notes).
 
 % Spellcasting section.
-spell_slot_dict(Dict) :-
-    findall(Atom-N, (spell_slots(Lvl,N), atom_number(Atom,Lvl)), SpellSlots),
-    dict_pairs(Dict, _, SpellSlots).
+spell_slot_dict(SpellSlots) :-
+    findall(N, spell_slots(_,N), SpellSlots).
     
 %spell_slots_dict_entry(PactMagicStr, N) :-
 %    pact_magic_slots(N),
