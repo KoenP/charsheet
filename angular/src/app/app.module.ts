@@ -7,12 +7,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CharacterSelectionComponent } from './character-selection/character-selection.component';
 import { SheetComponent } from './sheet/sheet.component';
+import { SpellPreparedComponent } from './sheet/spell-prepared/spell-prepared.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CharacterSelectionComponent,
-    SheetComponent
+    SheetComponent,
+    SpellPreparedComponent
   ],
   imports: [
     AppRoutingModule,

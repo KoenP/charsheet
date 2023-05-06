@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../api.service'
+import { CharacterService } from '../character.service'
 import { Observable, of } from 'rxjs';
 
 @Component({
@@ -8,18 +8,18 @@ import { Observable, of } from 'rxjs';
   styleUrls: ['./character-selection.component.css']
 })
 export class CharacterSelectionComponent implements OnInit {
-  newCharName: string = "";
+  newCharName: string = '';
   characterList$: Observable<string[]> = of([]);
 
-  constructor(private api: ApiService) {}
+  constructor(private characterService: CharacterService) {}
 
   ngOnInit(): void {
-    this.characterList$ = this.api.listCharacters();
+    this.characterList$ = this.characterService.listCharacters();
     this.characterList$.subscribe(list => console.log(list));
   }
   
-  selectChar(char: string) {
-    this.api.loadCharacter(char).subscribe(_ => 
+  selectChar(name: string) {
+    this.characterService.selectCharacter(name).subscribe((_) =>
       window.location.href = 'sheet'
     );
   }

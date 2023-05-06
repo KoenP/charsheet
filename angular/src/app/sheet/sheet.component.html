@@ -136,7 +136,7 @@
         </tr>
         <tr *ngFor="let spell of filteredSpells$(section.spells) | async">
           <td *ngIf="!(showOnlyPreparedSpellsToggled$ | async)">
-            <span>{{formatPrepared(spell)}}</span>
+            <app-spell-prepared *maybeToggle="'always'"></app-spell-prepared>
           </td>
           <td>{{spell.level}}</td>
           <td>
