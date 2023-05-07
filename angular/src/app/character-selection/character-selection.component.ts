@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CharacterService } from '../character.service'
 import { Observable, of } from 'rxjs';
 
@@ -11,7 +12,7 @@ export class CharacterSelectionComponent implements OnInit {
   newCharName: string = '';
   characterList$: Observable<string[]> = of([]);
 
-  constructor(private characterService: CharacterService) {}
+  constructor(private router: Router, private characterService: CharacterService) {}
 
   ngOnInit(): void {
     this.characterList$ = this.characterService.listCharacters();
@@ -19,8 +20,7 @@ export class CharacterSelectionComponent implements OnInit {
   }
   
   selectChar(name: string) {
-    this.characterService.selectCharacter(name).subscribe((_) =>
-      window.location.href = 'sheet'
-    );
+    this.characterService.selectCharacter(name)
+      .subscribe((_) => this.router.navigate(['/sheet']));
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../api.service'
+import { CharacterService } from '../character.service'
 import { ISheetData, PrologTerm, ISpell, Ability } from '../types';
 import { Observable, of, BehaviorSubject, map } from 'rxjs';
 
@@ -8,12 +8,20 @@ import { Observable, of, BehaviorSubject, map } from 'rxjs';
   templateUrl: './sheet.component.html',
   styleUrls: ['./sheet.component.css']
 })
-export class SheetComponent {
-  sheet$: Observable<ISheetData> = this.api.sheet();
+export class SheetComponent implements OnInit {
+  sheet$: Observable<ISheetData | null> = this.charService.sheet$;
   showOnlyPreparedSpells: boolean = true;
   showOnlyPreparedSpellsToggled$: BehaviorSubject<boolean> = new BehaviorSubject(true);
 
-  constructor(private api: ApiService) {}
+  constructor(private charService: CharacterService) {}
+
+  ngOnInit() {
+    console.log('SheetComponent.ngOnInit');
+    this.charService.sheet$.subscribe((sheet: ISheetData | null) => {
+      console.log('sheet$ sub');
+      console.log(sheet);
+    });
+  }
 
   formatModifier(mod: number) {
     return mod >= 0 ? '+' + mod : mod
@@ -71,13 +79,6 @@ export class SheetComponent {
   formatSpellDescription(desc: string[]) {
     return desc.map(paragraph => `<p>${paragraph}</p>`).join('');
   }
-  
-  //<div :class="trait.desc !== null ? 'tooltip' : null">
-  //    {{trait.name}}
-  //    <span class="tooltiptext" v-if="trait.desc !== null">
-                            //        {{trait.desc}}
-  //    </span>
-  //</div>
   
   notNullSingleton(val: any) {
     return (val !== null) ? [val] : [];

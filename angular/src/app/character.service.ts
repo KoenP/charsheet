@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { ISheetData } from './types';
-import { Observable, of, BehaviorSubject, flatMap, map, filter } from 'rxjs';
+import { Observable, of, BehaviorSubject, flatMap, switchMap, map, filter } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,23 +9,29 @@ import { Observable, of, BehaviorSubject, flatMap, map, filter } from 'rxjs';
 export class CharacterService {
   sheet$: BehaviorSubject<ISheetData | null> =
     new BehaviorSubject(null as (ISheetData | null));
+    
 
   preparedSpells$$: Observable<{[origin: string]:
                                 {[name: string]: BehaviorSubject<boolean>}}>
     = this.sheet$.pipe(map((sheet) => this.updatePreparedSpells(sheet as ISheetData)));
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService) {
+    this.sheet$.subscribe((sheet) => {
+      console.log('char service sheet$ sub');
+      console.log(sheet)
+    });
+  }
 
   listCharacters(): Observable<string[]> {
     return this.api.listCharacters();
   }
 
-  selectCharacter(name: string): Observable<ISheetData> {
-    const getSheet$: Observable<ISheetData> = this.api.loadCharacter(name).pipe(
-      flatMap((_) => this.api.sheet())
-    );
-    getSheet$.subscribe((sheet) => this.sheet$.next(sheet));
-    return getSheet$;
+  selectCharacter(name: string): Observable<null> {
+    const select$ = this.api.loadCharacter(name).pipe(switchMap((_) => this.api.sheet()));
+    select$.subscribe((sheet) => {
+      this.sheet$.next(sheet);
+    });
+    return select$.pipe(map((_) => null));
   }
 
   private updatePreparedSpells(sheet: ISheetData) : {

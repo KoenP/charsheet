@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of, pipe, map } from 'rxjs';
+import { ISheetData } from './types';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class ApiService {
   }
 
   loadCharacter(name: string): Observable<string> {
+    console.log('ApiService.loadCharacter');
     return this.http.get<string>(
       'http://localhost:8000/request/load_character?name=' + name, {
       headers: new HttpHeaders({
@@ -26,8 +28,9 @@ export class ApiService {
     });
   }
 
-  sheet(): Observable<any> {
-    return this.http.get<any>(
+  sheet(): Observable<ISheetData> {
+    console.log('ApiService.sheet');
+    return this.http.get<ISheetData>(
       'http://localhost:8000/request/sheet', {
       headers: new HttpHeaders({
         'Accept': 'application/json'

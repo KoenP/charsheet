@@ -1,2 +1,4 @@
 <ng-container *ngIf="maybeToggle === 'always'; else toggle">✓</ng-container>
-<input #toggle type="checkbox">
+<ng-template #toggle>
+  <input type="checkbox">
+</ng-template>
