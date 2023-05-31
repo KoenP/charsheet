@@ -7,7 +7,7 @@ module Main exposing (..)
 --
 
 import Browser
-import Html exposing (Html, Attribute, button, input, div, text, ul, li, h2)
+import Html exposing (..)
 import Html.Attributes exposing (style, placeholder, type_)
 -- import Html.Styled exposing (Html, button, div, text, ul, li, styled)
 import Html.Events exposing (onClick, onInput)
@@ -68,7 +68,8 @@ type Msg
 
 type HttpResponseMsg
   = GotCharacterList (List String)
-  | CharacterLoaded CharacterSheet
+  | CharacterLoaded
+  | GotCharacterSheet CharacterSheet
 
 mkHttpResponseMsg : (a -> HttpResponseMsg) -> (Result Http.Error a -> Msg)
 mkHttpResponseMsg f result =
@@ -104,27 +105,39 @@ handleHttpResponseMsg msg model =
   case msg of
       GotCharacterList chars -> 
         (CharacterSelectionPage { characters = chars, newCharacterName = "" }, none)
-      CharacterLoaded sheet ->
+      CharacterLoaded ->
+        (Loading, getCharacterSheet)
+      GotCharacterSheet sheet ->
         (CharacterSheetPage sheet, none)
+
+getCharacterSheet : Cmd Msg
+getCharacterSheet =
+  Http.get
+    { url = requestUrl "sheet" []
+    , expect = Http.expectJson (mkHttpResponseMsg GotCharacterSheet) decodeSheetJson
+    }
+
+decodeSheetJson : Decoder CharacterSheet
+decodeSheetJson = Json.Decode.map CharacterSheet (field "name" string)
+  
                
 loadCharacter : String -> Cmd Msg
 loadCharacter charName =
   Http.get
     { url = requestUrl "load_character" [("name", charName)]
-    , expect = Http.expectJson (mkHttpResponseMsg CharacterLoaded) decodeSheetJson
+    , expect = Http.expectJson (mkHttpResponseMsg (\_ -> CharacterLoaded)) (succeed ())
     }
 
 newCharacter : String -> Cmd Msg
 newCharacter charName =
   Http.get
     { url = requestUrl "new_character" [("name", charName)]
-    , expect = Http.expectJson (mkHttpResponseMsg CharacterLoaded) decodeSheetJson
+    , expect = Http.expectJson (mkHttpResponseMsg (\_ -> CharacterLoaded)) (succeed ())
     }
 
-decodeSheetJson : Decoder CharacterSheet
-decodeSheetJson = Json.Decode.map CharacterSheet (field "name" string)
-
+--------------------------------------------------------------------------------
 -- VIEW
+--------------------------------------------------------------------------------
 view : Model -> Html Msg
 view model =
   case model of
@@ -135,8 +148,9 @@ view model =
       CharacterSelectionPage data ->
         characterSelectionPage data
       CharacterSheetPage data ->
-        text data.name
+        characterSheetPage data
 
+-- Character selection page
 characterSelectionPage : { characters : List String, newCharacterName : String } -> Html Msg
 characterSelectionPage { characters, newCharacterName } =
   let
@@ -150,6 +164,25 @@ characterSelectionPage { characters, newCharacterName } =
            , h2 [] [ text "... or select an existing one" ]
            , characterList ]
 
+-- Character sheet page
+characterSheetPage : CharacterSheet -> Html Msg
+characterSheetPage sheet =
+  div
+  []
+  [ header
+      [ style "padding" "1em"
+      , style "color" "black"
+      , style "background-color" "lightgrey"
+      , style "clear" "left"
+      , style "text-align" "left"
+      ]
+      [ button [ style "float" "right" ] [ text "edit" ]
+      , h1 [] [ text sheet.name ]
+      ]
+  , text "test"
+  ]
+
+-- Shared
 textSingleton : String -> List (Html msg)
 textSingleton = List.singleton << text
 
