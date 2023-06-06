@@ -1,23 +1,14 @@
 module Main exposing (..)
 
--- Press buttons to increment and decrement a counter.
---
--- Read how it works:
---   https://guide.elm-lang.org/architecture/buttons.html
---
-
 import Browser
 import Browser.Navigation as Nav
-import Url
 import Url exposing (Url)
 import Url.Parser exposing (Parser, (</>))
 import Url.Parser as Parser
 import Html exposing (..)
 import Html.Attributes as Attr
 import Html.Attributes exposing (style, placeholder, type_)
--- import Html.Styled exposing (Html, button, div, text, ul, li, styled)
 import Html.Events exposing (onClick, onInput)
--- import Css
 import Http
 import Json.Decode exposing (Decoder, field, list, string, succeed)
 import Platform.Cmd exposing (none)
@@ -25,14 +16,11 @@ import List
 import Maybe
 import Debug exposing (log, toString)
 
-requestUrl : String -> List (String, String) -> String
-requestUrl req params =
-  "http://localhost:8000/request/" ++ req
-    ++ case params of
-          [] -> ""
-          ps -> String.concat
-                ("?" ::
-                   List.intersperse "&" (List.map (\(x,y) -> x ++ "=" ++ y) ps))
+import Page.CharacterSheet as Sheet
+import Request exposing (requestUrl)
+import Types exposing (..)
+
+----------------------------------------------------------------------
 
 -- MAIN
 main =
@@ -44,50 +32,29 @@ main =
     , onUrlRequest = LinkClicked
     , onUrlChange = UrlChanged
     }
-  -- Browser.element
-  --   { init = init
-  --   , update = update
-  --   , subscriptions = \_ -> Sub.none
-  --   , view = view
-  --   }
 
 -- MODEL
-type alias Model =
-  { url : Url.Url
-  , key : Nav.Key
-  , page : Page
-  }
-type Page
-  = Loading
-  | Error
-  | CharacterSelectionPage CharacterSelectionPageData
-  | CharacterSheetPage CharacterSheet
-
-type alias CharacterSheet = { name : String }
-type alias CharacterSelectionPageData =
-  { characters : List String
-  , newCharacterName : String
-  }
-
 init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
 init _ url key =
   navigate { url = url, key = key, page = Loading } (urlToRoute url)
 
 navigate : Model -> Route -> ( Model, Cmd Msg )
-navigate model route =
-  case route of
-    SelectCharacterRoute -> ( { model | page = Loading }
-                            , Http.get
-                                { url = requestUrl "list_characters" []
-                                , expect = Http.expectJson
-                                           (mkHttpResponseMsg GotCharacterList)
-                                           (field "list" (list string))
-                                }
-                            )
-    SheetRoute -> ( { model | page = Loading }
-                  , getCharacterSheet
-                  )
-    _ -> ( model, none )
+navigate model route = ( { model | page = Loading } , Sheet.load )
+  -- case route of
+  --   SelectCharacterRoute ->
+  --     ( { model | page = Loading }
+  --     , Http.get
+  --         { url = requestUrl "list_characters" []
+  --         , expect = Http.expectJson
+  --                    (mkHttpResponseMsg GotCharacterList)
+  --             (field "list" (list string))
+  --         }
+  --     )
+  --   SheetRoute ->
+  --     Debug.log "test" ( { model | page = Loading }
+  --                      , Sheet.load
+  --                      )
+  --   _ -> ( model, none )
 
 type Route = SelectCharacterRoute | SheetRoute | NotFound
   
@@ -104,23 +71,6 @@ urlToRoute url =
   Maybe.withDefault NotFound (Parser.parse routeParser url)
 
 -- UPDATE
-type Msg
-  = HttpResponse (Result Http.Error HttpResponseMsg)
-  | SelectCharacter String
-  | NewCharacterName String
-  | CreateNewCharacter
-  | UrlChanged Url.Url
-  | LinkClicked Browser.UrlRequest
-
-type HttpResponseMsg
-  = GotCharacterList (List String)
-  | CharacterLoaded
-  | GotCharacterSheet CharacterSheet
-
-mkHttpResponseMsg : (a -> HttpResponseMsg) -> (Result Http.Error a -> Msg)
-mkHttpResponseMsg f result =
-  HttpResponse (Result.map f result)
-    
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -145,9 +95,13 @@ update msg model =
             HttpResponse (Ok responseMsg) ->
               handleHttpResponseMsg responseMsg model
             _ ->
-              ( { model | page = Error }, none )
-        Error ->
-          ( { model | page = Error }, none )
+              let
+                error = "Main.update: Expected HttpResponse, got " ++
+                        Debug.toString msg
+              in 
+                ( { model | page = Error error }, none )
+        Error error  ->
+          ( { model | page = Error error }, none )
 
 applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
 applyPage model ( page, cmd ) =
@@ -160,11 +114,14 @@ updateCharacterSelectionPage msg pageData =
     NewCharacterName name ->
       ( CharacterSelectionPage { pageData | newCharacterName = name }, none )
     SelectCharacter name ->
-      ( Loading, loadCharacter name)
+      ( Loading, loadCharacter name )
     CreateNewCharacter ->
-      ( Loading, newCharacter pageData.newCharacterName)
+      ( Loading, newCharacter pageData.newCharacterName )
     _ ->
-      ( Error, none)
+      ( Error ("Main.updateCharacterSelectionPage: unrecognized msg "
+                 ++ Debug.toString msg)
+      , none
+      )
   
 
 handleHttpResponseMsg : HttpResponseMsg -> Model -> (Model, Cmd Msg)
@@ -177,20 +134,10 @@ handleHttpResponseMsg msg model =
         , none
         )
       CharacterLoaded ->
-        ( { model | page = Loading }, getCharacterSheet )
+        ( { model | page = Loading }, Nav.pushUrl model.key "/sheet" )
       GotCharacterSheet sheet ->
         ( { model | page = CharacterSheetPage sheet }, none )
 
-getCharacterSheet : Cmd Msg
-getCharacterSheet =
-  Http.get
-    { url = requestUrl "sheet" []
-    , expect = Http.expectJson (mkHttpResponseMsg GotCharacterSheet) decodeSheetJson
-    }
-
-decodeSheetJson : Decoder CharacterSheet
-decodeSheetJson = Json.Decode.map CharacterSheet (field "name" string)
-  
                
 loadCharacter : String -> Cmd Msg
 loadCharacter charName =
@@ -203,12 +150,15 @@ newCharacter : String -> Cmd Msg
 newCharacter charName =
   Http.get
     { url = requestUrl "new_character" [("name", charName)]
-    , expect = Http.expectJson (mkHttpResponseMsg (\_ -> CharacterLoaded)) (succeed ())
+    , expect =
+        Http.expectJson
+        (mkHttpResponseMsg (\_ -> CharacterLoaded))
+        (succeed ())
     }
 
---------------------------------------------------------------------------------
+----------------------------------------------------------------------
 -- VIEW
---------------------------------------------------------------------------------
+----------------------------------------------------------------------
 view : Model -> Browser.Document Msg
 view model =
   { title = "Character Sheet"
@@ -217,12 +167,12 @@ view model =
       , case model.page of
           Loading ->
             text "Loading..."
-          Error -> 
-            text "Error"
+          Error msg -> 
+            text msg
           CharacterSelectionPage data ->
             characterSelectionPage data
           CharacterSheetPage data ->
-            characterSheetPage data
+            Sheet.view data
       ]
   }
   
@@ -240,24 +190,6 @@ characterSelectionPage { characters, newCharacterName } =
            , button [ onClick CreateNewCharacter ] [ text "Create" ]
            , h2 [] [ text "... or select an existing one" ]
            , characterList ]
-
--- Character sheet page
-characterSheetPage : CharacterSheet -> Html Msg
-characterSheetPage sheet =
-  div
-  []
-  [ header
-      [ style "padding" "1em"
-      , style "color" "black"
-      , style "background-color" "lightgrey"
-      , style "clear" "left"
-      , style "text-align" "left"
-      ]
-      [ button [ style "float" "right" ] [ text "edit" ]
-      , h1 [] [ text sheet.name ]
-      ]
-  , text "test"
-  ]
 
 -- Shared
 textSingleton : String -> List (Html msg)
