@@ -13,7 +13,16 @@ type alias CharacterSheet =
   , summary : CharacterSummary
   , ability_table : AbilityTable
   , skill_table : SkillTable
+  , languages : List String
+  , weapons : List String
+  , armor : List String
+  , tools : List String
+  , notable_traits : List NotableTraitCategory
   }
+{-
+NotableTraits = [( Category, List Trait )]
+Trait = [(Desc, Name)]
+-}
 
 type alias CharacterSummary =
   { ac : Int
@@ -64,7 +73,10 @@ skillsPerAbility =
              , "persuasion"
              ] ) 
   ]
-            
+
+type alias NotableTraitCategory = { category: String, traits: List Trait }
+type alias Trait = { name: String, desc: Maybe String }
+
 ----------------------------------------------------------------------
 -- CHARACTER SELECTION PAGE
 type alias CharacterSelectionPageData =

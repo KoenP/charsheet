@@ -1,8 +1,11 @@
 module Page.CharacterSheet exposing (..)
 
 import Dict exposing (Dict)
-import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Styled exposing (..)
+import Html.Styled.Attributes exposing (..)
+import Css
+import Css.Global
+import Css.Transitions
 import Http
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra as D
@@ -29,6 +32,11 @@ sheetDec =
     |> D.andMap (D.field "summary" summaryDec)
     |> D.andMap (D.field "ability_table" abilityTableDec)
     |> D.andMap (D.field "skill_table" (D.dict D.int))
+    |> D.andMap (D.field "languages" (D.list D.string))
+    |> D.andMap (D.field "weapons" (D.list D.string))
+    |> D.andMap (D.field "armor" (D.list D.string))
+    |> D.andMap (D.field "tools" (D.list D.string))
+    |> D.andMap (D.field "notable_traits" notableTraitsDec)
   
 summaryDec : Decoder CharacterSummary
 summaryDec =
@@ -46,11 +54,26 @@ summaryDec =
 
 abilityTableDec : Decoder AbilityTable
 abilityTableDec =
-  D.dict ( D.succeed AbilityTableEntry
-             |> D.andMap (D.field "score" D.int)
-             |> D.andMap (D.field "mod" D.int)
-             |> D.andMap (D.field "st" D.int)
-         )
+  D.dict (D.succeed AbilityTableEntry
+            |> D.andMap (D.field "score" D.int)
+            |> D.andMap (D.field "mod" D.int)
+            |> D.andMap (D.field "st" D.int))
+
+notableTraitsDec : Decoder (List NotableTraitCategory)
+notableTraitsDec =
+  D.list notableTraitDec
+
+notableTraitDec : Decoder NotableTraitCategory
+notableTraitDec =
+  D.succeed NotableTraitCategory
+    |> D.andMap (D.field "category" D.string)
+    |> D.andMap (D.field "traits" (D.list traitDec))
+
+traitDec : Decoder Trait
+traitDec =
+  D.succeed Trait
+    |> D.andMap (D.field "name" D.string)
+    |> D.andMap (D.field "desc" (D.nullable D.string))
 
 ----------------------------------------------------------------------
 -- VIEW
@@ -74,6 +97,10 @@ view sheet =
       [ viewSummaryTable sheet.summary
       , viewAbilityTable sheet.ability_table
       , viewSkillTable sheet.skill_table
+      , h2 [] [ text "Proficiencies" ]
+      , viewProficiencies sheet.languages sheet.weapons sheet.armor sheet.tools
+      , h2 [] [ text "Notable traits" ]
+      , viewNotableTraits sheet.notable_traits
       ]
   ]
 
@@ -146,12 +173,80 @@ viewSkillTableRowContent skillTable skill =
   ]
   
 
+viewProficiencies : List String -> List String -> List String -> List String -> Html msg
+viewProficiencies languages weapons armor tools =
+  div []
+    [ ul [] [ viewProficienciesListItem "Languages: " languages
+            , viewProficienciesListItem "Weapons: " weapons
+            , viewProficienciesListItem "Armor: " armor
+            , viewProficienciesListItem "Tools: " tools
+            ]
+    ]
+
+viewProficienciesListItem : String -> List String -> Html msg
+viewProficienciesListItem hdr proficiencies =
+  li [] [ b [] [ text hdr ]
+        , text (String.join ", " proficiencies)
+        ]
+
+viewNotableTraits : List NotableTraitCategory -> Html msg
+viewNotableTraits traits =
+  div [] (List.concatMap viewNotableTraitCategory traits)
+
+viewNotableTraitCategory : NotableTraitCategory -> List (Html msg)
+viewNotableTraitCategory { category, traits } =
+  [ h4 [] [ text ("From " ++ category ++ ":") ]
+  , ul [] (List.map (li [] << List.singleton << viewTrait) traits)
+  ]
+    
+viewTrait : Trait -> Html msg
+viewTrait { name, desc } =
+  case desc of
+    Nothing ->
+      text name
+    Just actualDesc ->
+      div
+        [ class "tooltip"
+        , css
+            [ Css.display Css.inlineBlock
+            , Css.position Css.relative
+            , Css.position Css.relative
+            , Css.hover
+                [ Css.Global.descendants
+                    [ Css.Global.selector ".tooltiptext"
+                        [ Css.visibility Css.visible ]
+                    ]
+                ]
+            , Css.borderBottom3 (Css.px 1) Css.dotted (Css.hex "000000")
+            ]
+        ]
+      [ text name
+      , span
+          [ class "tooltiptext"
+          , css
+              [ Css.visibility Css.hidden
+              , Css.position Css.absolute
+              , Css.top <| Css.pct 0
+              , Css.left <| Css.pct 105
+              , Css.backgroundColor <| Css.hex "000000"
+              , Css.width <| Css.px 560
+              , Css.color <| Css.hex "ffffff"
+              , Css.fontFamilies [ "Liberation", .value Css.sansSerif ]
+              , Css.zIndex (Css.int 1)
+              , Css.textAlign Css.center
+              , Css.padding2 (Css.px 5) (Css.px 0)
+              , Css.borderRadius (Css.px 6)
+              ]
+          ]
+          [ text actualDesc ]
+      ]
+      
 simpleTh : String -> Html msg
 simpleTh str = th thAttrs [ text str ]
 
 simpleTd : String -> Html msg
 simpleTd str = td tdAttrs [ text str ]
-  
+
 simple :  (List (Attribute msg) -> List (Html msg) -> Html msg)
        -> String
        -> Html msg
@@ -164,6 +259,15 @@ captionedTable captionText attrs tableRows =
     , table attrs tableRows
     ]
   
+formatModifier : Int -> String
+formatModifier mod =
+  case compare mod 0 of
+    LT -> String.fromInt mod
+    EQ -> " 0"
+    GT -> "+" ++ String.fromInt mod
+
+--------------------------------------------------------------------------------
+-- ATTRIBUTES
 tableAttrs : List (Attribute msg)
 tableAttrs =
   [ style "font-family" "Fira Code, sans-serif"
@@ -186,9 +290,32 @@ thAttrs =
   , style "background-color" "lightgrey"
   ]
 
-formatModifier : Int -> String
-formatModifier mod =
-  case compare mod 0 of
-    LT -> String.fromInt mod
-    EQ -> " 0"
-    GT -> "+" ++ String.fromInt mod
+tooltipAttrs : List (Attribute msg)
+tooltipAttrs =
+  [ style "position" "relative"
+  , style "display" "inline-block"
+  , style "border-bottom" "1px dotted black"
+  ]
+
+tooltipTextAttrs =
+  [ style "font-size" "12px"
+  , style "font-family" "Liberation, sans-serif"
+  ] ++ tooltipTooltipTextAttrs
+
+tooltipTooltipTextAttrs : List (Attribute msg)
+tooltipTooltipTextAttrs =
+  [ style "visibility" "hidden"
+  , style "width" "560px"
+  , style "background-color" "black"
+  , style "color" "#fff"
+  , style "text-align" "center"
+  , style "padding" "5px 0"
+  , style "border-radius" "6px"
+  , style "position" "absolute"
+  , style "z-index" "1"
+  , style "top" "0%"
+  , style "left" "100%"
+  ]
+
+-- .tooltip:hover .tooltiptext {
+--   style "visibility" "visible"

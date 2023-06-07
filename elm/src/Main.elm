@@ -5,10 +5,11 @@ import Browser.Navigation as Nav
 import Url exposing (Url)
 import Url.Parser exposing (Parser, (</>))
 import Url.Parser as Parser
-import Html exposing (..)
-import Html.Attributes as Attr
-import Html.Attributes exposing (style, placeholder, type_)
-import Html.Events exposing (onClick, onInput)
+import Html
+import Html.Styled exposing (..)
+import Html.Styled.Attributes as Attr
+import Html.Styled.Attributes exposing (style, placeholder, type_)
+import Html.Styled.Events exposing (onClick, onInput)
 import Http
 import Json.Decode exposing (Decoder, field, list, string, succeed)
 import Platform.Cmd exposing (none)
@@ -163,6 +164,7 @@ view : Model -> Browser.Document Msg
 view model =
   { title = "Character Sheet"
   , body =
+    List.map toUnstyled
       [ text (Url.toString model.url)
       , case model.page of
           Loading ->
