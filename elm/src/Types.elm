@@ -18,6 +18,7 @@ type alias CharacterSheet =
   , armor : List String
   , tools : List String
   , notable_traits : List NotableTraitCategory
+  , attacks : List Attack
   }
 {-
 NotableTraits = [( Category, List Trait )]
@@ -76,6 +77,14 @@ skillsPerAbility =
 
 type alias NotableTraitCategory = { category: String, traits: List Trait }
 type alias Trait = { name: String, desc: Maybe String }
+
+type alias Attack =
+  { name : String
+  , range : String
+  , to_hit_or_dc : String
+  , damage : String
+  , notes : String
+  }
 
 ----------------------------------------------------------------------
 -- CHARACTER SELECTION PAGE

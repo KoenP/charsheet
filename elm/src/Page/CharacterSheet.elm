@@ -37,6 +37,7 @@ sheetDec =
     |> D.andMap (D.field "armor" (D.list D.string))
     |> D.andMap (D.field "tools" (D.list D.string))
     |> D.andMap (D.field "notable_traits" notableTraitsDec)
+    |> D.andMap (D.field "attacks" (D.list attackDec))
   
 summaryDec : Decoder CharacterSummary
 summaryDec =
@@ -75,6 +76,15 @@ traitDec =
     |> D.andMap (D.field "name" D.string)
     |> D.andMap (D.field "desc" (D.nullable D.string))
 
+attackDec : Decoder Attack
+attackDec =
+  D.succeed Attack
+    |> D.andMap (D.field "name" D.string)
+    |> D.andMap (D.field "range" D.string)
+    |> D.andMap (D.field "to_hit_or_dc" D.string)
+    |> D.andMap (D.field "damage" D.string)
+    |> D.andMap (D.field "notes" D.string)
+
 ----------------------------------------------------------------------
 -- VIEW
 view : CharacterSheet -> Html Msg
@@ -101,6 +111,7 @@ view sheet =
       , viewProficiencies sheet.languages sheet.weapons sheet.armor sheet.tools
       , h2 [] [ text "Notable traits" ]
       , viewNotableTraits sheet.notable_traits
+      , viewAttacks sheet.attacks
       ]
   ]
 
@@ -205,47 +216,26 @@ viewTrait { name, desc } =
     Nothing ->
       text name
     Just actualDesc ->
-      div
-        [ class "tooltip"
-        , css
-            [ Css.display Css.inlineBlock
-            , Css.position Css.relative
-            , Css.position Css.relative
-            , Css.hover
-                [ Css.Global.descendants
-                    [ Css.Global.selector ".tooltiptext"
-                        [ Css.visibility Css.visible ]
-                    ]
-                ]
-            , Css.borderBottom3 (Css.px 1) Css.dotted (Css.hex "000000")
-            ]
-        ]
-      [ text name
-      , span
-          [ class "tooltiptext"
-          , css
-              [ Css.visibility Css.hidden
-              , Css.position Css.absolute
-              , Css.top <| Css.pct 0
-              , Css.left <| Css.pct 105
-              , Css.backgroundColor <| Css.hex "000000"
-              , Css.width <| Css.px 560
-              , Css.color <| Css.hex "ffffff"
-              , Css.fontFamilies [ "Liberation", .value Css.sansSerif ]
-              , Css.zIndex (Css.int 1)
-              , Css.textAlign Css.center
-              , Css.padding2 (Css.px 5) (Css.px 0)
-              , Css.borderRadius (Css.px 6)
-              ]
-          ]
-          [ text actualDesc ]
-      ]
+      tooltip (text name) (text actualDesc)
+
+viewAttacks : List Attack -> Html msg
+viewAttacks attacks =
+  captionedTable "Attacks" tableAttrs <|
+    tr [] (List.map simpleTh ["", "Range", "To Hit", "Damage", "Notes"])
+    ::
+    List.map
+      (\{name, range, to_hit_or_dc, damage, notes} ->
+         simpleRow [name, range, to_hit_or_dc, damage, notes])
+      attacks
       
 simpleTh : String -> Html msg
 simpleTh str = th thAttrs [ text str ]
 
 simpleTd : String -> Html msg
 simpleTd str = td tdAttrs [ text str ]
+
+simpleRow : List String -> Html msg
+simpleRow strs = tr [] (List.map simpleTd strs)
 
 simple :  (List (Attribute msg) -> List (Html msg) -> Html msg)
        -> String
@@ -317,5 +307,40 @@ tooltipTooltipTextAttrs =
   , style "left" "100%"
   ]
 
--- .tooltip:hover .tooltiptext {
---   style "visibility" "visible"
+tooltip : Html msg -> Html msg -> Html msg
+tooltip trigger content =
+  div
+    [ class "tooltip"
+    , css
+        [ Css.display Css.inlineBlock
+        , Css.position Css.relative
+        , Css.position Css.relative
+        , Css.hover
+            [ Css.Global.descendants
+                [ Css.Global.selector ".tooltiptext"
+                    [ Css.visibility Css.visible ]
+                ]
+            ]
+        , Css.borderBottom3 (Css.px 1) Css.dotted (Css.hex "000000")
+        ]
+    ]
+  [ trigger
+  , span
+      [ class "tooltiptext"
+      , css
+          [ Css.visibility Css.hidden
+          , Css.position Css.absolute
+          , Css.top <| Css.pct 0
+          , Css.left <| Css.pct 105
+          , Css.backgroundColor <| Css.hex "000000"
+          , Css.width <| Css.px 560
+          , Css.color <| Css.hex "ffffff"
+          , Css.fontFamilies [ "Liberation", .value Css.sansSerif ]
+          , Css.zIndex (Css.int 1)
+          , Css.textAlign Css.center
+          , Css.padding2 (Css.px 5) (Css.px 0)
+          , Css.borderRadius (Css.px 6)
+          ]
+      ]
+      [ content ]
+  ]
