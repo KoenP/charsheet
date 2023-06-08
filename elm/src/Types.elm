@@ -19,6 +19,8 @@ type alias CharacterSheet =
   , tools : List String
   , notable_traits : List NotableTraitCategory
   , attacks : List Attack
+  , spellcasting_sections : List SpellcastingSection
+  , spell_slots : List Int
   }
 {-
 NotableTraits = [( Category, List Trait )]
@@ -85,6 +87,35 @@ type alias Attack =
   , damage : String
   , notes : String
   }
+
+type alias SpellcastingSection =
+  { max_prepared_spells : Int
+  , origin : String
+  , spell_attack_mod : Int
+  , spell_save_dc : Int
+  , spellcasting_ability : String
+  , spellcasting_ability_mod : Int
+  , spells : List Spell
+  }
+
+type alias Spell =
+  { casting_time : String
+  , components : List Component
+  , concentration : String
+  , dc : Maybe Int
+  , dc_abi : Maybe String
+  , description : List String
+  , duration : String
+  , level : Int
+  , name : String
+  , prepared : Bool
+  , range : String
+  , resources : List String
+  , ritual : String
+  , summary : String
+  , to_hit : Maybe Int
+  }
+type Component = V | S | M String
 
 ----------------------------------------------------------------------
 -- CHARACTER SELECTION PAGE

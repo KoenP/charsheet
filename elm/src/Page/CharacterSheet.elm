@@ -38,6 +38,8 @@ sheetDec =
     |> D.andMap (D.field "tools" (D.list D.string))
     |> D.andMap (D.field "notable_traits" notableTraitsDec)
     |> D.andMap (D.field "attacks" (D.list attackDec))
+    |> D.andMap (D.field "spellcasting_sections" (D.list spellcastingSectionDec))
+    |> D.andMap (D.field "spell_slots" (D.list D.int))
   
 summaryDec : Decoder CharacterSummary
 summaryDec =
@@ -85,6 +87,40 @@ attackDec =
     |> D.andMap (D.field "damage" D.string)
     |> D.andMap (D.field "notes" D.string)
 
+spellcastingSectionDec : Decoder SpellcastingSection
+spellcastingSectionDec =
+  D.succeed SpellcastingSection
+    |> D.andMap (D.field "max_prepared_spells" D.int)
+    |> D.andMap (D.field "origin" D.string)
+    |> D.andMap (D.field "spell_attack_mod" D.int)
+    |> D.andMap (D.field "spell_save_dc" D.int)
+    |> D.andMap (D.field "spellcasting_ability" D.string)
+    |> D.andMap (D.field "spellcasting_ability_mod" D.int)
+    |> D.andMap (D.field "spells" (D.list spellDec))
+
+spellDec : Decoder Spell
+spellDec =
+  D.succeed Spell
+    |> D.andMap (D.field "casting_time" D.string)
+    |> D.andMap (D.field "components" (D.list componentDec))
+    |> D.andMap (D.field "concentration" D.string)
+    |> D.andMap (D.field "dc" (D.nullable D.int))
+    |> D.andMap (D.field "dc_abi" (D.nullable D.string))
+    |> D.andMap (D.field "description" (D.list D.string))
+    |> D.andMap (D.field "duration" D.string)
+    |> D.andMap (D.field "level" D.int)
+    |> D.andMap (D.field "name" D.string)
+    |> D.andMap (D.field "prepared" D.bool)
+    |> D.andMap (D.field "range" D.string)
+    |> D.andMap (D.field "resources" (D.list D.string))
+    |> D.andMap (D.field "ritual" D.string)
+    |> D.andMap (D.field "summary" D.string)
+    |> D.andMap (D.field "to_hit" (D.nullable D.int))
+
+componentDec : Decoder Component
+componentDec =
+  D.succeed V
+  
 ----------------------------------------------------------------------
 -- VIEW
 view : CharacterSheet -> Html Msg
@@ -112,6 +148,7 @@ view sheet =
       , h2 [] [ text "Notable traits" ]
       , viewNotableTraits sheet.notable_traits
       , viewAttacks sheet.attacks
+      , viewSpellcastingSections sheet.spellcasting_sections sheet.spell_slots
       ]
   ]
 
@@ -227,6 +264,83 @@ viewAttacks attacks =
       (\{name, range, to_hit_or_dc, damage, notes} ->
          simpleRow [name, range, to_hit_or_dc, damage, notes])
       attacks
+
+viewSpellcastingSections : List SpellcastingSection -> List Int -> Html msg
+viewSpellcastingSections sections spellSlots =
+  case sections of
+    [] ->
+      div [] []
+    _ :: _ ->
+      div [] <|
+        h2 [] [text "Spellcasting"]
+        :: viewSpellSlotTable spellSlots
+        :: viewPactSlotTable
+        :: List.map viewSpellcastingSection sections
+        
+
+viewSpellSlotTable : List Int -> Html msg
+viewSpellSlotTable spellSlots =
+  captionedTable "Spell slots" tableAttrs
+    [ tr [] <|
+        simpleTh "Level" :: List.map (simpleTh << String.fromInt) (List.range 1 (List.length spellSlots))
+
+    , tr []
+        <| List.map (\n -> td tdAttrs <| List.repeat n (input [type_ "checkbox"] []))
+        <| (0 :: spellSlots)
+    ]
+
+viewPactSlotTable : Html msg
+viewPactSlotTable =
+  text "TODO: pact slot table"
+
+viewSpellcastingSection : SpellcastingSection -> Html msg
+viewSpellcastingSection section =
+  div []
+    [ h3 [] [text <| section.origin ++ " spells"]
+    , input [type_ "checkbox"] []
+    , ul []
+        [ simple li <| "Max prepared spells: " ++ String.fromInt section.max_prepared_spells
+        , simple li <| "Spell attack mod: " ++ formatModifier section.spell_attack_mod
+        , simple li <| "Spell save DC: " ++ formatModifier section.spell_save_dc
+        , simple li <| "Spellcasting ability: " ++ section.spellcasting_ability
+        , simple li <| "Spellcasting ability mod: "
+                        ++ formatModifier section.spellcasting_ability_mod
+        ]
+    , table tableAttrs <|
+        tr []
+          (List.filter (\_ -> True) [simpleTh "Prep'd"]
+           ++
+           List.map simpleTh
+             ["Lvl", "Spell", "CT", "Rng", "Cpts", "Dur", "Conc"
+             , "To Hit/DC", "Effect (summary)", "Res"
+             ])
+        ::
+        List.map viewSpellTableRow section.spells
+    ]
+
+viewSpellTableRow : Spell -> Html msg
+viewSpellTableRow spell =
+  tr []
+    [ simpleTd "TODO"
+    , simpleTd <| String.fromInt spell.level
+    , td tdAttrs <| List.singleton <|
+        tooltip
+          (text spell.name)
+          (div [] <|
+             List.map
+               (\paragraph -> p [] [text paragraph])
+               spell.description)
+    , simpleTd spell.casting_time
+    , simpleTd spell.range
+    , simpleTd "TODO"
+    , simpleTd spell.duration
+    , simpleTd spell.concentration
+    , simpleTd (Maybe.map String.fromInt spell.to_hit
+               |> maybeSG (Maybe.map String.fromInt spell.dc)
+               |> Maybe.withDefault "")
+    , simpleTd spell.summary
+    , simpleTd <| String.concat <| List.intersperse "; " <| spell.resources
+    ]
       
 simpleTh : String -> Html msg
 simpleTh str = th thAttrs [ text str ]
@@ -344,3 +458,15 @@ tooltip trigger content =
       ]
       [ content ]
   ]
+
+maybeSG : Maybe a -> Maybe a -> Maybe a
+maybeSG mx my =
+  case mx of
+    Just x ->
+      Just x
+    Nothing ->
+      case my of
+        Just y ->
+          Just y
+        Nothing ->
+          Nothing
