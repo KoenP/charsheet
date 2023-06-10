@@ -16,11 +16,7 @@ export class SheetComponent implements OnInit {
   constructor(private charService: CharacterService) {}
 
   ngOnInit() {
-    console.log('SheetComponent.ngOnInit');
-    this.charService.sheet$.subscribe((sheet: ISheetData | null) => {
-      console.log('sheet$ sub');
-      console.log(sheet);
-    });
+    this.charService.refresh();
   }
 
   formatModifier(mod: number) {
@@ -49,6 +45,18 @@ export class SheetComponent implements OnInit {
       map((onlyPrepared: boolean) => onlyPrepared
         ? spells.filter((spell) => spell.prepared)
         : spells)
+    );
+  }
+
+  spellPrepared$(origin: string, name: string):
+    Observable<boolean | 'always'>
+  {
+    return this.charService.preparedSpells$.pipe(
+      map((table) => {
+        console.log('In SheetComponent.spellPrepared$:');
+        console.log(table);
+        return table?.[origin]?.[name] ?? 'always';
+      })
     );
   }
 

@@ -1,4 +1,4 @@
-<ng-container *ngIf="maybeToggle === 'always'; else toggle">✓</ng-container>
+<ng-container *ngIf="(prepared$ | async) === 'always'; else toggle">✓</ng-container>
 <ng-template #toggle>
-  <input type="checkbox">
+  <input type="checkbox" [ngModel]="prepared" (ngModelChange)="update($event)">
 </ng-template>

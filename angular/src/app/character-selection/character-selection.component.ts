@@ -15,12 +15,12 @@ export class CharacterSelectionComponent implements OnInit {
   constructor(private router: Router, private characterService: CharacterService) {}
 
   ngOnInit(): void {
-    this.characterList$ = this.characterService.listCharacters();
+   this.characterList$ = this.characterService.listCharacters();
     this.characterList$.subscribe(list => console.log(list));
   }
   
   selectChar(name: string) {
-    this.characterService.selectCharacter(name)
+    this.characterService.loadCharacter(name)
       .subscribe((_) => this.router.navigate(['/sheet']));
   }
 }

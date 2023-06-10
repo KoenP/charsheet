@@ -107,7 +107,7 @@ notable_trait(Origin, Trait) :-
     trait(Origin, Trait),
     \+ member(Trait,
               [expertise(_), skill(_), language(_), tool(_),
-               weapon(_), armor(_), shield]).
+               weapon(_), armor(_), shield, saving_throw(_)]).
 
 notable_traits :-
     forall(notable_trait(_,T), writeln_quoted_term(T)).

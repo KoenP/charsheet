@@ -136,11 +136,11 @@
         </tr>
         <tr *ngFor="let spell of filteredSpells$(section.spells) | async">
           <td *ngIf="!showOnlyPreparedSpells">
-            <!-- 
-            <ng-container *ngIf="spellPrepared$$(section.origin, spell.name) | async as subject">
-              <app-spell-prepared [maybeToggle]="subject"></app-spell-prepared>
-            </ng-container>
--->
+            <app-spell-prepared
+                [origin]="section.origin"
+                [spellName]="spell.name"
+                [prepared$]="spellPrepared$(section.origin, spell.name)">
+            </app-spell-prepared>
           </td>
           <td>{{spell.level}}</td>
           <td>
