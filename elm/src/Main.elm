@@ -11,6 +11,7 @@ import Html.Styled.Attributes as Attr
 import Html.Styled.Attributes exposing (style, placeholder, type_)
 import Html.Styled.Events exposing (onClick, onInput)
 import Http
+import Dict exposing (Dict)
 import Json.Decode exposing (Decoder, field, list, string, succeed)
 import Platform.Cmd exposing (none)
 import List
@@ -37,7 +38,13 @@ main =
 -- MODEL
 init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
 init _ url key =
-  navigate { url = url, key = key, page = Loading } (urlToRoute url)
+  navigate
+    { url = url
+    , key = key
+    , preparedSpells = Dict.empty
+    , page = Loading
+    }
+    (urlToRoute url)
 
 navigate : Model -> Route -> ( Model, Cmd Msg )
 navigate model route = ( { model | page = Loading } , Sheet.load )
@@ -89,8 +96,8 @@ update msg model =
       case model.page of
         CharacterSelectionPage pageData ->
           applyPage model (updateCharacterSelectionPage msg pageData)
-        CharacterSheetPage _ ->
-          ( model, none )
+        CharacterSheetPage sheet ->
+          Sheet.update msg model
         Loading ->
           case msg of
             HttpResponse (Ok responseMsg) ->
@@ -124,7 +131,6 @@ updateCharacterSelectionPage msg pageData =
       , none
       )
   
-
 handleHttpResponseMsg : HttpResponseMsg -> Model -> (Model, Cmd Msg)
 handleHttpResponseMsg msg model =
   case msg of
@@ -137,7 +143,11 @@ handleHttpResponseMsg msg model =
       CharacterLoaded ->
         ( { model | page = Loading }, Nav.pushUrl model.key "/sheet" )
       GotCharacterSheet sheet ->
-        ( { model | page = CharacterSheetPage sheet }, none )
+        ( { model
+            | page = CharacterSheetPage sheet
+            , preparedSpells = initPreparedSpells sheet.spellcasting_sections
+          }, none )
+
 
                
 loadCharacter : String -> Cmd Msg
@@ -174,7 +184,7 @@ view model =
           CharacterSelectionPage data ->
             characterSelectionPage data
           CharacterSheetPage data ->
-            Sheet.view data
+            Sheet.view model.preparedSpells data
       ]
   }
   

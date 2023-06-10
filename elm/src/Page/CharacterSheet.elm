@@ -1,8 +1,11 @@
 module Page.CharacterSheet exposing (..)
 
 import Dict exposing (Dict)
+import Set exposing (Set)
+import Maybe exposing (Maybe)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events as E
 import Css
 import Css.Global
 import Css.Transitions
@@ -10,6 +13,7 @@ import Http
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra as D
 import Debug
+import Platform.Cmd as Cmd
 
 import Request exposing (requestUrl)
 import Types exposing (..)
@@ -117,18 +121,16 @@ spellDec =
     |> D.andMap (D.field "summary" D.string)
     |> D.andMap (D.field "to_hit" (D.nullable D.int))
 
+preparedDec : Decoder Bool
+preparedDec =
+  D.oneOf
+    [ exactMatchDec D.string "always" |> D.map (\_ -> True)
+    , exactMatchDec D.string "maybe" |> D.map (\_ -> False)
+    ]
+
 componentDec : Decoder Component
 componentDec =
   D.succeed V
-
-preparedDec : Decoder Prepared
-preparedDec =
-  D.oneOf
-    [ exactMatchDec D.string "always"
-        |> D.map (\_ -> Always)
-    , exactMatchDec D.string "maybe"
-        |> D.map (\_ -> Maybe)
-    ] 
 
 exactMatchDec : Decoder a -> a -> Decoder a
 exactMatchDec dec val =
@@ -139,9 +141,23 @@ exactMatchDec dec val =
                      False -> D.fail "mismatch in exactMatchDec")
   
 ----------------------------------------------------------------------
+-- UPDATE
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  case msg of
+    SetSpellPreparedness origin spell prepared ->
+      ( { model | preparedSpells
+                  = setSpellPreparedness origin spell prepared model.preparedSpells
+        }
+      , Cmd.none
+      )
+    _ ->
+      ( model, Cmd.none )
+
+----------------------------------------------------------------------
 -- VIEW
-view : CharacterSheet -> Html Msg
-view sheet =
+view : Dict Origin (Set SpellName) -> CharacterSheet -> Html Msg
+view currentlyPreparedSpells sheet =
   div
   [ style "width" "100%"
   , style "font-family" "Liberation, sans-serif"
@@ -165,7 +181,10 @@ view sheet =
       , h2 [] [ text "Notable traits" ]
       , viewNotableTraits sheet.notable_traits
       , viewAttacks sheet.attacks
-      , viewSpellcastingSections sheet.spellcasting_sections sheet.spell_slots
+      , viewSpellcastingSections
+          currentlyPreparedSpells
+          sheet.spellcasting_sections
+          sheet.spell_slots
       ]
   ]
 
@@ -282,8 +301,11 @@ viewAttacks attacks =
          simpleRow [name, range, to_hit_or_dc, damage, notes])
       attacks
 
-viewSpellcastingSections : List SpellcastingSection -> List Int -> Html Msg
-viewSpellcastingSections sections spellSlots =
+viewSpellcastingSections :  Dict Origin (Set SpellName)
+                         -> List SpellcastingSection
+                         -> List Int
+                         -> Html Msg
+viewSpellcastingSections currentlyPreparedSpells sections spellSlots =
   case sections of
     [] ->
       div [] []
@@ -292,7 +314,12 @@ viewSpellcastingSections sections spellSlots =
         h2 [] [text "Spellcasting"]
         :: viewSpellSlotTable spellSlots
         :: viewPactSlotTable
-        :: List.map viewSpellcastingSection sections
+        :: List.map
+             (\section ->
+                viewSpellcastingSection section
+                <| Maybe.withDefault Set.empty
+                <| Dict.get section.origin currentlyPreparedSpells)
+           sections
         
 
 viewSpellSlotTable : List Int -> Html msg
@@ -310,8 +337,8 @@ viewPactSlotTable : Html msg
 viewPactSlotTable =
   text "TODO: pact slot table"
 
-viewSpellcastingSection : SpellcastingSection -> Html Msg
-viewSpellcastingSection section =
+viewSpellcastingSection : SpellcastingSection -> Set SpellName -> Html Msg
+viewSpellcastingSection section currentlyPreparedSpells =
   div []
     [ h3 [] [text <| section.origin ++ " spells"]
     , input [type_ "checkbox"] []
@@ -332,13 +359,16 @@ viewSpellcastingSection section =
              , "To Hit/DC", "Effect (summary)", "Res"
              ])
         ::
-        List.map viewSpellTableRow section.spells
+        List.map
+          (\spell -> viewSpellTableRow section.origin spell
+                     <| Set.member spell.name currentlyPreparedSpells)
+          section.spells
     ]
 
-viewSpellTableRow : Spell -> Html Msg
-viewSpellTableRow spell =
+viewSpellTableRow : Origin -> Spell -> Bool -> Html Msg
+viewSpellTableRow origin spell currentlyPrepared =
   tr []
-    [ td tdAttrs [viewSpellPrepared spell.prepared]
+    [ td tdAttrs [viewSpellPrepared spell.prepared origin spell.name currentlyPrepared]
     , simpleTd <| String.fromInt spell.level
     , td tdAttrs <| List.singleton <|
         tooltip
@@ -359,13 +389,16 @@ viewSpellTableRow spell =
     , simpleTd <| String.concat <| List.intersperse "; " <| spell.resources
     ]
       
-viewSpellPrepared : Prepared -> Html Msg
-viewSpellPrepared prepared =
-    case prepared of
-        Always ->
+viewSpellPrepared : AlwaysPrepared -> Origin -> SpellName -> Bool -> Html Msg
+viewSpellPrepared alwaysPrepared origin spell nowPrepared =
+    case alwaysPrepared of
+        True ->
             text "✓"
-        Maybe ->
-            input [type_ "checkbox"] []
+        False ->
+            input
+              [ type_ "checkbox"
+              , E.onClick (SetSpellPreparedness origin spell (not nowPrepared))
+              ] []
 
 simpleTh : String -> Html msg
 simpleTh str = th thAttrs [ text str ]

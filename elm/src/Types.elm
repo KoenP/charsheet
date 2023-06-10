@@ -3,6 +3,7 @@ module Types exposing (..)
 import Browser
 import Browser.Navigation as Nav
 import Dict exposing (Dict)
+import Set exposing (Set)
 import Http
 import Url exposing (Url)
 
@@ -90,13 +91,14 @@ type alias Attack =
 
 type alias SpellcastingSection =
   { max_prepared_spells : Int
-  , origin : String
+  , origin : Origin
   , spell_attack_mod : Int
   , spell_save_dc : Int
   , spellcasting_ability : String
   , spellcasting_ability_mod : Int
   , spells : List Spell
   }
+type alias Origin = String
 
 type alias Spell =
   { casting_time : String
@@ -107,8 +109,8 @@ type alias Spell =
   , description : List String
   , duration : String
   , level : Int
-  , name : String
-  , prepared : Prepared
+  , name : SpellName
+  , prepared : AlwaysPrepared
   , range : String
   , resources : List String
   , ritual : String
@@ -116,7 +118,8 @@ type alias Spell =
   , to_hit : Maybe Int
   }
 type Component = V | S | M String
-type Prepared = Always | Maybe
+type alias AlwaysPrepared = Bool
+type alias SpellName = String
 
 ----------------------------------------------------------------------
 -- CHARACTER SELECTION PAGE
@@ -130,6 +133,7 @@ type alias CharacterSelectionPageData =
 type alias Model =
   { url : Url
   , key : Nav.Key
+  , preparedSpells : Dict Origin (Set SpellName)
   , page : Page
   }
 type Page
@@ -137,6 +141,22 @@ type Page
   | Error String
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
+
+initPreparedSpells : List SpellcastingSection -> Dict Origin (Set SpellName)
+initPreparedSpells =
+  Dict.fromList << List.map (\section -> ( section.origin, Set.empty ))
+    
+setSpellPreparedness : Origin -> SpellName -> Bool
+                     -> Dict Origin (Set SpellName)
+                     -> Dict Origin (Set SpellName)
+setSpellPreparedness origin spell prepared old =
+  Debug.log "setSpellPreparedness" <|
+    Dict.update
+      origin
+      (Maybe.map <| \set -> case prepared of
+                              False -> Set.remove spell set
+                              True  -> Set.insert spell set)
+      old
 
 ----------------------------------------------------------------------
 -- MSG
@@ -147,6 +167,7 @@ type Msg
   | CreateNewCharacter
   | UrlChanged Url
   | LinkClicked Browser.UrlRequest
+  | SetSpellPreparedness Origin SpellName Bool
 
 type HttpResponseMsg
   = GotCharacterList (List String)
