@@ -170,7 +170,7 @@ spell_json_dict(BaseOrigin,
                   resources: ResourcesStrs}) :-
     (Origin =.. [BaseOrigin,_] ; Origin = BaseOrigin),
     known_spell(Origin, _Ability, _, ResourcesVal, Ritual, Name),
-    (known_spell_prepared(Origin, Name) -> Prepared=true; Prepared=false),
+    (known_spell_always_prepared(Origin, Name) -> Prepared=always; Prepared=maybe),
     known_spell_data(Origin, Name, Data),
     Level         = Data.level,
     Description   = Data.desc,

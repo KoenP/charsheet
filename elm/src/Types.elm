@@ -108,7 +108,7 @@ type alias Spell =
   , duration : String
   , level : Int
   , name : String
-  , prepared : Bool
+  , prepared : Prepared
   , range : String
   , resources : List String
   , ritual : String
@@ -116,6 +116,7 @@ type alias Spell =
   , to_hit : Maybe Int
   }
 type Component = V | S | M String
+type Prepared = Always | Maybe
 
 ----------------------------------------------------------------------
 -- CHARACTER SELECTION PAGE

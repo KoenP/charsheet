@@ -110,7 +110,7 @@ spellDec =
     |> D.andMap (D.field "duration" D.string)
     |> D.andMap (D.field "level" D.int)
     |> D.andMap (D.field "name" D.string)
-    |> D.andMap (D.field "prepared" D.bool)
+    |> D.andMap (D.field "prepared" preparedDec)
     |> D.andMap (D.field "range" D.string)
     |> D.andMap (D.field "resources" (D.list D.string))
     |> D.andMap (D.field "ritual" D.string)
@@ -120,6 +120,23 @@ spellDec =
 componentDec : Decoder Component
 componentDec =
   D.succeed V
+
+preparedDec : Decoder Prepared
+preparedDec =
+  D.oneOf
+    [ exactMatchDec D.string "always"
+        |> D.map (\_ -> Always)
+    , exactMatchDec D.string "maybe"
+        |> D.map (\_ -> Maybe)
+    ] 
+
+exactMatchDec : Decoder a -> a -> Decoder a
+exactMatchDec dec val =
+  dec |>
+    D.andThen (\other ->
+                 case val == other of
+                     True  -> D.succeed val
+                     False -> D.fail "mismatch in exactMatchDec")
   
 ----------------------------------------------------------------------
 -- VIEW
@@ -265,7 +282,7 @@ viewAttacks attacks =
          simpleRow [name, range, to_hit_or_dc, damage, notes])
       attacks
 
-viewSpellcastingSections : List SpellcastingSection -> List Int -> Html msg
+viewSpellcastingSections : List SpellcastingSection -> List Int -> Html Msg
 viewSpellcastingSections sections spellSlots =
   case sections of
     [] ->
@@ -293,7 +310,7 @@ viewPactSlotTable : Html msg
 viewPactSlotTable =
   text "TODO: pact slot table"
 
-viewSpellcastingSection : SpellcastingSection -> Html msg
+viewSpellcastingSection : SpellcastingSection -> Html Msg
 viewSpellcastingSection section =
   div []
     [ h3 [] [text <| section.origin ++ " spells"]
@@ -318,10 +335,10 @@ viewSpellcastingSection section =
         List.map viewSpellTableRow section.spells
     ]
 
-viewSpellTableRow : Spell -> Html msg
+viewSpellTableRow : Spell -> Html Msg
 viewSpellTableRow spell =
   tr []
-    [ simpleTd "TODO"
+    [ td tdAttrs [viewSpellPrepared spell.prepared]
     , simpleTd <| String.fromInt spell.level
     , td tdAttrs <| List.singleton <|
         tooltip
@@ -342,6 +359,14 @@ viewSpellTableRow spell =
     , simpleTd <| String.concat <| List.intersperse "; " <| spell.resources
     ]
       
+viewSpellPrepared : Prepared -> Html Msg
+viewSpellPrepared prepared =
+    case prepared of
+        Always ->
+            text "✓"
+        Maybe ->
+            input [type_ "checkbox"] []
+
 simpleTh : String -> Html msg
 simpleTh str = th thAttrs [ text str ]
 

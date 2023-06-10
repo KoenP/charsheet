@@ -140,6 +140,10 @@ known_spell_prepared(Origin, Spell) :-
     prepare_spell(Origin, Spell),
     known_spell(Origin, _, 'when prepared', _, _, Spell).
 
+%! known_spell_always_prepared(?Origin, ?Spell)
+known_spell_always_prepared(Origin, Spell) :-
+    known_spell(Origin, _, always, _, _, Spell).
+
 %! spell_attack_modifier(?Class:atomic, ?Mod:int)
 %
 %  The PC's spell attack modifier for the given Class.
