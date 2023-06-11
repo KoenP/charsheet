@@ -151,13 +151,17 @@ update msg model =
         }
       , Cmd.none
       )
+    SetShowOnlyPreparedSpells new ->
+      ( { model | showOnlyPreparedSpells = new }
+      , Cmd.none
+      )
     _ ->
       ( model, Cmd.none )
 
 ----------------------------------------------------------------------
 -- VIEW
-view : Dict Origin (Set SpellName) -> CharacterSheet -> Html Msg
-view currentlyPreparedSpells sheet =
+view : Dict Origin (Set SpellName) -> Bool -> CharacterSheet -> Html Msg
+view currentlyPreparedSpells showOnlyPreparedSpells sheet =
   div
   [ style "width" "100%"
   , style "font-family" "Liberation, sans-serif"
@@ -183,6 +187,7 @@ view currentlyPreparedSpells sheet =
       , viewAttacks sheet.attacks
       , viewSpellcastingSections
           currentlyPreparedSpells
+          showOnlyPreparedSpells
           sheet.spellcasting_sections
           sheet.spell_slots
       ]
@@ -302,10 +307,11 @@ viewAttacks attacks =
       attacks
 
 viewSpellcastingSections :  Dict Origin (Set SpellName)
+                         -> Bool
                          -> List SpellcastingSection
                          -> List Int
                          -> Html Msg
-viewSpellcastingSections currentlyPreparedSpells sections spellSlots =
+viewSpellcastingSections currentlyPreparedSpells showOnlyPreparedSpells sections spellSlots =
   case sections of
     [] ->
       div [] []
@@ -316,7 +322,7 @@ viewSpellcastingSections currentlyPreparedSpells sections spellSlots =
         :: viewPactSlotTable
         :: List.map
              (\section ->
-                viewSpellcastingSection section
+                viewSpellcastingSection showOnlyPreparedSpells section
                 <| Maybe.withDefault Set.empty
                 <| Dict.get section.origin currentlyPreparedSpells)
            sections
@@ -337,11 +343,10 @@ viewPactSlotTable : Html msg
 viewPactSlotTable =
   text "TODO: pact slot table"
 
-viewSpellcastingSection : SpellcastingSection -> Set SpellName -> Html Msg
-viewSpellcastingSection section currentlyPreparedSpells =
+viewSpellcastingSection : Bool -> SpellcastingSection -> Set SpellName -> Html Msg
+viewSpellcastingSection showOnlyPreparedSpells section currentlyPreparedSpells =
   div []
     [ h3 [] [text <| section.origin ++ " spells"]
-    , input [type_ "checkbox"] []
     , ul []
         [ simple li <| "Max prepared spells: " ++ String.fromInt section.max_prepared_spells
         , simple li <| "Spell attack mod: " ++ formatModifier section.spell_attack_mod
@@ -350,26 +355,36 @@ viewSpellcastingSection section currentlyPreparedSpells =
         , simple li <| "Spellcasting ability mod: "
                         ++ formatModifier section.spellcasting_ability_mod
         ]
+    , input [ type_ "checkbox"
+            , checked showOnlyPreparedSpells
+            , id "showOnlyPreparedSpellsToggle"
+            , E.onClick (SetShowOnlyPreparedSpells (not showOnlyPreparedSpells))] []
+    , label [for "showOnlyPreparedSpellsToggle"] [text "Show only prepared spells"]
     , table tableAttrs <|
         tr []
-          (List.filter (\_ -> True) [simpleTh "Prep'd"]
+          (List.filter (\_ -> not showOnlyPreparedSpells) [simpleTh "Prep'd"]
            ++
            List.map simpleTh
              ["Lvl", "Spell", "CT", "Rng", "Cpts", "Dur", "Conc"
              , "To Hit/DC", "Effect (summary)", "Res"
              ])
         ::
-        List.map
-          (\spell -> viewSpellTableRow section.origin spell
-                     <| Set.member spell.name currentlyPreparedSpells)
-          section.spells
+        (List.map
+           (\spell -> viewSpellTableRow showOnlyPreparedSpells section.origin spell
+                      <| Set.member spell.name currentlyPreparedSpells)
+           <| List.filter (\spell -> not showOnlyPreparedSpells
+                                  || Set.member spell.name currentlyPreparedSpells
+                                  || spell.prepared)
+           <| section.spells)
     ]
 
-viewSpellTableRow : Origin -> Spell -> Bool -> Html Msg
-viewSpellTableRow origin spell currentlyPrepared =
-  tr []
-    [ td tdAttrs [viewSpellPrepared spell.prepared origin spell.name currentlyPrepared]
-    , simpleTd <| String.fromInt spell.level
+viewSpellTableRow : Bool -> Origin -> Spell -> Bool -> Html Msg
+viewSpellTableRow showOnlyPreparedSpells origin spell currentlyPrepared =
+  tr [] <|
+    List.filter (\_ -> not showOnlyPreparedSpells)
+      [ td tdAttrs [viewSpellPrepared spell.prepared origin spell.name currentlyPrepared] ]
+    ++
+    [ simpleTd <| String.fromInt spell.level
     , td tdAttrs <| List.singleton <|
         tooltip
           (text spell.name)
@@ -391,14 +406,15 @@ viewSpellTableRow origin spell currentlyPrepared =
       
 viewSpellPrepared : AlwaysPrepared -> Origin -> SpellName -> Bool -> Html Msg
 viewSpellPrepared alwaysPrepared origin spell nowPrepared =
-    case alwaysPrepared of
-        True ->
-            text "✓"
-        False ->
-            input
-              [ type_ "checkbox"
-              , E.onClick (SetSpellPreparedness origin spell (not nowPrepared))
-              ] []
+  case alwaysPrepared of
+    True ->
+      text "✓"
+    False ->
+      input
+        [ type_ "checkbox"
+        , E.onClick (SetSpellPreparedness origin spell (not nowPrepared))
+        , checked nowPrepared
+        ] []
 
 simpleTh : String -> Html msg
 simpleTh str = th thAttrs [ text str ]

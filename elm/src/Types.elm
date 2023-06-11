@@ -134,6 +134,7 @@ type alias Model =
   { url : Url
   , key : Nav.Key
   , preparedSpells : Dict Origin (Set SpellName)
+  , showOnlyPreparedSpells : Bool
   , page : Page
   }
 type Page
@@ -141,6 +142,10 @@ type Page
   | Error String
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
+-- type alias SheetModel =
+--   { preparedSpells : Dict Origin (Set SpellName)
+--     
+--   }
 
 initPreparedSpells : List SpellcastingSection -> Dict Origin (Set SpellName)
 initPreparedSpells =
@@ -168,6 +173,7 @@ type Msg
   | UrlChanged Url
   | LinkClicked Browser.UrlRequest
   | SetSpellPreparedness Origin SpellName Bool
+  | SetShowOnlyPreparedSpells Bool
 
 type HttpResponseMsg
   = GotCharacterList (List String)

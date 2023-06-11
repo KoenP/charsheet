@@ -42,6 +42,7 @@ init _ url key =
     { url = url
     , key = key
     , preparedSpells = Dict.empty
+    , showOnlyPreparedSpells = False
     , page = Loading
     }
     (urlToRoute url)
@@ -184,7 +185,7 @@ view model =
           CharacterSelectionPage data ->
             characterSelectionPage data
           CharacterSheetPage data ->
-            Sheet.view model.preparedSpells data
+            Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
       ]
   }
   
