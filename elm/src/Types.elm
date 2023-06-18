@@ -2,6 +2,7 @@ module Types exposing (..)
 
 import Browser
 import Browser.Navigation as Nav
+import Platform.Cmd
 import Dict exposing (Dict)
 import Set exposing (Set)
 import Http
@@ -120,6 +121,7 @@ type alias Spell =
 type Component = V | S | M String
 type alias AlwaysPrepared = Bool
 type alias SpellName = String
+type alias Level = Int
 
 ----------------------------------------------------------------------
 -- CHARACTER SELECTION PAGE
@@ -127,6 +129,22 @@ type alias CharacterSelectionPageData =
   { characters : List String
   , newCharacterName : String
   }
+
+----------------------------------------------------------------------
+-- EDIT CHARACTER PAGE
+type alias Options =
+  { charlevel : Level
+  , choice : Maybe String
+  , id : String
+  , origin : String
+  , origin_category : String
+  , spec : Spec
+  }
+type Spec
+  = ListSpec (List String)
+  | OrSpec (String, Spec) (String, Spec)
+  | FromSpec Unique Int Spec
+type alias Unique = Bool
 
 ----------------------------------------------------------------------
 -- MODEL
@@ -142,10 +160,14 @@ type Page
   | Error String
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
--- type alias SheetModel =
---   { preparedSpells : Dict Origin (Set SpellName)
---     
---   }
+  | EditCharacterPage (List Options) Level
+
+applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
+applyPage model ( page, cmd ) =
+  ( { model | page = page }, cmd)
+
+errorPage : Model -> String -> (Model, Cmd Msg)
+errorPage model msg = ({ model | page = Error msg }, Cmd.none)
 
 initPreparedSpells : List SpellcastingSection -> Dict Origin (Set SpellName)
 initPreparedSpells =
@@ -170,15 +192,18 @@ type Msg
   | SelectCharacter String
   | NewCharacterName String
   | CreateNewCharacter
+  | EditCharacter
   | UrlChanged Url
   | LinkClicked Browser.UrlRequest
   | SetSpellPreparedness Origin SpellName Bool
   | SetShowOnlyPreparedSpells Bool
+  | EditCharacterLevel Level
 
 type HttpResponseMsg
   = GotCharacterList (List String)
   | CharacterLoaded
   | GotCharacterSheet CharacterSheet
+  | GotCharacterOptions (List Options)
 
 mkHttpResponseMsg : (a -> HttpResponseMsg) -> (Result Http.Error a -> Msg)
 mkHttpResponseMsg f result =

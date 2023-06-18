@@ -19,6 +19,7 @@ import Maybe
 import Debug exposing (log, toString)
 
 import Page.CharacterSheet as Sheet
+import Page.EditCharacter as Edit
 import Request exposing (requestUrl)
 import Types exposing (..)
 
@@ -38,34 +39,44 @@ main =
 -- MODEL
 init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
 init _ url key =
-  navigate
-    { url = url
+  ( { url = url
     , key = key
     , preparedSpells = Dict.empty
     , showOnlyPreparedSpells = False
     , page = Loading
     }
-    (urlToRoute url)
+  , Nav.pushUrl key "/edit"
+  )
 
 navigate : Model -> Route -> ( Model, Cmd Msg )
-navigate model route = ( { model | page = Loading } , Sheet.load )
-  -- case route of
-  --   SelectCharacterRoute ->
-  --     ( { model | page = Loading }
-  --     , Http.get
-  --         { url = requestUrl "list_characters" []
-  --         , expect = Http.expectJson
-  --                    (mkHttpResponseMsg GotCharacterList)
-  --             (field "list" (list string))
-  --         }
-  --     )
-  --   SheetRoute ->
-  --     Debug.log "test" ( { model | page = Loading }
-  --                      , Sheet.load
-  --                      )
-  --   _ -> ( model, none )
+navigate model route = -- ( { model | page = Loading } , Sheet.load )
+  case route of
+    SelectCharacterRoute ->
+      ( { model | page = Loading }
+      , Http.get
+          { url = requestUrl "list_characters" []
+          , expect = Http.expectJson
+                     (mkHttpResponseMsg GotCharacterList)
+              (field "list" (list string))
+          }
+      )
+    SheetRoute ->
+      Debug.log "navigate (SheetRoute)"
+        ( { model | page = Loading }
+        , Sheet.load
+        )
+    EditRoute ->
+      Debug.log "navigate (EditRoute)"
+        ( { model | page = Loading }
+        , Edit.load
+        )
+    _ -> ( model, none )
 
-type Route = SelectCharacterRoute | SheetRoute | NotFound
+type Route
+  = SelectCharacterRoute
+  | SheetRoute
+  | EditRoute
+  | NotFound
   
 routeParser : Parser (Route -> a) a
 routeParser =
@@ -73,6 +84,7 @@ routeParser =
     [ Parser.map SelectCharacterRoute Parser.top
     , Parser.map SelectCharacterRoute (Parser.s "src" </> Parser.s "Main.elm")
     , Parser.map SheetRoute (Parser.s "sheet")
+    , Parser.map EditRoute (Parser.s "edit")
     ]
 
 urlToRoute : Url -> Route
@@ -93,12 +105,17 @@ update msg model =
     UrlChanged url ->
       navigate model (urlToRoute url)
 
+    EditCharacter ->
+      ( { model | page = Loading }, Nav.pushUrl model.key "/edit" )
+
     _ ->
       case model.page of
         CharacterSelectionPage pageData ->
           applyPage model (updateCharacterSelectionPage msg pageData)
         CharacterSheetPage sheet ->
           Sheet.update msg model
+        EditCharacterPage options selectedLevel ->
+          Edit.update msg model options
         Loading ->
           case msg of
             HttpResponse (Ok responseMsg) ->
@@ -111,10 +128,6 @@ update msg model =
                 ( { model | page = Error error }, none )
         Error error  ->
           ( { model | page = Error error }, none )
-
-applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
-applyPage model ( page, cmd ) =
-  ( { model | page = page }, cmd)
 
 updateCharacterSelectionPage
   : Msg -> CharacterSelectionPageData -> (Page, Cmd Msg)
@@ -147,9 +160,15 @@ handleHttpResponseMsg msg model =
         ( { model
             | page = CharacterSheetPage sheet
             , preparedSpells = initPreparedSpells sheet.spellcasting_sections
-          }, none )
-
-
+          }
+        , none
+        )
+      GotCharacterOptions options ->
+        ( { model
+            | page = EditCharacterPage options 1
+          }
+        , none
+        )
                
 loadCharacter : String -> Cmd Msg
 loadCharacter charName =
@@ -175,34 +194,37 @@ view : Model -> Browser.Document Msg
 view model =
   { title = "Character Sheet"
   , body =
-    List.map toUnstyled
-      [ text (Url.toString model.url)
-      , case model.page of
-          Loading ->
-            text "Loading..."
-          Error msg -> 
-            text msg
-          CharacterSelectionPage data ->
-            characterSelectionPage data
-          CharacterSheetPage data ->
-            Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
-      ]
+    List.map toUnstyled <|
+      case model.page of
+        Loading ->
+          [ text "Loading..." ]
+        Error msg -> 
+          [ text msg ]
+        CharacterSelectionPage data ->
+          characterSelectionPage data
+        CharacterSheetPage data ->
+          Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
+        EditCharacterPage options selectedLevel ->
+          Edit.view options selectedLevel
+      
   }
   
 
 -- Character selection page
-characterSelectionPage : { characters : List String, newCharacterName : String } -> Html Msg
+characterSelectionPage : { characters : List String, newCharacterName : String }
+                       -> List (Html Msg)
 characterSelectionPage { characters, newCharacterName } =
   let
     characterList = div [] [ul [] (List.map selectCharButton characters)]
   in 
-    div [] [ h2 [] [ text "Create a new character" ]
-           , input
-               [ type_ "text", placeholder "New character name", onInput NewCharacterName ]
-               []
-           , button [ onClick CreateNewCharacter ] [ text "Create" ]
-           , h2 [] [ text "... or select an existing one" ]
-           , characterList ]
+    [ h2 [] [ text "Create a new character" ]
+    , input
+        [ type_ "text", placeholder "New character name", onInput NewCharacterName ]
+        []
+    , button [ onClick CreateNewCharacter ] [ text "Create" ]
+    , h2 [] [ text "... or select an existing one" ]
+    , characterList
+    ]
 
 -- Shared
 textSingleton : String -> List (Html msg)

@@ -20,6 +20,7 @@ import Types exposing (..)
 
 ----------------------------------------------------------------------
 -- INITIALIZE
+----------------------------------------------------------------------
 load : Cmd Msg
 load =
   Http.get
@@ -142,6 +143,7 @@ exactMatchDec dec val =
   
 ----------------------------------------------------------------------
 -- UPDATE
+----------------------------------------------------------------------
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -160,36 +162,41 @@ update msg model =
 
 ----------------------------------------------------------------------
 -- VIEW
-view : Dict Origin (Set SpellName) -> Bool -> CharacterSheet -> Html Msg
+----------------------------------------------------------------------
+view : Dict Origin (Set SpellName) -> Bool -> CharacterSheet -> List (Html Msg)
 view currentlyPreparedSpells showOnlyPreparedSpells sheet =
-  div
-  [ style "width" "100%"
-  , style "font-family" "Liberation, sans-serif"
-  ]
-  [ header
-      [ style "padding" "1em"
-      , style "color" "black"
-      , style "background-color" "lightgrey"
-      , style "clear" "left"
-      , style "text-align" "left"
+  [ div
+      [ style "width" "100%"
+      , style "font-family" "Liberation, sans-serif"
       ]
-      [ button [ style "float" "right" ] [ text "edit" ]
-      , h1 [] [ text sheet.name ]
-      ]
-  , article [ style "padding" "1em" ]
-      [ viewSummaryTable sheet.summary
-      , viewAbilityTable sheet.ability_table
-      , viewSkillTable sheet.skill_table
-      , h2 [] [ text "Proficiencies" ]
-      , viewProficiencies sheet.languages sheet.weapons sheet.armor sheet.tools
-      , h2 [] [ text "Notable traits" ]
-      , viewNotableTraits sheet.notable_traits
-      , viewAttacks sheet.attacks
-      , viewSpellcastingSections
-          currentlyPreparedSpells
-          showOnlyPreparedSpells
-          sheet.spellcasting_sections
-          sheet.spell_slots
+      [ header
+          [ style "padding" "1em"
+          , style "color" "black"
+          , style "background-color" "lightgrey"
+          , style "clear" "left"
+          , style "text-align" "left"
+          ]
+          [ button [ style "float" "right"
+                  , E.onClick EditCharacter
+                  ]
+                  [ text "edit" ]
+          , h1 [] [ text sheet.name ]
+          ]
+      , article [ style "padding" "1em" ]
+          [ viewSummaryTable sheet.summary
+          , viewAbilityTable sheet.ability_table
+          , viewSkillTable sheet.skill_table
+          , h2 [] [ text "Proficiencies" ]
+          , viewProficiencies sheet.languages sheet.weapons sheet.armor sheet.tools
+          , h2 [] [ text "Notable traits" ]
+          , viewNotableTraits sheet.notable_traits
+          , viewAttacks sheet.attacks
+          , viewSpellcastingSections
+              currentlyPreparedSpells
+              showOnlyPreparedSpells
+              sheet.spellcasting_sections
+              sheet.spell_slots
+          ]
       ]
   ]
 
@@ -348,7 +355,17 @@ viewSpellcastingSection showOnlyPreparedSpells section currentlyPreparedSpells =
   div []
     [ h3 [] [text <| section.origin ++ " spells"]
     , ul []
-        [ simple li <| "Max prepared spells: " ++ String.fromInt section.max_prepared_spells
+        [ li [ css 
+                 [ Css.color (if Set.size currentlyPreparedSpells > section.max_prepared_spells
+                              then Css.hex "ff0000"
+                              else Css.hex "000000")] 
+                 ]
+             [ text <|
+                 "Prepared spells: "
+                 ++ String.fromInt (Set.size currentlyPreparedSpells)
+                 ++ "/"
+                 ++ String.fromInt section.max_prepared_spells
+             ]
         , simple li <| "Spell attack mod: " ++ formatModifier section.spell_attack_mod
         , simple li <| "Spell save DC: " ++ formatModifier section.spell_save_dc
         , simple li <| "Spellcasting ability: " ++ section.spellcasting_ability
@@ -446,6 +463,7 @@ formatModifier mod =
 
 --------------------------------------------------------------------------------
 -- ATTRIBUTES
+----------------------------------------------------------------------
 tableAttrs : List (Attribute msg)
 tableAttrs =
   [ style "font-family" "Fira Code, sans-serif"
