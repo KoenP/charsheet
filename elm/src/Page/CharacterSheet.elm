@@ -17,6 +17,7 @@ import Platform.Cmd as Cmd
 
 import Request exposing (requestUrl)
 import Types exposing (..)
+import Util exposing (..)
 
 ----------------------------------------------------------------------
 -- INITIALIZE
@@ -133,14 +134,6 @@ componentDec : Decoder Component
 componentDec =
   D.succeed V
 
-exactMatchDec : Decoder a -> a -> Decoder a
-exactMatchDec dec val =
-  dec |>
-    D.andThen (\other ->
-                 case val == other of
-                     True  -> D.succeed val
-                     False -> D.fail "mismatch in exactMatchDec")
-  
 ----------------------------------------------------------------------
 -- UPDATE
 ----------------------------------------------------------------------
@@ -441,11 +434,6 @@ simpleTd str = td tdAttrs [ text str ]
 
 simpleRow : List String -> Html msg
 simpleRow strs = tr [] (List.map simpleTd strs)
-
-simple :  (List (Attribute msg) -> List (Html msg) -> Html msg)
-       -> String
-       -> Html msg
-simple f str = f [] [ text str ]
 
 captionedTable : String -> List (Attribute msg) -> List (Html msg) -> Html msg
 captionedTable captionText attrs tableRows =

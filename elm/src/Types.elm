@@ -134,17 +134,30 @@ type alias CharacterSelectionPageData =
 -- EDIT CHARACTER PAGE
 type alias Options =
   { charlevel : Level
-  , choice : Maybe String
   , id : String
   , origin : String
   , origin_category : String
-  , spec : Spec
+  , spec : SpecAndChoice
   }
 type Spec
   = ListSpec (List String)
   | OrSpec (String, Spec) (String, Spec)
   | FromSpec Unique Int Spec
 type alias Unique = Bool
+
+type Dir = L | R
+type SpecAndChoice
+  = ListSC (Maybe String) (List String)
+  | OrSC (Maybe Dir) (String, SpecAndChoice) (String, SpecAndChoice)
+  | FromSC Unique Int (List SpecAndChoice)
+
+extractChoicesList : SpecAndChoice -> List String
+extractChoicesList spec =
+  case spec of
+    ListSC (Just choice) _ -> [ choice ]
+    ListSC Nothing _ -> []
+    OrSC _ (_, left) (_,right) -> extractChoicesList left ++ extractChoicesList right
+    FromSC _ _ specs -> List.concatMap extractChoicesList specs
 
 ----------------------------------------------------------------------
 -- MODEL
@@ -198,6 +211,7 @@ type Msg
   | SetSpellPreparedness Origin SpellName Bool
   | SetShowOnlyPreparedSpells Bool
   | EditCharacterLevel Level
+  | Choice String String (List String)
 
 type HttpResponseMsg
   = GotCharacterList (List String)
