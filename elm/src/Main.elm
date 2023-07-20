@@ -94,40 +94,45 @@ urlToRoute url =
 -- UPDATE
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case msg of
-    LinkClicked urlRequest ->
-      case urlRequest of
-        Browser.Internal url ->
-          ( model, Nav.pushUrl model.key (Url.toString url))
-        Browser.External href ->
-          ( model, Nav.load href )
+  let _ = Debug.log "Global update (msg)" msg
+      _ = Debug.log "Global update (model)" model
+  in case msg of
+       LinkClicked urlRequest ->
+         case urlRequest of
+           Browser.Internal url ->
+             ( model, Nav.pushUrl model.key (Url.toString url))
+           Browser.External href ->
+             ( model, Nav.load href )
 
-    UrlChanged url ->
-      navigate model (urlToRoute url)
+       UrlChanged url ->
+         navigate model (urlToRoute url)
 
-    EditCharacter ->
-      ( { model | page = Loading }, Nav.pushUrl model.key "/edit" )
+       EditCharacter ->
+         ( { model | page = Loading }, Nav.pushUrl model.key "/edit" )
 
-    _ ->
-      case model.page of
-        CharacterSelectionPage pageData ->
-          applyPage model (updateCharacterSelectionPage msg pageData)
-        CharacterSheetPage sheet ->
-          Sheet.update msg model
-        EditCharacterPage options selectedLevel ->
-          Edit.update msg model options
-        Loading ->
-          case msg of
-            HttpResponse (Ok responseMsg) ->
-              handleHttpResponseMsg responseMsg model
-            _ ->
-              let
-                error = "Main.update: Expected HttpResponse, got " ++
-                        Debug.toString msg
-              in 
-                ( { model | page = Error error }, none )
-        Error error  ->
-          ( { model | page = Error error }, none )
+       Choice origin id choice ->
+         ( model , registerChoice origin id choice )
+
+       _ ->
+         case model.page of
+           CharacterSelectionPage pageData ->
+             applyPage model (updateCharacterSelectionPage msg pageData)
+           CharacterSheetPage sheet ->
+             Sheet.update msg model
+           EditCharacterPage options selectedLevel ->
+             Edit.update msg model options selectedLevel
+           Loading ->
+             case msg of
+               HttpResponse (Ok responseMsg) ->
+                 handleHttpResponseMsg responseMsg model
+               _ ->
+                 let
+                   error = "Main.update: Expected HttpResponse, got " ++
+                           Debug.toString msg
+                 in 
+                   ( { model | page = Error error }, none )
+           Error error  ->
+             ( { model | page = Error error }, none )
 
 updateCharacterSelectionPage
   : Msg -> CharacterSelectionPageData -> (Page, Cmd Msg)
@@ -169,6 +174,11 @@ handleHttpResponseMsg msg model =
           }
         , none
         )
+      _ ->
+        errorPage
+          model
+          ("handleHttpResponseMsg called with unsupported message: "
+          ++ Debug.toString msg)
                
 loadCharacter : String -> Cmd Msg
 loadCharacter charName =
@@ -186,6 +196,23 @@ newCharacter charName =
         (mkHttpResponseMsg (\_ -> CharacterLoaded))
         (succeed ())
     }
+
+registerChoice : String -> String -> List String -> Cmd Msg
+registerChoice origin id choice =
+  Http.get
+    { url = requestUrl "choice" [ ("source", origin)
+                                , ("id", id)
+                                , ("choice", choiceToString choice)
+                                ]
+    , expect =
+        Http.expectJson (mkHttpResponseMsg (\_ -> ChoiceRegistered)) (succeed ())
+    }
+
+choiceToString : List String -> String
+choiceToString choice = "[" ++ String.concat (List.intersperse "," choice) ++ "]"
+  -- case choice of
+  --   [singleton] -> singleton
+    -- _ -> 
 
 ----------------------------------------------------------------------
 -- VIEW

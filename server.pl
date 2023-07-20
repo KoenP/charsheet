@@ -48,8 +48,8 @@ user:file_search_path(js, 'client/dist/js').
 %   - =|/request/save_character|=: Save all changes made to the
 %      current character.
 %   - =|/request/choice?source=_&id=_&choice=_|=: Register the given
-%      choice for the character. This is not committed to permanent
-%      storage until =save_character= is requested.
+%      choice for the character. This is immediately committed to permanent
+%      storage.
 run_server :-
     http_server(http_dispatch, [port(8000)]).
 

@@ -1,7 +1,7 @@
 module Page.EditCharacter exposing (..)
 
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (..)
+import Html.Styled.Attributes as Attr
 import Html.Styled.Events as E
 import Http
 import Css exposing (Style)
@@ -55,7 +55,9 @@ addChoiceDec spec =
       D.andThen (addOrChoiceDec spec)
     FromSC unique n (subspec :: _) ->
       D.map (FromSC unique n) <|
-        D.lazy (\_ -> D.list (addChoiceDec subspec))
+        D.lazy (\_ -> D.oneOf [ D.list (addChoiceDec subspec)
+                              , D.map List.singleton (addChoiceDec subspec)
+                              ])
     _ -> D.fail "Page.EditCharacter.addChoiceDec: invalid match"
 
 addOrChoiceDec : SpecAndChoice -> Dir -> Decoder SpecAndChoice
@@ -98,16 +100,21 @@ fromSpecDec unique =
 --------------------------------------------------------------------------------
 -- UPDATE
 --------------------------------------------------------------------------------
-update : Msg -> Model -> List Options -> (Model, Cmd Msg)
-update msg model options =
+update : Msg -> Model -> List Options -> Int -> (Model, Cmd Msg)
+update msg model options selectedLevel =
   case msg of
-    EditCharacterLevel selectedLevel ->
-      applyPage model (EditCharacterPage options selectedLevel, Cmd.none)
+    HttpResponse (Ok (GotCharacterOptions newOptions)) ->
+      applyPage model (EditCharacterPage newOptions selectedLevel, Cmd.none)
+    HttpResponse (Ok ChoiceRegistered) ->
+      (model, load)
+    EditCharacterLevel newLevel ->
+      applyPage model (EditCharacterPage options newLevel, Cmd.none)
     _ ->
       let
         _ = Debug.log "" msg
       in 
-        errorPage model "Page.EditCharacter.update called with unsupported message."
+        errorPage model ("Page.EditCharacter.update called with "
+                           ++ Debug.toString msg)
       
 
 --------------------------------------------------------------------------------
@@ -120,7 +127,7 @@ view opts selectedLevel =
 viewSideNav : List Options -> Html Msg
 viewSideNav opts =
   div
-    [ css sideNavStyle ]
+    [ Attr.css sideNavStyle ]
     (opts
     |> List.map .charlevel
     |> List.sort
@@ -138,7 +145,7 @@ nubSorted sortedList =
 viewSideNavLevelButton : Int -> Html Msg
 viewSideNavLevelButton lvl =
   button
-    [ css sideNavButtonStyle
+    [ Attr.css sideNavButtonStyle
     , E.onClick (EditCharacterLevel lvl)
     ]
     [ text ("Level " ++ String.fromInt lvl) ]
@@ -147,7 +154,7 @@ viewSideNavLevelButton lvl =
 viewMain : List Options -> Level -> Html Msg
 viewMain opts selectedLevel =
   div
-    [ css
+    [ Attr.css
         [ Css.marginLeft (Css.px 160)
         , Css.padding2 (Css.px 0) (Css.px 10)
         ]
@@ -172,12 +179,14 @@ viewSpec : String -> String -> (String -> Msg) -> SpecAndChoice -> Html Msg
 viewSpec origin id mkMsg spec =
   case spec of
 
-    ListSC _ options ->
-      select
-        [ E.onInput mkMsg ]
-        (  option [selected True, disabled True] [text "-- select an option --"]
-        :: List.map viewListSpecOption options
-        )
+    ListSC selected options ->
+      viewListSC origin id mkMsg selected options
+
+      -- select
+      --   [ E.onInput mkMsg ]
+      --   (  option [selected True, disabled True] [text "-- select an option --"]
+      --   :: List.map viewListSpecOption options
+      --   )
 
     FromSC unique n subspecs ->
       let
@@ -191,6 +200,23 @@ viewSpec origin id mkMsg spec =
 
     _ ->
       text "TODO"
+
+viewListSC :  String -> String -> (String -> Msg) -> Maybe String -> List String
+           -> Html Msg
+viewListSC origin id mkMsg selected options =
+  select [ E.onInput mkMsg ] <|
+    case selected of
+      Nothing ->
+        option [Attr.selected True, Attr.disabled True] [text "-- select an option --"]
+        :: List.map (viewListSpecOption False) options
+      Just selectedVal ->
+        List.map (\opt -> viewListSpecOption (opt == selectedVal) opt) options
+        
+viewListSpecOption : Bool -> String -> Html Msg
+viewListSpecOption isSelected opt =
+  option
+  [Attr.value opt, Attr.selected isSelected]
+  [text opt]
 
 choiceEditFunctions : String -> String -> List String -> List (String -> Msg)
 choiceEditFunctions origin id choices =
@@ -206,12 +232,6 @@ choiceEditFunctions origin id choices =
           \x -> Zipper pre x post |> Zipper.toList |> Choice origin id
       in 
         Zipper.toList (Zipper.extend overwriteFocused zipper)
-
-viewListSpecOption : String -> Html Msg
-viewListSpecOption opt =
-  option
-  [value opt]
-  [text opt]
 
 groupOptionsByOriginCategory : List Options -> Dict String (List Options)
 groupOptionsByOriginCategory =

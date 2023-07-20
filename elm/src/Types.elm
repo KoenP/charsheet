@@ -218,6 +218,7 @@ type HttpResponseMsg
   | CharacterLoaded
   | GotCharacterSheet CharacterSheet
   | GotCharacterOptions (List Options)
+  | ChoiceRegistered
 
 mkHttpResponseMsg : (a -> HttpResponseMsg) -> (Result Http.Error a -> Msg)
 mkHttpResponseMsg f result =
