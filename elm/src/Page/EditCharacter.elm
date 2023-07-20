@@ -55,14 +55,14 @@ addChoiceDec spec =
       D.andThen (addOrChoiceDec spec)
     FromSC unique n (subspec :: _) ->
       D.map (FromSC unique n) <|
-        D.lazy (\_ -> D.oneOf [ D.list (addChoiceDec subspec)
-                              , D.map List.singleton (addChoiceDec subspec)
-                              ])
+        D.lazy (\_ -> D.map
+                  (\specs -> specs ++ List.repeat (n - List.length specs) subspec)
+                  (D.list (addChoiceDec subspec)))
     _ -> D.fail "Page.EditCharacter.addChoiceDec: invalid match"
 
 addOrChoiceDec : SpecAndChoice -> Dir -> Decoder SpecAndChoice
 addOrChoiceDec spec dir = D.fail "TODO: addOrChoiceDec"
-       
+
 dirDec : Decoder Dir
 dirDec =
   D.oneOf [ Util.matchStringDec "left"  |> Util.decSet L
@@ -92,10 +92,19 @@ orSpecDec =
 
 fromSpecDec : Unique -> Decoder SpecAndChoice
 fromSpecDec unique =
-  D.succeed (FromSC unique)
-    |> D.andMap (D.field "num" D.int)
-    |> D.andMap (D.field "spec"
-                   (D.lazy (\_ -> D.map List.singleton specDec)))
+  D.field "num" D.int
+    |> D.andThen
+       (\n ->
+          D.map
+            (FromSC unique n)
+            (D.field "spec" (D.lazy (\_ -> D.map (List.repeat n) specDec))))
+
+
+
+--   D.succeed (FromSC unique)
+--     |> D.andMap (D.field "num" D.int)
+--     |> D.andMap (D.field "spec"
+--                    (D.lazy (\_ -> D.map List.singleton specDec)))
 
 --------------------------------------------------------------------------------
 -- UPDATE
@@ -173,7 +182,8 @@ viewOptions : Options -> Html Msg
 viewOptions {origin, spec, id} =
   div
     []
-    [ simple h3 id, viewSpec origin id (Choice origin id << List.singleton) spec ]
+    [ simple h3 id
+    , viewSpec origin id (Choice origin id << SingletonChoice) spec ]
 
 viewSpec : String -> String -> (String -> Msg) -> SpecAndChoice -> Html Msg
 viewSpec origin id mkMsg spec =
@@ -181,12 +191,6 @@ viewSpec origin id mkMsg spec =
 
     ListSC selected options ->
       viewListSC origin id mkMsg selected options
-
-      -- select
-      --   [ E.onInput mkMsg ]
-      --   (  option [selected True, disabled True] [text "-- select an option --"]
-      --   :: List.map viewListSpecOption options
-      --   )
 
     FromSC unique n subspecs ->
       let
@@ -196,7 +200,15 @@ viewSpec origin id mkMsg spec =
          editFunctions : List (String -> Msg)
          editFunctions = choiceEditFunctions origin id choicesList
       in 
-        div [] (List.map2 (viewSpec origin id) editFunctions subspecs)
+        div [] <|
+          List.map2
+             (viewSpec origin id)
+             editFunctions
+             subspecs
+          ++
+          List.map
+            (viewSpec origin id (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
+            (List.drop (List.length editFunctions) subspecs)
 
     _ ->
       text "TODO"
@@ -210,7 +222,8 @@ viewListSC origin id mkMsg selected options =
         option [Attr.selected True, Attr.disabled True] [text "-- select an option --"]
         :: List.map (viewListSpecOption False) options
       Just selectedVal ->
-        List.map (\opt -> viewListSpecOption (opt == selectedVal) opt) options
+        option [Attr.disabled True] [text "-- select an option --"]
+        :: List.map (\opt -> viewListSpecOption (opt == selectedVal) opt) options
         
 viewListSpecOption : Bool -> String -> Html Msg
 viewListSpecOption isSelected opt =
@@ -222,14 +235,14 @@ choiceEditFunctions : String -> String -> List String -> List (String -> Msg)
 choiceEditFunctions origin id choices =
   case choices of
     [] ->
-      [ List.singleton >> Choice origin id ]
+      [ Choice origin id << ListChoice << List.singleton ]
     c :: cs ->
       let
         zipper = Zipper [] c cs
 
         overwriteFocused : Zipper String -> (String -> Msg)
         overwriteFocused (Zipper pre _ post) =
-          \x -> Zipper pre x post |> Zipper.toList |> Choice origin id
+          \x -> Zipper pre x post |> Zipper.toList |> ListChoice |> Choice origin id
       in 
         Zipper.toList (Zipper.extend overwriteFocused zipper)
 

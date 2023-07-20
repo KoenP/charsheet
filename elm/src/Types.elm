@@ -211,7 +211,9 @@ type Msg
   | SetSpellPreparedness Origin SpellName Bool
   | SetShowOnlyPreparedSpells Bool
   | EditCharacterLevel Level
-  | Choice String String (List String)
+  | Choice String String Choice
+
+type Choice = ListChoice (List String) | SingletonChoice String
 
 type HttpResponseMsg
   = GotCharacterList (List String)

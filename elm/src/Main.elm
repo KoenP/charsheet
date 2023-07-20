@@ -197,8 +197,8 @@ newCharacter charName =
         (succeed ())
     }
 
-registerChoice : String -> String -> List String -> Cmd Msg
-registerChoice origin id choice =
+registerChoice : String -> String -> Choice -> Cmd Msg
+registerChoice origin id choice = let _ = Debug.log "registerChoice" choice in 
   Http.get
     { url = requestUrl "choice" [ ("source", origin)
                                 , ("id", id)
@@ -208,11 +208,13 @@ registerChoice origin id choice =
         Http.expectJson (mkHttpResponseMsg (\_ -> ChoiceRegistered)) (succeed ())
     }
 
-choiceToString : List String -> String
-choiceToString choice = "[" ++ String.concat (List.intersperse "," choice) ++ "]"
-  -- case choice of
-  --   [singleton] -> singleton
-    -- _ -> 
+choiceToString : Choice -> String
+choiceToString choice =
+  case choice of
+    SingletonChoice sc ->
+      sc
+    ListChoice list ->
+      "[" ++ String.concat (List.intersperse "," list) ++ "]"
 
 ----------------------------------------------------------------------
 -- VIEW
