@@ -49,10 +49,10 @@ addChoiceDec spec =
   case spec of
     ListSC _ options ->
       D.map (\choice -> ListSC (Just choice) options) <| D.string
-    OrSC _ (leftName, leftSpec) (rightName, rightSpec) ->
+    OrSC _ left right ->
       D.field "choicetype" (Util.matchStringDec "or") |>
       D.andThen (\_ -> D.field "side" dirDec) |>
-      D.andThen (addOrChoiceDec spec)
+      D.andThen (addOrChoiceDec left right)
     FromSC unique n (subspec :: _) ->
       D.map (FromSC unique n) <|
         D.lazy (\_ -> D.map
@@ -60,8 +60,22 @@ addChoiceDec spec =
                   (D.list (addChoiceDec subspec)))
     _ -> D.fail "Page.EditCharacter.addChoiceDec: invalid match"
 
-addOrChoiceDec : SpecAndChoice -> Dir -> Decoder SpecAndChoice
-addOrChoiceDec spec dir = D.fail "TODO: addOrChoiceDec"
+addOrChoiceDec :  (String, SpecAndChoice) -> (String, SpecAndChoice)
+               -> Dir -> Decoder SpecAndChoice
+addOrChoiceDec (lname,lspec) (rname,rspec) dir =
+  let
+    subspec = 
+      case dir of
+        L -> lspec
+        R -> rspec
+    choiceDec =
+      D.field "choice" (addChoiceDec subspec)  
+  in
+    D.map
+      (\newspec -> case dir of
+                     L -> OrSC (Just dir) (lname,newspec) (rname,rspec)
+                     R -> OrSC (Just dir) (lname,lspec) (rname,newspec))
+      choiceDec
 
 dirDec : Decoder Dir
 dirDec =
@@ -99,13 +113,6 @@ fromSpecDec unique =
             (FromSC unique n)
             (D.field "spec" (D.lazy (\_ -> D.map (List.repeat n) specDec))))
 
-
-
---   D.succeed (FromSC unique)
---     |> D.andMap (D.field "num" D.int)
---     |> D.andMap (D.field "spec"
---                    (D.lazy (\_ -> D.map List.singleton specDec)))
-
 --------------------------------------------------------------------------------
 -- UPDATE
 --------------------------------------------------------------------------------
@@ -114,15 +121,30 @@ update msg model options selectedLevel =
   case msg of
     HttpResponse (Ok (GotCharacterOptions newOptions)) ->
       applyPage model (EditCharacterPage newOptions selectedLevel, Cmd.none)
+
     HttpResponse (Ok ChoiceRegistered) ->
       (model, load)
+
     EditCharacterLevel newLevel ->
       applyPage model (EditCharacterPage options newLevel, Cmd.none)
-    _ ->
+
+    OrSCChooseDir origin id dir ->
       let
-        _ = Debug.log "" msg
-      in 
-        errorPage model ("Page.EditCharacter.update called with "
+        newOptions =
+          List.map
+            (\opt ->
+               if (origin, id) /= (opt.origin, opt.id)
+               then opt
+               else case opt.spec of
+                      OrSC _ left right -> { opt | spec = OrSC (Just dir) left right }
+                      _                 -> opt)
+            options
+      in
+        applyPage model (EditCharacterPage newOptions selectedLevel, Cmd.none)
+
+    _ ->
+      let _ = Debug.log "" msg
+      in errorPage model ("Page.EditCharacter.update called with "
                            ++ Debug.toString msg)
       
 
@@ -140,16 +162,9 @@ viewSideNav opts =
     (opts
     |> List.map .charlevel
     |> List.sort
-    |> nubSorted
+    |> Util.nubSorted
     |> List.map viewSideNavLevelButton
     )
-nubSorted : List a -> List a
-nubSorted sortedList =
-  case sortedList of
-    x :: y :: ys -> 
-      if x == y then nubSorted (y :: ys) else x :: nubSorted (y :: ys)
-    _            ->
-      sortedList
 
 viewSideNavLevelButton : Int -> Html Msg
 viewSideNavLevelButton lvl =
@@ -183,53 +198,70 @@ viewOptions {origin, spec, id} =
   div
     []
     [ simple h3 id
-    , viewSpec origin id (Choice origin id << SingletonChoice) spec ]
+    , viewSpec [] origin id (Choice origin id << SingletonChoice) False spec
+    ]
 
-viewSpec : String -> String -> (String -> Msg) -> SpecAndChoice -> Html Msg
-viewSpec origin id mkMsg spec =
+viewSpec :  List String -> String -> String
+         -> (String -> Msg) -> Bool -> SpecAndChoice
+         -> Html Msg
+viewSpec disabledOptions origin id mkMsg isDisabled spec =
   case spec of
-
     ListSC selected options ->
-      viewListSC origin id mkMsg selected options
+      viewListSC disabledOptions origin id mkMsg selected isDisabled options
 
     FromSC unique n subspecs ->
-      let
-         choicesList : List String
-         choicesList = List.concatMap extractChoicesList subspecs
+      viewFromSC origin id unique n subspecs
 
-         editFunctions : List (String -> Msg)
-         editFunctions = choiceEditFunctions origin id choicesList
-      in 
-        div [] <|
-          List.map2
-             (viewSpec origin id)
-             editFunctions
-             subspecs
-          ++
-          List.map
-            (viewSpec origin id (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
-            (List.drop (List.length editFunctions) subspecs)
+    OrSC dir left right ->
+      viewOrSC origin id dir left right
 
-    _ ->
-      text "TODO"
-
-viewListSC :  String -> String -> (String -> Msg) -> Maybe String -> List String
+viewListSC :  List String -> String -> String
+           -> (String -> Msg)
+           -> Maybe String -> Bool -> List String
            -> Html Msg
-viewListSC origin id mkMsg selected options =
-  select [ E.onInput mkMsg ] <|
+viewListSC disabledOptions origin id mkMsg selected isDisabled options =
+  select [ E.onInput mkMsg, Attr.disabled isDisabled ] <|
     case selected of
       Nothing ->
         option [Attr.selected True, Attr.disabled True] [text "-- select an option --"]
-        :: List.map (viewListSpecOption False) options
+        :: List.map (viewListSpecOption disabledOptions False) options
       Just selectedVal ->
         option [Attr.disabled True] [text "-- select an option --"]
-        :: List.map (\opt -> viewListSpecOption (opt == selectedVal) opt) options
+        :: List.map
+           (\opt ->
+              viewListSpecOption disabledOptions (opt == selectedVal) opt) options
         
-viewListSpecOption : Bool -> String -> Html Msg
-viewListSpecOption isSelected opt =
+viewListSpecOption : List String -> Bool -> String -> Html Msg
+viewListSpecOption disabledOptions isSelected opt =
   option
-  [Attr.value opt, Attr.selected isSelected]
-  [text opt]
+  [ Attr.value opt
+  , Attr.selected isSelected
+  , Attr.disabled (not isSelected && List.member opt disabledOptions)
+  ]
+  [ text opt ]
+
+viewFromSC : String -> String -> Unique -> Int -> List SpecAndChoice -> Html Msg
+viewFromSC origin id unique n subspecs =
+  let
+    choicesList : List String
+    choicesList = List.concatMap extractChoicesList subspecs
+
+    disabledOptions = if unique then choicesList else []
+                  
+    editFunctions : List (String -> Msg)
+    editFunctions = choiceEditFunctions origin id choicesList
+  in 
+    div [] <|
+      List.map3
+        (viewSpec disabledOptions origin id)
+        editFunctions
+        (List.repeat (List.length editFunctions) False)
+        subspecs
+      ++
+      List.map2
+        (viewSpec disabledOptions origin id (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
+        ((List.length choicesList == 0) :: List.repeat n True)
+        (List.drop (List.length editFunctions) subspecs)
 
 choiceEditFunctions : String -> String -> List String -> List (String -> Msg)
 choiceEditFunctions origin id choices =
@@ -245,6 +277,49 @@ choiceEditFunctions origin id choices =
           \x -> Zipper pre x post |> Zipper.toList |> ListChoice |> Choice origin id
       in 
         Zipper.toList (Zipper.extend overwriteFocused zipper)
+
+viewOrSC :  String -> String
+         -> Maybe Dir -> (String, SpecAndChoice) -> (String, SpecAndChoice)
+         -> Html Msg
+viewOrSC origin id dir (lname, lspec) (rname, rspec) =
+  let
+    name = origin ++ "_" ++ id
+    leftId  = String.concat <| List.intersperse "_" [origin, id, lname]
+    rightId = String.concat <| List.intersperse "_" [origin, id, rname]
+  in 
+    div []
+      [ text (Debug.toString dir)
+      , input [ Attr.type_ "radio"
+              , Attr.checked (dir == Just L)
+              , Attr.id leftId
+              , Attr.name name
+              , E.onInput (\_ -> OrSCChooseDir origin id L)
+              ] []
+      , label [ Attr.for leftId ] [ text lname ]
+      , input [ Attr.type_ "radio"
+              , Attr.id rightId
+              , Attr.name name
+              , Attr.checked (dir == Just R)
+              , E.onInput (\_ -> OrSCChooseDir origin id R)
+              ] []
+      , label [ Attr.for rightId ] [ text rname ]
+      , div [] <|
+          case dir of
+            Nothing   -> []
+            Just dir_ -> [ viewSpec [] origin id
+                             (Choice origin id << SingletonChoice)
+                             False
+                             (case dir_ of
+                                L -> lspec
+                                R -> rspec)
+                         ]
+      ]
+
+
+-- viewSpec :  List String -> String -> String
+--          -> (String -> Msg) -> Bool -> SpecAndChoice
+--          -> Html Msg
+-- viewSpec disabledOptions origin id mkMsg isDisabled spec =
 
 groupOptionsByOriginCategory : List Options -> Dict String (List Options)
 groupOptionsByOriginCategory =

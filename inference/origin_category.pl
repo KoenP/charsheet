@@ -44,4 +44,11 @@ origin_level(Class >: ClassLevel, Level) :-
     origin_level(match_class(Class:ClassLevel), Level).
 origin_level(race(_), 1) :- !.
 origin_level(background(_), 1) :- !.
+origin_level(trait(Trait), TraitOriginLevel) :-
+    !,
+    trait(TraitOrigin, Trait),
+    origin_level(TraitOrigin, TraitOriginLevel).
+origin_level(choice(ChoiceOrigin, _), ChoiceOriginLevel) :-
+    !,
+    origin_level(ChoiceOrigin, ChoiceOriginLevel).
 origin_level(_, unknown) :- !.

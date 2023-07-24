@@ -16,7 +16,7 @@ feat(alert) ?= "Always on the lookout for danger, you gain the following benefit
     - You can’t be surprised while you are conscious.
     - You gain a +5 bonus to initiative.
     - Other creatures don’t gain advantage on attack rolls against you as a result of being hidden from you.".
-bonus_source(feat(alert), init + 5).
+bonus_source(trait(feat(alert)), init + 5).
 
 feat_option(durable).
 feat(durable) ?= "Hardy and resilient, you gain the following benefits:
@@ -35,12 +35,12 @@ feat(lucky) ?= "Three times per long rest: reroll a die (own die or attack roll 
 % TASHA'S CAULDRON OF EVERYTHING                                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 feat_option('fey touched').
-bonus_options_source(feat('fey touched'), asi, id,
+bonus_options_source(trait(feat('fey touched')), asi, id,
                      from_list([int+1, wis+1, cha+1])).
-options_source(feat('fey touched'), spell, fey_touched_spell).
+options_source(trait(feat('fey touched')), spell, fey_touched_spell).
 known_spell(feat('fey touched'), Abi, always, [per_rest(long,1)], no, Spell) :-
-    choice(feat('fey touched'), asi, Abi),
-    (Spell = 'misty step' ; choice(feat('fey touched'), spell, Spell)).
+    choice(trait(feat('fey touched')), asi, Abi),
+    (Spell = 'misty step' ; choice(trait(feat('fey touched')), spell, Spell)).
 fey_touched_spell(Spell) :-
     spell_data(Spell, Data),
     Data.get(level) = 1, Data.get(school) = School,

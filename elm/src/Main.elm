@@ -45,7 +45,7 @@ init _ url key =
     , showOnlyPreparedSpells = False
     , page = Loading
     }
-  , Nav.pushUrl key "/edit"
+  , Nav.pushUrl key "/list_characters"
   )
 
 navigate : Model -> Route -> ( Model, Cmd Msg )
@@ -83,6 +83,7 @@ routeParser =
   Parser.oneOf
     [ Parser.map SelectCharacterRoute Parser.top
     , Parser.map SelectCharacterRoute (Parser.s "src" </> Parser.s "Main.elm")
+    , Parser.map SelectCharacterRoute (Parser.s "list_characters")
     , Parser.map SheetRoute (Parser.s "sheet")
     , Parser.map EditRoute (Parser.s "edit")
     ]

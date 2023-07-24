@@ -49,3 +49,11 @@ decSet val = D.map (\_ -> val)
 
 postcomp : (b -> c) -> (a -> b) -> (a -> c)
 postcomp g f x = g (f x)
+
+nubSorted : List a -> List a
+nubSorted sortedList =
+  case sortedList of
+    x :: y :: ys -> 
+      if x == y then nubSorted (y :: ys) else x :: nubSorted (y :: ys)
+    _            ->
+      sortedList

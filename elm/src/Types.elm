@@ -212,6 +212,7 @@ type Msg
   | SetShowOnlyPreparedSpells Bool
   | EditCharacterLevel Level
   | Choice String String Choice
+  | OrSCChooseDir String String Dir
 
 type Choice = ListChoice (List String) | SingletonChoice String
 
