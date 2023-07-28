@@ -91,7 +91,7 @@ type alias Attack =
   }
 
 type alias SpellcastingSection =
-  { max_prepared_spells : Int
+  { max_prepared_spells : Maybe Int
   , origin : Origin
   , spell_attack_mod : Int
   , spell_save_dc : Int
@@ -147,7 +147,7 @@ type alias Unique = Bool
 
 type Dir = L | R
 type SpecAndChoice
-  = ListSC (Maybe String) (List String)
+  = ListSC (Maybe String) (List (String, String))
   | OrSC (Maybe Dir) (String, SpecAndChoice) (String, SpecAndChoice)
   | FromSC Unique Int (List SpecAndChoice)
 
@@ -173,7 +173,7 @@ type Page
   | Error String
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
-  | EditCharacterPage (List Options) Level
+  | EditCharacterPage (List Options) (Maybe Level) (Maybe String)
 
 applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
 applyPage model ( page, cmd ) =
@@ -213,6 +213,10 @@ type Msg
   | EditCharacterLevel Level
   | Choice String String Choice
   | OrSCChooseDir String String Dir
+  | GotoSheet
+  | GotoLevelUp
+  | LevelUpAs String
+  | SetEditCharacterPageDesc (Maybe String)
 
 type Choice = ListChoice (List String) | SingletonChoice String
 
@@ -222,6 +226,7 @@ type HttpResponseMsg
   | GotCharacterSheet CharacterSheet
   | GotCharacterOptions (List Options)
   | ChoiceRegistered
+  | LeveledUp
 
 mkHttpResponseMsg : (a -> HttpResponseMsg) -> (Result Http.Error a -> Msg)
 mkHttpResponseMsg f result =

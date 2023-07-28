@@ -115,9 +115,9 @@ total_other_ability_bonus(Ability, Total) :-
 saving_throw(Ability, Bonus) :-
     ability_mod(Ability, Mod),
     proficiency_bonus(ProfBon),
-    ((trait(saving_throw(Ability)), !)
-     -> Bonus is Mod + ProfBon
-     ;  Bonus = Mod
+    (trait(saving_throw(Ability))
+     -> (!, Bonus is Mod + ProfBon)
+     ;  (!, Bonus = Mod)
     ).
 saving_throw(Ability, Bonus) :-
     % Make this predicate not fail if we don't have an initial class yet.

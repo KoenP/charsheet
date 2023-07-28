@@ -120,7 +120,7 @@ update msg model =
              applyPage model (updateCharacterSelectionPage msg pageData)
            CharacterSheetPage sheet ->
              Sheet.update msg model
-           EditCharacterPage options selectedLevel ->
+           EditCharacterPage options selectedLevel _ ->
              Edit.update msg model options selectedLevel
            Loading ->
              case msg of
@@ -171,7 +171,7 @@ handleHttpResponseMsg msg model =
         )
       GotCharacterOptions options ->
         ( { model
-            | page = EditCharacterPage options 1
+            | page = EditCharacterPage options (Just 1) Nothing
           }
         , none
         )
@@ -234,8 +234,8 @@ view model =
           characterSelectionPage data
         CharacterSheetPage data ->
           Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
-        EditCharacterPage options selectedLevel ->
-          Edit.view options selectedLevel
+        EditCharacterPage options selectedLevel desc ->
+          Edit.view options selectedLevel desc
       
   }
   

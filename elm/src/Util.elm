@@ -36,6 +36,10 @@ matchStringDec val =
   D.string |>
   D.andThen (\other -> if val == other then D.succeed val else D.fail ("expected " ++ val))
 
+decSucceeds : Decoder a -> Decoder Bool
+decSucceeds dec =
+  D.oneOf [D.map (\_ -> True) dec, D.succeed False]
+
 exactMatchDec : Decoder a -> a -> Decoder a
 exactMatchDec dec val =
   dec |>
@@ -57,3 +61,12 @@ nubSorted sortedList =
       if x == y then nubSorted (y :: ys) else x :: nubSorted (y :: ys)
     _            ->
       sortedList
+
+guardM : String -> (a -> Decoder Bool) -> Decoder a -> Decoder a
+guardM errMsg predDec valDec =
+  valDec |> D.andThen
+    (\val ->
+       predDec val |> D.andThen
+         (\bool ->
+            if bool then D.succeed val else D.fail errMsg))
+

@@ -231,10 +231,11 @@ spec_to_json(Origin, Id, Spec1 or Spec2,
 % Case: any other predicate.
 spec_to_json(Origin, Id, Spec,
              _{spectype: list, list: List}) :-
-    findall(XStr,
+    findall(_{opt: XStr, desc: Desc},
             (call(Spec, X),
              (\+ suppress_base_option(Origin, Id, X)),
-             term_string(X, XStr)),
+             term_string(X, XStr),
+             default_on_fail("", ?=(X), Desc)),
              %fmt(format_term(X), XStr)),
             List).
 

@@ -96,7 +96,7 @@ attackDec =
 spellcastingSectionDec : Decoder SpellcastingSection
 spellcastingSectionDec =
   D.succeed SpellcastingSection
-    |> D.andMap (D.field "max_prepared_spells" D.int)
+    |> D.andMap (D.field "max_prepared_spells" (D.nullable D.int))
     |> D.andMap (D.field "origin" D.string)
     |> D.andMap (D.field "spell_attack_mod" D.int)
     |> D.andMap (D.field "spell_save_dc" D.int)
@@ -132,7 +132,17 @@ preparedDec =
 
 componentDec : Decoder Component
 componentDec =
-  D.succeed V
+  D.oneOf
+    [ D.string |>
+        D.andThen
+          (\str -> case str of
+                     "v" -> D.succeed V
+                     "s" -> D.succeed S
+                     _   -> D.fail "Expected either \"v\" or \"s\"")
+    , D.field "args" (D.list D.string) |> D.map String.concat |> D.map M
+    ]
+
+
 
 ----------------------------------------------------------------------
 -- UPDATE
@@ -347,20 +357,11 @@ viewSpellcastingSection : Bool -> SpellcastingSection -> Set SpellName -> Html M
 viewSpellcastingSection showOnlyPreparedSpells section currentlyPreparedSpells =
   div []
     [ h3 [] [text <| section.origin ++ " spells"]
-    , ul []
-        [ li [ css 
-                 [ Css.color (if Set.size currentlyPreparedSpells > section.max_prepared_spells
-                              then Css.hex "ff0000"
-                              else Css.hex "000000")] 
-                 ]
-             [ text <|
-                 "Prepared spells: "
-                 ++ String.fromInt (Set.size currentlyPreparedSpells)
-                 ++ "/"
-                 ++ String.fromInt section.max_prepared_spells
-             ]
-        , simple li <| "Spell attack mod: " ++ formatModifier section.spell_attack_mod
-        , simple li <| "Spell save DC: " ++ formatModifier section.spell_save_dc
+    , ul [] <|
+        viewPreparedSpells section.max_prepared_spells currentlyPreparedSpells
+        ++
+        [ simple li <| "Spell attack mod: " ++ formatModifier section.spell_attack_mod
+        , simple li <| "Spell save DC: " ++ String.fromInt section.spell_save_dc
         , simple li <| "Spellcasting ability: " ++ section.spellcasting_ability
         , simple li <| "Spellcasting ability mod: "
                         ++ formatModifier section.spellcasting_ability_mod
@@ -388,6 +389,23 @@ viewSpellcastingSection showOnlyPreparedSpells section currentlyPreparedSpells =
            <| section.spells)
     ]
 
+viewPreparedSpells maxPreparedSpells currentlyPreparedSpells =
+  case maxPreparedSpells of
+    Nothing -> []
+    Just maxPreparedSpells_ ->
+      [ li [ css 
+               [ Css.color (if Set.size currentlyPreparedSpells > maxPreparedSpells_
+                            then Css.hex "ff0000"
+                            else Css.hex "000000")] 
+           ]
+           [ text <|
+               "Prepared spells: "
+               ++ String.fromInt (Set.size currentlyPreparedSpells)
+               ++ "/"
+               ++ String.fromInt maxPreparedSpells_
+           ]
+      ]
+
 viewSpellTableRow : Bool -> Origin -> Spell -> Bool -> Html Msg
 viewSpellTableRow showOnlyPreparedSpells origin spell currentlyPrepared =
   tr [] <|
@@ -404,7 +422,7 @@ viewSpellTableRow showOnlyPreparedSpells origin spell currentlyPrepared =
                spell.description)
     , simpleTd spell.casting_time
     , simpleTd spell.range
-    , simpleTd "TODO"
+    , td tdAttrs <| List.map viewComponent spell.components 
     , simpleTd spell.duration
     , simpleTd spell.concentration
     , simpleTd (Maybe.map String.fromInt spell.to_hit
@@ -425,6 +443,13 @@ viewSpellPrepared alwaysPrepared origin spell nowPrepared =
         , E.onClick (SetSpellPreparedness origin spell (not nowPrepared))
         , checked nowPrepared
         ] []
+
+viewComponent : Component -> Html Msg
+viewComponent component =
+  case component of
+    V -> text "v"
+    S -> text "s"
+    M desc -> tooltip (text "m") (text desc)
 
 simpleTh : String -> Html msg
 simpleTh str = th thAttrs [ text str ]

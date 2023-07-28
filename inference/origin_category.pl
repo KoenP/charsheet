@@ -26,7 +26,9 @@ origin_category_or_uncategorized(Category, Origin) :-
 origin_category_or_uncategorized(uncategorized, _).
 
 origin_level(init, 1) :- !.
+origin_level(^_, 1) :- !.
 origin_level(initial_class(_), 1) :- !.
+% TODO delete
 origin_level(class(C), Level) :-
     !,
     reached_classlevel_at_charlevel(C:1, Level).

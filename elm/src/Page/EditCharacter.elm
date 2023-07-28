@@ -1,5 +1,6 @@
 module Page.EditCharacter exposing (..)
 
+import Browser.Navigation as Nav
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr
 import Html.Styled.Events as E
@@ -89,12 +90,20 @@ specDec =
   D.andThen
     (\spectype ->
        case spectype of
-         "list"        -> D.map (ListSC Nothing) (D.field "list" (D.list D.string))
+         "list"        -> listSpecDec
          "or"          -> orSpecDec
          "from"        -> fromSpecDec False
          "unique_from" -> fromSpecDec True
          _             ->
            D.fail "spectype should be 'list', 'or', 'from', or 'unique_from'")
+
+listSpecDec : Decoder SpecAndChoice
+listSpecDec =
+  D.field "list" <| D.map (ListSC Nothing) <| D.list
+    (D.succeed (\x y -> (x,y))
+       |> D.andMap (D.field "opt" D.string)
+       |> D.andMap (D.field "desc" D.string))
+    
 
 orSpecDec : Decoder SpecAndChoice
 orSpecDec =
@@ -116,17 +125,36 @@ fromSpecDec unique =
 --------------------------------------------------------------------------------
 -- UPDATE
 --------------------------------------------------------------------------------
-update : Msg -> Model -> List Options -> Int -> (Model, Cmd Msg)
+update : Msg -> Model -> List Options -> Maybe Int -> (Model, Cmd Msg)
 update msg model options selectedLevel =
   case msg of
     HttpResponse (Ok (GotCharacterOptions newOptions)) ->
-      applyPage model (EditCharacterPage newOptions selectedLevel, Cmd.none)
+      applyPage model (EditCharacterPage newOptions selectedLevel Nothing, Cmd.none)
 
     HttpResponse (Ok ChoiceRegistered) ->
       (model, load)
 
+    HttpResponse (Ok LeveledUp) ->
+      (model, load)
+
     EditCharacterLevel newLevel ->
-      applyPage model (EditCharacterPage options newLevel, Cmd.none)
+      applyPage model (EditCharacterPage options (Just newLevel) Nothing, Cmd.none)
+
+    GotoSheet ->
+      applyPage model (Loading, Nav.pushUrl model.key "/sheet")
+
+    GotoLevelUp ->
+      applyPage model (EditCharacterPage options Nothing Nothing, Cmd.none)
+
+    LevelUpAs class ->
+      -- TODO should be POST
+      (model, Http.get
+         { url = requestUrl "gain_level" [("class", class)]
+         , expect = Http.expectJson
+                    (mkHttpResponseMsg (\_ -> LeveledUp))
+                    (D.succeed ())
+         }
+      )
 
     OrSCChooseDir origin id dir ->
       let
@@ -140,7 +168,12 @@ update msg model options selectedLevel =
                       _                 -> opt)
             options
       in
-        applyPage model (EditCharacterPage newOptions selectedLevel, Cmd.none)
+        applyPage model ( EditCharacterPage newOptions selectedLevel Nothing
+                        , Cmd.none
+                        )
+
+    SetEditCharacterPageDesc desc ->
+      applyPage model (EditCharacterPage options selectedLevel desc, Cmd.none)
 
     _ ->
       let _ = Debug.log "" msg
@@ -151,20 +184,24 @@ update msg model options selectedLevel =
 --------------------------------------------------------------------------------
 -- VIEW
 --------------------------------------------------------------------------------
-view : List Options -> Level -> List (Html Msg)
-view opts selectedLevel =
-  [ viewSideNav (Debug.log "view" opts), viewMain opts selectedLevel ]
+view : List Options -> Maybe Level -> Maybe String -> List (Html Msg)
+view opts selectedLevel desc =
+  [ viewSideNav desc (Debug.log "view" opts), viewMain opts selectedLevel ]
   
-viewSideNav : List Options -> Html Msg
-viewSideNav opts =
-  div
-    [ Attr.css sideNavStyle ]
-    (opts
-    |> List.map .charlevel
-    |> List.sort
-    |> Util.nubSorted
-    |> List.map viewSideNavLevelButton
-    )
+viewSideNav : Maybe String -> List Options -> Html Msg
+viewSideNav desc opts =
+  case desc of
+    Nothing -> 
+      div [ Attr.css sideNavStyle ] <|
+        (opts
+        |> List.map .charlevel
+        |> List.sort
+        |> Util.nubSorted
+        |> List.map viewSideNavLevelButton)
+        ++
+        [ viewLevelUpButton ]
+    Just descText ->
+      text descText
 
 viewSideNavLevelButton : Int -> Html Msg
 viewSideNavLevelButton lvl =
@@ -174,20 +211,49 @@ viewSideNavLevelButton lvl =
     ]
     [ text ("Level " ++ String.fromInt lvl) ]
 
+viewLevelUpButton : Html Msg
+viewLevelUpButton =
+  button
+    [ Attr.css sideNavButtonStyle, E.onClick GotoLevelUp ]
+    [ text "+" ]
 
-viewMain : List Options -> Level -> Html Msg
+viewMain : List Options -> Maybe Level -> Html Msg
 viewMain opts selectedLevel =
   div
     [ Attr.css
         [ Css.marginLeft (Css.px 160)
         , Css.padding2 (Css.px 0) (Css.px 10)
         ]
+    ] 
+    [ button [E.onClick GotoSheet] [text "View character sheet"]
+    , div [] (viewMainContents opts selectedLevel)
     ]
-    (opts
-    |> List.filter (\opt -> opt.charlevel == selectedLevel)
-    |> Util.multiDictFromList .origin_category
-    |> Dict.map viewOriginCategoryOptions
-    |> Dict.values)
+
+viewMainContents : List Options -> Maybe Level -> List (Html Msg)
+viewMainContents opts selectedLevel =
+  case selectedLevel of
+    Just level ->
+      (opts
+       |> List.filter (\opt -> opt.charlevel == level)
+       |> Util.multiDictFromList .origin_category
+       |> Dict.map viewOriginCategoryOptions
+       |> Dict.values)
+    Nothing ->
+      viewLevelUpPage
+
+viewLevelUpPage : List (Html Msg)
+viewLevelUpPage =
+  [ simple h2 "Level Up"
+  , simple h3 "Pick a class:"
+  , select
+      [ E.onInput LevelUpAs ]
+      (option [Attr.disabled True, Attr.selected True] [text "-- select an option --"]
+       ::
+       List.map
+          (\x -> option [] [text x])
+          -- TODO: fetch this from the server
+          ["barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue", "sorcerer", "warlock", "wizard"])
+  ]
 
 viewOriginCategoryOptions : String -> List Options -> Html Msg
 viewOriginCategoryOptions category optionsList =
@@ -217,7 +283,7 @@ viewSpec disabledOptions origin id mkMsg isDisabled spec =
 
 viewListSC :  List String -> String -> String
            -> (String -> Msg)
-           -> Maybe String -> Bool -> List String
+           -> Maybe String -> Bool -> List (String, String)
            -> Html Msg
 viewListSC disabledOptions origin id mkMsg selected isDisabled options =
   select [ E.onInput mkMsg, Attr.disabled isDisabled ] <|
@@ -228,15 +294,18 @@ viewListSC disabledOptions origin id mkMsg selected isDisabled options =
       Just selectedVal ->
         option [Attr.disabled True] [text "-- select an option --"]
         :: List.map
-           (\opt ->
-              viewListSpecOption disabledOptions (opt == selectedVal) opt) options
+           (\(opt,desc) ->
+              viewListSpecOption disabledOptions (opt == selectedVal) (opt,desc))
+           options
         
-viewListSpecOption : List String -> Bool -> String -> Html Msg
-viewListSpecOption disabledOptions isSelected opt =
+viewListSpecOption : List String -> Bool -> (String, String) -> Html Msg
+viewListSpecOption disabledOptions isSelected (opt, desc) =
   option
   [ Attr.value opt
   , Attr.selected isSelected
   , Attr.disabled (not isSelected && List.member opt disabledOptions)
+  , E.onMouseEnter (Debug.log "onMouseEnter" <| SetEditCharacterPageDesc (Just desc))
+  , E.onMouseLeave (Debug.log "onMouseLeave" <| SetEditCharacterPageDesc Nothing)
   ]
   [ text opt ]
 
@@ -288,8 +357,7 @@ viewOrSC origin id dir (lname, lspec) (rname, rspec) =
     rightId = String.concat <| List.intersperse "_" [origin, id, rname]
   in 
     div []
-      [ text (Debug.toString dir)
-      , input [ Attr.type_ "radio"
+      [ input [ Attr.type_ "radio"
               , Attr.checked (dir == Just L)
               , Attr.id leftId
               , Attr.name name
