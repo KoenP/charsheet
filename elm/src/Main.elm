@@ -44,6 +44,7 @@ init _ url key =
     , preparedSpells = Dict.empty
     , showOnlyPreparedSpells = False
     , page = Loading
+    , focusedDropdownId = Nothing
     }
   , Nav.pushUrl key "/list_characters"
   )
@@ -95,8 +96,9 @@ urlToRoute url =
 -- UPDATE
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  let _ = Debug.log "Global update (msg)" msg
-      _ = Debug.log "Global update (model)" model
+  let _ = Debug.log "Global update (old model)" model
+      _ = Debug.log "Global update (msg)" msg
+      _ = Debug.log "--------" ""
   in case msg of
        LinkClicked urlRequest ->
          case urlRequest of
@@ -113,6 +115,16 @@ update msg model =
 
        Choice origin id choice ->
          ( model , registerChoice origin id choice )
+
+       SelectDropdownOption dropdownId optionId -> 
+         let _ = Debug.log "" ("Selected dropdown option " ++ optionId ++ " from dropdown " ++ dropdownId)
+         in ( { model | focusedDropdownId = Nothing }, none )
+
+       ToggleDropdown dropdownId -> 
+         let newFocusedDropdownId = if model.focusedDropdownId == Just dropdownId
+                                    then Nothing
+                                    else Just dropdownId
+         in ( { model | focusedDropdownId = newFocusedDropdownId }, none )
 
        _ ->
          case model.page of
@@ -175,6 +187,8 @@ handleHttpResponseMsg msg model =
           }
         , none
         )
+      ChoiceRegistered ->
+        (model, Edit.load)
       _ ->
         errorPage
           model
@@ -231,19 +245,20 @@ view model =
         Error msg -> 
           [ text msg ]
         CharacterSelectionPage data ->
-          characterSelectionPage data
+          characterSelectionPage data model
         CharacterSheetPage data ->
           Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
         EditCharacterPage options selectedLevel desc ->
-          Edit.view options selectedLevel desc
+          Edit.view model.focusedDropdownId options selectedLevel desc
       
   }
   
 
 -- Character selection page
 characterSelectionPage : { characters : List String, newCharacterName : String }
+                       -> Model
                        -> List (Html Msg)
-characterSelectionPage { characters, newCharacterName } =
+characterSelectionPage { characters, newCharacterName } { focusedDropdownId } =
   let
     characterList = div [] [ul [] (List.map selectCharButton characters)]
   in 

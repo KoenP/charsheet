@@ -15,6 +15,7 @@ import Zipper exposing (Zipper(..))
 import Request exposing (requestUrl)
 import Types exposing (..)
 import Util exposing (simple)
+import Dropdown exposing (dropdown)
 
 --------------------------------------------------------------------------------
 -- LOAD
@@ -184,15 +185,15 @@ update msg model options selectedLevel =
 --------------------------------------------------------------------------------
 -- VIEW
 --------------------------------------------------------------------------------
-view : List Options -> Maybe Level -> Maybe String -> List (Html Msg)
-view opts selectedLevel desc =
-  [ viewSideNav desc (Debug.log "view" opts), viewMain opts selectedLevel ]
+view : Maybe String -> List Options -> Maybe Level -> Maybe String -> List (Html Msg)
+view focusedDropdownId opts selectedLevel desc =
+  [ viewSideNav desc (Debug.log "view" opts), viewMain focusedDropdownId opts selectedLevel ]
   
 viewSideNav : Maybe String -> List Options -> Html Msg
 viewSideNav desc opts =
-  case desc of
-    Nothing -> 
-      div [ Attr.css sideNavStyle ] <|
+  div [ Attr.css sideNavStyle ] <|
+    case desc of
+      Nothing -> 
         (opts
         |> List.map .charlevel
         |> List.sort
@@ -200,8 +201,8 @@ viewSideNav desc opts =
         |> List.map viewSideNavLevelButton)
         ++
         [ viewLevelUpButton ]
-    Just descText ->
-      text descText
+      Just descText ->
+        [ p [Attr.css [Css.color (Css.hex "818181")]] [ text descText ] ]
 
 viewSideNavLevelButton : Int -> Html Msg
 viewSideNavLevelButton lvl =
@@ -217,8 +218,8 @@ viewLevelUpButton =
     [ Attr.css sideNavButtonStyle, E.onClick GotoLevelUp ]
     [ text "+" ]
 
-viewMain : List Options -> Maybe Level -> Html Msg
-viewMain opts selectedLevel =
+viewMain : Maybe String -> List Options -> Maybe Level -> Html Msg
+viewMain focusedDropdownId opts selectedLevel =
   div
     [ Attr.css
         [ Css.marginLeft (Css.px 160)
@@ -226,17 +227,17 @@ viewMain opts selectedLevel =
         ]
     ] 
     [ button [E.onClick GotoSheet] [text "View character sheet"]
-    , div [] (viewMainContents opts selectedLevel)
+    , div [] (viewMainContents focusedDropdownId opts selectedLevel)
     ]
 
-viewMainContents : List Options -> Maybe Level -> List (Html Msg)
-viewMainContents opts selectedLevel =
+viewMainContents : Maybe String -> List Options -> Maybe Level -> List (Html Msg)
+viewMainContents focusedDropdownId opts selectedLevel =
   case selectedLevel of
     Just level ->
       (opts
        |> List.filter (\opt -> opt.charlevel == level)
        |> Util.multiDictFromList .origin_category
-       |> Dict.map viewOriginCategoryOptions
+       |> Dict.map (viewOriginCategoryOptions focusedDropdownId)
        |> Dict.values)
     Nothing ->
       viewLevelUpPage
@@ -255,82 +256,115 @@ viewLevelUpPage =
           ["barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue", "sorcerer", "warlock", "wizard"])
   ]
 
-viewOriginCategoryOptions : String -> List Options -> Html Msg
-viewOriginCategoryOptions category optionsList =
-  div [] (simple h2 ("From " ++ category ++ ":") :: List.map viewOptions optionsList)
+viewOriginCategoryOptions : Maybe String -> String -> List Options -> Html Msg
+viewOriginCategoryOptions focusedDropdownId category optionsList =
+  div [] (simple h2 ("From " ++ category ++ ":") :: List.map (viewOptions focusedDropdownId) optionsList)
 
-viewOptions : Options -> Html Msg
-viewOptions {origin, spec, id} =
+viewOptions : Maybe String -> Options -> Html Msg
+viewOptions focusedDropdownId {origin, spec, id} =
   div
     []
     [ simple h3 id
-    , viewSpec [] origin id (Choice origin id << SingletonChoice) False spec
+    , viewSpec
+        { origin            = origin
+        , id                = id
+        , dropdownIdSuffix  = ""
+        , focusedDropdownId = focusedDropdownId
+        , disabledOptions   = []
+        }
+        (Choice origin id << SingletonChoice) False spec
     ]
 
-viewSpec :  List String -> String -> String
+type alias ViewSpecContext =
+  { origin             : String
+  , id                 : String
+  , dropdownIdSuffix   : String
+  , focusedDropdownId  : Maybe String
+  , disabledOptions    : List String
+  }
+
+viewSpec : ViewSpecContext
          -> (String -> Msg) -> Bool -> SpecAndChoice
          -> Html Msg
-viewSpec disabledOptions origin id mkMsg isDisabled spec =
+viewSpec ctx mkMsg isDisabled spec =
   case spec of
     ListSC selected options ->
-      viewListSC disabledOptions origin id mkMsg selected isDisabled options
+      viewListSC ctx mkMsg selected isDisabled options
 
     FromSC unique n subspecs ->
-      viewFromSC origin id unique n subspecs
+      viewFromSC ctx unique n subspecs
 
     OrSC dir left right ->
-      viewOrSC origin id dir left right
+      viewOrSC ctx dir left right
 
-viewListSC :  List String -> String -> String
+viewListSC :  ViewSpecContext
            -> (String -> Msg)
            -> Maybe String -> Bool -> List (String, String)
            -> Html Msg
-viewListSC disabledOptions origin id mkMsg selected isDisabled options =
-  select [ E.onInput mkMsg, Attr.disabled isDisabled ] <|
-    case selected of
-      Nothing ->
-        option [Attr.selected True, Attr.disabled True] [text "-- select an option --"]
-        :: List.map (viewListSpecOption disabledOptions False) options
-      Just selectedVal ->
-        option [Attr.disabled True] [text "-- select an option --"]
-        :: List.map
-           (\(opt,desc) ->
-              viewListSpecOption disabledOptions (opt == selectedVal) (opt,desc))
-           options
-        
-viewListSpecOption : List String -> Bool -> (String, String) -> Html Msg
-viewListSpecOption disabledOptions isSelected (opt, desc) =
-  option
-  [ Attr.value opt
-  , Attr.selected isSelected
-  , Attr.disabled (not isSelected && List.member opt disabledOptions)
-  , E.onMouseEnter (Debug.log "onMouseEnter" <| SetEditCharacterPageDesc (Just desc))
-  , E.onMouseLeave (Debug.log "onMouseLeave" <| SetEditCharacterPageDesc Nothing)
-  ]
-  [ text opt ]
-
-viewFromSC : String -> String -> Unique -> Int -> List SpecAndChoice -> Html Msg
-viewFromSC origin id unique n subspecs =
+viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } mkMsg selected isDisabled options =
   let
+    dropdownId = String.concat [origin, id, dropdownIdSuffix]
+    entries =
+      List.map
+        (\(opt, desc) -> (opt, desc ++ " test", mkMsg opt))
+        options
+  in
+    dropdown dropdownId selected entries (focusedDropdownId == Just dropdownId)
+
+
+  -- select [ E.onInput mkMsg, Attr.disabled isDisabled ] <|
+  --   case selected of
+  --     Nothing ->
+  --       option [Attr.selected True, Attr.disabled True] [text "-- select an option --"]
+  --       :: List.map (viewListSpecOption disabledOptions False) options
+  --     Just selectedVal ->
+  --       option [Attr.disabled True] [text "-- select an option --"]
+  --       :: List.map
+  --          (\(opt,desc) ->
+  --             viewListSpecOption disabledOptions (opt == selectedVal) (opt,desc))
+  --          options
+        
+-- viewListSpecOption : List String -> Bool -> (String, String) -> Html Msg
+-- viewListSpecOption disabledOptions isSelected (opt, desc) =
+--   option
+--   [ Attr.value opt
+--   , Attr.selected isSelected
+--   , Attr.disabled (not isSelected && List.member opt disabledOptions)
+--   , E.onMouseEnter (Debug.log "onMouseEnter" <| SetEditCharacterPageDesc (Just desc))
+--   , E.onMouseLeave (Debug.log "onMouseLeave" <| SetEditCharacterPageDesc Nothing)
+--   ]
+--   [ text opt ]
+
+viewFromSC : ViewSpecContext -> Unique -> Int -> List SpecAndChoice -> Html Msg
+viewFromSC ctx unique n subspecs =
+  let
+    {origin, id} = ctx
+
     choicesList : List String
     choicesList = List.concatMap extractChoicesList subspecs
 
-    disabledOptions = if unique then choicesList else []
-                  
     editFunctions : List (String -> Msg)
     editFunctions = choiceEditFunctions origin id choicesList
+
+    disabledOptions = if unique then choicesList else []
+    k = List.length editFunctions
   in 
     div [] <|
-      List.map3
-        (viewSpec disabledOptions origin id)
+      List.map4
+        (\i -> viewSpec
+           { ctx
+           | dropdownIdSuffix = ctx.dropdownIdSuffix ++ "/" ++ String.fromInt i
+           , disabledOptions = disabledOptions
+           })
+        (List.range 1 k)
         editFunctions
-        (List.repeat (List.length editFunctions) False)
+        (List.repeat k False)
         subspecs
       ++
       List.map2
-        (viewSpec disabledOptions origin id (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
-        ((List.length choicesList == 0) :: List.repeat n True)
-        (List.drop (List.length editFunctions) subspecs)
+        (viewSpec ctx (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
+        (List.isEmpty choicesList :: List.repeat n True)
+        (List.drop k subspecs)
 
 choiceEditFunctions : String -> String -> List String -> List (String -> Msg)
 choiceEditFunctions origin id choices =
@@ -347,11 +381,12 @@ choiceEditFunctions origin id choices =
       in 
         Zipper.toList (Zipper.extend overwriteFocused zipper)
 
-viewOrSC :  String -> String
+viewOrSC :  ViewSpecContext
          -> Maybe Dir -> (String, SpecAndChoice) -> (String, SpecAndChoice)
          -> Html Msg
-viewOrSC origin id dir (lname, lspec) (rname, rspec) =
+viewOrSC ctx dir (lname, lspec) (rname, rspec) =
   let
+    { origin, id } = ctx
     name = origin ++ "_" ++ id
     leftId  = String.concat <| List.intersperse "_" [origin, id, lname]
     rightId = String.concat <| List.intersperse "_" [origin, id, rname]
@@ -374,7 +409,7 @@ viewOrSC origin id dir (lname, lspec) (rname, rspec) =
       , div [] <|
           case dir of
             Nothing   -> []
-            Just dir_ -> [ viewSpec [] origin id
+            Just dir_ -> [ viewSpec ctx
                              (Choice origin id << SingletonChoice)
                              False
                              (case dir_ of

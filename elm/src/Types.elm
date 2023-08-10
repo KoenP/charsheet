@@ -167,6 +167,7 @@ type alias Model =
   , preparedSpells : Dict Origin (Set SpellName)
   , showOnlyPreparedSpells : Bool
   , page : Page
+  , focusedDropdownId : Maybe String
   }
 type Page
   = Loading
@@ -217,6 +218,8 @@ type Msg
   | GotoLevelUp
   | LevelUpAs String
   | SetEditCharacterPageDesc (Maybe String)
+  | SelectDropdownOption String String
+  | ToggleDropdown String
 
 type Choice = ListChoice (List String) | SingletonChoice String
 
