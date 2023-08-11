@@ -114,7 +114,7 @@ update msg model =
          ( { model | page = Loading }, Nav.pushUrl model.key "/edit" )
 
        Choice origin id choice ->
-         ( model , registerChoice origin id choice )
+         ( { model | focusedDropdownId = Nothing } , registerChoice origin id choice )
 
        SelectDropdownOption dropdownId optionId -> 
          let _ = Debug.log "" ("Selected dropdown option " ++ optionId ++ " from dropdown " ++ dropdownId)

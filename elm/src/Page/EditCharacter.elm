@@ -306,10 +306,14 @@ viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } 
     dropdownId = String.concat [origin, id, dropdownIdSuffix]
     entries =
       List.map
-        (\(opt, desc) -> (opt, desc ++ " test", mkMsg opt))
+        (\(entry, desc) -> { entry = entry
+                           , desc = desc ++ " test"
+                           , enabled = not <| List.member entry disabledOptions
+                           , msg = mkMsg entry
+                           })
         options
   in
-    dropdown dropdownId selected entries (focusedDropdownId == Just dropdownId)
+    dropdown isDisabled dropdownId selected entries (focusedDropdownId == Just dropdownId)
 
 
   -- select [ E.onInput mkMsg, Attr.disabled isDisabled ] <|
