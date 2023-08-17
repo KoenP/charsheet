@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Browser.Navigation as Nav
+import Browser.Events
 import Url exposing (Url)
 import Url.Parser exposing (Parser, (</>))
 import Url.Parser as Parser
@@ -31,10 +32,20 @@ main =
     { init = init
     , view = view
     , update = update
-    , subscriptions = \_ -> Sub.none
+    , subscriptions = subscriptions
     , onUrlRequest = LinkClicked
     , onUrlChange = UrlChanged
     }
+
+-- SUBSCRIPTIONS
+subscriptions : Model -> Sub Msg
+subscriptions { focusedDropdownId } =
+  case focusedDropdownId of
+    Just _ -> 
+      Browser.Events.onClick (succeed ClickOut)
+    Nothing ->
+      Sub.none
+    
 
 -- MODEL
 init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
@@ -46,7 +57,7 @@ init _ url key =
     , page = Loading
     , focusedDropdownId = Nothing
     }
-  , Nav.pushUrl key "/list_characters"
+  , Edit.load -- Nav.pushUrl key "/list_characters"
   )
 
 navigate : Model -> Route -> ( Model, Cmd Msg )
@@ -100,6 +111,8 @@ update msg model =
       _ = Debug.log "Global update (msg)" msg
       _ = Debug.log "--------" ""
   in case msg of
+       Null ->
+         ( model, none )
        LinkClicked urlRequest ->
          case urlRequest of
            Browser.Internal url ->
@@ -125,6 +138,9 @@ update msg model =
                                     then Nothing
                                     else Just dropdownId
          in ( { model | focusedDropdownId = newFocusedDropdownId }, none )
+
+       ClickOut ->
+         ( { model | focusedDropdownId = Nothing }, none )
 
        _ ->
          case model.page of

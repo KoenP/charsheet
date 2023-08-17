@@ -7,6 +7,7 @@ import Html.Styled.Events as E
 import List
 import Maybe
 import Debug
+import Json.Decode as D
 
 import Types exposing (..)
 
@@ -20,7 +21,9 @@ type alias DropdownOption =
 dropdown : Bool -> String -> Maybe String -> List DropdownOption -> Bool -> Html Msg
 dropdown isDisabled id currentlySelected entries open =
   div
-    [ css dropdownStyle ]
+    [ css dropdownStyle
+    , E.stopPropagationOn "click" (D.succeed (Null, True))
+    ]
     [ button
         ( css (buttonStyle isDisabled open)
           :: if isDisabled then [] else [ E.onClick (ToggleDropdown id) ])
@@ -30,9 +33,11 @@ dropdown isDisabled id currentlySelected entries open =
         (List.map
            (\{ entry, desc, enabled, msg } -> button
               (css (hrefStyle enabled)
+               :: E.onMouseEnter (SetEditCharacterPageDesc (Just desc))
+               :: E.onMouseLeave (SetEditCharacterPageDesc Nothing)
                :: if enabled then [ E.onClick msg ] else [])
-              -- , E.onMouseEnter (Debug.log "onMouseEnter" <| SetEditCharacterPageDesc (Just desc))
-              -- , E.onMouseLeave (Debug.log "onMouseLeave" <| SetEditCharacterPageDesc Nothing)
+              -- , 
+              -- ,
               [ text entry ])
            entries)
     ]

@@ -220,6 +220,8 @@ type Msg
   | SetEditCharacterPageDesc (Maybe String)
   | SelectDropdownOption String String
   | ToggleDropdown String
+  | ClickOut
+  | Null
 
 type Choice = ListChoice (List String) | SingletonChoice String
 

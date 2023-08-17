@@ -366,7 +366,7 @@ viewFromSC ctx unique n subspecs =
         subspecs
       ++
       List.map2
-        (viewSpec ctx (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
+        (viewSpec { ctx | disabledOptions = disabledOptions} (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
         (List.isEmpty choicesList :: List.repeat n True)
         (List.drop k subspecs)
 
