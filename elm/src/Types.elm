@@ -137,6 +137,7 @@ type alias Options =
   , id : String
   , origin : String
   , origin_category : String
+  , origin_category_index : Int
   , spec : SpecAndChoice
   }
 type Spec
@@ -147,7 +148,7 @@ type alias Unique = Bool
 
 type Dir = L | R
 type SpecAndChoice
-  = ListSC (Maybe String) (List (String, String))
+  = ListSC (Maybe String) (List (String, List String))
   | OrSC (Maybe Dir) (String, SpecAndChoice) (String, SpecAndChoice)
   | FromSC Unique Int (List SpecAndChoice)
 
@@ -174,7 +175,7 @@ type Page
   | Error String
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
-  | EditCharacterPage (List Options) (Maybe Level) (Maybe String)
+  | EditCharacterPage (List Options) (Maybe Level) (Maybe (List String))
 
 applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
 applyPage model ( page, cmd ) =
@@ -217,7 +218,7 @@ type Msg
   | GotoSheet
   | GotoLevelUp
   | LevelUpAs String
-  | SetEditCharacterPageDesc (Maybe String)
+  | SetEditCharacterPageDesc (Maybe (List String))
   | SelectDropdownOption String String
   | ToggleDropdown String
   | ClickOut

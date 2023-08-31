@@ -14,6 +14,13 @@ origin_category(Category, trait(Trait)) :-
 origin_category(Category, choice(Origin, _)) :-
     origin_category(Category, Origin).
 
+origin_category_canonical_order(init, 0) :- !.
+origin_category_canonical_order(race(_), 1) :- !.
+origin_category_canonical_order(background(_), 2) :- !.
+origin_category_canonical_order(class(_), 3) :- !.
+origin_category_canonical_order(feat(_), 4) :- !.
+origin_category_canonical_order(_, 5) :- !.
+
 meta_todo(origin_category, "probably duplication with find_origin_class in class.pl").
 
 %! origin_category_or_uncategorized(Origin, Category)

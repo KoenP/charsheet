@@ -13,7 +13,7 @@ import Types exposing (..)
 
 type alias DropdownOption =
   { entry   : String
-  , desc    : String
+  , desc    : List String
   , enabled : Bool
   , msg     : Msg
   }
@@ -29,15 +29,13 @@ dropdown isDisabled id currentlySelected entries open =
           :: if isDisabled then [] else [ E.onClick (ToggleDropdown id) ])
         [ text (Maybe.withDefault "-- select an option --" currentlySelected)]
     , div
-        [ css <| (if open then display block else display none) :: contentStyle ]
+        [ css <| (if open then visibility visible else visibility hidden) :: contentStyle ]
         (List.map
            (\{ entry, desc, enabled, msg } -> button
               (css (hrefStyle enabled)
                :: E.onMouseEnter (SetEditCharacterPageDesc (Just desc))
                :: E.onMouseLeave (SetEditCharacterPageDesc Nothing)
                :: if enabled then [ E.onClick msg ] else [])
-              -- , 
-              -- ,
               [ text entry ])
            entries)
     ]
@@ -67,7 +65,8 @@ dropdownStyle =
 -- Dropdown content
 contentStyle : List Style
 contentStyle =
-  [ Css.position Css.absolute
+  [ display block
+  , Css.position Css.absolute
   , Css.backgroundColor (Css.hex "f1f1f1")
   , Css.minWidth (Css.px 160)
   , Css.boxShadow5 zero (px 8) (px 8) (px 0) (rgba 0 0 0 0.2)

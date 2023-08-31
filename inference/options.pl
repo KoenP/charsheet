@@ -186,11 +186,27 @@ options_todo(Origin, Id, Spec) :-
     options(Origin, Id, Spec),
     \+ choice(Origin, Id, _).
 
+%! ordered_options_json(?Ordered)
+%
+%  List of options produced by options_json/3, ordered by category according to
+%  origin_category_canonical_order/1.
+%  TODO: lots of redundant work in this implementation, I think.
+%ordered_options_json(OptionsJson) :-
+%    findall(Ord-Dict,
+%            (options_json(Origin, _, Dict),
+%             origin_category_or_uncategorized(Cat, Origin),
+%             origin_category_canonical_order(Cat, Ord)),
+%            Unordered),
+%    sort(1, @=<, Unordered, Ordered),
+%    maplist([_-Y,Y]>>true, Ordered, OptionsJson).
+
+
 %! options_json(?Origin, ?Id, ?Json)
-options_json(Origin, Id, _{origin: OriginStr, origin_category: CategoryStr, charlevel: CharLevel,
-                           id: IdStr, spec: SpecJson, choice: ChoiceJson}) :-
+options_json(Origin, Id, _{origin: OriginStr, origin_category: CategoryStr, origin_category_index: CatIdx,
+                           charlevel: CharLevel, id: IdStr, spec: SpecJson, choice: ChoiceJson}) :-
     options(Origin, Id, Spec),
     origin_category_or_uncategorized(Category, Origin), term_string(Category, CategoryStr),
+    origin_category_canonical_order(Category, CatIdx),
     origin_level(Origin, CharLevel),
     spec_to_json(Origin, Id, Spec, SpecJson),
     choice_json(Origin, Id, Spec, ChoiceJson),

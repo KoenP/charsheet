@@ -266,7 +266,6 @@ view model =
           Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
         EditCharacterPage options selectedLevel desc ->
           Edit.view model.focusedDropdownId options selectedLevel desc
-      
   }
   
 

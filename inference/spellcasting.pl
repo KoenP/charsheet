@@ -496,3 +496,8 @@ cantrip_scale(Scale) :-
     ).
 
 incr(N,M) :- M is N+1.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Spell descriptions.
+(Spell ?= Desc) :-
+    spell_property(Spell, desc, Desc).

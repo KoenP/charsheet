@@ -120,6 +120,7 @@ class_origin_to_class_level_(subclass(Subclass), Class:Lvl) :-
     choose_subclass_level(Class:Lvl).
 class_origin_to_class_level_(initial_class(Class), Class:1).
 class_origin_to_class_level_(multiclass_into(Class), Class:1).
+class_origin_to_class_level_(^Class, Class:1).
 class_origin_to_class_level_(ClassF >: Level, X) :-
     class_origin_to_class_level_(match_class(ClassF:Level), X).
 class_origin_to_class_level_(match_class(ClassF:Level), Class:Level) :-

@@ -36,6 +36,7 @@ optionsDec =
     |> D.andMap (D.field "id" D.string)
     |> D.andMap (D.field "origin" D.string)
     |> D.andMap (D.field "origin_category" D.string)
+    |> D.andMap (D.field "origin_category_index" D.int)
     |> D.andMap extractSpecAndChoice
 
 extractSpecAndChoice : Decoder SpecAndChoice
@@ -103,7 +104,10 @@ listSpecDec =
   D.field "list" <| D.map (ListSC Nothing) <| D.list
     (D.succeed (\x y -> (x,y))
        |> D.andMap (D.field "opt" D.string)
-       |> D.andMap (D.field "desc" D.string))
+       |> D.andMap (D.field "desc" (D.oneOf [ D.list D.string
+                                            , D.string |> D.map List.singleton
+                                            ]
+                                   )))
     
 
 orSpecDec : Decoder SpecAndChoice
@@ -185,15 +189,21 @@ update msg model options selectedLevel =
 --------------------------------------------------------------------------------
 -- VIEW
 --------------------------------------------------------------------------------
-view : Maybe String -> List Options -> Maybe Level -> Maybe String -> List (Html Msg)
+view : Maybe String -> List Options -> Maybe Level -> Maybe (List String) -> List (Html Msg)
 view focusedDropdownId opts selectedLevel desc =
   [ viewSideNav desc (Debug.log "view" opts), viewMain focusedDropdownId opts selectedLevel ]
   
-viewSideNav : Maybe String -> List Options -> Html Msg
+viewSideNav : Maybe (List String) -> List Options -> Html Msg
 viewSideNav desc opts =
   div [ Attr.css sideNavStyle ] <|
     case desc of
-      Nothing -> 
+      Just (title :: paragraphs) ->
+        h2 [ Attr.css descStyle ] [ text title ]
+        ::
+        List.map
+          (p [ Attr.css (Css.fontSize (Css.px 12) :: descStyle)] << List.singleton << text)
+          paragraphs
+      _ -> 
         (opts
         |> List.map .charlevel
         |> List.sort
@@ -201,8 +211,13 @@ viewSideNav desc opts =
         |> List.map viewSideNavLevelButton)
         ++
         [ viewLevelUpButton ]
-      Just descText ->
-        [ p [Attr.css [Css.color (Css.hex "818181")]] [ text descText ] ]
+
+descStyle : List Style            
+descStyle =
+  [ Css.color (Css.hex "ffffff")
+  , Css.fontFamily Css.sansSerif
+  , Css.padding2 (Css.px 0) (Css.px 10)
+  ]
 
 viewSideNavLevelButton : Int -> Html Msg
 viewSideNavLevelButton lvl =
@@ -222,7 +237,7 @@ viewMain : Maybe String -> List Options -> Maybe Level -> Html Msg
 viewMain focusedDropdownId opts selectedLevel =
   div
     [ Attr.css
-        [ Css.marginLeft (Css.px 160)
+        [ Css.marginLeft (Css.px sideNavWidth)
         , Css.padding2 (Css.px 0) (Css.px 10)
         ]
     ] 
@@ -236,7 +251,8 @@ viewMainContents focusedDropdownId opts selectedLevel =
     Just level ->
       (opts
        |> List.filter (\opt -> opt.charlevel == level)
-       |> Util.multiDictFromList .origin_category
+       |> Util.multiDictFromList (\{origin_category, origin_category_index} ->
+                                    (origin_category_index, origin_category))
        |> Dict.map (viewOriginCategoryOptions focusedDropdownId)
        |> Dict.values)
     Nothing ->
@@ -256,8 +272,8 @@ viewLevelUpPage =
           ["barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue", "sorcerer", "warlock", "wizard"])
   ]
 
-viewOriginCategoryOptions : Maybe String -> String -> List Options -> Html Msg
-viewOriginCategoryOptions focusedDropdownId category optionsList =
+viewOriginCategoryOptions : Maybe String -> (Int, String) -> List Options -> Html Msg
+viewOriginCategoryOptions focusedDropdownId (_, category) optionsList =
   div [] (simple h2 ("From " ++ category ++ ":") :: List.map (viewOptions focusedDropdownId) optionsList)
 
 viewOptions : Maybe String -> Options -> Html Msg
@@ -299,7 +315,7 @@ viewSpec ctx mkMsg isDisabled spec =
 
 viewListSC :  ViewSpecContext
            -> (String -> Msg)
-           -> Maybe String -> Bool -> List (String, String)
+           -> Maybe String -> Bool -> List (String, List String)
            -> Html Msg
 viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } mkMsg selected isDisabled options =
   let
@@ -307,7 +323,7 @@ viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } 
     entries =
       List.map
         (\(entry, desc) -> { entry = entry
-                           , desc = desc ++ " test"
+                           , desc = entry :: desc
                            , enabled = not <| List.member entry disabledOptions
                            , msg = mkMsg entry
                            })
@@ -365,8 +381,11 @@ viewFromSC ctx unique n subspecs =
         (List.repeat k False)
         subspecs
       ++
-      List.map2
-        (viewSpec { ctx | disabledOptions = disabledOptions} (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
+      List.map3
+        (\i -> viewSpec
+           { ctx | disabledOptions = disabledOptions, dropdownIdSuffix = ctx.dropdownIdSuffix ++ "/" ++ String.fromInt i}
+           (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
+        (List.range (k+1) n)
         (List.isEmpty choicesList :: List.repeat n True)
         (List.drop k subspecs)
 
@@ -439,7 +458,7 @@ groupOptionsByOriginCategory =
 sideNavStyle : List Style
 sideNavStyle = 
   [ Css.height (Css.pct 100)
-  , Css.width (Css.px 160)
+  , Css.width (Css.px sideNavWidth)
   , Css.position Css.fixed
   , Css.zIndex (Css.int 1)
   , Css.top Css.zero
@@ -461,3 +480,6 @@ sideNavButtonStyle =
   , Css.display Css.block
   , Css.hover [Css.color (Css.hex "ffffff")]
   ]
+
+sideNavWidth : Float
+sideNavWidth = 260

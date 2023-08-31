@@ -19,14 +19,16 @@ traits_from_source(^bard, [weapon(simple),
                            weapon(shortsword)]).
 trait_options_source(^bard, 'musical instrument', wrap(musical_instrument),
                      3 unique_from musical_instrument).
-trait_options_source(^bard, skill, wrap(skill), 2 unique_from skill).
+trait_options_source(^bard, skill, wrap(skill), 3 unique_from skill).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1 features
 trait_source(bard >: 1, armor(light)).
-trait_options_source(bard >: 1, skill, wrap(skill), skill).
+trait_options_source(bard >: 1, skill, wrap(skill), skill) :-
+    \+ (^bard).
 trait_options_source(bard >: 1, 'musical instrument', wrap(musical_instrument),
-                     musical_instrument).
+                     musical_instrument) :-
+    \+ (^bard).
 musical_instrument(lute). % TODO
 meta_todo('musical instrument', "move this predicate out of bard class and list instruments").
 trait_source(bard >: 1, 'bardic inspiration').
