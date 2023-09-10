@@ -12,8 +12,8 @@ asi_level(fighter:L) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features.
-trait_source(initial_class(fighter), armor(heavy)).
-trait_options_source(initial_class(fighter), skill, wrap(skill),
+trait_source(^fighter, armor(heavy)).
+trait_options_source(^fighter, skill, wrap(skill),
                      2 unique_from from_list(
                          [acrobatics, 'animal handling', athletics, history,
                           insight, intimidation, perception, survivial])).

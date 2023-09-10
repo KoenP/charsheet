@@ -16,13 +16,13 @@ class_saving_throw(druid, int).
 % Initial class features.
 class_skill_list(druid, [arcana, 'animal handling', insight, medicine,
                          nature, perception, religion, survival]).
-traits_from_source(initial_class(druid),
+traits_from_source(^druid,
                    [weapon(club), weapon(dagger), weapon(dart),
                     weapon(javelin), weapon(mace),
                     weapon(quarterstaff), weapon(scimitar),
                     weapon(sickle), weapon(sling), weapon(spear),
                     tool('herbalism kit')]).
-trait_options_source(initial_class(druid), skill, wrap(skill),
+trait_options_source(^druid, skill, wrap(skill),
                      2 unique_from class_skill(druid)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

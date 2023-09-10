@@ -115,7 +115,8 @@ remote_query(_, '/sheet') :-
     sheet_json_dict(Dict),
     reply_json_dict(Dict).
 remote_query(_, '/options') :-
-    findall(J, options_json(_,_,J), Json),
+    all_options_by_level_json(Json),
+    % findall(J, options_json(_,_,J), Json),
     reply_json_dict(Json).
 remote_query(Request, '/gain_level') :-
     http_parameters(Request, [class(Class,[])]),

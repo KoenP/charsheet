@@ -12,7 +12,7 @@ class_saving_throw(gambler, cha).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features gained for picking this class as initial class.
-trait_options_source(initial_class(gambler), skill, wrap(skill),
+trait_options_source(^gambler, skill, wrap(skill),
                      3 unique_from from_list(
                          [acrobatics, athletics, deception, insight,
                           investigation, perception, performance,

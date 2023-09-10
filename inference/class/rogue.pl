@@ -15,18 +15,18 @@ class_skill_list(rogue, [acrobatics, athletics, deception, insight,
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features (you don't get these when multiclassing into rogue).
-traits_from_source(initial_class(rogue),
+traits_from_source(^rogue,
                    [weapon(simple), weapon('hand crossbow'),
                     weapon(longsword), weapon(rapier),
                     weapon(shortsword)]).
-trait_options_source(initial_class(rogue), skill, wrap(skill),
+trait_options_source(^rogue, skill, wrap(skill),
                      4 unique_from class_skill(rogue)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1 features (you get these when multiclassing into rogue).
 traits_from_source(rogue >: 1, [armor(light), tool('thieves\' tools')]).
 trait_options_source(rogue >: 1, skill, wrap(skill), class_skill(rogue)) :-
-    \+ initial_class(rogue).
+    \+ (^rogue).
 
 trait_options_source(rogue >: L, expertise, rogue_expertise_to_trait,
                      2 unique_from rogue_expertise_option) :-

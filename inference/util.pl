@@ -87,3 +87,28 @@ simplify_product(X*1, X) :- X \= 1.
 simplify_product(X*Y, X*Y) :- X \= 1, Y \= 1.
 
 odd(N) :- 1 is N mod 2.
+
+extend_multimap(InitMap, _     , []    , InitMap).
+extend_multimap(InitMap, GetKey, [X|Xs], Map    ) :-
+    extend_multimap(InitMap, GetKey, Xs, Map1),
+    call(GetKey, X, Key),
+    add_to_multimap(Key, X, Map1, Map).
+
+
+
+%multimap_from_list(GetKey, List, Map) :-
+%    multimap_from_list_(GetKey, List, _{}, Map).
+%
+%multimap_from_list_(_, [], Acc, Acc).
+%multimap_from_list_(GetKey, [X|Xs], Acc, Out) :-
+%    call(GetKey, X, Key),
+%    add_to_multimap(Key, X, Acc, Acc1),
+%    multimap_from_list_(GetKey, Xs, Acc1, Out).
+%
+
+add_to_multimap(Key, X, In, Out) :-
+    get_dict(Key, In, Entry),
+    !,
+    put_dict(Key, In, [X|Entry], Out).
+add_to_multimap(Key, X, In, In.put(Key, [X])).
+    

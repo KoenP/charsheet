@@ -1,15 +1,16 @@
 module Page.EditCharacter exposing (..)
 
 import Browser.Navigation as Nav
+import Css exposing (Style)
+import Dict exposing (Dict)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr
 import Html.Styled.Events as E
 import Http
-import Css exposing (Style)
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra as D
+import Maybe
 import Platform.Cmd as Cmd
-import Dict exposing (Dict)
 import Zipper exposing (Zipper(..))
 
 import Request exposing (requestUrl)
@@ -26,8 +27,28 @@ load =
     { url = requestUrl "options" []
     , expect = Http.expectJson
                (mkHttpResponseMsg GotCharacterOptions)
-               (D.list optionsDec)
+               optionsDictDec
     }
+
+optionsDictDec : Decoder (Dict Level (List Options))
+optionsDictDec =
+  D.keyValuePairs (D.list optionsDec)
+    |> D.andThen
+       (\keyValPairs ->
+          List.map
+            (\(key, val) ->
+               case D.decodeString D.int key of 
+                 Ok level -> D.succeed (level, val)
+                 Err err  -> D.fail (D.errorToString err))
+            keyValPairs
+          |> sequenceDecoders
+          |> D.map Dict.fromList)
+
+sequenceDecoders : List (Decoder a) -> Decoder (List a)
+sequenceDecoders decs =
+  case decs of
+    []      -> D.succeed []
+    d :: ds -> d |> D.andThen (\x -> sequenceDecoders ds |> D.andThen (\xs -> D.succeed (x :: xs)))
 
 optionsDec : Decoder Options
 optionsDec =
@@ -130,11 +151,12 @@ fromSpecDec unique =
 --------------------------------------------------------------------------------
 -- UPDATE
 --------------------------------------------------------------------------------
-update : Msg -> Model -> List Options -> Maybe Int -> (Model, Cmd Msg)
+update : Msg -> Model -> Dict Level (List Options) -> Maybe Int -> (Model, Cmd Msg)
 update msg model options selectedLevel =
   case msg of
     HttpResponse (Ok (GotCharacterOptions newOptions)) ->
-      applyPage model (EditCharacterPage newOptions selectedLevel Nothing, Cmd.none)
+      let curLevel = newOptions |> Dict.keys |> List.maximum |> Maybe.withDefault 1
+      in applyPage model (EditCharacterPage newOptions (Just curLevel) Nothing, Cmd.none)
 
     HttpResponse (Ok ChoiceRegistered) ->
       (model, load)
@@ -163,14 +185,17 @@ update msg model options selectedLevel =
 
     OrSCChooseDir origin id dir ->
       let
+        newOptions : Dict Level (List Options)
         newOptions =
-          List.map
-            (\opt ->
-               if (origin, id) /= (opt.origin, opt.id)
-               then opt
-               else case opt.spec of
-                      OrSC _ left right -> { opt | spec = OrSC (Just dir) left right }
-                      _                 -> opt)
+          Dict.map
+            (\_ ->
+               List.map
+                 (\opt ->
+                    if (origin, id) /= (opt.origin, opt.id)
+                    then opt
+                    else case opt.spec of
+                           OrSC _ left right -> { opt | spec = OrSC (Just dir) left right }
+                           _                 -> opt))
             options
       in
         applyPage model ( EditCharacterPage newOptions selectedLevel Nothing
@@ -189,12 +214,12 @@ update msg model options selectedLevel =
 --------------------------------------------------------------------------------
 -- VIEW
 --------------------------------------------------------------------------------
-view : Maybe String -> List Options -> Maybe Level -> Maybe (List String) -> List (Html Msg)
+view : Maybe String -> Dict Level (List Options) -> Maybe Level -> Maybe (List String) -> List (Html Msg)
 view focusedDropdownId opts selectedLevel desc =
-  [ viewSideNav desc (Debug.log "view" opts), viewMain focusedDropdownId opts selectedLevel ]
+  [ viewSideNav desc opts selectedLevel, viewMain focusedDropdownId opts selectedLevel ]
   
-viewSideNav : Maybe (List String) -> List Options -> Html Msg
-viewSideNav desc opts =
+viewSideNav :  Maybe (List String) -> Dict Level (List Options) -> Maybe Level -> Html Msg
+viewSideNav desc opts selectedLevel =
   div [ Attr.css sideNavStyle ] <|
     case desc of
       Just (title :: paragraphs) ->
@@ -204,13 +229,10 @@ viewSideNav desc opts =
           (p [ Attr.css (Css.fontSize (Css.px 12) :: descStyle)] << List.singleton << text)
           paragraphs
       _ -> 
-        (opts
-        |> List.map .charlevel
-        |> List.sort
-        |> Util.nubSorted
-        |> List.map viewSideNavLevelButton)
+        (Dict.keys opts
+        |> List.map (viewSideNavLevelButton selectedLevel))
         ++
-        [ viewLevelUpButton ]
+        [ viewLevelUpButton selectedLevel ]
 
 descStyle : List Style            
 descStyle =
@@ -219,21 +241,21 @@ descStyle =
   , Css.padding2 (Css.px 0) (Css.px 10)
   ]
 
-viewSideNavLevelButton : Int -> Html Msg
-viewSideNavLevelButton lvl =
+viewSideNavLevelButton : Maybe Level -> Level -> Html Msg
+viewSideNavLevelButton selectedLevel lvl =
   button
-    [ Attr.css sideNavButtonStyle
+    [ Attr.css (sideNavButtonStyle (Just lvl == selectedLevel))
     , E.onClick (EditCharacterLevel lvl)
     ]
     [ text ("Level " ++ String.fromInt lvl) ]
 
-viewLevelUpButton : Html Msg
-viewLevelUpButton =
+viewLevelUpButton : Maybe Level -> Html Msg
+viewLevelUpButton selectedLevel =
   button
-    [ Attr.css sideNavButtonStyle, E.onClick GotoLevelUp ]
+    [ Attr.css (sideNavButtonStyle (selectedLevel == Nothing)), E.onClick GotoLevelUp ]
     [ text "+" ]
 
-viewMain : Maybe String -> List Options -> Maybe Level -> Html Msg
+viewMain : Maybe String -> Dict Level (List Options) -> Maybe Level -> Html Msg
 viewMain focusedDropdownId opts selectedLevel =
   div
     [ Attr.css
@@ -245,12 +267,13 @@ viewMain focusedDropdownId opts selectedLevel =
     , div [] (viewMainContents focusedDropdownId opts selectedLevel)
     ]
 
-viewMainContents : Maybe String -> List Options -> Maybe Level -> List (Html Msg)
+viewMainContents : Maybe String -> Dict Level (List Options) -> Maybe Level -> List (Html Msg)
 viewMainContents focusedDropdownId opts selectedLevel =
   case selectedLevel of
     Just level ->
       (opts
-       |> List.filter (\opt -> opt.charlevel == level)
+       |> Dict.get level
+       |> Maybe.withDefault []
        |> Util.multiDictFromList (\{origin_category, origin_category_index} ->
                                     (origin_category_index, origin_category))
        |> Dict.map (viewOriginCategoryOptions focusedDropdownId)
@@ -467,14 +490,14 @@ sideNavStyle =
   , Css.overflowX Css.hidden
   ]
 
-sideNavButtonStyle : List Style
-sideNavButtonStyle =
+sideNavButtonStyle : Bool -> List Style
+sideNavButtonStyle highlighted =
   [ Css.backgroundColor Css.transparent
   , Css.border Css.zero
   , Css.marginLeft (Css.px 20)
   , Css.marginTop (Css.px 15)
   , Css.padding Css.zero
-  , Css.color (Css.hex "818181")
+  , Css.color <| Css.hex <| if highlighted then "ffffff" else "818181"
   , Css.cursor Css.pointer
   , Css.fontSize (Css.px 25)
   , Css.display Css.block

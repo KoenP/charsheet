@@ -15,7 +15,7 @@ class_skill_list(ranger, ['animal handling', athletics, insight,
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features (don't get these multiclassing into ranger).
-trait_options_source(initial_class(ranger), skill, wrap(skill),
+trait_options_source(^ranger, skill, wrap(skill),
                      3 unique_from class_skill(ranger)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

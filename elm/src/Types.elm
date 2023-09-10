@@ -175,7 +175,7 @@ type Page
   | Error String
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
-  | EditCharacterPage (List Options) (Maybe Level) (Maybe (List String))
+  | EditCharacterPage (Dict Level (List Options)) (Maybe Level) (Maybe (List String))
 
 applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
 applyPage model ( page, cmd ) =
@@ -230,7 +230,7 @@ type HttpResponseMsg
   = GotCharacterList (List String)
   | CharacterLoaded
   | GotCharacterSheet CharacterSheet
-  | GotCharacterOptions (List Options)
+  | GotCharacterOptions (Dict Level (List Options))
   | ChoiceRegistered
   | LeveledUp
 

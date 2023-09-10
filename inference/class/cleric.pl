@@ -46,11 +46,11 @@ extend_class_spell_list(cleric, Spell) :-
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features.
-traits_from_source(initial_class(cleric),
+traits_from_source(^cleric,
                    [armor(light), armor(medium), armor(shield),
                     weapon(simple)]).
 
-trait_options_source(initial_class(cleric), skill, wrap(skill),
+trait_options_source(^cleric, skill, wrap(skill),
                      2 unique_from from_list(
                          [history,insight,medicine,persuasion,religion])).
 

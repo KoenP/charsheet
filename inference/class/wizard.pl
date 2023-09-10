@@ -14,11 +14,11 @@ class_saving_throw(wizard, wis).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features.
-traits_from_source(initial_class(wizard),
+traits_from_source(^wizard,
                    [weapon(dagger), weapon(dart), weapon(sling),
                     weapon(quarterstaff), weapon('light crossbow')]).
 
-trait_options_source(initial_class(wizard), skill, wrap(skill),
+trait_options_source(^wizard, skill, wrap(skill),
                      2 unique_from from_list([arcana,
                                               history,
                                               insight,

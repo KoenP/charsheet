@@ -186,20 +186,22 @@ options_todo(Origin, Id, Spec) :-
     options(Origin, Id, Spec),
     \+ choice(Origin, Id, _).
 
-%! ordered_options_json(?Ordered)
-%
-%  List of options produced by options_json/3, ordered by category according to
-%  origin_category_canonical_order/1.
-%  TODO: lots of redundant work in this implementation, I think.
-%ordered_options_json(OptionsJson) :-
-%    findall(Ord-Dict,
-%            (options_json(Origin, _, Dict),
-%             origin_category_or_uncategorized(Cat, Origin),
-%             origin_category_canonical_order(Cat, Ord)),
-%            Unordered),
-%    sort(1, @=<, Unordered, Ordered),
-%    maplist([_-Y,Y]>>true, Ordered, OptionsJson).
+%! options_by_level_json(?Opts)
+all_options_by_level_json(Out) :-
+    findall(Json,
+            ( options(Orig, Id, _),
+              options_json(Orig, Id, Json) ),
+            Jsons),
+    level(Level),
+    findall(LAtom-[], (between(1,Level,L), atom_number(LAtom, L)), InitDictEntries),
+    dict_create(Init, _, InitDictEntries),
+    extend_multimap(Init,
+                    [D,LAtom]>>(dict_get_pred(D,charlevel,L), atom_number(LAtom,L)),
+                    Jsons,
+                    Out).
 
+dict_get_pred(Dict, Field, Val) :-
+    Dict.get(Field) = Val.
 
 %! options_json(?Origin, ?Id, ?Json)
 options_json(Origin, Id, _{origin: OriginStr, origin_category: CategoryStr, origin_category_index: CatIdx,

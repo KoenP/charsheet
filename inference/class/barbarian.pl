@@ -14,8 +14,8 @@ class_skill_list(barbarian,
                  ['animal handling', athletics, intimidation,
                    nature, perception, survival]).
 
-traits_from_source(initial_class(barbarian), [armor(light), armor(medium)]).
-trait_options_source(initial_class(barbarian), skill, wrap(skill),
+traits_from_source(^barbarian, [armor(light), armor(medium)]).
+trait_options_source(^barbarian, skill, wrap(skill),
                      2 unique_from class_skill(barbarian)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
