@@ -70,3 +70,9 @@ guardM errMsg predDec valDec =
          (\bool ->
             if bool then D.succeed val else D.fail errMsg))
 
+formatModifier : Int -> String
+formatModifier mod =
+  case compare mod 0 of
+    LT -> String.fromInt mod
+    EQ -> " 0"
+    GT -> "+" ++ String.fromInt mod

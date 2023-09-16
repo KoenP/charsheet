@@ -32,6 +32,9 @@ origin_category_or_uncategorized(Category, Origin) :-
     !.
 origin_category_or_uncategorized(uncategorized, _).
 
+%! origin_level(?Origin, ?Level)
+%
+%  Determine what Level your character obtained a given Origin qualification.
 origin_level(init, 1) :- !.
 origin_level(^_, 1) :- !.
 origin_level(initial_class(_), 1) :- !.
@@ -61,3 +64,11 @@ origin_level(choice(ChoiceOrigin, _), ChoiceOriginLevel) :-
     !,
     origin_level(ChoiceOrigin, ChoiceOriginLevel).
 origin_level(_, unknown) :- !.
+
+
+%! origin(?Origin)
+%
+%  Origin is a possible origin of a trait/bonus your character may have.
+origin(Origin) :- trait_source(Origin, _).
+origin(Origin) :- options_source(Origin, _, _).
+origin(Origin) :- bonus_source(Origin, _).

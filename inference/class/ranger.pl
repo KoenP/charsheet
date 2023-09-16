@@ -16,14 +16,14 @@ class_skill_list(ranger, ['animal handling', athletics, insight,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features (don't get these multiclassing into ranger).
 trait_options_source(^ranger, skill, wrap(skill),
-                     3 unique_from class_skill(ranger)).
+                     2 unique_from class_skill(ranger)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1 features (you get these when multiclassing into ranger).
 traits_from_source(ranger >: 1,
                    [weapon(simple), weapon(martial),
                     armor(light), armor(medium), armor(shield)]).
-trait_options_source(multiclass_into(ranger), skill, wrap(skill),
+trait_options_source(ranger >: 1, skill, wrap(skill),
                      class_skill(ranger)).
 trait_options_source(ranger >: 1, 'favored enemy',
                      wrap(favored_enemy),

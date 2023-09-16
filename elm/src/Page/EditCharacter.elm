@@ -15,6 +15,7 @@ import Zipper exposing (Zipper(..))
 
 import Request exposing (requestUrl)
 import Types exposing (..)
+import Types.Ability exposing (..)
 import Util exposing (simple)
 import Dropdown exposing (dropdown)
 
@@ -24,11 +25,17 @@ import Dropdown exposing (dropdown)
 load : Cmd Msg
 load =
   Http.get
-    { url = requestUrl "options" []
+    { url = requestUrl "edit_character_page" []
     , expect = Http.expectJson
-               (mkHttpResponseMsg GotCharacterOptions)
-               optionsDictDec
+               (mkHttpResponseMsg (\(x,y) -> GotCharacterOptions x y))
+               gotCharacterOptionsDec
     }
+
+gotCharacterOptionsDec : Decoder (AbilityTable, Dict Level (List Options))
+gotCharacterOptionsDec =
+  D.succeed (\x y -> (x,y))
+    |> D.andMap (D.field "ability_table" abilityTableDec)
+    |> D.andMap (D.field "options" optionsDictDec)
 
 optionsDictDec : Decoder (Dict Level (List Options))
 optionsDictDec =
@@ -151,12 +158,12 @@ fromSpecDec unique =
 --------------------------------------------------------------------------------
 -- UPDATE
 --------------------------------------------------------------------------------
-update : Msg -> Model -> Dict Level (List Options) -> Maybe Int -> (Model, Cmd Msg)
-update msg model options selectedLevel =
+update : Msg -> Model -> AbilityTable -> Dict Level (List Options) -> Maybe Int -> (Model, Cmd Msg)
+update msg model abilityTable options selectedLevel =
   case msg of
-    HttpResponse (Ok (GotCharacterOptions newOptions)) ->
+    HttpResponse (Ok (GotCharacterOptions newAbilityTable newOptions)) ->
       let curLevel = newOptions |> Dict.keys |> List.maximum |> Maybe.withDefault 1
-      in applyPage model (EditCharacterPage newOptions (Just curLevel) Nothing, Cmd.none)
+      in applyPage model (EditCharacterPage newAbilityTable newOptions (Just curLevel) Nothing, Cmd.none)
 
     HttpResponse (Ok ChoiceRegistered) ->
       (model, load)
@@ -165,13 +172,13 @@ update msg model options selectedLevel =
       (model, load)
 
     EditCharacterLevel newLevel ->
-      applyPage model (EditCharacterPage options (Just newLevel) Nothing, Cmd.none)
+      applyPage model (EditCharacterPage abilityTable options (Just newLevel) Nothing, Cmd.none)
 
     GotoSheet ->
       applyPage model (Loading, Nav.pushUrl model.key "/sheet")
 
     GotoLevelUp ->
-      applyPage model (EditCharacterPage options Nothing Nothing, Cmd.none)
+      applyPage model (EditCharacterPage abilityTable options Nothing Nothing, Cmd.none)
 
     LevelUpAs class ->
       -- TODO should be POST
@@ -198,12 +205,12 @@ update msg model options selectedLevel =
                            _                 -> opt))
             options
       in
-        applyPage model ( EditCharacterPage newOptions selectedLevel Nothing
+        applyPage model ( EditCharacterPage abilityTable newOptions selectedLevel Nothing
                         , Cmd.none
                         )
 
     SetEditCharacterPageDesc desc ->
-      applyPage model (EditCharacterPage options selectedLevel desc, Cmd.none)
+      applyPage model (EditCharacterPage abilityTable options selectedLevel desc, Cmd.none)
 
     _ ->
       let _ = Debug.log "" msg
@@ -214,9 +221,9 @@ update msg model options selectedLevel =
 --------------------------------------------------------------------------------
 -- VIEW
 --------------------------------------------------------------------------------
-view : Maybe String -> Dict Level (List Options) -> Maybe Level -> Maybe (List String) -> List (Html Msg)
-view focusedDropdownId opts selectedLevel desc =
-  [ viewSideNav desc opts selectedLevel, viewMain focusedDropdownId opts selectedLevel ]
+view : Maybe String -> AbilityTable -> Dict Level (List Options) -> Maybe Level -> Maybe (List String) -> List (Html Msg)
+view focusedDropdownId abilityTable opts selectedLevel desc =
+  [ viewSideNav desc opts selectedLevel, viewMain focusedDropdownId abilityTable opts selectedLevel ]
   
 viewSideNav :  Maybe (List String) -> Dict Level (List Options) -> Maybe Level -> Html Msg
 viewSideNav desc opts selectedLevel =
@@ -255,17 +262,98 @@ viewLevelUpButton selectedLevel =
     [ Attr.css (sideNavButtonStyle (selectedLevel == Nothing)), E.onClick GotoLevelUp ]
     [ text "+" ]
 
-viewMain : Maybe String -> Dict Level (List Options) -> Maybe Level -> Html Msg
-viewMain focusedDropdownId opts selectedLevel =
+viewMain : Maybe String -> AbilityTable -> Dict Level (List Options) -> Maybe Level -> Html Msg
+viewMain focusedDropdownId abilityTable opts selectedLevel =
   div
     [ Attr.css
         [ Css.marginLeft (Css.px sideNavWidth)
-        , Css.padding2 (Css.px 0) (Css.px 10)
+        , Css.padding2 Css.zero (Css.px 10)
         ]
     ] 
-    [ button [E.onClick GotoSheet] [text "View character sheet"]
-    , div [] (viewMainContents focusedDropdownId opts selectedLevel)
+    [ viewTopBar abilityTable
+    , div
+        [ Attr.css
+            [ Css.padding2 (Css.px 150) (Css.px 25)
+            ]
+        ]
+        (viewMainContents focusedDropdownId opts selectedLevel)
     ]
+
+viewTopBar : AbilityTable -> Html Msg
+viewTopBar abilityTable =
+  div
+    [ Attr.css
+        [ Css.position Css.fixed
+        , Css.width (Css.pct 75)
+        , Css.overflow Css.hidden
+        , Css.zIndex (Css.int 2)
+        , Css.backgroundColor (Css.hex "#ffffff")
+        , Css.borderBottom3 (Css.px 2) (Css.solid) (Css.hex "#000000")
+        , Css.padding4 (Css.px 10) (Css.px 10) (Css.px 10) (Css.px 10)
+        ]
+    ]
+    [ button [E.onClick GotoSheet] [text "View character sheet"]   
+    , table
+        [ Attr.css
+            [ Css.maxWidth (Css.px 600)
+            , Css.width (Css.pct 100)
+            , Css.tableLayout Css.fixed
+            , Css.fontFamily Css.monospace
+            ]
+        ]
+        [ abilityNamesTableRow
+        , baseAbilityValuesTableRow (listFromAbilityTable .base abilityTable)
+        , abilityBonusTableRow abilityTable
+        , abilityScoreTableRow (listFromAbilityTable .score abilityTable)
+        , abilityModTableRow (listFromAbilityTable .mod abilityTable)
+        ]
+    ]
+
+abilityNamesTableRow : Html msg
+abilityNamesTableRow =
+  tr [] <| topBarTh "" :: List.map topBarTh abilities
+
+baseAbilityValuesTableRow : List Int -> Html msg
+baseAbilityValuesTableRow baseScores =
+  tr []
+    <| topBarTh "base score"
+       :: (baseScores
+          |> List.map
+             (\baseScore ->
+                (td
+                   [ Attr.css topBarTdCss ]
+                   [ input
+                       [ Attr.type_ "number"
+                       , Attr.value (String.fromInt baseScore)
+                       , Attr.css [ Css.maxWidth (Css.px 40) ]
+                       ]
+                       []])))
+
+abilityBonusTableRow : AbilityTable -> Html msg
+abilityBonusTableRow abilityTable =
+  let
+    baseScores = listFromAbilityTable .base abilityTable
+    totalScores = listFromAbilityTable .score abilityTable
+    bonuses = List.map2 (-) totalScores baseScores
+  in 
+  tr [] <| topBarTh "bonuses" :: List.map (topBarTd << Util.formatModifier) bonuses
+
+abilityScoreTableRow : List Int -> Html msg
+abilityScoreTableRow scores =
+  tr [] <| topBarTh "score" :: List.map (topBarTd << String.fromInt) scores
+
+abilityModTableRow : List Int -> Html msg
+abilityModTableRow modifiers =
+  tr [] <| topBarTh "mod" :: List.map (topBarTd << Util.formatModifier) modifiers
+
+topBarTh : String -> Html msg
+topBarTh val = th [] [text val]
+
+topBarTd : String -> Html msg               
+topBarTd val = td [Attr.css topBarTdCss] [text val]
+
+topBarTdCss : List Style
+topBarTdCss = [Css.textAlign Css.center]
 
 viewMainContents : Maybe String -> Dict Level (List Options) -> Maybe Level -> List (Html Msg)
 viewMainContents focusedDropdownId opts selectedLevel =

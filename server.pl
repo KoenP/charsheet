@@ -118,6 +118,10 @@ remote_query(_, '/options') :-
     all_options_by_level_json(Json),
     % findall(J, options_json(_,_,J), Json),
     reply_json_dict(Json).
+remote_query(_, '/edit_character_page') :-
+    all_options_by_level_json(OptsJson),
+    ability_table_json_dict(AbiJson),
+    reply_json_dict(_{options: OptsJson, ability_table: AbiJson}).
 remote_query(Request, '/gain_level') :-
     http_parameters(Request, [class(Class,[])]),
     level(CurLevel),

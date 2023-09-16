@@ -64,14 +64,11 @@ navigate : Model -> Route -> ( Model, Cmd Msg )
 navigate model route = -- ( { model | page = Loading } , Sheet.load )
   case route of
     SelectCharacterRoute ->
-      ( { model | page = Loading }
-      , Http.get
-          { url = requestUrl "list_characters" []
-          , expect = Http.expectJson
-                     (mkHttpResponseMsg GotCharacterList)
-              (field "list" (list string))
-          }
-      )
+      Debug.log "navigate (SelectCharacterRoute)"
+        ( { model | page = Loading }
+        , loadSelectCharacterPage
+        )
+      
     SheetRoute ->
       Debug.log "navigate (SheetRoute)"
         ( { model | page = Loading }
@@ -83,6 +80,16 @@ navigate model route = -- ( { model | page = Loading } , Sheet.load )
         , Edit.load
         )
     _ -> ( model, none )
+
+loadSelectCharacterPage : Cmd Msg
+loadSelectCharacterPage = 
+  Http.get
+    { url = requestUrl "list_characters" []
+    , expect = Http.expectJson
+               (mkHttpResponseMsg GotCharacterList)
+        (field "list" (list string))
+    }
+  
 
 type Route
   = SelectCharacterRoute
@@ -148,8 +155,8 @@ update msg model =
              applyPage model (updateCharacterSelectionPage msg pageData)
            CharacterSheetPage sheet ->
              Sheet.update msg model
-           EditCharacterPage options selectedLevel _ ->
-             Edit.update msg model options selectedLevel
+           EditCharacterPage abilityTable options selectedLevel _ ->
+             Edit.update msg model abilityTable options selectedLevel
            Loading ->
              case msg of
                HttpResponse (Ok responseMsg) ->
@@ -197,9 +204,9 @@ handleHttpResponseMsg msg model =
           }
         , none
         )
-      GotCharacterOptions options ->
+      GotCharacterOptions abilityTable options ->
         ( { model
-            | page = EditCharacterPage options (Just 1) Nothing
+            | page = EditCharacterPage abilityTable options (Just 1) Nothing
           }
         , none
         )
@@ -264,8 +271,8 @@ view model =
           characterSelectionPage data model
         CharacterSheetPage data ->
           Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
-        EditCharacterPage options selectedLevel desc ->
-          Edit.view model.focusedDropdownId options selectedLevel desc
+        EditCharacterPage abilityTable options selectedLevel desc ->
+          Edit.view model.focusedDropdownId abilityTable options selectedLevel desc
   }
   
 

@@ -6,6 +6,7 @@ import Platform.Cmd
 import Dict exposing (Dict)
 import Set exposing (Set)
 import Http
+import Types.Ability exposing (..)
 import Url exposing (Url)
 
 ----------------------------------------------------------------------
@@ -42,42 +43,6 @@ type alias CharacterSummary =
   , speed : Int
   }
 
--- TODO: should perhaps make this an enum, but not sure if it's worth
--- the hassle.
-type alias Ability = String
-type alias AbilityTable = Dict Ability AbilityTableEntry
-type alias AbilityTableEntry = {score : Int, mod : Int, st : Int}
-abilities : List String
-abilities = ["str", "dex", "con", "wis", "int", "cha"]
-
-type alias Skill = String
-type alias SkillTable = Dict Skill Int
-
-skillsPerAbility : List ( Ability , List Skill )
-skillsPerAbility =
-  [ ( "str", [ "athletics" ] )
-  , ( "dex", [ "acrobatics"
-             , "sleight of hand"
-             , "stealth"
-             ] ) 
-  , ( "wis", [ "animal handling"
-             , "insight"
-             , "medicine"
-             , "perception"
-             , "survival"
-             ] ) 
-  , ( "int", [ "arcana"
-             , "history"
-             , "investigation"
-             , "nature"
-             , "religion"
-             ] ) 
-  , ( "cha", [ "deception"
-             , "intimidation"
-             , "performance"
-             , "persuasion"
-             ] ) 
-  ]
 
 type alias NotableTraitCategory = { category: String, traits: List Trait }
 type alias Trait = { name: String, desc: Maybe String }
@@ -175,7 +140,7 @@ type Page
   | Error String
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
-  | EditCharacterPage (Dict Level (List Options)) (Maybe Level) (Maybe (List String))
+  | EditCharacterPage AbilityTable (Dict Level (List Options)) (Maybe Level) (Maybe (List String))
 
 applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
 applyPage model ( page, cmd ) =
@@ -230,7 +195,7 @@ type HttpResponseMsg
   = GotCharacterList (List String)
   | CharacterLoaded
   | GotCharacterSheet CharacterSheet
-  | GotCharacterOptions (Dict Level (List Options))
+  | GotCharacterOptions AbilityTable (Dict Level (List Options))
   | ChoiceRegistered
   | LeveledUp
 

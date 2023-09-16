@@ -17,6 +17,7 @@ import Platform.Cmd as Cmd
 
 import Request exposing (requestUrl)
 import Types exposing (..)
+import Types.Ability exposing (..)
 import Util exposing (..)
 
 ----------------------------------------------------------------------
@@ -60,13 +61,6 @@ summaryDec =
     |> D.andMap (D.field "prof_bon" D.int)
     |> D.andMap (D.field "race" D.string)
     |> D.andMap (D.field "speed" D.int)
-
-abilityTableDec : Decoder AbilityTable
-abilityTableDec =
-  D.dict (D.succeed AbilityTableEntry
-            |> D.andMap (D.field "score" D.int)
-            |> D.andMap (D.field "mod" D.int)
-            |> D.andMap (D.field "st" D.int))
 
 notableTraitsDec : Decoder (List NotableTraitCategory)
 notableTraitsDec =
@@ -467,13 +461,6 @@ captionedTable captionText attrs tableRows =
     , table attrs tableRows
     ]
   
-formatModifier : Int -> String
-formatModifier mod =
-  case compare mod 0 of
-    LT -> String.fromInt mod
-    EQ -> " 0"
-    GT -> "+" ++ String.fromInt mod
-
 --------------------------------------------------------------------------------
 -- ATTRIBUTES
 ----------------------------------------------------------------------
