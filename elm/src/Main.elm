@@ -18,6 +18,7 @@ import Platform.Cmd exposing (none)
 import List
 import Maybe
 import Debug exposing (log, toString)
+import Time exposing (Posix)
 
 import Page.CharacterSheet as Sheet
 import Page.EditCharacter as Edit
@@ -31,7 +32,7 @@ main =
   Browser.application
     { init = init
     , view = view
-    , update = update
+    , update = updateOrTick
     , subscriptions = subscriptions
     , onUrlRequest = LinkClicked
     , onUrlChange = UrlChanged
@@ -39,12 +40,23 @@ main =
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
-subscriptions { focusedDropdownId } =
-  case focusedDropdownId of
-    Just _ -> 
-      Browser.Events.onClick (succeed ClickOut)
-    Nothing ->
-      Sub.none
+subscriptions { focusedDropdownId, page } =
+  let
+    clickoutSub =
+      case focusedDropdownId of
+        Just _ -> 
+          Browser.Events.onClick (succeed ClickOut)
+        Nothing ->
+          Sub.none
+
+    timeSub =
+      case page of
+        EditCharacterPage _ ->
+          Time.every 500 Tick
+        _ ->
+          Sub.none
+  in 
+    Sub.batch [clickoutSub, timeSub]
     
 
 -- MODEL
@@ -56,6 +68,7 @@ init _ url key =
     , showOnlyPreparedSpells = False
     , page = Loading
     , focusedDropdownId = Nothing
+    , lastTick = Time.millisToPosix 0
     }
   , Edit.load -- Nav.pushUrl key "/list_characters"
   )
@@ -87,7 +100,7 @@ loadSelectCharacterPage =
     { url = requestUrl "list_characters" []
     , expect = Http.expectJson
                (mkHttpResponseMsg GotCharacterList)
-        (field "list" (list string))
+               (field "list" (list string))
     }
   
 
@@ -112,63 +125,73 @@ urlToRoute url =
   Maybe.withDefault NotFound (Parser.parse routeParser url)
 
 -- UPDATE
+verbose = True
+
+updateOrTick : Msg -> Model -> (Model, Cmd Msg)
+updateOrTick msg model =
+  case msg of
+    Tick time -> update msg { model | lastTick = time }
+    _         ->
+      let _ = if verbose then Debug.log "Global update (old model)" model else model
+          _ = if verbose then Debug.log "Global update (msg)" msg else msg
+          _ = if verbose then Debug.log "--------" "" else ""
+      in 
+        update msg model
+
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  let _ = Debug.log "Global update (old model)" model
-      _ = Debug.log "Global update (msg)" msg
-      _ = Debug.log "--------" ""
-  in case msg of
-       Null ->
-         ( model, none )
-       LinkClicked urlRequest ->
-         case urlRequest of
-           Browser.Internal url ->
-             ( model, Nav.pushUrl model.key (Url.toString url))
-           Browser.External href ->
-             ( model, Nav.load href )
+  case msg of
+    Null ->
+      ( model, none )
+    LinkClicked urlRequest ->
+      case urlRequest of
+        Browser.Internal url ->
+          ( model, Nav.pushUrl model.key (Url.toString url))
+        Browser.External href ->
+          ( model, Nav.load href )
 
-       UrlChanged url ->
-         navigate model (urlToRoute url)
+    UrlChanged url ->
+      navigate model (urlToRoute url)
 
-       EditCharacter ->
-         ( { model | page = Loading }, Nav.pushUrl model.key "/edit" )
+    EditCharacter ->
+      ( { model | page = Loading }, Nav.pushUrl model.key "/edit" )
 
-       Choice origin id choice ->
-         ( { model | focusedDropdownId = Nothing } , registerChoice origin id choice )
+    Choice origin id choice ->
+      ( { model | focusedDropdownId = Nothing } , registerChoice origin id choice )
 
-       SelectDropdownOption dropdownId optionId -> 
-         let _ = Debug.log "" ("Selected dropdown option " ++ optionId ++ " from dropdown " ++ dropdownId)
-         in ( { model | focusedDropdownId = Nothing }, none )
+    SelectDropdownOption dropdownId optionId -> 
+      let _ = Debug.log "" ("Selected dropdown option " ++ optionId ++ " from dropdown " ++ dropdownId)
+      in ( { model | focusedDropdownId = Nothing }, none )
 
-       ToggleDropdown dropdownId -> 
-         let newFocusedDropdownId = if model.focusedDropdownId == Just dropdownId
-                                    then Nothing
-                                    else Just dropdownId
-         in ( { model | focusedDropdownId = newFocusedDropdownId }, none )
+    ToggleDropdown dropdownId -> 
+      let newFocusedDropdownId = if model.focusedDropdownId == Just dropdownId
+                                 then Nothing
+                                 else Just dropdownId
+      in ( { model | focusedDropdownId = newFocusedDropdownId }, none )
 
-       ClickOut ->
-         ( { model | focusedDropdownId = Nothing }, none )
+    ClickOut ->
+      ( { model | focusedDropdownId = Nothing }, none )
 
-       _ ->
-         case model.page of
-           CharacterSelectionPage pageData ->
-             applyPage model (updateCharacterSelectionPage msg pageData)
-           CharacterSheetPage sheet ->
-             Sheet.update msg model
-           EditCharacterPage abilityTable options selectedLevel _ ->
-             Edit.update msg model abilityTable options selectedLevel
-           Loading ->
-             case msg of
-               HttpResponse (Ok responseMsg) ->
-                 handleHttpResponseMsg responseMsg model
-               _ ->
-                 let
-                   error = "Main.update: Expected HttpResponse, got " ++
-                           Debug.toString msg
-                 in 
-                   ( { model | page = Error error }, none )
-           Error error  ->
-             ( { model | page = Error error }, none )
+    _ ->
+      case model.page of
+        CharacterSelectionPage pageData ->
+          applyPage model (updateCharacterSelectionPage msg pageData)
+        CharacterSheetPage sheet ->
+          Sheet.update msg model
+        EditCharacterPage data ->
+          Edit.update msg model data
+        Loading ->
+          case msg of
+            HttpResponse (Ok responseMsg) ->
+              handleHttpResponseMsg responseMsg model
+            _ ->
+              let
+                error = "Main.update: Expected HttpResponse, got " ++
+                        Debug.toString msg
+              in 
+                ( { model | page = Error error }, none )
+        Error error  ->
+          ( { model | page = Error error }, none )
 
 updateCharacterSelectionPage
   : Msg -> CharacterSelectionPageData -> (Page, Cmd Msg)
@@ -204,12 +227,20 @@ handleHttpResponseMsg msg model =
           }
         , none
         )
-      GotCharacterOptions abilityTable options ->
-        ( { model
-            | page = EditCharacterPage abilityTable options (Just 1) Nothing
-          }
-        , none
-        )
+      GotCharacterOptions abilityTable optionsPerLevel ->
+        let charLevel = Dict.keys optionsPerLevel |> List.maximum |> Maybe.withDefault 1
+        in ( { model
+               | page = EditCharacterPage
+                        { abilityTable = abilityTable
+                        , optionsPerLevel = optionsPerLevel
+                        , charLevel = charLevel
+                        , selectedLevel = Just charLevel
+                        , desc = Nothing
+                        , setAbilitiesOnNextTick = Dict.empty
+                        }
+             }
+           , none
+           )
       ChoiceRegistered ->
         (model, Edit.load)
       _ ->
@@ -271,8 +302,8 @@ view model =
           characterSelectionPage data model
         CharacterSheetPage data ->
           Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
-        EditCharacterPage abilityTable options selectedLevel desc ->
-          Edit.view model.focusedDropdownId abilityTable options selectedLevel desc
+        EditCharacterPage data ->
+          Edit.view model.focusedDropdownId data
   }
   
 

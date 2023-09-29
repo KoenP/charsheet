@@ -11,6 +11,7 @@ import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra as D
 import Maybe
 import Platform.Cmd as Cmd
+import Tuple
 import Zipper exposing (Zipper(..))
 
 import Request exposing (requestUrl)
@@ -158,12 +159,30 @@ fromSpecDec unique =
 --------------------------------------------------------------------------------
 -- UPDATE
 --------------------------------------------------------------------------------
-update : Msg -> Model -> AbilityTable -> Dict Level (List Options) -> Maybe Int -> (Model, Cmd Msg)
-update msg model abilityTable options selectedLevel =
+update : Msg -> Model -> EditCharacterPageData -> (Model, Cmd Msg)
+update msg model oldData =
   case msg of
     HttpResponse (Ok (GotCharacterOptions newAbilityTable newOptions)) ->
-      let curLevel = newOptions |> Dict.keys |> List.maximum |> Maybe.withDefault 1
-      in applyPage model (EditCharacterPage newAbilityTable newOptions (Just curLevel) Nothing, Cmd.none)
+      let
+        charLevel = newOptions |> Dict.keys |> List.maximum |> Maybe.withDefault 1
+      in
+        applyPage
+          model
+          ( EditCharacterPage
+              { abilityTable           = newAbilityTable
+              , optionsPerLevel        = newOptions
+              , charLevel              = charLevel
+              , selectedLevel          = Just <| Maybe.withDefault charLevel oldData.selectedLevel
+              , desc                   = Nothing
+              , setAbilitiesOnNextTick =
+                  let newBaseAbilities = Dict.map (\_ v -> v.base) newAbilityTable 
+                      changedAbilities = Dict.intersect newBaseAbilities oldData.setAbilitiesOnNextTick
+                  in if changedAbilities == oldData.setAbilitiesOnNextTick
+                     then Dict.empty
+                     else oldData.setAbilitiesOnNextTick
+              }
+          , Cmd.none
+          )
 
     HttpResponse (Ok ChoiceRegistered) ->
       (model, load)
@@ -171,14 +190,41 @@ update msg model abilityTable options selectedLevel =
     HttpResponse (Ok LeveledUp) ->
       (model, load)
 
+    HttpResponse (Ok UpdatedBaseAbilityScores) ->
+      (model, load)
+
+    Tick _ ->
+      ( model
+      , if Dict.isEmpty oldData.setAbilitiesOnNextTick
+        then Cmd.none
+        else
+          Http.get -- TODO should probably be POST
+            { url = requestUrl "set_base_abilities"
+                (  applyBaseAbilityChanges oldData.abilityTable oldData.setAbilitiesOnNextTick
+                |> Dict.map (\_ v -> String.fromInt v)
+                |> Dict.toList
+                )
+            , expect = Http.expectJson
+                       (mkHttpResponseMsg (\_ -> UpdatedBaseAbilityScores))
+                       (D.succeed ())
+            }
+            
+
+          
+      )
+
     EditCharacterLevel newLevel ->
-      applyPage model (EditCharacterPage abilityTable options (Just newLevel) Nothing, Cmd.none)
+      ( applyPageData model { oldData | selectedLevel = Just newLevel }
+      , Cmd.none
+      )
 
     GotoSheet ->
       applyPage model (Loading, Nav.pushUrl model.key "/sheet")
 
     GotoLevelUp ->
-      applyPage model (EditCharacterPage abilityTable options Nothing Nothing, Cmd.none)
+      ( applyPageData model { oldData | selectedLevel = Nothing, desc = Nothing }
+      , Cmd.none
+      ) 
 
     LevelUpAs class ->
       -- TODO should be POST
@@ -188,6 +234,14 @@ update msg model abilityTable options selectedLevel =
                     (mkHttpResponseMsg (\_ -> LeveledUp))
                     (D.succeed ())
          }
+      )
+
+    SetBaseAbilityScore ability newScore -> 
+      ( applyPageData model { oldData
+                            | setAbilitiesOnNextTick =
+                                Dict.insert ability newScore oldData.setAbilitiesOnNextTick
+                            }
+      , Cmd.none
       )
 
     OrSCChooseDir origin id dir ->
@@ -203,30 +257,35 @@ update msg model abilityTable options selectedLevel =
                     else case opt.spec of
                            OrSC _ left right -> { opt | spec = OrSC (Just dir) left right }
                            _                 -> opt))
-            options
+            oldData.optionsPerLevel
       in
-        applyPage model ( EditCharacterPage abilityTable newOptions selectedLevel Nothing
-                        , Cmd.none
-                        )
+        ( applyPageData model { oldData | optionsPerLevel = newOptions, desc = Nothing }
+        , Cmd.none
+        )
 
     SetEditCharacterPageDesc desc ->
-      applyPage model (EditCharacterPage abilityTable options selectedLevel desc, Cmd.none)
+      ( applyPageData model { oldData | desc = desc }
+      , Cmd.none
+      ) 
 
     _ ->
       let _ = Debug.log "" msg
       in errorPage model ("Page.EditCharacter.update called with "
                            ++ Debug.toString msg)
       
+applyBaseAbilityChanges : AbilityTable -> Dict Ability Int -> Dict Ability Int
+applyBaseAbilityChanges abilityTable setAbilitiesOnNextTick =
+  Dict.union setAbilitiesOnNextTick (Dict.map (\k v -> v.base) abilityTable)
 
 --------------------------------------------------------------------------------
 -- VIEW
 --------------------------------------------------------------------------------
-view : Maybe String -> AbilityTable -> Dict Level (List Options) -> Maybe Level -> Maybe (List String) -> List (Html Msg)
-view focusedDropdownId abilityTable opts selectedLevel desc =
-  [ viewSideNav desc opts selectedLevel, viewMain focusedDropdownId abilityTable opts selectedLevel ]
+view : Maybe String -> EditCharacterPageData -> List (Html Msg)
+view focusedDropdownId data =
+  [ viewSideNav data, viewMain focusedDropdownId data ]
   
-viewSideNav :  Maybe (List String) -> Dict Level (List Options) -> Maybe Level -> Html Msg
-viewSideNav desc opts selectedLevel =
+viewSideNav : EditCharacterPageData -> Html Msg
+viewSideNav { desc, optionsPerLevel, selectedLevel } =
   div [ Attr.css sideNavStyle ] <|
     case desc of
       Just (title :: paragraphs) ->
@@ -236,10 +295,11 @@ viewSideNav desc opts selectedLevel =
           (p [ Attr.css (Css.fontSize (Css.px 12) :: descStyle)] << List.singleton << text)
           paragraphs
       _ -> 
-        (Dict.keys opts
-        |> List.map (viewSideNavLevelButton selectedLevel))
-        ++
-        [ viewLevelUpButton selectedLevel ]
+        viewLevelUpButton selectedLevel 
+        ::
+        ( Dict.keys optionsPerLevel
+          |> List.reverse
+          |> List.map (viewSideNavLevelButton selectedLevel) )
 
 descStyle : List Style            
 descStyle =
@@ -262,25 +322,25 @@ viewLevelUpButton selectedLevel =
     [ Attr.css (sideNavButtonStyle (selectedLevel == Nothing)), E.onClick GotoLevelUp ]
     [ text "+" ]
 
-viewMain : Maybe String -> AbilityTable -> Dict Level (List Options) -> Maybe Level -> Html Msg
-viewMain focusedDropdownId abilityTable opts selectedLevel =
+viewMain : Maybe String -> EditCharacterPageData -> Html Msg
+viewMain focusedDropdownId { abilityTable, optionsPerLevel, selectedLevel, setAbilitiesOnNextTick } =
   div
     [ Attr.css
         [ Css.marginLeft (Css.px sideNavWidth)
         , Css.padding2 Css.zero (Css.px 10)
         ]
     ] 
-    [ viewTopBar abilityTable
+    [ viewTopBar abilityTable setAbilitiesOnNextTick
     , div
         [ Attr.css
             [ Css.padding2 (Css.px 150) (Css.px 25)
             ]
         ]
-        (viewMainContents focusedDropdownId opts selectedLevel)
+        (viewMainContents focusedDropdownId optionsPerLevel selectedLevel)
     ]
 
-viewTopBar : AbilityTable -> Html Msg
-viewTopBar abilityTable =
+viewTopBar : AbilityTable -> Dict Ability Int -> Html Msg
+viewTopBar abilityTable setAbilitiesOnNextTick =
   div
     [ Attr.css
         [ Css.position Css.fixed
@@ -302,32 +362,47 @@ viewTopBar abilityTable =
             ]
         ]
         [ abilityNamesTableRow
-        , baseAbilityValuesTableRow (listFromAbilityTable .base abilityTable)
+        , baseAbilityValuesTableRow abilityTable setAbilitiesOnNextTick
+                        
         , abilityBonusTableRow abilityTable
         , abilityScoreTableRow (listFromAbilityTable .score abilityTable)
         , abilityModTableRow (listFromAbilityTable .mod abilityTable)
         ]
     ]
 
-abilityNamesTableRow : Html msg
+abilityNamesTableRow : Html Msg
 abilityNamesTableRow =
   tr [] <| topBarTh "" :: List.map topBarTh abilities
 
-baseAbilityValuesTableRow : List Int -> Html msg
-baseAbilityValuesTableRow baseScores =
-  tr []
-    <| topBarTh "base score"
-       :: (baseScores
-          |> List.map
-             (\baseScore ->
-                (td
-                   [ Attr.css topBarTdCss ]
-                   [ input
-                       [ Attr.type_ "number"
-                       , Attr.value (String.fromInt baseScore)
-                       , Attr.css [ Css.maxWidth (Css.px 40) ]
-                       ]
-                       []])))
+baseAbilityValuesTableRow : AbilityTable -> Dict Ability Int -> Html Msg
+baseAbilityValuesTableRow abilityTable setAbilitiesOnNextTick =
+            -- <| List.map2 Tuple.pair abilities (listFromAbilityTable .base abilityTable)
+  let
+    virtualBaseScoresDict =
+      applyBaseAbilityChanges abilityTable setAbilitiesOnNextTick
+    virtualBaseScoresList =
+      abilities |> List.map (\abi ->
+                               ( abi
+                               , Dict.get abi virtualBaseScoresDict
+                                 |> Maybe.withDefault 0
+                               ))
+  in 
+    tr []
+      <| topBarTh "base score"
+         :: (virtualBaseScoresList
+            |> List.map
+               (\(ability, baseScore) ->
+                  (td
+                     [ Attr.css topBarTdCss ]
+                     [ input
+                         [ Attr.type_ "number"
+                         , Attr.value (String.fromInt baseScore)
+                         , Attr.css [ Css.maxWidth (Css.px 40) ]
+                         , E.onInput (SetBaseAbilityScore ability
+                                        << Maybe.withDefault 0
+                                        << String.toInt)
+                         ]
+                         []])))
 
 abilityBonusTableRow : AbilityTable -> Html msg
 abilityBonusTableRow abilityTable =
@@ -594,3 +669,10 @@ sideNavButtonStyle highlighted =
 
 sideNavWidth : Float
 sideNavWidth = 260
+
+--------------------------------------------------------------------------------
+-- UTIL
+--------------------------------------------------------------------------------
+applyPageData : Model -> EditCharacterPageData -> Model
+applyPageData model data =
+  { model | page = EditCharacterPage data }

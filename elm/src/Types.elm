@@ -2,12 +2,14 @@ module Types exposing (..)
 
 import Browser
 import Browser.Navigation as Nav
-import Platform.Cmd
 import Dict exposing (Dict)
-import Set exposing (Set)
 import Http
-import Types.Ability exposing (..)
+import Platform.Cmd
+import Set exposing (Set)
+import Time exposing (Posix)
 import Url exposing (Url)
+
+import Types.Ability exposing (..)
 
 ----------------------------------------------------------------------
 -- CHARACTER SHEET
@@ -134,13 +136,23 @@ type alias Model =
   , showOnlyPreparedSpells : Bool
   , page : Page
   , focusedDropdownId : Maybe String
+  , lastTick : Posix
   }
 type Page
   = Loading
   | Error String
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
-  | EditCharacterPage AbilityTable (Dict Level (List Options)) (Maybe Level) (Maybe (List String))
+  | EditCharacterPage EditCharacterPageData
+
+type alias EditCharacterPageData = 
+  { abilityTable : AbilityTable
+  , optionsPerLevel : Dict Level (List Options)
+  , charLevel : Level
+  , selectedLevel : Maybe Level
+  , desc : Maybe (List String)
+  , setAbilitiesOnNextTick : Dict Ability Int
+  }
 
 applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
 applyPage model ( page, cmd ) =
@@ -188,6 +200,8 @@ type Msg
   | ToggleDropdown String
   | ClickOut
   | Null
+  | Tick Posix
+  | SetBaseAbilityScore Ability Int
 
 type Choice = ListChoice (List String) | SingletonChoice String
 
@@ -198,6 +212,7 @@ type HttpResponseMsg
   | GotCharacterOptions AbilityTable (Dict Level (List Options))
   | ChoiceRegistered
   | LeveledUp
+  | UpdatedBaseAbilityScores
 
 mkHttpResponseMsg : (a -> HttpResponseMsg) -> (Result Http.Error a -> Msg)
 mkHttpResponseMsg f result =
