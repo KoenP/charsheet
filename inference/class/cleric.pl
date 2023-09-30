@@ -20,7 +20,7 @@ class_saving_throw(cleric, cha).
 % Clerics get to pick cantrips.
 known_spell(cleric, wis, always, [], no, Name) :-
     class_choice(cleric, cantrip, Name).
-options_source(class(cleric), cantrip, 3 unique_from class_cantrip(cleric)).
+options_source(cleric >: 1, cantrip, 3 unique_from class_cantrip(cleric)).
 options_source(cleric >: L, cantrip, class_cantrip(cleric)) :-
     L=4; L=10.
 
@@ -54,8 +54,8 @@ trait_options_source(^cleric, skill, wrap(skill),
                      2 unique_from from_list(
                          [history,insight,medicine,persuasion,religion])).
 
-trait_source(class(cleric), spellcasting_focus(divine)).
-trait_source(class(cleric), ritual_casting(cleric)).
+trait_source(cleric >: 1, spellcasting_focus(divine)).
+trait_source(cleric >: 1, ritual_casting(cleric)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features from leveling up.

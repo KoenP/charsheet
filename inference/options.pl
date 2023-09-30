@@ -2,6 +2,7 @@
        options/3,
        options_source/3,
        choice/3,
+       choice_creates_category/3,
        ignore/2,
        hide_base_option/3.
 :- dynamic ignore/2.
@@ -284,3 +285,28 @@ desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
     ((Desc = [From, N, List], (From = from ; From = unique_from)))
     ;
     (is_list(Desc), List=Desc, N=1).
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OPTION TREE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TODO work on this some time.
+
+% option_tree([ init : 'initial class' : ClassOpts, 
+%               init : 'base race'     : RaceOpts,
+%               init : background      : BackgroundOpts
+%             ]) :-
+%     class_option_tree(ClassOpts),
+%     race_option_tree(RaceOpts),
+%     background_option_tree(BackgroundOpts).
+% 
+% class_option_tree() :-
+%     
+% race_option_tree([]).
+% background_option_tree([]).
+% 
+% %! choice_creates_category(Origin, Id, )
+% choice_creates_category(_, _, _) :- false.

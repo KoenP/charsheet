@@ -25,9 +25,9 @@ dropdown isDisabled id currentlySelected entries open =
     , E.stopPropagationOn "click" (D.succeed (Null, True))
     ]
     [ button
-        ( css (buttonStyle isDisabled open)
+        ( css (buttonStyle isDisabled (currentlySelected /= Nothing) open)
           :: if isDisabled then [] else [ E.onClick (ToggleDropdown id) ])
-        [ text (Maybe.withDefault "-- select an option --" currentlySelected)]
+        [ text (Maybe.withDefault "..." currentlySelected)]
     , div
         [ css <| (if open then visibility visible else visibility hidden) :: contentStyle ]
         (List.map
@@ -40,19 +40,28 @@ dropdown isDisabled id currentlySelected entries open =
            entries)
     ]
 
+-- buttonColor : Bool -> Bool -> 
+buttonColor isDisabled isOptionSelected isOpen =
+  case (isDisabled, isOptionSelected, isOpen ) of
+    (True, _    , _    ) -> rgb 150 150 150
+    (_   , True , False) -> rgb 0 180 0
+    (_   , True , True ) -> rgb 0 150 0
+    (_   , False, True ) -> hex "2989b9"
+    (_   , False, False) -> hex "3498db"
+
 -- Dropdown button.
-buttonStyle : Bool -> Bool -> List Style
-buttonStyle isDisabled open =
-  [ backgroundColor <| case (isDisabled, open) of
-                         (True , _    ) -> rgb 150 150 150
-                         (False, True ) -> hex "2989b9"
-                         (False, False) -> hex "3498db"
+buttonStyle : Bool -> Bool -> Bool -> List Style
+buttonStyle isDisabled optionSelected open =
+  [ backgroundColor <| buttonColor isDisabled optionSelected open
   , color (hex "ffffff")
-  , padding (px 16)
+  , padding4 (px 4) (px 8) (px 4) (px 8) -- top right bot left
   , fontSize (px 16)
   , border zero
   , cursor pointer
-  , hover <| if isDisabled then [] else [ backgroundColor (hex "2989b9") ]
+  , hover <| if isDisabled then [] else [ backgroundColor (buttonColor False optionSelected True) ]
+  , borderRadius (px 10)
+  , minWidth (px 120)
+  , minHeight (px 32)
   ]
 
 -- The container <div>
@@ -71,6 +80,7 @@ contentStyle =
   , Css.minWidth (Css.px 160)
   , Css.boxShadow5 zero (px 8) (px 8) (px 0) (rgba 0 0 0 0.2)
   , Css.zIndex (Css.int 1)
+  , Css.fontFamilies [ "Dosis" ]
   ]
 
 -- Links inside the dropdown

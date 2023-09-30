@@ -325,11 +325,7 @@ viewLevelUpButton selectedLevel =
 viewMain : Maybe String -> EditCharacterPageData -> Html Msg
 viewMain focusedDropdownId { abilityTable, optionsPerLevel, selectedLevel, setAbilitiesOnNextTick } =
   div
-    [ Attr.css
-        [ Css.marginLeft (Css.px sideNavWidth)
-        , Css.padding2 Css.zero (Css.px 10)
-        ]
-    ] 
+    [ Attr.css mainSectionStyle ] 
     [ viewTopBar abilityTable setAbilitiesOnNextTick
     , div
         [ Attr.css
@@ -460,12 +456,14 @@ viewLevelUpPage =
 
 viewOriginCategoryOptions : Maybe String -> (Int, String) -> List Options -> Html Msg
 viewOriginCategoryOptions focusedDropdownId (_, category) optionsList =
-  div [] (simple h2 ("From " ++ category ++ ":") :: List.map (viewOptions focusedDropdownId) optionsList)
+  div
+    [ Attr.css originCategoryStyle ]
+    (simple h2 ("From " ++ category ++ ":") :: List.map (viewOptions focusedDropdownId) optionsList)
 
 viewOptions : Maybe String -> Options -> Html Msg
 viewOptions focusedDropdownId {origin, spec, id} =
   div
-    []
+    [ Attr.css optionsSectionStyle ]
     [ simple h3 id
     , viewSpec
         { origin            = origin
@@ -489,15 +487,18 @@ viewSpec : ViewSpecContext
          -> (String -> Msg) -> Bool -> SpecAndChoice
          -> Html Msg
 viewSpec ctx mkMsg isDisabled spec =
-  case spec of
-    ListSC selected options ->
-      viewListSC ctx mkMsg selected isDisabled options
+  div
+    [ Attr.css [ Css.marginTop (Css.px 4) ] ]
+    [ case spec of
+        ListSC selected options ->
+          viewListSC ctx mkMsg selected isDisabled options
 
-    FromSC unique n subspecs ->
-      viewFromSC ctx unique n subspecs
+        FromSC unique n subspecs ->
+          viewFromSC ctx unique n subspecs
 
-    OrSC dir left right ->
-      viewOrSC ctx dir left right
+        OrSC dir left right ->
+          viewOrSC ctx dir left right
+    ]
 
 viewListSC :  ViewSpecContext
            -> (String -> Msg)
@@ -665,6 +666,30 @@ sideNavButtonStyle highlighted =
   , Css.fontSize (Css.px 25)
   , Css.display Css.block
   , Css.hover [Css.color (Css.hex "ffffff")]
+  ]
+
+mainSectionStyle : List Style
+mainSectionStyle =
+  [ Css.marginLeft (Css.px sideNavWidth)
+  -- , Css.padding2 Css.zero (Css.px 10)
+  ]
+
+originCategoryStyle : List Style
+originCategoryStyle =
+  [ Css.backgroundColor (Css.hex "eeeeee")
+  , Css.borderRadius (Css.px 10)
+  , Css.padding4 (Css.px 1) (Css.px 0) (Css.px 16) (Css.px 20) -- top right bot left
+  , Css.marginTop (Css.px 8)
+  , Css.fontFamilies [ "Dosis" ]
+  ]
+
+optionsSectionStyle : List Style
+optionsSectionStyle =
+  [ Css.backgroundColor (Css.hex "dddddd")
+  , Css.padding4 (Css.px 1) (Css.px 0) (Css.px 16) (Css.px 20) -- top right bot left
+  , Css.marginTop (Css.px 4)
+  , Css.marginRight (Css.px 16)
+  , Css.borderRadius (Css.px 10)
   ]
 
 sideNavWidth : Float

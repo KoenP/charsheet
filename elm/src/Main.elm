@@ -7,6 +7,7 @@ import Url exposing (Url)
 import Url.Parser exposing (Parser, (</>))
 import Url.Parser as Parser
 import Html
+import Html.Attributes
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr
 import Html.Styled.Attributes exposing (style, placeholder, type_)
@@ -70,7 +71,9 @@ init _ url key =
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     }
-  , Edit.load -- Nav.pushUrl key "/list_characters"
+  -- , loadSelectCharacterPage
+  , Edit.load
+  -- , Nav.pushUrl key "/list_characters"
   )
 
 navigate : Model -> Route -> ( Model, Cmd Msg )
@@ -292,18 +295,25 @@ view : Model -> Browser.Document Msg
 view model =
   { title = "Character Sheet"
   , body =
-    List.map toUnstyled <|
-      case model.page of
-        Loading ->
-          [ text "Loading..." ]
-        Error msg -> 
-          [ text msg ]
-        CharacterSelectionPage data ->
-          characterSelectionPage data model
-        CharacterSheetPage data ->
-          Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
-        EditCharacterPage data ->
-          Edit.view model.focusedDropdownId data
+    Html.node
+      "link"
+      [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Dosis&family=Epilogue:wght@300&family=Fira+Code&family=Quattrocento+Sans&family=Roboto:wght@300&display=swap"
+      , Html.Attributes.attribute "rel" "stylesheet"
+      ]
+      []
+    ::
+    List.map toUnstyled 
+      (case model.page of
+         Loading ->
+           [ text "Loading..." ]
+         Error msg -> 
+           [ text msg ]
+         CharacterSelectionPage data ->
+           characterSelectionPage data model
+         CharacterSheetPage data ->
+           Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
+         EditCharacterPage data ->
+           Edit.view model.focusedDropdownId data)
   }
   
 
