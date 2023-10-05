@@ -119,6 +119,8 @@ type SpecAndChoice
   | OrSC (Maybe Dir) (String, SpecAndChoice) (String, SpecAndChoice)
   | FromSC Unique Int (List SpecAndChoice)
 
+type alias Effect = { effect: String, origin: String }
+
 extractChoicesList : SpecAndChoice -> List String
 extractChoicesList spec =
   case spec of
@@ -148,6 +150,7 @@ type Page
 type alias EditCharacterPageData = 
   { abilityTable : AbilityTable
   , optionsPerLevel : Dict Level (List Options)
+  , traitsAndBonusesPerLevel : Dict Level (List Effect)
   , charLevel : Level
   , selectedLevel : Maybe Level
   , desc : Maybe (List String)
@@ -209,7 +212,7 @@ type HttpResponseMsg
   = GotCharacterList (List String)
   | CharacterLoaded
   | GotCharacterSheet CharacterSheet
-  | GotCharacterOptions AbilityTable (Dict Level (List Options))
+  | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
   | ChoiceRegistered
   | LeveledUp
   | UpdatedBaseAbilityScores

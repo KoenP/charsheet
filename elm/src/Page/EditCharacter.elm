@@ -28,27 +28,42 @@ load =
   Http.get
     { url = requestUrl "edit_character_page" []
     , expect = Http.expectJson
-               (mkHttpResponseMsg (\(x,y) -> GotCharacterOptions x y))
+               (mkHttpResponseMsg (\(x,y,z) -> GotCharacterOptions x y z))
                gotCharacterOptionsDec
     }
 
-gotCharacterOptionsDec : Decoder (AbilityTable, Dict Level (List Options))
+gotCharacterOptionsDec : Decoder (AbilityTable, Dict Level (List Options), Dict Level (List Effect))
 gotCharacterOptionsDec =
-  D.succeed (\x y -> (x,y))
+  D.succeed (\x y z -> (x,y,z))
     |> D.andMap (D.field "ability_table" abilityTableDec)
     |> D.andMap (D.field "options" optionsDictDec)
+    |> D.andMap (D.field "traits_and_bonuses" traitsAndBonusesDictDec)
+
+traitsAndBonusesDictDec : Decoder (Dict Level (List Effect))
+traitsAndBonusesDictDec =
+  intDictDec (D.list traitOrBonusDec)
+
+traitOrBonusDec : Decoder Effect
+traitOrBonusDec =
+  D.succeed Effect
+    |> D.andMap (D.field "effect" D.string)
+    |> D.andMap (D.field "origin" D.string)
 
 optionsDictDec : Decoder (Dict Level (List Options))
 optionsDictDec =
-  D.keyValuePairs (D.list optionsDec)
+  intDictDec (D.list optionsDec)
+
+intDictDec : Decoder a -> Decoder (Dict Int a)
+intDictDec valueDec =
+  D.keyValuePairs valueDec
     |> D.andThen
-       (\keyValPairs ->
+       (\kvPairs ->
           List.map
             (\(key, val) ->
-               case D.decodeString D.int key of 
-                 Ok level -> D.succeed (level, val)
-                 Err err  -> D.fail (D.errorToString err))
-            keyValPairs
+               case D.decodeString D.int key of
+                 Ok n    -> D.succeed (n, val)
+                 Err err -> D.fail (D.errorToString err))
+            kvPairs
           |> sequenceDecoders
           |> D.map Dict.fromList)
 
@@ -162,19 +177,20 @@ fromSpecDec unique =
 update : Msg -> Model -> EditCharacterPageData -> (Model, Cmd Msg)
 update msg model oldData =
   case msg of
-    HttpResponse (Ok (GotCharacterOptions newAbilityTable newOptions)) ->
+    HttpResponse (Ok (GotCharacterOptions newAbilityTable newOptions newTraitsAndBonuses)) ->
       let
         charLevel = newOptions |> Dict.keys |> List.maximum |> Maybe.withDefault 1
       in
         applyPage
           model
           ( EditCharacterPage
-              { abilityTable           = newAbilityTable
-              , optionsPerLevel        = newOptions
-              , charLevel              = charLevel
-              , selectedLevel          = Just <| Maybe.withDefault charLevel oldData.selectedLevel
-              , desc                   = Nothing
-              , setAbilitiesOnNextTick =
+              { abilityTable             = newAbilityTable
+              , optionsPerLevel          = newOptions
+              , traitsAndBonusesPerLevel = newTraitsAndBonuses
+              , charLevel                = charLevel
+              , selectedLevel            = Just <| Maybe.withDefault charLevel oldData.selectedLevel
+              , desc                     = Nothing
+              , setAbilitiesOnNextTick   =
                   let newBaseAbilities = Dict.map (\_ v -> v.base) newAbilityTable 
                       changedAbilities = Dict.intersect newBaseAbilities oldData.setAbilitiesOnNextTick
                   in if changedAbilities == oldData.setAbilitiesOnNextTick
@@ -304,7 +320,6 @@ viewSideNav { desc, optionsPerLevel, selectedLevel } =
 descStyle : List Style            
 descStyle =
   [ Css.color (Css.hex "ffffff")
-  , Css.fontFamily Css.sansSerif
   , Css.padding2 (Css.px 0) (Css.px 10)
   ]
 
@@ -323,7 +338,7 @@ viewLevelUpButton selectedLevel =
     [ text "+" ]
 
 viewMain : Maybe String -> EditCharacterPageData -> Html Msg
-viewMain focusedDropdownId { abilityTable, optionsPerLevel, selectedLevel, setAbilitiesOnNextTick } =
+viewMain focusedDropdownId { abilityTable, optionsPerLevel, traitsAndBonusesPerLevel, selectedLevel, setAbilitiesOnNextTick } =
   div
     [ Attr.css mainSectionStyle ] 
     [ viewTopBar abilityTable setAbilitiesOnNextTick
@@ -332,22 +347,13 @@ viewMain focusedDropdownId { abilityTable, optionsPerLevel, selectedLevel, setAb
             [ Css.padding2 (Css.px 150) (Css.px 25)
             ]
         ]
-        (viewMainContents focusedDropdownId optionsPerLevel selectedLevel)
+        (viewMainContents focusedDropdownId optionsPerLevel traitsAndBonusesPerLevel selectedLevel)
     ]
 
 viewTopBar : AbilityTable -> Dict Ability Int -> Html Msg
 viewTopBar abilityTable setAbilitiesOnNextTick =
   div
-    [ Attr.css
-        [ Css.position Css.fixed
-        , Css.width (Css.pct 75)
-        , Css.overflow Css.hidden
-        , Css.zIndex (Css.int 2)
-        , Css.backgroundColor (Css.hex "#ffffff")
-        , Css.borderBottom3 (Css.px 2) (Css.solid) (Css.hex "#000000")
-        , Css.padding4 (Css.px 10) (Css.px 10) (Css.px 10) (Css.px 10)
-        ]
-    ]
+    [ Attr.css topBarStyle ]
     [ button [E.onClick GotoSheet] [text "View character sheet"]   
     , table
         [ Attr.css
@@ -360,7 +366,7 @@ viewTopBar abilityTable setAbilitiesOnNextTick =
         [ abilityNamesTableRow
         , baseAbilityValuesTableRow abilityTable setAbilitiesOnNextTick
                         
-        , abilityBonusTableRow abilityTable
+        , abilityBonusTableRow (listFromAbilityTable .totalBonus abilityTable)
         , abilityScoreTableRow (listFromAbilityTable .score abilityTable)
         , abilityModTableRow (listFromAbilityTable .mod abilityTable)
         ]
@@ -400,14 +406,9 @@ baseAbilityValuesTableRow abilityTable setAbilitiesOnNextTick =
                          ]
                          []])))
 
-abilityBonusTableRow : AbilityTable -> Html msg
-abilityBonusTableRow abilityTable =
-  let
-    baseScores = listFromAbilityTable .base abilityTable
-    totalScores = listFromAbilityTable .score abilityTable
-    bonuses = List.map2 (-) totalScores baseScores
-  in 
-  tr [] <| topBarTh "bonuses" :: List.map (topBarTd << Util.formatModifier) bonuses
+abilityBonusTableRow : List Int -> Html msg
+abilityBonusTableRow bonuses =
+  tr [] <| topBarTh "total bonus" :: List.map (topBarTd << Util.formatModifier) bonuses
 
 abilityScoreTableRow : List Int -> Html msg
 abilityScoreTableRow scores =
@@ -426,17 +427,24 @@ topBarTd val = td [Attr.css topBarTdCss] [text val]
 topBarTdCss : List Style
 topBarTdCss = [Css.textAlign Css.center]
 
-viewMainContents : Maybe String -> Dict Level (List Options) -> Maybe Level -> List (Html Msg)
-viewMainContents focusedDropdownId opts selectedLevel =
+viewMainContents :  Maybe String -> Dict Level (List Options) -> Dict Level (List Options) -> Maybe Level
+                 -> List (Html Msg)
+viewMainContents focusedDropdownId opts tbs selectedLevel =
   case selectedLevel of
     Just level ->
-      (opts
-       |> Dict.get level
-       |> Maybe.withDefault []
-       |> Util.multiDictFromList (\{origin_category, origin_category_index} ->
-                                    (origin_category_index, origin_category))
-       |> Dict.map (viewOriginCategoryOptions focusedDropdownId)
-       |> Dict.values)
+      let
+        optsHtml = 
+          (opts
+          |> Dict.get level
+          |> Maybe.withDefault []
+          |> Util.multiDictFromList (\{origin_category, origin_category_index} ->
+                                       (origin_category_index, origin_category))
+          |> Dict.map (viewOriginCategoryOptions focusedDropdownId)
+          |> Dict.values)
+
+      in
+        optsHtml -- TODO hier zat ik
+      
     Nothing ->
       viewLevelUpPage
 
@@ -666,6 +674,7 @@ sideNavButtonStyle highlighted =
   , Css.fontSize (Css.px 25)
   , Css.display Css.block
   , Css.hover [Css.color (Css.hex "ffffff")]
+  , Css.fontFamilies [ "Dosis" ]
   ]
 
 mainSectionStyle : List Style
@@ -690,6 +699,17 @@ optionsSectionStyle =
   , Css.marginTop (Css.px 4)
   , Css.marginRight (Css.px 16)
   , Css.borderRadius (Css.px 10)
+  ]
+
+topBarStyle : List Style
+topBarStyle =
+  [ Css.position Css.fixed
+  , Css.width (Css.pct 100)
+  , Css.overflow Css.hidden
+  , Css.zIndex (Css.int 2)
+  , Css.backgroundColor (Css.hex "#ffffff")
+  , Css.borderBottom3 (Css.px 2) (Css.solid) (Css.hex "#000000")
+  , Css.padding4 (Css.px 10) (Css.px 10) (Css.px 10) (Css.px 10)
   ]
 
 sideNavWidth : Float

@@ -9,7 +9,7 @@ import Maybe exposing (Maybe)
 -- the hassle.
 type alias Ability = String
 type alias AbilityTable = Dict Ability AbilityTableEntry
-type alias AbilityTableEntry = {base : Int, score : Int, mod : Int, st : Int}
+type alias AbilityTableEntry = {base : Int, totalBonus : Int, score : Int, mod : Int, st : Int}
 abilities : List String
 abilities = ["str", "dex", "con", "wis", "int", "cha"]
 
@@ -60,6 +60,7 @@ abilityTableDec : Decoder AbilityTable
 abilityTableDec =
   D.dict (D.succeed AbilityTableEntry
             |> D.andMap (D.field "base" D.int)
+            |> D.andMap (D.field "total_bonus" D.int)
             |> D.andMap (D.field "score" D.int)
             |> D.andMap (D.field "mod" D.int)
             |> D.andMap (D.field "st" D.int))

@@ -85,3 +85,13 @@ choice_member_to_bonus(Source, Id, ToBonus) :-
     bonus_options(Source, Id, ToBonus, _).
 
 id(X,X).
+
+%! bonus_from_level_reached(Level:int, ?Origin, ?Trait)
+%
+%  True iff Bonus was gained at the given Level automatically upon
+%  reaching that level (that is, at that level no active choice was
+%  required).
+bonus_from_level_reached(Level, Origin, Bonus) :-
+    bonus(Origin, Bonus),
+    Origin \= choice(_,_),
+    origin_level(Origin, Level).

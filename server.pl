@@ -120,8 +120,9 @@ remote_query(_, '/options') :-
     reply_json_dict(Json).
 remote_query(_, '/edit_character_page') :-
     all_options_by_level_json(OptsJson),
+    traits_and_bonuses_json(TBJson),
     ability_table_json_dict(AbiJson),
-    reply_json_dict(_{options: OptsJson, ability_table: AbiJson}).
+    reply_json_dict(_{options: OptsJson, ability_table: AbiJson, traits_and_bonuses: TBJson}).
 remote_query(Request, '/gain_level') :-
     http_parameters(Request, [class(Class,[])]),
     level(CurLevel),

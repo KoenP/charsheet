@@ -1,6 +1,3 @@
-
-
-
 origin_category(init, init).
 origin_category(class(Class), Origin) :-
     class_option(Class),

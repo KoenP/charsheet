@@ -131,3 +131,13 @@ traits_by_category(TraitsPerCat) :-
             CatTraits),
     sort(1, @=<, CatTraits, Sorted),
     group_pairs_by_key(Sorted, TraitsPerCat).
+
+%! trait_from_level_reached(+Level:int, ?Origin, ?Trait)
+%
+%  True iff Trait was gained at the given Level automatically upon
+%  reaching that level (that is, at that level no active choice was
+%  required).
+trait_from_level_reached(Level, Origin, Trait) :-
+    trait(Origin, Trait),
+    Origin \= choice(_,_),
+    origin_level(Origin, Level).

@@ -25,6 +25,21 @@ sheet_json_dict(_{name: Name,
     pact_magic_json_dict(PactMagic),
     findall(X, spellcasting_section_json_dict(X), SpellcastingSections).
 
+traits_and_bonuses_json(Json) :-
+    level(Level),
+    findall(LAtom-J,
+            (between(1, Level, L),
+             traits_and_bonuses_at_level_json(L, J),
+             atom_number(LAtom, L)),
+            Pairs),
+    dict_pairs(Json, _, Pairs).
+
+traits_and_bonuses_at_level_json(Level, Json) :-
+    findall(_{origin: OriginStr, effect: EffectStr},
+            ( trait_from_level_reached(Level, Origin, Trait),
+              term_string(Origin, OriginStr),
+              term_string(Trait, EffectStr)),
+            Json).
 
 call_snd(Id-Goal, Id-Result) :-
     Goal =.. [Pred|Args],
@@ -67,9 +82,10 @@ ability_table_json_dict(Dict) :-
     findall(Entry, ability_table_entry(Entry), Pairs),
     dict_pairs(Dict, _, Pairs).
 
-ability_table_entry(Abi-_{score: Score, base: Base, mod: Mod, st: ST}) :-
+ability_table_entry(Abi-_{score: Score, base: Base, total_bonus: TotalBonus, mod: Mod, st: ST}) :-
     ability(Abi, Score),
     base_ability(Abi, Base),
+    sum_bonuses(Abi, TotalBonus),
     ability_mod(Abi, Mod),
     saving_throw(Abi, ST).
 

@@ -230,12 +230,13 @@ handleHttpResponseMsg msg model =
           }
         , none
         )
-      GotCharacterOptions abilityTable optionsPerLevel ->
+      GotCharacterOptions abilityTable optionsPerLevel traitsAndBonusesPerLevel ->
         let charLevel = Dict.keys optionsPerLevel |> List.maximum |> Maybe.withDefault 1
         in ( { model
                | page = EditCharacterPage
                         { abilityTable = abilityTable
                         , optionsPerLevel = optionsPerLevel
+                        , traitsAndBonusesPerLevel = traitsAndBonusesPerLevel 
                         , charLevel = charLevel
                         , selectedLevel = Just charLevel
                         , desc = Nothing

@@ -80,7 +80,6 @@ contentStyle =
   , Css.minWidth (Css.px 160)
   , Css.boxShadow5 zero (px 8) (px 8) (px 0) (rgba 0 0 0 0.2)
   , Css.zIndex (Css.int 1)
-  , Css.fontFamilies [ "Dosis" ]
   ]
 
 -- Links inside the dropdown

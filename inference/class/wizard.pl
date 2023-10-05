@@ -27,10 +27,10 @@ trait_options_source(^wizard, skill, wrap(skill),
                                               religion])).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-trait_source(class(wizard), spellbook).
-trait_source(class(wizard), spellcasting_focus(arcane)).
-trait_source(class(wizard), ritual_casting(wizard)).
-trait_source(class(wizard), arcane_recovery(N)) :-
+trait_source(wizard >: 1, spellbook).
+trait_source(wizard >: 1, spellcasting_focus(arcane)).
+trait_source(wizard >: 1, ritual_casting(wizard)).
+trait_source(wizard >: 1, arcane_recovery(N)) :-
     class_level(wizard:L),
     N is ceil(L/2).
 on_rest(long, 'arcane recovery', full_restore) :-
