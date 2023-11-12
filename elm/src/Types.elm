@@ -90,6 +90,22 @@ type alias AlwaysPrepared = Bool
 type alias SpellName = String
 type alias Level = Int
 
+type PrologTerm = Compound String (List PrologTerm)
+                | Atomic String
+
+defunctor : PrologTerm -> List PrologTerm
+defunctor tm =
+  case tm of
+    Atomic atom -> [ Atomic atom ]
+    Compound _ args -> args
+
+showPrologTerm : PrologTerm -> String
+showPrologTerm t =
+  case t of
+    Atomic atom -> atom
+    Compound f args ->
+      f ++ "(" ++ String.concat (List.intersperse ", " (List.map showPrologTerm args)) ++ ")"
+
 ----------------------------------------------------------------------
 -- CHARACTER SELECTION PAGE
 type alias CharacterSelectionPageData =
@@ -119,7 +135,7 @@ type SpecAndChoice
   | OrSC (Maybe Dir) (String, SpecAndChoice) (String, SpecAndChoice)
   | FromSC Unique Int (List SpecAndChoice)
 
-type alias Effect = { effect: String, origin: String }
+type alias Effect = { effect: PrologTerm, origin: PrologTerm }
 
 extractChoicesList : SpecAndChoice -> List String
 extractChoicesList spec =

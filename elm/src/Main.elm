@@ -238,7 +238,7 @@ handleHttpResponseMsg msg model =
                         , optionsPerLevel = optionsPerLevel
                         , traitsAndBonusesPerLevel = traitsAndBonusesPerLevel 
                         , charLevel = charLevel
-                        , selectedLevel = Just charLevel
+                        , selectedLevel = Just 1 -- Just charLevel (TODO restore)
                         , desc = Nothing
                         , setAbilitiesOnNextTick = Dict.empty
                         }

@@ -35,10 +35,10 @@ traits_and_bonuses_json(Json) :-
     dict_pairs(Json, _, Pairs).
 
 traits_and_bonuses_at_level_json(Level, Json) :-
-    findall(_{origin: OriginStr, effect: EffectStr},
+    findall(_{origin: OriginJson, effect: EffectJson},
             ( trait_from_level_reached(Level, Origin, Trait),
-              term_string(Origin, OriginStr),
-              term_string(Trait, EffectStr)),
+              term_to_json(Origin, OriginJson),
+              term_to_json(Trait, EffectJson)),
             Json).
 
 call_snd(Id-Goal, Id-Result) :-
@@ -222,8 +222,8 @@ term_to_json(List, Jsons) :-
     is_list(List),
     !,
     maplist(term_to_json, List, Jsons).
-term_to_json(Atomic, Atomic) :-
-    atomic(Atomic), !.
+term_to_json(Atomic, String) :-
+    atomic(Atomic), atom_string(Atomic, String), !.
 term_to_json(Compound, _{functor: Functor, args: ArgsJson}) :-
     Compound =.. [Functor | Args],
     Args \= [],

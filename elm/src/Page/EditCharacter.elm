@@ -46,8 +46,18 @@ traitsAndBonusesDictDec =
 traitOrBonusDec : Decoder Effect
 traitOrBonusDec =
   D.succeed Effect
-    |> D.andMap (D.field "effect" D.string)
-    |> D.andMap (D.field "origin" D.string)
+    |> D.andMap (D.field "effect" prologTermDec)
+    |> D.andMap (D.field "origin" prologTermDec)
+
+prologTermDec : Decoder PrologTerm
+prologTermDec =
+  D.oneOf
+    [ D.map Atomic D.string
+    , D.succeed Compound
+        |> D.andMap (D.field "functor" D.string)
+        |> D.andMap (D.field "args" (D.list (D.lazy (\_ -> prologTermDec))))
+    
+    ]
 
 optionsDictDec : Decoder (Dict Level (List Options))
 optionsDictDec =
@@ -427,12 +437,18 @@ topBarTd val = td [Attr.css topBarTdCss] [text val]
 topBarTdCss : List Style
 topBarTdCss = [Css.textAlign Css.center]
 
-viewMainContents :  Maybe String -> Dict Level (List Options) -> Dict Level (List Options) -> Maybe Level
+viewMainContents :  Maybe String -> Dict Level (List Options) -> Dict Level (List Effect) -> Maybe Level
                  -> List (Html Msg)
 viewMainContents focusedDropdownId opts tbs selectedLevel =
   case selectedLevel of
     Just level ->
       let
+        tbsHtml =
+          tbs
+          |> Dict.get level |> Maybe.withDefault []
+          |> categorizeEffects |> Dict.toList
+          |> List.map viewEffectCategory
+
         optsHtml = 
           (opts
           |> Dict.get level
@@ -443,10 +459,59 @@ viewMainContents focusedDropdownId opts tbs selectedLevel =
           |> Dict.values)
 
       in
-        optsHtml -- TODO hier zat ik
+        List.filter (\_ -> not (List.isEmpty tbsHtml))
+          (h1 [] [text "You gained:"] :: tbsHtml)
+        ++
+        List.filter (\_ -> not (List.isEmpty optsHtml)) -- not (Dict.isEmpty (Dict.get level opts)))
+          (h1 [] [text "You need to make the following choices:"] :: optsHtml)
+          
       
     Nothing ->
       viewLevelUpPage
+
+viewEffectCategory : (String, List Effect) -> Html Msg
+viewEffectCategory (category, effects) =
+  let 
+    subterms = List.concatMap (.effect >> defunctor >> List.map showPrologTerm)
+    commaSeparatedArgs = subterms >> List.intersperse ", " >> String.concat
+    showTool toolName = toolName ++ "'s tools"
+    msg =
+      case category of
+        "armor" ->
+          "Armor proficiencies: "
+          ++ commaSeparatedArgs effects ++ "."
+        "language" ->
+          "Languages: " ++ commaSeparatedArgs effects
+        "resistance" ->
+          "Resistances: " ++ commaSeparatedArgs effects
+        "saving_throw" ->
+          "Saving throws: " ++ commaSeparatedArgs effects
+        "sense" ->
+          "Senses: " ++ commaSeparatedArgs effects
+        "tool" ->
+          "Tool proficiencies: "
+          ++
+          (effects |> subterms |> List.map showTool |> List.intersperse ", " |> String.concat)
+        "spellcasting_focus" ->
+          "You can use a(n) " ++ commaSeparatedArgs effects ++ " spellcasting focus"
+        "weapon" ->
+          "Weapon proficiencies: " ++ commaSeparatedArgs effects
+        "skill" ->
+          "Skills: " ++ commaSeparatedArgs effects
+        _ -> category ++ ": " ++
+             (effects |> List.map (.effect >> showPrologTerm) |> List.intersperse ", " |> String.concat)
+  in
+    div [] [ text msg ]
+
+
+
+-- TODO move this somewhere else. Dedicated formatting module maybe?
+formatEffect : PrologTerm -> String
+formatEffect tm =
+  case tm of
+    Compound "armor" [Atomic "shield"] -> "Proficiency with shields."
+    Compound "armor" [Atomic arg] -> "Proficiency with " ++ arg ++ " armor."
+    _ -> showPrologTerm tm
 
 viewLevelUpPage : List (Html Msg)
 viewLevelUpPage =
@@ -680,6 +745,7 @@ sideNavButtonStyle highlighted =
 mainSectionStyle : List Style
 mainSectionStyle =
   [ Css.marginLeft (Css.px sideNavWidth)
+  , Css.fontFamilies [ "Dosis" ]
   -- , Css.padding2 Css.zero (Css.px 10)
   ]
 
@@ -714,6 +780,18 @@ topBarStyle =
 
 sideNavWidth : Float
 sideNavWidth = 260
+
+--------------------------------------------------------------------------------
+-- DATA PROCESSING
+--------------------------------------------------------------------------------
+categorizeEffects : List Effect -> Dict String (List Effect)
+categorizeEffects = Util.multiDictFromList categorizeEffect
+
+categorizeEffect : Effect -> String
+categorizeEffect { effect } =
+  case effect of
+    Compound cat _ -> cat
+    _ -> "other"
 
 --------------------------------------------------------------------------------
 -- UTIL
