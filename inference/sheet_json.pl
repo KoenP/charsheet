@@ -25,6 +25,7 @@ sheet_json_dict(_{name: Name,
     pact_magic_json_dict(PactMagic),
     findall(X, spellcasting_section_json_dict(X), SpellcastingSections).
 
+% TODO move somewhere else
 traits_and_bonuses_json(Json) :-
     level(Level),
     findall(LAtom-J,
@@ -35,10 +36,12 @@ traits_and_bonuses_json(Json) :-
     dict_pairs(Json, _, Pairs).
 
 traits_and_bonuses_at_level_json(Level, Json) :-
-    findall(_{origin: OriginJson, effect: EffectJson},
+    findall(_{origin: OriginJson, effect: EffectJson, desc: Desc},
             ( trait_from_level_reached(Level, Origin, Trait),
               term_to_json(Origin, OriginJson),
-              term_to_json(Trait, EffectJson)),
+              term_to_json(Trait, EffectJson),
+              (Trait ?= Desc -> true ; Desc = null)
+            ),
             Json).
 
 call_snd(Id-Goal, Id-Result) :-

@@ -15,10 +15,11 @@ import Json.Decode.Extra as D
 import Debug
 import Platform.Cmd as Cmd
 
+import Elements exposing (..)
 import Request exposing (requestUrl)
 import Types exposing (..)
 import Types.Ability exposing (..)
-import Util exposing (..)
+import Util exposing (simple, formatModifier, exactMatchDec)
 
 ----------------------------------------------------------------------
 -- INITIALIZE
@@ -298,7 +299,7 @@ viewTrait { name, desc } =
     Nothing ->
       text name
     Just actualDesc ->
-      tooltip (text name) (text actualDesc)
+      tooltip Right (text name) (text actualDesc)
 
 viewAttacks : List Attack -> Html msg
 viewAttacks attacks =
@@ -408,7 +409,7 @@ viewSpellTableRow showOnlyPreparedSpells origin spell currentlyPrepared =
     ++
     [ simpleTd <| String.fromInt spell.level
     , td tdAttrs <| List.singleton <|
-        tooltip
+        tooltip Right
           (text spell.name)
           (div [] <|
              List.map
@@ -443,7 +444,7 @@ viewComponent component =
   case component of
     V -> text "v"
     S -> text "s"
-    M desc -> tooltip (text "m") (text desc)
+    M desc -> tooltip Right (text "m") (text desc)
 
 simpleTh : String -> Html msg
 simpleTh str = th thAttrs [ text str ]
@@ -511,44 +512,6 @@ tooltipTooltipTextAttrs =
   , style "z-index" "1"
   , style "top" "0%"
   , style "left" "100%"
-  ]
-
-tooltip : Html msg -> Html msg -> Html msg
-tooltip trigger content =
-  div
-    [ class "tooltip"
-    , css
-        [ Css.display Css.inlineBlock
-        , Css.position Css.relative
-        , Css.position Css.relative
-        , Css.hover
-            [ Css.Global.descendants
-                [ Css.Global.selector ".tooltiptext"
-                    [ Css.visibility Css.visible ]
-                ]
-            ]
-        , Css.borderBottom3 (Css.px 1) Css.dotted (Css.hex "000000")
-        ]
-    ]
-  [ trigger
-  , span
-      [ class "tooltiptext"
-      , css
-          [ Css.visibility Css.hidden
-          , Css.position Css.absolute
-          , Css.top <| Css.pct 0
-          , Css.left <| Css.pct 105
-          , Css.backgroundColor <| Css.hex "000000"
-          , Css.width <| Css.px 560
-          , Css.color <| Css.hex "ffffff"
-          , Css.fontFamilies [ "Liberation", .value Css.sansSerif ]
-          , Css.zIndex (Css.int 1)
-          , Css.textAlign Css.center
-          , Css.padding2 (Css.px 5) (Css.px 0)
-          , Css.borderRadius (Css.px 6)
-          ]
-      ]
-      [ content ]
   ]
 
 maybeSG : Maybe a -> Maybe a -> Maybe a

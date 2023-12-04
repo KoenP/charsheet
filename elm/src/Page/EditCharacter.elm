@@ -3,6 +3,7 @@ module Page.EditCharacter exposing (..)
 import Browser.Navigation as Nav
 import Css exposing (Style)
 import Dict exposing (Dict)
+import Set exposing (Set)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr
 import Html.Styled.Events as E
@@ -14,6 +15,7 @@ import Platform.Cmd as Cmd
 import Tuple
 import Zipper exposing (Zipper(..))
 
+import Elements exposing (..)
 import Request exposing (requestUrl)
 import Types exposing (..)
 import Types.Ability exposing (..)
@@ -48,6 +50,12 @@ traitOrBonusDec =
   D.succeed Effect
     |> D.andMap (D.field "effect" prologTermDec)
     |> D.andMap (D.field "origin" prologTermDec)
+    |> D.andMap (D.field "desc"
+                   (D.oneOf
+                      [ D.map List.singleton D.string
+                      , D.list D.string
+                      , D.null []
+                      ]))
 
 prologTermDec : Decoder PrologTerm
 prologTermDec =
@@ -469,39 +477,72 @@ viewMainContents focusedDropdownId opts tbs selectedLevel =
     Nothing ->
       viewLevelUpPage
 
+-- TODO: this "works", but is not great either in terms of code
+-- and presentation. I think this merits a full rework at some point.
 viewEffectCategory : (String, List Effect) -> Html Msg
 viewEffectCategory (category, effects) =
   let 
-    subterms = List.concatMap (.effect >> defunctor >> List.map showPrologTerm)
-    commaSeparatedArgs = subterms >> List.intersperse ", " >> String.concat
+    showEffect : (String -> String) -> Effect -> String
+    showEffect f = .effect >> defunctor >> List.map (showPrologTerm >> f) >> String.concat
+
+    viewEffects : (String -> String) -> List Effect -> List (Html Msg)
+    viewEffects f
+      = List.map
+          (\effect ->
+             case effect.desc of
+                 [] -> 
+                   text (showEffect f effect)
+                 desc -> 
+                   tooltip Bottom
+                     (text <| showEffect f effect)
+                     (div [] <| List.map (simple p) desc))
+
+    commaSeparatedArgs f = viewEffects f >> List.intersperse (text ", ")
+
     showTool toolName = toolName ++ "'s tools"
-    msg =
+    id x = x
+
+    formatCategory : String -> List (Html Msg) -> List (Html Msg)
+    formatCategory name members =
+      b [] [ text (name ++ ": ") ] :: members
+
+    content =
       case category of
         "armor" ->
-          "Armor proficiencies: "
-          ++ commaSeparatedArgs effects ++ "."
+          formatCategory "Armor proficiencies"
+            <| commaSeparatedArgs id effects ++ [text "."]
         "language" ->
-          "Languages: " ++ commaSeparatedArgs effects
+          formatCategory "Languages"
+            <| commaSeparatedArgs id effects
+
         "resistance" ->
-          "Resistances: " ++ commaSeparatedArgs effects
+          formatCategory "Resistances" <| commaSeparatedArgs id effects
         "saving_throw" ->
-          "Saving throws: " ++ commaSeparatedArgs effects
+          formatCategory "Saving throws" <| commaSeparatedArgs id effects
         "sense" ->
-          "Senses: " ++ commaSeparatedArgs effects
+          formatCategory "Senses" <| commaSeparatedArgs id effects
         "tool" ->
-          "Tool proficiencies: "
-          ++
-          (effects |> subterms |> List.map showTool |> List.intersperse ", " |> String.concat)
+          formatCategory "Tool proficiencies" <| commaSeparatedArgs showTool effects
         "spellcasting_focus" ->
-          "You can use a(n) " ++ commaSeparatedArgs effects ++ " spellcasting focus"
+          formatCategory "You can use a(n) " <| commaSeparatedArgs id effects ++ [text " spellcasting focus"]
         "weapon" ->
-          "Weapon proficiencies: " ++ commaSeparatedArgs effects
+          formatCategory "Weapon proficiencies" <| commaSeparatedArgs id effects
         "skill" ->
-          "Skills: " ++ commaSeparatedArgs effects
-        _ -> category ++ ": " ++
-             (effects |> List.map (.effect >> showPrologTerm) |> List.intersperse ", " |> String.concat)
+          formatCategory "Skills" <| commaSeparatedArgs id effects
+        "channel_divinity" ->
+          formatCategory "Channel divinity" <| commaSeparatedArgs id effects
+        "destroy_undead" ->
+          formatCategory "Destroy undead" <| commaSeparatedArgs id effects
+        _ -> formatCategory (Util.formatSnakeCase category)
+             <| commaSeparatedArgs id effects
+             -- <| List.intersperse (text ", ")
+             -- <| List.map (.effect >> showPrologTerm >> Util.formatSnakeCase >> text) effects
+
+
+    -- showEffect f = .effect >> defunctor >> List.map (showPrologTerm >> f) >> String.concat
   in
-    div [] [ text msg ]
+    div [ Attr.css originCategoryStyle ] content
+      
 
 
 
@@ -590,30 +631,6 @@ viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } 
         options
   in
     dropdown isDisabled dropdownId selected entries (focusedDropdownId == Just dropdownId)
-
-
-  -- select [ E.onInput mkMsg, Attr.disabled isDisabled ] <|
-  --   case selected of
-  --     Nothing ->
-  --       option [Attr.selected True, Attr.disabled True] [text "-- select an option --"]
-  --       :: List.map (viewListSpecOption disabledOptions False) options
-  --     Just selectedVal ->
-  --       option [Attr.disabled True] [text "-- select an option --"]
-  --       :: List.map
-  --          (\(opt,desc) ->
-  --             viewListSpecOption disabledOptions (opt == selectedVal) (opt,desc))
-  --          options
-        
--- viewListSpecOption : List String -> Bool -> (String, String) -> Html Msg
--- viewListSpecOption disabledOptions isSelected (opt, desc) =
---   option
---   [ Attr.value opt
---   , Attr.selected isSelected
---   , Attr.disabled (not isSelected && List.member opt disabledOptions)
---   , E.onMouseEnter (Debug.log "onMouseEnter" <| SetEditCharacterPageDesc (Just desc))
---   , E.onMouseLeave (Debug.log "onMouseLeave" <| SetEditCharacterPageDesc Nothing)
---   ]
---   [ text opt ]
 
 viewFromSC : ViewSpecContext -> Unique -> Int -> List SpecAndChoice -> Html Msg
 viewFromSC ctx unique n subspecs =
@@ -790,9 +807,15 @@ categorizeEffects = Util.multiDictFromList categorizeEffect
 categorizeEffect : Effect -> String
 categorizeEffect { effect } =
   case effect of
-    Compound cat _ -> cat
+    Compound cat _ -> if Set.member cat effectCategories then cat else "other"
     _ -> "other"
 
+effectCategories : Set String
+effectCategories = Set.fromList
+                    [ "armor", "language", "resistance", "saving_throw"
+                    , "sense", "tool", "spellcasting_focus", "weapon", "skill",
+                      "channel_divinity", "destroy_undead"
+                    ]
 --------------------------------------------------------------------------------
 -- UTIL
 --------------------------------------------------------------------------------

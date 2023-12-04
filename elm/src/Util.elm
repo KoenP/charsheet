@@ -6,6 +6,9 @@ import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra as D
 import Dict exposing (Dict)
 import Debug
+import Types exposing (..)
+
+id x = x
 
 simple :  (List (Attribute msg) -> List (Html msg) -> Html msg)
        -> String
@@ -76,3 +79,30 @@ formatModifier mod =
     LT -> String.fromInt mod
     EQ -> " 0"
     GT -> "+" ++ String.fromInt mod
+
+formatSnakeCase : String -> String
+formatSnakeCase =
+  String.split "_" >> List.intersperse " " >> String.concat
+
+formatSnakeCaseCapitalized : String -> String
+formatSnakeCaseCapitalized =
+  formatSnakeCase >> stringMapFirst Char.toUpper
+
+listMapFirst : (a -> a) -> List a -> List a
+listMapFirst f l =
+  case l of
+      []    -> []
+      x::xs -> f x :: xs
+
+stringMapFirst : (Char -> Char) -> String -> String
+stringMapFirst f s =
+  case String.uncons s of
+      Nothing      -> ""
+      Just (c, cs) -> String.cons (f c) cs
+
+prettyPrologTerm : PrologTerm -> String
+prettyPrologTerm =
+  Types.mapPrologTermStrings formatSnakeCase
+    >> Types.foldPT
+      (\f rs -> String.concat [f, " (", String.concat (List.intersperse ", " rs), ")"])
+      id

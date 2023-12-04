@@ -93,6 +93,24 @@ type alias Level = Int
 type PrologTerm = Compound String (List PrologTerm)
                 | Atomic String
 
+foldPT :  (String -> List r -> r)
+       -> (String -> r)
+       -> PrologTerm
+       -> r
+foldPT fCompound fAtomic t =
+  case t of
+    Compound functor args ->
+      fCompound functor
+        <| List.map (foldPT fCompound fAtomic) args
+    Atomic atom ->
+      fAtomic atom
+
+mapPrologTermStrings : (String -> String) -> PrologTerm -> PrologTerm
+mapPrologTermStrings f =
+  foldPT 
+    (\functor args -> Compound (f functor) args)
+    (Atomic << f)
+
 defunctor : PrologTerm -> List PrologTerm
 defunctor tm =
   case tm of
@@ -103,6 +121,10 @@ showPrologTerm : PrologTerm -> String
 showPrologTerm t =
   case t of
     Atomic atom -> atom
+    Compound "/" [Atomic "1", Atomic "2"] ->
+      "1 / 2" -- TODO unicode
+    Compound "cr" [val] ->
+      "CR " ++ showPrologTerm val
     Compound f args ->
       f ++ "(" ++ String.concat (List.intersperse ", " (List.map showPrologTerm args)) ++ ")"
 
@@ -135,7 +157,10 @@ type SpecAndChoice
   | OrSC (Maybe Dir) (String, SpecAndChoice) (String, SpecAndChoice)
   | FromSC Unique Int (List SpecAndChoice)
 
-type alias Effect = { effect: PrologTerm, origin: PrologTerm }
+type alias Effect = { effect : PrologTerm
+                    , origin : PrologTerm
+                    , desc   : List String
+                    }
 
 extractChoicesList : SpecAndChoice -> List String
 extractChoicesList spec =
