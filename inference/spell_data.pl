@@ -162,12 +162,17 @@ known_spell_effect(Origin, counterspell, Effect) :-
 %
 %  Add an entry to the `effects` field of the spell data.
 add_spell_effect('acid splash', "up to two targets within 5 ft of eachother").
+
+add_spell_effect(bless, "bless up to 3 creatures").
+add_spell_effect(bless, "+d4 to attack rolls / saving throws").
+
+add_spell_effect(command, "command creature to approach, drop, flee, grovel, or halt").
+
 add_spell_effect('cure wounds', heal(1 d 8 + mod)).
+
 add_spell_effect(darkvision, "grant 60 ft darkvision").
 
 add_spell_effect('detect magic', "sense presence of magic within 30 ft").
-add_spell_effect('detect magic', "use action to see faint aura around visible magical creature or object and learn its school of magic").
-add_spell_effect('detect magic', "penetrate most barriers, but blocked by 1 ft stone, 1 inch common metal, thin sheet of lead, 3 ft wood or dirt").
 
 suppress_autoderived_spell_effect('eldritch blast').
 add_spell_effect('eldritch blast', Effect) :-
@@ -182,6 +187,8 @@ add_spell_effect('find familiar', test).
 add_spell_effect(frostbite,
                  saving_throw(con):damage(cold,N d 6)) :-
     cantrip_scale(N).
+
+add_spell_effect(guidance, "+d4 to one ability check").
 
 bonus_source(known_spell(_,'mage armor'), ac_formula(13 + dex + shield)).
 

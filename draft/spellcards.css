@@ -1,0 +1,105 @@
+.card {
+    position: relative;
+    border: 1px solid black;
+    /* MTG card size */
+    width: 63mm;
+    height: 88mm;
+    /*
+    Dixit card size
+    width: 79mm;
+    height: 120mm;
+    */
+    margin: 0 auto;
+    margin-top: 56px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    background-color: #e8e8e8 !important;
+    print-color-adjust: exact;
+    font-family: Dosis;
+    padding: 8px;
+}
+
+.card-title-section {
+    height: 12mm;
+    text-align: center;
+    background-color: white !important;
+    print-color-adjust: exact;
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: 1fr 6fr 1fr;
+    /* margin: 8px; */
+} 
+
+.card-title-section > div {
+
+}
+
+.card-concentration-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-components-section {
+    font-size: 8px;
+    display: grid;
+    grid-template-rows: 1fr 3fr 3fr 3fr 1fr;
+}
+
+.card-components-section > div {
+    line-height: 3mm;
+}
+
+.card-name {
+    font-size: 22px;
+}
+
+.card-subtitle {
+    font-size: 10px;
+    font-style: italic;
+}
+
+.card-description {
+    font-size: 8px;
+    line-height: 10px;
+    text-align: justify;
+    background-color: white !important;
+    print-color-adjust: exact;
+    border-radius: 8px;
+    padding: 1.5mm;
+    position: absolute;
+    bottom: 8px;
+    margin-right: 8px;
+}
+
+.card-boxes-section{
+    margin-top: 1.5mm;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.6mm;
+}
+
+.card-boxes-section > div {
+    background-color: white !important;
+    print-color-adjust: exact;
+    border-radius: 6px;
+    font-size: 8px;
+    text-align: center;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    padding: 1mm;
+}
+
+.card-info-box-title {
+    font-size: 6px;
+    font-weight: bold;
+    color: grey;
+    text-transform: uppercase;
+}
+
+.card-boxes-section img {
+    width: 10px;
+    padding-left: 1mm;
+}
+

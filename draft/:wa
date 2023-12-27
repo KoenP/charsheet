@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="stylesheet" href="spellcards.css"/>
+  </head>
+
+  <body>
+    <div class="card">
+
+      <div class="card-title-section">
+        <div class="card-components-section">
+          <div></div>
+          <div><b>V</b></div>
+          <div><b>S</b></div>
+          <div style="color: grey;">M</div>
+          <div></div>
+        </div>
+        <div>
+          <div class="card-name">Fireball</div>
+          <div class="card-subtitle">3rd level evocation spell</div>
+        </div>
+        <div class="card-time-cost">1A</div>
+      </div>
+
+
+      <div class="card-boxes-section">
+          <div>
+            <img src="icons/range.png">
+            <div>30 ft</div>
+          </div>
+          <div>
+            <img src="icons/hourglass.png">
+            <div>Inst.</div>
+          </div>
+          <div>
+            <img src="icons/action-cost.png">
+            <div>Action</div>
+          </div>
+          <div>
+            <img src="icons/components.png">
+            <div>V, S, M</div>
+          </div>
+          <div>
+            <img src="icons/rolls.png">
+            <div>8d6</div>
+          </div>
+      </div>
+
+
+      <!--
+      <table style="width: 100%;">
+        <tr>
+        </tr>
+
+        <tr>
+          <td class="card-info-box">
+            <div>Spell slot</div>
+            <div class="card-info-box-title">resource</div>
+          </td>
+          <td class="card-info-box">
+            <div>1 action</div>
+            <div class="card-info-box-title">casting time</div>
+          </td>
+          <td class="card-info-box">
+            <div>30 ft</div>
+            <div class="card-info-box-title"></div>
+          </td>
+        </tr>
+        </tr>
+      </table>
+      -->
+
+      <div class="card-description">
+      A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame. Each creature in a 20-foot-radius sphere centered on that point must make a Dexterity saving throw. A target takes 8d6 fire damage on a failed save, or half as much damage on a successful one.
+      The fire spreads around corners. It ignites flammable objects in the area that aren't being worn or carried. 
+    </div>
+
+
+    
+  </body>
+</html>
+
+<!--
+TODO attribution
+
+https://www.freepik.com/icon/goal_9583745#fromView=search&term=archery+target&page=1&position=63&track=ais&uuid=fd7531e0-c689-4492-9e01-9d08d9bbdc32
+
+https://www.flaticon.com/free-icon/hourglass_3889548?term=hourglass&page=1&position=23&origin=search&related_id=3889548
+-->

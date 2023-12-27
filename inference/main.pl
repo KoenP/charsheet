@@ -25,6 +25,7 @@
 :- op(1000, xfx, ?=).
 :- op(1000, xfx, ?=).
 :- op(650, xfx, ft).
+:- op(700, xfx, by).
 :- op(100, xf, pct).
 :- op(1000, xf, qq).
 :- op(500, xfx, >:).

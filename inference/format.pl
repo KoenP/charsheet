@@ -111,6 +111,15 @@ format_effect(N*Es) -->
     [N],
     [" times "],
     format_effect(Es).
+format_effect(saving_throw(dc(Abi,DC)):(E1 else E2)) -->
+    {!},
+    [Abi],
+    [" saving throw (DC "],
+    format_number(DC),
+    [") -> "],
+    format_effect(E1),
+    [" on fail, else "],
+    format_effect(E2).
 format_effect(saving_throw(Abi):(E1 else E2)) -->
     {!},
     ["saving throw ("],
@@ -133,6 +142,7 @@ format_effect(E) -->
     format_term(E).
     
 format_area(N ft Shape) --> [N], [" ft "], [Shape].
+format_area(N by M ft Shape) --> [N], ["×"], [M], [" ft "], [Shape].
 
 % Replace underscores by spaces.
 us_to_space([ X |Xs]) --> {X \= '_'}, [X], us_to_space(Xs).
