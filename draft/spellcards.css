@@ -1,37 +1,53 @@
+.cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
 .card {
     position: relative;
     border: 1px solid black;
     /* MTG card size */
     width: 63mm;
+    min-width: 63mm;
     height: 88mm;
+    min-height: 88mm;
     /*
     Dixit card size
     width: 79mm;
     height: 120mm;
     */
-    margin: 0 auto;
-    margin-top: 56px;
-    border-radius: 8px;
     box-sizing: border-box;
     background-color: #e8e8e8 !important;
     print-color-adjust: exact;
     font-family: Dosis;
     padding: 8px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.card > div {
 }
 
 .card-title-section {
-    height: 12mm;
     text-align: center;
     background-color: white !important;
     print-color-adjust: exact;
     border-radius: 8px;
+    border: 2px solid black;
+
+    display: flex;
+    flex-direction: column;
+
+    /*
     display: grid;
-    grid-template-columns: 1fr 6fr 1fr;
+    grid-template-columns: 1fr 4fr 1fr;
+     */
     /* margin: 8px; */
 } 
 
 .card-title-section > div {
-
 }
 
 .card-concentration-div {
@@ -50,13 +66,21 @@
     line-height: 3mm;
 }
 
-.card-name {
-    font-size: 22px;
+.card-title {
+    font-size: 4.2mm;
 }
 
 .card-subtitle {
-    font-size: 10px;
-    font-style: italic;
+    font-size: 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: grey;
+    padding-bottom: 0.2mm;
+}
+
+.filler {
+    flex-grow: 1;
+    min-height: 0;
 }
 
 .card-description {
@@ -66,10 +90,14 @@
     background-color: white !important;
     print-color-adjust: exact;
     border-radius: 8px;
-    padding: 1.5mm;
-    position: absolute;
-    bottom: 8px;
+    padding: 1mm;
+    margin-bottom: 1mm;
+
+    /*
+      position: absolute;
+      bottom: 8px;
     margin-right: 8px;
+    */
 }
 
 .card-boxes-section{
@@ -77,6 +105,11 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 0.6mm;
+}
+
+.card-boxes-section img {
+    width: 10px;
+    padding-left: 1mm;
 }
 
 .card-boxes-section > div {
@@ -98,8 +131,32 @@
     text-transform: uppercase;
 }
 
-.card-boxes-section img {
-    width: 10px;
-    padding-left: 1mm;
+.card-type {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 6px;
+    background-color: black;
+    color: white;
+    border-radius: 1mm 0 0 0;
+    padding-left: 0.4mm;
+    padding-top: 0.4mm;
 }
 
+.concentration-badge {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    font-size: 6px;
+    background-color: black;
+    color: white;
+    border-radius: 0 1mm 0 0;
+    padding-right: 0.4mm;
+    padding-top: 0.4mm;
+    padding-left: 0.2mm;
+}
+
+.concentration-badge > img {
+    filter: invert(1);
+    height: 6px;
+}

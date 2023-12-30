@@ -57,7 +57,6 @@ spell_effect(Spell, AutoEffect) :-
 spell_effect(Spell, Effect) :-
     add_spell_effect(Spell, Effect).
 
-
 %spell_effects(Spell, Effects) :-
 %    suppress_autoderived_spell_effect(Spell),
 %    findall(E, add_spell_effect(Spell, E), Effects).
@@ -189,6 +188,8 @@ add_spell_effect(frostbite,
     cantrip_scale(N).
 
 add_spell_effect(guidance, "+d4 to one ability check").
+
+add_spell_effect('healing word', heal(1 d 4 + mod)).
 
 bonus_source(known_spell(_,'mage armor'), ac_formula(13 + dex + shield)).
 

@@ -171,6 +171,7 @@ spell_json_dict(BaseOrigin,
                   level: Level,
                   name: Name,
                   description: Description,
+                  higher_level: HigherLevel,
                   casting_time: CastingTime,
                   range: Range,
                   components: Components,
@@ -179,17 +180,23 @@ spell_json_dict(BaseOrigin,
                   to_hit: ToHit,
                   dc: DC,
                   dc_abi: DCAbi,
+                  school: School,
                   summary: Summary,
                   ritual: Ritual,
-                  resources: ResourcesStrs}) :-
+                  resources: ResourcesStrs,
+                  rolls: Rolls,
+                  aoe: Aoe
+                 }) :-
     (Origin =.. [BaseOrigin,_] ; Origin = BaseOrigin),
     known_spell(Origin, _Ability, _, ResourcesVal, Ritual, Name),
     (known_spell_always_prepared(Origin, Name) -> Prepared=always; Prepared=maybe),
     known_spell_data(Origin, Name, Data),
     Level         = Data.level,
     Description   = Data.desc,
+    (Data.higher_level = no -> HigherLevel = null ; HigherLevel = Data.higher_level),
     CastingTime   = Data.casting_time,
     RangeVal      = Data.range,
+    School = Data.school,
     fmt(format_range(RangeVal), Range),
     % TODO!!!
     term_to_json(Data.components, Components),
@@ -198,12 +205,26 @@ spell_json_dict(BaseOrigin,
     maplist(term_string, ResourcesVal, ResourcesStrs),
     display_spell_effects(Data, Summary),
     default_on_fail(null, known_spell_to_hit(BaseOrigin:_,Name), ToHit),
-    known_spell_saving_throw_or_null(Origin, Name, DC, DCAbi).
+    known_spell_saving_throw_or_null(Origin, Name, DC, DCAbi),
+    known_spell_dice_formula_or_null(Origin, Name, Rolls),
+    known_spell_aoe_or_null(Origin, Name, Aoe).
 
 known_spell_saving_throw_or_null(Origin, Name, DC, Abi) :-
     known_spell_saving_throw(Origin, Name, DC, Abi),
     !.
 known_spell_saving_throw_or_null(_, _, null, null).
+
+known_spell_dice_formula_or_null(Origin, Name, RollsStr) :-
+    known_spell_dice_formula(Origin, Name, Rolls),
+    term_string(Rolls, RollsStr),
+    !.
+known_spell_dice_formula_or_null(_, _, null).
+
+known_spell_aoe_or_null(Origin, Name, AoeStr) :-
+    known_spell_aoe(Origin, Name, Aoe),
+    term_string(Aoe, AoeStr),
+    !.
+known_spell_aoe_or_null(_, _, null).
 
 resources_json(R1 or R2, _{tag: or, val: Val}) :-
     maplist(resources_json, [R1,R2], Val),

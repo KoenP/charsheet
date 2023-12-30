@@ -114,7 +114,22 @@ match_effect_variable_substitution(Origin, Formula + mod, NewFormula) :-
     spellcasting_ability(Origin, Ability),
     ability_mod(Ability, Mod),
     simplify_dice_sum(Formula + Mod, NewFormula).
-    
+
+%! known_spell_dice_formula(?Origin:atomic, ?Spell:atomic, ?Rolls)
+%
+%  If the given Spell (for the given Origin) has an effect in its list of effects
+%  that deals damage or heals, then Rolls is the damage/healing formula.
+known_spell_dice_formula(Origin, Spell, Rolls) :-
+    known_spell_property(Origin, Spell, effects, Effects),
+    (unique_subterm_member(damage(_, Rolls), Effects) ; unique_subterm_member(heal(Rolls), Effects)).
+
+%! known_spell_aoe(?Origin:atomic, ?Spell:atomic, ?Rolls)
+%
+%  If the given Spell (for the given Origin) has an effect in its list of effects
+%  that contains the unary `in` functor, then Aoe is whatever is in that `in(_)` term.
+known_spell_aoe(Origin, Spell, Aoe) :-
+    known_spell_property(Origin, Spell, effects, Effects),
+    unique_subterm_member(in(Aoe), Effects).
 
 %! known_spell_property(?Origin:atomic, ?Name:atomic, ?Field:atomic, ?Val)
 %

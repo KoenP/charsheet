@@ -14877,6 +14877,35 @@
         "url": "/api/subclasses/lore"
       }
     ],
+    "area_of_effect": {
+      "type": "sphere",
+      "size": 15
+    },
+    "damage": {
+      "damage_type": {
+        "index": "radiant",
+        "name": "Radiant",
+        "url": "/api/damage-types/radiant"
+      },
+      "damage_at_slot_level": {
+        "3": "3 d 8",
+        "4": "4 d 8",
+        "5": "5 d 8",
+        "6": "6 d 8",
+        "7": "7 d 8",
+        "8": "8 d 8",
+        "9": "9 d 8"
+      }
+    },
+    "dc": {
+      "dc_type": {
+        "index": "wis",
+        "name": "WIS",
+        "url": "/api/ability-scores/wis"
+      },
+      "dc_success": "half",
+      "desc": "A creature killed by this spell becomes a frozen statue until it thaws."
+    },
     "url": "/api/spells/spirit-guardians"
   },
   {

@@ -54,6 +54,14 @@ exactMatchDec dec val =
 decSet : b -> Decoder a -> Decoder b
 decSet val = D.map (\_ -> val)
 
+yesNoDec : Decoder Bool
+yesNoDec =
+  D.oneOf
+    [ matchStringDec "yes" |> D.map (\_ -> True)
+    , matchStringDec "no" |> D.map (\_ -> False)
+    ]
+  
+
 postcomp : (b -> c) -> (a -> b) -> (a -> c)
 postcomp g f x = g (f x)
 
@@ -106,3 +114,11 @@ prettyPrologTerm =
     >> Types.foldPT
       (\f rs -> String.concat [f, " (", String.concat (List.intersperse ", " rs), ")"])
       id
+
+ordinal : Int -> String
+ordinal n =
+  case n of
+    1 -> "1st"
+    2 -> "2nd"
+    3 -> "3rd"
+    _ -> String.fromInt n ++ "th"

@@ -1,9 +1,3 @@
-% Inventory:
-% 300 gp worth of diamonds
-% schematics found in quickling camp
-% interplanar travel machine components
-% 37 gp
-
 equipped('half plate' + 1).
 equipped(shield).
 
@@ -19,7 +13,7 @@ choice(init, 'base race', dwarf).
 choice(race(dwarf), tool, smith).
 choice(race(dwarf), subrace, 'hill dwarf').
 choice(init, 'initial class', cleric).
-choice(match_class(cleric:1), subclass, knowledge).
+choice(cleric >: 1, subclass, knowledge).
 choice(initial_class(cleric), skill, [medicine, religion]).
 %choice(trait('blessings of knowledge'), language, [elvish, giant]).
 choice(trait('blessings of knowledge'), skill, [arcana, nature]).
@@ -30,7 +24,7 @@ gain_level(2, cleric, hp_avg).
 gain_level(3, cleric, hp_avg).
 
 gain_level(4, cleric, hp_avg).
-choice(match_class(cleric:4), 'asi or feat', [wis,str]).
+choice(cleric >: 4, 'asi or feat', [wis,str]).
 
 gain_level(5, cleric, hp_avg).
 gain_level(6, cleric, hp_avg).

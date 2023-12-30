@@ -69,12 +69,14 @@ type alias SpellcastingSection =
 type alias Origin = String
 
 type alias Spell =
-  { casting_time : String
+  { aoe : Maybe String
+  , casting_time : String
   , components : List Component
-  , concentration : String
+  , concentration : Bool
   , dc : Maybe Int
   , dc_abi : Maybe String
   , description : List String
+  , higher_level : Maybe String
   , duration : String
   , level : Int
   , name : SpellName
@@ -82,8 +84,10 @@ type alias Spell =
   , range : String
   , resources : List String
   , ritual : String
+  , school : String
   , summary : String
   , to_hit : Maybe Int
+  , rolls : Maybe String
   }
 type Component = V | S | M String
 type alias AlwaysPrepared = Bool
@@ -187,6 +191,7 @@ type Page
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
   | EditCharacterPage EditCharacterPageData
+  | CardsPage CharacterSheet
 
 type alias EditCharacterPageData = 
   { abilityTable : AbilityTable
@@ -253,6 +258,7 @@ type HttpResponseMsg
   = GotCharacterList (List String)
   | CharacterLoaded
   | GotCharacterSheet CharacterSheet
+  | GotCardsData CharacterSheet
   | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
   | ChoiceRegistered
   | LeveledUp

@@ -23,6 +23,7 @@ import Time exposing (Posix)
 
 import Page.CharacterSheet as Sheet
 import Page.EditCharacter as Edit
+import Page.CardsPage as Cards
 import Request exposing (requestUrl)
 import Types exposing (..)
 
@@ -72,7 +73,8 @@ init _ url key =
     , lastTick = Time.millisToPosix 0
     }
   -- , loadSelectCharacterPage
-  , Edit.load
+  , Cards.load
+  -- , Edit.load
   -- , Nav.pushUrl key "/list_characters"
   )
 
@@ -183,6 +185,8 @@ update msg model =
           Sheet.update msg model
         EditCharacterPage data ->
           Edit.update msg model data
+        CardsPage data ->
+          Cards.update msg model data
         Loading ->
           case msg of
             HttpResponse (Ok responseMsg) ->
@@ -227,6 +231,12 @@ handleHttpResponseMsg msg model =
         ( { model
             | page = CharacterSheetPage sheet
             , preparedSpells = initPreparedSpells sheet.spellcasting_sections
+          }
+        , none
+        )
+      GotCardsData sheet ->
+        ( { model
+            | page = CardsPage sheet
           }
         , none
         )
@@ -314,7 +324,9 @@ view model =
          CharacterSheetPage data ->
            Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
          EditCharacterPage data ->
-           Edit.view model.focusedDropdownId data)
+           Edit.view model.focusedDropdownId data
+         CardsPage data ->
+           Cards.view data)
   }
   
 
