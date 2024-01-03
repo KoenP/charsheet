@@ -122,3 +122,17 @@ ordinal n =
     2 -> "2nd"
     3 -> "3rd"
     _ -> String.fromInt n ++ "th"
+
+split : Int -> List a -> (List a, List a)
+split n list =
+  case (n, list) of
+    ( _ , []      ) -> ([], [])
+    ( 0 , _       ) -> ([], list)
+    ( _ , x :: xs ) -> let ( ys , zs ) = split (n-1) xs
+                       in ( x :: ys , zs )
+
+chunks : Int -> List a -> List (List a)
+chunks chunkSize list =
+  case split chunkSize list of
+    ( hd , [] ) -> [ hd ]
+    ( hd , tl ) -> hd :: chunks chunkSize tl

@@ -1,0 +1,29 @@
+<head>
+  <style>
+   .container {
+     width: 300px; /* Set the desired width of the container */
+     height: 300px;
+     overflow: hidden; /* Hide the overflowed text */
+     border: 1px solid black;
+   }
+
+   .text {
+     font-size: clamp(10px, 4vw, 20px); /* Adjust the min, preferred, and max values accordingly */
+     display: block;
+     text-overflow: ellipsis; /* Add ellipsis (...) to indicate truncated text */
+   }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    outer div
+    <div class="text">
+      Yes, you can use the CSS property called text-overflow in combination with white-space and overflow properties to handle text that doesn't fit its container. However, there is no direct CSS property to automatically reduce font size based on container constraints.
+
+One approach to achieve a similar effect is by using the clamp() function for the font-size property. The clamp() function takes three parameters: a minimum value, a preferred value, and a maximum value. The browser will use the preferred value if possible, but it will not go beyond the minimum or maximum values.
+
+Here's an example:
+    </div>
+  </div>
+</body>

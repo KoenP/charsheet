@@ -214,3 +214,64 @@ attack_variant(Name:shillelagh, Range, to_hit(ToHit), [damage(bludgeoning, 1 d 8
     ability_mod(wis, Mod),
     proficiency_bonus(ProfBon),
     ToHit is Mod + ProfBon.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SHORTENED DESCRIPTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+spell_short_desc(
+    'prismatic wall',
+    ["Creates a multicolored, opaque wall up to 90 feet long, 30 feet high, and 1 inch thick, or a spherical wall up to 30 feet in diameter.",
+     "If the wall passes through a creature's space, the spell fails. Creatures designated by the caster can pass through without harm. Creatures within 20 feet of the wall at the start of their turn must make a Constitution saving throw or be blinded for 1 minute.",
+     "The wall sheds bright light for 100 feet and dim light for an additional 100 feet.",
+     "Consists of seven layers, each with a different color.",
+     "Red: Deals 10d6 fire damage. Nonmagical ranged attacks can't pass through.",
+     "Orange: Deals 10d6 acid damage. Magical ranged attacks can't pass through. Destroyed by strong wind.",
+     "Yellow: Deals 10d6 lightning damage. Can be destroyed by dealing 60 force damage.",
+     "Green: Deals 10d6 poison damage. Can be destroyed by a passwall spell or similar.",
+     "Blue: Deals 10d6 cold damage. Can be destroyed by dealing 25 fire damage.",
+     "Indigo: Restrains creatures; requires saving throws to avoid petrification. Spells can't pass through. Destroyed by bright light (e.g., daylight spell).",
+     "Violet: Blinds creatures, transports them to another plane on failed saves. Destroyed by dispel magic or similar spells.",
+     "Layers can be destroyed one at a time, from red to violet, by specific means outlined for each layer. Rod of cancellation destroys the entire wall. Antimagic field has no effect on the wall."
+    ]).
+
+spell_short_desc(
+    symbol,
+    [ "The spell allows you to inscribe a harmful glyph on a surface or within a closed object. The glyph is nearly invisible and can be triggered by various means that you decide upon casting. If the trigger occurs, the glyph activates, filling a 60-foot-radius sphere with dim light for 10 minutes. Creatures in the sphere during activation or entering it are affected based on the chosen glyph effect:",
+      "Death: Targets make a Constitution saving throw, taking 10d10 necrotic damage on a failed save, or half as much on a successful save.",
+      "Discord: Targets make a Constitution saving throw. On a failed save, they bicker and argue for 1 minute, with disadvantage on attack rolls and ability checks.",
+      "Fear: Targets make a Wisdom saving throw. On a failed save, they become frightened for 1 minute, dropping held items and moving away from the glyph.",
+      "Hopelessness: Targets make a Charisma saving throw. On a failed save, they are overwhelmed with despair for 1 minute, unable to attack or target creatures with harmful effects.",
+      "Insanity: Targets make an Intelligence saving throw. On a failed save, they are insane for 1 minute, unable to take actions, understand speech, read, and move erratically under DM control.",
+      "Pain: Targets make a Constitution saving throw. On a failed save, they are incapacitated with excruciating pain for 1 minute.",
+      "Sleep: Targets make a Wisdom saving throw. On a failed save, they fall unconscious for 10 minutes, waking up if damaged or shaken awake.",
+      "Stunning: Targets make a Wisdom saving throw. On a failed save, they become stunned for 1 minute."
+    ]).
+
+spell_short_desc(
+    teleport,
+    [ "This spell instantly transports you and up to eight willing creatures or a single object to a selected destination within range on the same plane of existence.",
+
+      "| Familiarity | Mishap | Similar Area | Off Target | On Target |\n |-------------|--------|--------------|------------|-----------|\n | Permanent Circle | - | - | - | 01-100 |\n | Associated Object | - | - | - | 01-100 |\n | Very Familiar | 01-05 | 06-13 | 14-24 | 25-100 |\n | Seen Casually | 01-33 | 34-43 | 44-53 | 54-100 |\n | Viewed Once | 01-43 | 44-53 | 54-73 | 74-100 |\n | Description | 01-43 | 44-53 | 54-73 | 74-100 |\n | False Destination | 01-50 | 51-100 | - | - |",
+
+      "**Outcomes**",
+      "- **On Target:** Successful teleportation to the desired destination.",
+      "- **Off Target:** Random distance (1d10 x 1d10 % of travelled distance) away from the destination in a random direction.",
+      "- **Similar Area:** Arrival in an area visually or thematically similar to the target.",
+      "- **Mishap:** Unpredictable magic causes a difficult journey, dealing 3d10 force damage, and DM rerolls on the table."
+    ]
+).
+
+spell_short_desc(
+    imprisonment,
+    [ "Target must succeed on a Wisdom saving throw or be bound by the spell. If it succeeds, it is immune to this spell if you cast it again. While affected by this spell, target doesn't need to breathe, eat, or drink, and doesn't age. Divination spells can't locate or perceive the target.",
+      "Choose a form of imprisonment:",
+      "Burial: Force sphere far beneath the earth. Nothing can pass through; no one can teleport / planar travel into or out of the sphere. Component: small mithral orb.",
+      "Chaining: Target is restrained, and it can't move or be moved. Component: fine chain of precious metal.",
+      "Hedged Prison: Tiny demiplane that is warded against teleportation and planar travel. Component: miniature representation of the prison made from jade.",
+      "Minimus Containment: Target shrinks to a height of 1 inch and is imprisoned inside a gemstone or similar object. Light can pass through the gemstone normally (allowing the target to see out and other creatures to see in), but nothing else can pass through, even by means of teleportation or planar travel. The gemstone can't be cut or broken while the spell remains in effect. Component: transparent gemstone.",
+      "Slumber: Target falls asleep and can't be awoken. Component: rare soporific herbs.",
+      "Ending the Spell: While casting spell, you can specify a condition that ends the spell.",
+      "A dispel magic spell can end the spell only if it is cast as a 9th-level spell, targeting either the prison or the special component used to create it.",
+      "You can use a particular special component to create only one prison at a time. If you cast the spell again using the same component, the target of the first casting is immediately freed from its binding."
+    ]
+).

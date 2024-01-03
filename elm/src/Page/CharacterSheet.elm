@@ -67,10 +67,19 @@ view currentlyPreparedSpells showOnlyPreparedSpells sheet =
           , style "clear" "left"
           , style "text-align" "left"
           ]
-          [ button [ style "float" "right"
-                  , E.onClick EditCharacter
-                  ]
+          [ div
+              [ css [ Css.float Css.right
+                    , Css.displayFlex
+                    , Css.flexDirection Css.column
+                    ]
+              ]
+              [ button [ E.onClick EditCharacter ]
                   [ text "edit" ]
+              , button [ E.onClick (GotoCardsPage { showSpells = AllSpells }) ]
+                  [ text "cards" ]
+              , button [ E.onClick (GotoCardsPage { showSpells = OnlyPreparedSpells }) ]
+                  [ text "cards (only prepared spells)" ]
+              ]
           , h1 [] [ text sheet.name ]
           ]
       , article [ style "padding" "1em" ]

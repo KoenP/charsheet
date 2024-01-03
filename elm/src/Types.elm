@@ -83,8 +83,9 @@ type alias Spell =
   , prepared : AlwaysPrepared
   , range : String
   , resources : List String
-  , ritual : String
+  , ritual : Bool
   , school : String
+  , shortdesc : Maybe (List String)
   , summary : String
   , to_hit : Maybe Int
   , rolls : Maybe String
@@ -243,6 +244,7 @@ type Msg
   | OrSCChooseDir String String Dir
   | GotoSheet
   | GotoLevelUp
+  | GotoCardsPage CardPageOptions
   | LevelUpAs String
   | SetEditCharacterPageDesc (Maybe (List String))
   | SelectDropdownOption String String
@@ -268,3 +270,5 @@ mkHttpResponseMsg : (a -> HttpResponseMsg) -> (Result Http.Error a -> Msg)
 mkHttpResponseMsg f result =
   HttpResponse (Result.map f result)
     
+type alias CardPageOptions = { showSpells : ShowSpellOption }
+type ShowSpellOption = AllSpells | OnlyPreparedSpells | NoSpells

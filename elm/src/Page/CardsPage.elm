@@ -7,6 +7,9 @@ import Html.Styled.Attributes as Attr
 import Html.Styled.Events as E
 import Http
 import List
+-- import Markdown.Option as Md
+-- import Markdown.Render as Md
+import Markdown
 import Platform.Cmd as Cmd
 import String
 
@@ -38,15 +41,14 @@ update msg model sheet = (model, Cmd.none)
 -- VIEW
 ----------------------------------------------------------------------
 view : CharacterSheet -> List (Html Msg)
-view sheet = List.map viewSpellcastingSection sheet.spellcasting_sections
+view sheet =
+  List.map (div [ Attr.css cardsStyle ])
+  <| Util.chunks 8 
+  <| List.concatMap viewSpellcastingSection sheet.spellcasting_sections
 
-viewSpellcastingSection : SpellcastingSection -> Html Msg
+viewSpellcastingSection : SpellcastingSection -> List (Html Msg)
 viewSpellcastingSection section =
-  div []
-    [ div
-       [ Attr.css cardsStyle ]
-       (List.map (viewCard section.origin) section.spells)
-    ]
+  List.map (viewCard section.origin) section.spells
 
 viewCard : Origin -> Spell -> Html Msg
 viewCard origin spell =
@@ -64,19 +66,41 @@ viewCard origin spell =
         , cardBox "aoe" (Maybe.withDefault "/" spell.aoe)
         ]
     , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
-    , div [ Attr.css descriptionStyle ] <|
-        (spell.description
-          |> List.map (text >> List.singleton
-                            >> p [Attr.css [ Css.marginBottom (px 4)
-                                           , Css.marginTop (px 0)]]))
-        ++
-        viewHigherLevelP spell.higher_level
+    , viewSpellDescription (getSpellDescriptionText spell) spell.higher_level
     ]
     ++
     viewConcentrationBadge spell.concentration
     ++ 
     [ div [ Attr.css cardTypeStyle ] [text (origin ++ " spell")]
     ]
+
+getSpellDescriptionText : Spell -> List String
+getSpellDescriptionText spell =
+  Maybe.withDefault spell.description <| Maybe.map (\d -> "(Summary:)" :: d) spell.shortdesc
+
+viewSpellDescription : List String -> Maybe String -> Html Msg
+viewSpellDescription paragraphs higherLevel =
+  div [ Attr.css (descriptionStyle (estimateDescFontSize paragraphs higherLevel))
+      , Attr.class "card-description"
+      ]
+    <| (  paragraphs
+       |> List.intersperse "\n\n"
+       |> String.concat
+       -- |> Md.toHtml_ Md.Extended 
+       |> Markdown.toHtmlWith
+            { githubFlavored = Just { tables = True, breaks = False }
+            , defaultHighlighting = Nothing
+            , sanitize = False
+            , smartypants = True
+            }
+            []
+       |> fromUnstyled
+       )
+       -- |> List.map (text >> List.singleton
+       --                   >> p [Attr.css [ Css.marginBottom (px 2)
+       --                                  , Css.marginTop (px 0)]]))
+       ::
+       viewHigherLevelP higherLevel
 
 viewConcentrationBadge : Bool -> List (Html Msg)
 viewConcentrationBadge concentration =
@@ -92,9 +116,10 @@ viewHigherLevelP hl =
 
 cardSubtitle : Spell -> String
 cardSubtitle spell =
-  if spell.level == 0
-  then spell.school ++ " cantrip"
-  else Util.ordinal spell.level ++ " level " ++ spell.school
+  let levelAndSchool = if spell.level == 0
+                       then spell.school ++ " cantrip"
+                       else Util.ordinal spell.level ++ " level " ++ spell.school
+  in if spell.ritual then levelAndSchool ++ " (ritual)" else levelAndSchool
 
 cardBox : String -> String -> Html Msg
 cardBox iconName value =
@@ -114,8 +139,8 @@ showComponents = List.map showComponent >> List.intersperse ", " >> String.conca
 showComponent : Component -> String
 showComponent c =
   case c of
-    V -> "V"
-    S -> "S"
+    V   -> "V"
+    S   -> "S"
     M _ -> "M"
                   
 
@@ -127,12 +152,15 @@ cardsStyle =
   [ Css.displayFlex
   , Css.flexDirection Css.row
   , Css.flexWrap Css.wrap
+  , Css.property "break-inside" "avoid"
   ]
   
 cardStyle : List Style
 cardStyle =
   [ Css.position Css.relative
   , Css.border3 (px 1) Css.solid (Css.rgb 0 0 0)
+
+  -- MTG size
   , Css.width (mm 63)
   , Css.minWidth (mm 63)
   , Css.height (mm 88)
@@ -142,12 +170,11 @@ cardStyle =
 
   , Css.backgroundColor (Css.hex "e8e8e8") |> Css.important
   , Css.property "print-color-adjust" "exact"
-  , Css.fontFamilies ["Dosis"]
-  , Css.padding (px 8)
+  , Css.fontFamilies ["Verdana", "Dosis"]
+  , Css.padding (px 4)
 
   , Css.displayFlex
   , Css.flexDirection Css.column
-
   ]
 
 cardTitleSectionStyle : List Style
@@ -192,20 +219,44 @@ cardBoxStyle =
   , Css.position Css.relative
   , Css.property "display" "grid"
   , Css.property "grid-template-columns" "1fr 5fr"
-  , Css.padding (mm 1)
+  , Css.padding (mm 0.7)
   ]
 
-descriptionStyle : List Style
-descriptionStyle =
-  [ Css.fontSize (px 8)
-  , Css.lineHeight (px 10)
+descriptionStyle : Float -> List Style
+descriptionStyle fontSize =
+  [ Css.fontSize <| px fontSize
+  , Css.lineHeight <| px fontSize
   , Css.textAlign Css.justify
   , Css.backgroundColor (Css.hex "ffffff")
   , Css.property "print-color-adjust" "exact"
   , Css.borderRadius (px 8)
   , Css.padding (mm 1)
-  , Css.marginBottom (mm 1)
+  , Css.marginBottom (mm 2)
   ]
+
+estimateDescFontSize : List String -> Maybe String -> Float
+estimateDescFontSize paragraphs higherLevel =
+  let
+    len = spellDescriptionLength paragraphs higherLevel
+  in 
+    if len >= 1800 || descriptionContainsTable paragraphs
+    then 6
+      else if len >= 1600
+           then 7
+           else if len >= 1000
+                then 8
+                else 10
+
+spellDescriptionLength : List String -> Maybe String -> Int
+spellDescriptionLength paragraphs higherLevel =
+  List.sum
+    <| Maybe.withDefault 0 (Maybe.map String.length higherLevel)
+      :: List.map String.length paragraphs
+
+
+descriptionContainsTable : List String -> Bool
+descriptionContainsTable = List.any (String.contains "|---|")
+
 
 cardTypeStyle : List Style
 cardTypeStyle =

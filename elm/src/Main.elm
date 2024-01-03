@@ -3,6 +3,8 @@ module Main exposing (..)
 import Browser
 import Browser.Navigation as Nav
 import Browser.Events
+import Css as Css
+import Css.Global as Css
 import Url exposing (Url)
 import Url.Parser exposing (Parser, (</>))
 import Url.Parser as Parser
@@ -72,8 +74,8 @@ init _ url key =
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     }
-  -- , loadSelectCharacterPage
-  , Cards.load
+  , loadSelectCharacterPage
+  -- , Cards.load
   -- , Edit.load
   -- , Nav.pushUrl key "/list_characters"
   )
@@ -312,6 +314,7 @@ view model =
       , Html.Attributes.attribute "rel" "stylesheet"
       ]
       []
+    :: toUnstyled globalCss
     ::
     List.map toUnstyled 
       (case model.page of
@@ -328,6 +331,36 @@ view model =
          CardsPage data ->
            Cards.view data)
   }
+
+globalCss : Html msg
+globalCss =
+  Css.global
+    [ Css.class "card-description"
+        [ Css.descendants
+            [ Css.typeSelector "p"
+                [ Css.marginBottom (Css.px 2)
+                , Css.marginTop Css.zero
+                ]
+            , Css.typeSelector "ul"
+                [ Css.paddingLeft (Css.px 10)
+                ]
+            , Css.typeSelector "td"
+                [ Css.marginBottom Css.zero
+                , Css.marginTop Css.zero
+                , Css.paddingTop Css.zero
+                , Css.paddingBottom Css.zero
+                 -- Css.lineHeight (Css.num 0)
+                 
+                ]
+            -- , Css.selector "::marker"
+            --     [ Css.fontSize (Css.px 0)
+            --     -- Weird hack to make a duplicate bullet point disappear.
+            --     -- I don't know why this works and visiblity hidden does not.
+            --     ]
+            ]
+        ]
+        
+    ]
   
 
 -- Character selection page
