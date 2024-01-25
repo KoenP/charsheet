@@ -83,6 +83,12 @@ init _ url key =
 navigate : Model -> Route -> ( Model, Cmd Msg )
 navigate model route = -- ( { model | page = Loading } , Sheet.load )
   case route of
+    CharacterRoute charName ->
+      Debug.log ("navigate (CharacterRoute " ++ charName ++ ")")
+        ( { model | page = Loading }
+        , Sheet.load
+        )
+      
     SelectCharacterRoute ->
       Debug.log "navigate (SelectCharacterRoute)"
         ( { model | page = Loading }
@@ -94,6 +100,7 @@ navigate model route = -- ( { model | page = Loading } , Sheet.load )
         ( { model | page = Loading }
         , Sheet.load
         )
+
     EditRoute ->
       Debug.log "navigate (EditRoute)"
         ( { model | page = Loading }
@@ -116,6 +123,7 @@ type Route
   | SheetRoute
   | EditRoute
   | NotFound
+  | CharacterRoute String
   
 routeParser : Parser (Route -> a) a
 routeParser =
@@ -125,6 +133,11 @@ routeParser =
     , Parser.map SelectCharacterRoute (Parser.s "list_characters")
     , Parser.map SheetRoute (Parser.s "sheet")
     , Parser.map EditRoute (Parser.s "edit")
+    , Parser.map CharacterRoute (Parser.s "character" </> Parser.string)
+
+      -- Parser.s "char" : Parser a a
+      -- </> : Parser (String -> d) (String -> d) -> Parser (String -> d) c -> Parser (String -> d) c
+      -- Parser.string : Parser (String -> d) d
     ]
 
 urlToRoute : Url -> Route
@@ -161,7 +174,10 @@ update msg model =
       navigate model (urlToRoute url)
 
     EditCharacter ->
-      ( { model | page = Loading }, Nav.pushUrl model.key "/edit" )
+      ( { model | page = Loading }, Edit.load )
+
+    GotoCardsPage options sheet ->
+      ( { model | page = CardsPage options sheet }, Cmd.none)
 
     Choice origin id choice ->
       ( { model | focusedDropdownId = Nothing } , registerChoice origin id choice )
@@ -187,7 +203,7 @@ update msg model =
           Sheet.update msg model
         EditCharacterPage data ->
           Edit.update msg model data
-        CardsPage data ->
+        CardsPage options data ->
           Cards.update msg model data
         Loading ->
           case msg of
@@ -227,18 +243,12 @@ handleHttpResponseMsg msg model =
           }
         , none
         )
-      CharacterLoaded ->
-        ( { model | page = Loading }, Nav.pushUrl model.key "/sheet" )
+      CharacterLoaded id ->
+        ( { model | page = Loading }, Nav.pushUrl model.key ("/character/" ++ id) )
       GotCharacterSheet sheet ->
         ( { model
             | page = CharacterSheetPage sheet
             , preparedSpells = initPreparedSpells sheet.spellcasting_sections
-          }
-        , none
-        )
-      GotCardsData sheet ->
-        ( { model
-            | page = CardsPage sheet
           }
         , none
         )
@@ -269,7 +279,7 @@ loadCharacter : String -> Cmd Msg
 loadCharacter charName =
   Http.get
     { url = requestUrl "load_character" [("name", charName)]
-    , expect = Http.expectJson (mkHttpResponseMsg (\_ -> CharacterLoaded)) (succeed ())
+    , expect = Http.expectJson (mkHttpResponseMsg (\_ -> CharacterLoaded charName)) (succeed ())
     }
 
 newCharacter : String -> Cmd Msg
@@ -278,7 +288,7 @@ newCharacter charName =
     { url = requestUrl "new_character" [("name", charName)]
     , expect =
         Http.expectJson
-        (mkHttpResponseMsg (\_ -> CharacterLoaded))
+        (mkHttpResponseMsg (\_ -> CharacterLoaded charName))
         (succeed ())
     }
 
@@ -328,8 +338,8 @@ view model =
            Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
          EditCharacterPage data ->
            Edit.view model.focusedDropdownId data
-         CardsPage data ->
-           Cards.view data)
+         CardsPage options data ->
+           Cards.view options data model.preparedSpells )
   }
 
 globalCss : Html msg

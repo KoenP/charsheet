@@ -2,6 +2,7 @@ module Page.CardsPage exposing (..)
 
 import Css exposing (Style, px, mm)
 import Css.Media
+import Dict exposing (Dict)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr
 import Html.Styled.Events as E
@@ -11,6 +12,7 @@ import List
 -- import Markdown.Render as Md
 import Markdown
 import Platform.Cmd as Cmd
+import Set exposing (Set)
 import String
 
 import Decoder.CharacterSheet exposing (sheetDec)
@@ -18,18 +20,6 @@ import Request exposing (requestUrl)
 import Types exposing (..)
 import Util exposing (simple)
 
-
-----------------------------------------------------------------------
--- INITIALIZE
-----------------------------------------------------------------------
-load : Cmd Msg
-load =
-  Http.get
-    { url = requestUrl "sheet" []
-    , expect = Http.expectJson
-               (mkHttpResponseMsg GotCardsData)
-               sheetDec
-    }
 
 ----------------------------------------------------------------------
 -- UPDATE
@@ -40,15 +30,27 @@ update msg model sheet = (model, Cmd.none)
 ----------------------------------------------------------------------
 -- VIEW
 ----------------------------------------------------------------------
-view : CharacterSheet -> List (Html Msg)
-view sheet =
+view : CardsPageOptions -> CharacterSheet -> Dict Origin (Set SpellName) -> List (Html Msg)
+view options sheet preparedSpells =
   List.map (div [ Attr.css cardsStyle ])
   <| Util.chunks 8 
-  <| List.concatMap viewSpellcastingSection sheet.spellcasting_sections
+  <| List.concatMap (viewSpellcastingSection options preparedSpells) sheet.spellcasting_sections
 
-viewSpellcastingSection : SpellcastingSection -> List (Html Msg)
-viewSpellcastingSection section =
-  List.map (viewCard section.origin) section.spells
+viewSpellcastingSection :  CardsPageOptions -> Dict Origin (Set SpellName) -> SpellcastingSection
+                        -> List (Html Msg)
+viewSpellcastingSection options preparedSpells section =
+  List.map (viewCard section.origin)
+    <| List.filter
+         (shouldIncludeSpell options
+            (Maybe.withDefault Set.empty <| Dict.get section.origin preparedSpells))
+    <| section.spells
+
+shouldIncludeSpell : CardsPageOptions -> Set SpellName -> Spell -> Bool
+shouldIncludeSpell { showSpells } preparedSpells { name, prepared } =
+  case showSpells of
+    AllSpells -> True
+    OnlyPreparedSpells -> prepared || Set.member name preparedSpells
+    NoSpells -> False
 
 viewCard : Origin -> Spell -> Html Msg
 viewCard origin spell =

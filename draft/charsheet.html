@@ -1,11 +1,58 @@
 <head>
   <style>
    .page {
+     /*
      width: 148mm;
      max-width: 148mm;
      height: 210mm;
      max-height: 210mm;
+     */
+
+     height: 148mm;
+     max-height: 148mm;
+     width: 210mm;
+     max-width: 210mm;
+
+     border: 1px dotted black;
+
+     position: relative;
+   }
+
+   .abilities {
+
+     position: absolute;
+
+     left: 0mm;
+     top: 0mm;
+
+     display: flex;
+     flex-direction: column;
+   }
+
+   .ability {
+     font-weight: bold;
+     text-align: center;
+
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+   }
+
+   .ability-modifier {
+     width: 14mm;
      border: 1px solid black;
+     margin: 2px 2px 0 2px;
+     font-size: 40px;
+     line-height: 40px;
+     border-radius: 4px;
+   }
+
+   .ability-score {
+     font-size: 12px;
+     line-height: 8px;
+     font-weight: normal;
+     padding: 3px;
    }
 
    * {
@@ -16,7 +63,70 @@
 
 <body>
   <div class="page">
-    test
+    <div class="abilities">
+      <div class="ability">
+        STR
+        <div class="ability-modifier">
+          +2
+          <hr style="margin: 0;">
+          <div class="ability-score">
+            14
+          </div>
+        </div>
+      </div>
+      <div class="ability">
+        DEX
+        <div class="ability-modifier">
+          +1
+          <hr style="margin: 0;">
+          <div class="ability-score">
+            12
+          </div>
+        </div>
+      </div>
+      <div class="ability">
+        CON
+        <div class="ability-modifier">
+          -1
+          <hr style="margin: 0;">
+          <div class="ability-score">
+            9
+          </div>
+        </div>
+      </div>
+
+      <div class="ability">
+        INT
+        <div class="ability-modifier">
+          +0
+          <hr style="margin: 0;">
+          <div class="ability-score">
+            11
+          </div>
+        </div>
+      </div>
+
+      <div class="ability">
+        WIS
+        <div class="ability-modifier">
+          +3
+          <hr style="margin: 0;">
+          <div class="ability-score">
+            16
+          </div>
+        </div>
+      </div>
+      <div class="ability">
+        CHA
+        <div class="ability-modifier">
+          -2
+          <hr style="margin: 0;">
+          <div class="ability-score">
+            7
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </body>
 

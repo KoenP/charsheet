@@ -192,7 +192,7 @@ type Page
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
   | EditCharacterPage EditCharacterPageData
-  | CardsPage CharacterSheet
+  | CardsPage CardsPageOptions CharacterSheet
 
 type alias EditCharacterPageData = 
   { abilityTable : AbilityTable
@@ -244,7 +244,7 @@ type Msg
   | OrSCChooseDir String String Dir
   | GotoSheet
   | GotoLevelUp
-  | GotoCardsPage CardPageOptions
+  | GotoCardsPage CardsPageOptions CharacterSheet
   | LevelUpAs String
   | SetEditCharacterPageDesc (Maybe (List String))
   | SelectDropdownOption String String
@@ -258,9 +258,8 @@ type Choice = ListChoice (List String) | SingletonChoice String
 
 type HttpResponseMsg
   = GotCharacterList (List String)
-  | CharacterLoaded
+  | CharacterLoaded String
   | GotCharacterSheet CharacterSheet
-  | GotCardsData CharacterSheet
   | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
   | ChoiceRegistered
   | LeveledUp
@@ -270,5 +269,5 @@ mkHttpResponseMsg : (a -> HttpResponseMsg) -> (Result Http.Error a -> Msg)
 mkHttpResponseMsg f result =
   HttpResponse (Result.map f result)
     
-type alias CardPageOptions = { showSpells : ShowSpellOption }
+type alias CardsPageOptions = { showSpells : ShowSpellOption }
 type ShowSpellOption = AllSpells | OnlyPreparedSpells | NoSpells
