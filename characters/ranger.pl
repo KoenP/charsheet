@@ -34,8 +34,8 @@ choice(background(outlander), language, sylvan).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 gain_level(2, ranger, hp_avg).
-choice(match_class(ranger:2), 'fighting style', archery).
-choice(match_class(ranger:2), spell, ['hunter\'s mark', 'cure wounds']).
+choice(ranger >: 2, 'fighting style', archery).
+choice(ranger >: 2, spell, ['hunter\'s mark', 'cure wounds']).
 
 trait(custom, expertise(skill(perception))).
 trait(custom, language(elvish)).

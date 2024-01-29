@@ -1,32 +1,34 @@
 <head>
   <style>
-   .page {
-     /*
-     width: 148mm;
-     max-width: 148mm;
-     height: 210mm;
-     max-height: 210mm;
-     */
+   @page {
+     size: a5 landscape;
+     margin: 0;
+   }
 
+   .page {
      height: 148mm;
      max-height: 148mm;
      width: 210mm;
      max-width: 210mm;
-
-     border: 1px dotted black;
-
      position: relative;
+     background-color: #e8e8e8;
    }
 
    .abilities {
-
      position: absolute;
+     background-color: white;
+     border-radius: 4px;
 
-     left: 0mm;
-     top: 0mm;
+     left: 3mm;
+     top: 3mm;
+     padding-right: 1mm;
 
      display: flex;
      flex-direction: column;
+   }
+
+   .ability-row {
+     height: 23mm;
    }
 
    .ability {
@@ -34,13 +36,21 @@
      text-align: center;
 
      display: flex;
-     flex-direction: column;
+     flex-direction: row;
      align-items: center;
      justify-content: center;
    }
 
+   .ability-name {
+     /*
+     writing-mode: sideways-lr;
+        */
+     transform: rotate(-90deg);
+     width: 30px;
+   }
+
    .ability-modifier {
-     width: 14mm;
+     width: 16mm;
      border: 1px solid black;
      margin: 2px 2px 0 2px;
      font-size: 40px;
@@ -55,99 +65,464 @@
      padding: 3px;
    }
 
+   .skill-td > table {
+     font-size: 9px;
+   }
+
+   .skill-td td {
+     margin: 0px;
+     padding: 0px;
+     line-height: 9px;
+   }
+
    * {
      font-family: Dosis;
    }
+
+   .main-body {
+     position: absolute;
+     left: 52mm;
+     height: 148mm;
+     max-height: 148mm;
+     width: 155mm;
+     max-width: 157mm;
+   }
+
+   h1 {
+     text-align: center;
+
+     background-color: white;
+     border-radius: 4px;
+     padding: 8px;
+     margin-top: 12px;
+     margin-bottom: 8px;
+   }
+
+   .race-and-classes {
+     text-align: right;
+     font-size: 10px;
+     font-style: italic;
+   }
+
+   .hp {
+     width: 23mm;
+     font-size: 28px;
+     line-height: 38px;
+     padding: 2px;
+
+     background-color: white;
+     border-radius: 4px;
+   }
+
+   .blank {
+     width: 30px;
+     height: 30px;
+
+     border: 1px solid black;
+     border-radius: 1mm;
+   }
+
+   .row {
+     display: flex;
+     flex-direction: row;
+   }
+
+   .column {
+     display: flex;
+     flex-direction: column;
+   }
+
+   .labeled-flex {
+     display: flex;
+     flex-direction: column;
+     text-align: center;
+     font-size: 8px;
+     line-height: 9px;
+     text-transform: uppercase;
+     font-weight: bold;
+     color: dimgrey;
+   }
+
+   .filled-in {
+     /*width: 50px;*/
+     text-align: center;
+     color: black;
+     font-size: 20px;
+     line-height: 30px;
+     height: 30px;
+     width: 30px;
+     border: 1px solid dimgrey;
+     border-radius: 4px;
+   }
+
+   .ac {
+     border-radius: 4px;
+     padding: 2px;
+     font-size: 28px;
+     line-height: 38px;
+     background-color: white;
+     border-radius: 4px;
+   }
+
+   .ac-formula {
+     display: flex;
+     flex-direction: column;
+     margin-bottom: 4px;
+   }
+
+   .ac-formula > .row {
+     border-left: 1px dotted black;
+     margin-left: 4px;
+     margin-top: 2px;
+     padding-left: 4px;
+     padding-right: 2px;
+   }
+
+   .ac-formula-name {
+     font-size: 8px;
+     text-transform: uppercase;
+     color: dimgrey;
+     font-weight: bold;
+     line-height: 10px;
+   }
+
+   .badges {
+     display: flex;
+     flex-direction: row;
+     flex-wrap: wrap;
+     justify-content: space-evenly;
+   }
+
+   .badge {
+     display: flex;
+     flex-direction: column;
+   }
+
+   .badge-title {
+     text-transform: uppercase;
+     font-weight: bold;
+     font-size: 12px;
+     color: dimgrey;
+     text-align: center;
+   }
   </style>
+
 </head>
 
+<!--
+Quick reference
+     [X] Name
+     [ ] Class / Subclass / Race
+     [ ] Armor class (met alternatieve formules)
+     [ ] Max HP / Current HP / Temp HP
+     [ ] Hit Dice
+     [ ] Speed
+     [ ] Initiative
+     [ ] Passive perception
+     [ ] Attack table
+     [X] Abilities
+     [X] Skills
+     [X] Saving throws
+     [ ] Proficiency bonus
+-->
 <body>
   <div class="page">
-    <div class="abilities">
-      <div class="ability">
-        STR
-        <div class="ability-modifier">
-          +2
-          <hr style="margin: 0;">
-          <div class="ability-score">
-            14
-          </div>
-        </div>
-      </div>
-      <div class="ability">
-        DEX
-        <div class="ability-modifier">
-          +1
-          <hr style="margin: 0;">
-          <div class="ability-score">
-            12
-          </div>
-        </div>
-      </div>
-      <div class="ability">
-        CON
-        <div class="ability-modifier">
-          -1
-          <hr style="margin: 0;">
-          <div class="ability-score">
-            9
-          </div>
-        </div>
+    <div class="main-body">
+      <h1>Zaphod Beeblebrox</h1>
+      <div class="race-and-classes">
+        Hill dwarf warlock (5), wizard(2)
       </div>
 
-      <div class="ability">
-        INT
-        <div class="ability-modifier">
-          +0
-          <hr style="margin: 0;">
-          <div class="ability-score">
-            11
-          </div>
-        </div>
-      </div>
 
-      <div class="ability">
-        WIS
-        <div class="ability-modifier">
-          +3
-          <hr style="margin: 0;">
-          <div class="ability-score">
-            16
+      <div class="badges">
+        <div class="badge">
+          <div class="hp">
+
+            <div class="row">
+              <div class="labeled-flex">
+                <div>current</div>
+                <div class="blank"></div>
+              </div>
+              <div>&nbsp;+&nbsp;</div>
+              <div class="labeled-flex">
+                <div>temp</div>
+                <div class="blank"></div>
+              </div>
+            </div>
+
+            <hr style="margin: 4px;">
+
+            <div class="row">
+              <div class="labeled-flex">
+                <div class="filled-in">24</div>
+                <div>max hp</div>
+              </div>
+              <div>&nbsp;+&nbsp;</div>
+              <div class="labeled-flex">
+                <div class="blank"></div>
+                <div>bonus max hp</div>
+              </div>
+            </div>
+          </div>
+          <div class="badge-title">
+            hit points
           </div>
         </div>
-      </div>
-      <div class="ability">
-        CHA
-        <div class="ability-modifier">
-          -2
-          <hr style="margin: 0;">
-          <div class="ability-score">
-            7
+        
+        <div class="badge">
+          <div class="ac">
+            <div class="column">
+              <div class="ac-formula">
+                <div class="ac-formula-name">unarmored defense</div>
+                <div class="row">
+
+                  <div class="labeled-flex">
+                    <div class="filled-in">15</div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="ac-formula">
+                <div class="ac-formula-name">mage armor</div>
+                <div class="row">
+                  <div class="labeled-flex">
+                    <div>base</div>
+                    <div class="filled-in">13</div>
+                  </div>
+                  <div>&nbsp;+&nbsp;</div>
+                  <div class="labeled-flex">
+                    <div>shield</div>
+                    <div class="blank"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+          <div class="badge-title"> armor class </div>
         </div>
       </div>
     </div>
+    <div class="abilities">
+      <table>
+        <tr class="ability-row">
+          <td>
+            <div class="ability">
+              <div class="ability-name"> STR </div>
+              <div class="ability-modifier">
+                0
+                <hr style="margin: 0;">
+                <div class="ability-score">
+                  10
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td class="skill-td">
+            <table>
+              <tr>
+                <td>+0</td>
+                <td>Saving throws</td>
+              </tr>
+              <tr>
+                <td>+0</td>
+                <td>Athletics</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        
+        <tr class="ability-row">
+          <td>
+            <div class="ability">
+              <div class="ability-name">DEX</div>
+              
+              <div class="ability-modifier">
+                +1
+                <hr style="margin: 0;">
+                <div class="ability-score">
+                  12
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td class="skill-td">
+            <table>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Saving throws</b></td>
+              </tr>
+              <tr>
+                <td>+1</td>
+                <td>Acrobatics</td>
+              </tr>
+              <tr>
+                <td>+1</td>
+                <td>Sleight of Hand</td>
+              </tr>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Stealth</b></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr class="ability-row">
+          <td>
+            <div class="ability">
+              <div class="ability-name">CON</div>
+              
+              <div class="ability-modifier">
+                +1
+                <hr style="margin: 0;">
+                <div class="ability-score">
+                  12
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td class="skill-td"></td>
+        </tr>
+
+        <tr class="ability-row">
+          <td>
+            <div class="ability">
+              <div class="ability-name">INT</div>
+              
+              <div class="ability-modifier">
+                +3
+                <hr style="margin: 0;">
+                <div class="ability-score">
+                  16
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td class="skill-td">
+            <table>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Saving throws</b></td>
+              </tr>
+              <tr>
+                <td>+1</td>
+                <td>Investigation</td>
+              </tr>
+              <tr>
+                <td>+1</td>
+                <td>History</td>
+              </tr>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Arcana</b></td>
+              </tr>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Nature</b></td>
+              </tr>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Religion</b></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr class="ability-row">
+          <td>
+            <div class="ability">
+              <div class="ability-name">WIS</div>
+              
+              <div class="ability-modifier">
+                +3
+                <hr style="margin: 0;">
+                <div class="ability-score">
+                  16
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td class="skill-td">
+            <table>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Saving throws</b></td>
+              </tr>
+              <tr>
+                <td>+1</td>
+                <td>Insight</td>
+              </tr>
+              <tr>
+                <td>+1</td>
+                <td>Perception</td>
+              </tr>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Medicine</b></td>
+              </tr>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Survival</b></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr class="ability-row">
+          <td>
+            <div class="ability">
+              <div class="ability-name">CHA</div>
+              
+              <div class="ability-modifier">
+                +3
+                <hr style="margin: 0;">
+                <div class="ability-score">
+                  16
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td class="skill-td">
+            <table>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Saving throws</b></td>
+              </tr>
+              <tr>
+                <td>+1</td>
+                <td>Intimidation</td>
+              </tr>
+              <tr>
+                <td>+1</td>
+                <td>Persuasion</td>
+              </tr>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Performance</b></td>
+              </tr>
+              <tr>
+                <td><b>+4</b></td>
+                <td><b>Deception</b></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        
+      </table>
+    </div>
+    
   </div>
 </body>
 
 
-<!--
-Quick reference
-     Name
-     Class / Subclass / Race
-     Armor class (met alternatieve formules)
-     Max HP / Current HP / Temp HP
-     Hit Dice
-     Speed
-     Initiative
-     Passive perception
-     Abilities
-     Skills
-     Saving throws
-     Proficiency bonus
-
-Page 2
+<!-- Page 2
      Languages
      Tool proficiencies
-     
 -->
