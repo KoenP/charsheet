@@ -1,34 +1,60 @@
 <head>
   <style>
    @page {
+   /*
      size: a5 landscape;
-     margin: 0;
+      */
+     margin: 6.35mm;
    }
 
    .page {
-     height: 148mm;
-     max-height: 148mm;
-     width: 210mm;
-     max-width: 210mm;
+     height: 131mm;
+     max-height: 131mm;
+     width: 197mm;
+     max-width: 197mm;
      position: relative;
-     background-color: #e8e8e8;
+     /*background-color: #e8e8e8 !important;*/
+     background-color: white !important;
+     print-color-adjust: exact;
+
+     display: flex;
+     flex-direction: row;
+     gap: 3.5mm;
    }
 
    .abilities {
+     /*
      position: absolute;
-     background-color: white;
-     border-radius: 4px;
-
      left: 3mm;
      top: 3mm;
+        */
+
      padding-right: 1mm;
+     padding-left: 1mm;
+
+     min-width: 55mm;
+
+     background-color: white !important;
+     border: 2pt solid lightgrey;
+
+     print-color-adjust: exact;
+     border-radius: 4pt;
 
      display: flex;
      flex-direction: column;
    }
 
+   .abilities > table {
+     border-collapse: collapse;
+     height: 100%;
+   }
+
    .ability-row {
-     height: 23mm;
+     height: 20mm;
+   }
+
+   .ability-row:not(:last-child) {
+     border-bottom: 1pt solid lightgrey;
    }
 
    .ability {
@@ -46,33 +72,53 @@
      writing-mode: sideways-lr;
         */
      transform: rotate(-90deg);
-     width: 30px;
+     width: 22pt;
    }
 
    .ability-modifier {
      width: 16mm;
-     border: 1px solid black;
-     margin: 2px 2px 0 2px;
-     font-size: 40px;
-     line-height: 40px;
-     border-radius: 4px;
+     border: 1pt solid black;
+     margin: 1pt 1pt 0 1pt;
+     font-size: 30pt;
+     line-height: 30pt;
+     border-radius: 4pt;
    }
 
    .ability-score {
-     font-size: 12px;
-     line-height: 8px;
+     font-size: 10pt;
+     line-height: 8pt;
      font-weight: normal;
-     padding: 3px;
+     padding: 2pt;
    }
 
    .skill-td > table {
-     font-size: 9px;
+     font-size: 8pt;
+     margin-left: 2mm;
+     border-collapse: collapse;
+     margin-top: 0.7mm;
    }
 
+   .skill-td tr:first-child > td {
+     /*
+     border-bottom: 1pt dotted black;
+        */
+     background-color: #e8e8e8;
+     text-transform: uppercase;
+   }
+
+   .skill-td tr:first-child > td:first-child {
+     border-radius: 2pt 0 0 2pt;
+   }
+
+   .skill-td tr:first-child > td:last-child {
+     border-radius: 0 2pt 2pt 0;
+   }
+
+
    .skill-td td {
-     margin: 0px;
-     padding: 0px;
-     line-height: 9px;
+     margin: 0pt;
+     padding: 0.5mm;
+     line-height: 8pt;
    }
 
    * {
@@ -80,45 +126,85 @@
    }
 
    .main-body {
+     width: 100%;
+     margin-right: 2mm;
+     position: relative;
+
+     /*
      position: absolute;
-     left: 52mm;
+     left: 62mm;
+     top: 3mm;
      height: 148mm;
      max-height: 148mm;
      width: 155mm;
      max-width: 157mm;
+        */
    }
 
-   h1 {
+   .charname {
      text-align: center;
 
-     background-color: white;
-     border-radius: 4px;
-     padding: 8px;
-     margin-top: 12px;
-     margin-bottom: 8px;
+     background-color: white !important;
+     print-color-adjust: exact;
+
+     border-bottom: double lightgrey;
+     border-width: 3pt;
+
+     padding-bottom: 1mm;
+     margin-right: 1mm;
+     margin-top: 0;
+     margin-bottom: 6mm;
+   }
+
+   .charname > h1 {
+     font-size: 20pt;
+     margin-top: 0;
+     margin-bottom: 0;
+     position: relative;
    }
 
    .race-and-classes {
+     /*
      text-align: right;
-     font-size: 10px;
+     font-size: 10pt;
      font-style: italic;
+    */
+     text-transform: uppercase;
+     font-weight: bold;
+     font-size: 8pt;
+     color: dimgrey;
+   }
+
+   .charlevel {
+     position: absolute;
+     right: 4mm;
+     top: 3mm;
+     font-size: 14pt;
+     border: 2px solid black;
+     border-radius: 50%;
+     text-align: center;
+     line-height: 22pt;
+     width: 22pt;
+     height: 22pt;
    }
 
    .hp {
-     width: 23mm;
-     font-size: 28px;
-     line-height: 38px;
-     padding: 2px;
+     font-size: 26pt;
+     line-height: 38pt;
+     padding: 4pt;
 
-     background-color: white;
-     border-radius: 4px;
+     background-color: white !important;
+     print-color-adjust: exact;
+     border-radius: 4pt;
+
+     border: 2pt solid lightgrey;
    }
 
    .blank {
-     width: 30px;
-     height: 30px;
+     width: 28pt;
+     height: 28pt;
 
-     border: 1px solid black;
+     border: 1pt solid black;
      border-radius: 1mm;
    }
 
@@ -136,61 +222,65 @@
      display: flex;
      flex-direction: column;
      text-align: center;
-     font-size: 8px;
-     line-height: 9px;
+     font-size: 6pt;
+     line-height: 7pt;
      text-transform: uppercase;
      font-weight: bold;
      color: dimgrey;
+     width: 28pt;
    }
 
    .filled-in {
-     /*width: 50px;*/
+     /*width: 50pt;*/
      text-align: center;
      color: black;
-     font-size: 20px;
-     line-height: 30px;
-     height: 30px;
-     width: 30px;
-     border: 1px solid dimgrey;
-     border-radius: 4px;
+     font-size: 20pt;
+     line-height: 28pt;
+     height: 28pt;
+     width: 28pt;
+     /*border: 1pt dashed black;*/
+     border-radius: 4pt;
    }
 
    .ac {
-     border-radius: 4px;
-     padding: 2px;
-     font-size: 28px;
-     line-height: 38px;
-     background-color: white;
-     border-radius: 4px;
+     border-radius: 4pt;
+     padding: 2pt;
+     font-size: 28pt;
+     line-height: 38pt;
+     background-color: white !important;
+     print-color-adjust: exact;
+     border-radius: 4pt;
+
+     border: 2pt solid lightgrey;
    }
 
    .ac-formula {
      display: flex;
      flex-direction: column;
-     margin-bottom: 4px;
+     margin-bottom: 4pt;
    }
 
    .ac-formula > .row {
-     border-left: 1px dotted black;
-     margin-left: 4px;
-     margin-top: 2px;
-     padding-left: 4px;
-     padding-right: 2px;
+     border-left: 1pt dotted black;
+     margin-left: 4pt;
+     margin-top: 2pt;
+     padding-left: 4pt;
+     padding-right: 2pt;
    }
 
    .ac-formula-name {
-     font-size: 8px;
+     font-size: 8pt;
      text-transform: uppercase;
      color: dimgrey;
      font-weight: bold;
-     line-height: 10px;
+     line-height: 10pt;
    }
 
    .badges {
      display: flex;
      flex-direction: row;
      flex-wrap: wrap;
-     justify-content: space-evenly;
+     justify-content: space-between;
    }
 
    .badge {
@@ -201,109 +291,99 @@
    .badge-title {
      text-transform: uppercase;
      font-weight: bold;
-     font-size: 12px;
+     font-size: 10pt;
      color: dimgrey;
      text-align: center;
    }
+
+   .stat-table {
+     background-color: white !important;
+     print-color-adjust: exact;
+     border-radius: 4pt;
+
+     border: 2pt solid lightgrey;
+   }
+
+   .stat-table > table {
+     border-spacing: 1.5mm;
+   }
+
+   .stat-table th {
+     text-transform: uppercase;
+     font-weight: bold;
+     font-size: 10pt;
+     color: dimgrey;
+     text-align: left;
+   }
+
+   .stat-table td {
+     font-weight: bold;
+     text-align: right;
+   }
+
+   .hit-dice-section {
+     position: absolute;
+     right: 8pt;
+     bottom: 8pt;
+     display: flex;
+     flex-direction: row;
+     gap: 4pt;
+     line-height: 28pt;
+   }
+
+   .hit-dice {
+     background-color: white !important;
+     print-color-adjust: exact;
+     border-radius: 4pt;
+     display: flex;
+     flex-direction: row;
+   }
+
+   .hit-dice img {
+     width: 24pt;
+   }
+
+   .attacks {
+     position: absolute;
+     bottom: 16mm;
+     left: 0mm;
+     right: 0mm;
+
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+   }
+
+   .attacks > table {
+     background-color: white !important;
+     print-color-adjust: exact;
+     border: 2pt solid lightgrey;
+     border-radius: 4pt;
+
+     text-align: center;
+     font-size: 10pt;
+     border-spacing: 6pt;
+   }
+
+   .attacks th {
+     text-transform: uppercase;
+     font-weight: bold;
+     color: dimgrey;
+   }
+
+   .attacks td:not(:last-child) {
+     padding-right: 10pt;
+   }
+
   </style>
 
 </head>
 
-<!--
-Quick reference
-     [X] Name
-     [ ] Class / Subclass / Race
-     [ ] Armor class (met alternatieve formules)
-     [ ] Max HP / Current HP / Temp HP
-     [ ] Hit Dice
-     [ ] Speed
-     [ ] Initiative
-     [ ] Passive perception
-     [ ] Attack table
-     [X] Abilities
-     [X] Skills
-     [X] Saving throws
-     [ ] Proficiency bonus
--->
 <body>
   <div class="page">
-    <div class="main-body">
-      <h1>Zaphod Beeblebrox</h1>
-      <div class="race-and-classes">
-        Hill dwarf warlock (5), wizard(2)
-      </div>
 
-
-      <div class="badges">
-        <div class="badge">
-          <div class="hp">
-
-            <div class="row">
-              <div class="labeled-flex">
-                <div>current</div>
-                <div class="blank"></div>
-              </div>
-              <div>&nbsp;+&nbsp;</div>
-              <div class="labeled-flex">
-                <div>temp</div>
-                <div class="blank"></div>
-              </div>
-            </div>
-
-            <hr style="margin: 4px;">
-
-            <div class="row">
-              <div class="labeled-flex">
-                <div class="filled-in">24</div>
-                <div>max hp</div>
-              </div>
-              <div>&nbsp;+&nbsp;</div>
-              <div class="labeled-flex">
-                <div class="blank"></div>
-                <div>bonus max hp</div>
-              </div>
-            </div>
-          </div>
-          <div class="badge-title">
-            hit points
-          </div>
-        </div>
-        
-        <div class="badge">
-          <div class="ac">
-            <div class="column">
-              <div class="ac-formula">
-                <div class="ac-formula-name">unarmored defense</div>
-                <div class="row">
-
-                  <div class="labeled-flex">
-                    <div class="filled-in">15</div>
-                  </div>
-
-                </div>
-              </div>
-
-              <div class="ac-formula">
-                <div class="ac-formula-name">mage armor</div>
-                <div class="row">
-                  <div class="labeled-flex">
-                    <div>base</div>
-                    <div class="filled-in">13</div>
-                  </div>
-                  <div>&nbsp;+&nbsp;</div>
-                  <div class="labeled-flex">
-                    <div>shield</div>
-                    <div class="blank"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="badge-title"> armor class </div>
-        </div>
-      </div>
-    </div>
-    <div class="abilities">
+<div class="abilities">
       <table>
         <tr class="ability-row">
           <td>
@@ -323,7 +403,7 @@ Quick reference
             <table>
               <tr>
                 <td>+0</td>
-                <td>Saving throws</td>
+                <td>Saving throw</td>
               </tr>
               <tr>
                 <td>+0</td>
@@ -352,7 +432,7 @@ Quick reference
             <table>
               <tr>
                 <td><b>+4</b></td>
-                <td><b>Saving throws</b></td>
+                <td><b>Saving throw</b></td>
               </tr>
               <tr>
                 <td>+1</td>
@@ -407,7 +487,7 @@ Quick reference
             <table>
               <tr>
                 <td><b>+4</b></td>
-                <td><b>Saving throws</b></td>
+                <td><b>Saving throw</b></td>
               </tr>
               <tr>
                 <td>+1</td>
@@ -452,7 +532,7 @@ Quick reference
             <table>
               <tr>
                 <td><b>+4</b></td>
-                <td><b>Saving throws</b></td>
+                <td><b>Saving throw</b></td>
               </tr>
               <tr>
                 <td>+1</td>
@@ -493,7 +573,7 @@ Quick reference
             <table>
               <tr>
                 <td><b>+4</b></td>
-                <td><b>Saving throws</b></td>
+                <td><b>Saving throw</b></td>
               </tr>
               <tr>
                 <td>+1</td>
@@ -517,7 +597,156 @@ Quick reference
         
       </table>
     </div>
+
+    <div class="main-body">
+      <div class="charname">
+        <h1>Zaphod Beeblebrox</h1>
+        <div class="race-and-classes">
+          Hill dwarf &mdash; warlock level 5 &mdash; wizard level 2
+        </div>
+        <div class="charlevel">17</div>
+      </div>
+
+
+      <div class="badges">
+        <div class="badge">
+          <div class="badge-title">
+            hit points
+          </div>
+          <div class="hp">
+            <div class="row">
+              <div class="labeled-flex">
+                <div>current</div>
+                <div class="blank"></div>
+              </div>
+              <div>&nbsp;+&nbsp;</div>
+              <div class="labeled-flex">
+                <div>temp</div>
+                <div class="blank"></div>
+              </div>
+            </div>
+
+            <hr style="margin-top: 2pt; margin-bottom: 4pt;">
+
+            <div class="row">
+              <div class="labeled-flex">
+                <div class="filled-in">24</div>
+                <div>max hp</div>
+              </div>
+              <div>&nbsp;+&nbsp;</div>
+              <div class="labeled-flex">
+                <div class="blank"></div>
+                <div>bonus max hp</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="badge">
+          <div class="badge-title"> armor class </div>
+          <div class="ac">
+            <div class="column">
+              <div class="ac-formula">
+                <div class="ac-formula-name">unarmored defense</div>
+                <div class="row">
+
+                  <div class="labeled-flex">
+                    <div class="filled-in">15</div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="ac-formula">
+                <div class="ac-formula-name">mage armor</div>
+                <div class="row">
+                  <div class="labeled-flex">
+                    <div>base</div>
+                    <div class="filled-in">13</div>
+                  </div>
+                  <div>&nbsp;+&nbsp;</div>
+                  <div class="labeled-flex">
+                    <div>shield</div>
+                    <div class="blank"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="badge">
+          <div class="badge-title">stats</div>
+          <div class="stat-table">
+            <table>
+              <tr><th>speed</th><td>30 ft</td></tr>
+              <tr><th>initiative</th><td>+1</td></tr>
+              <tr><th>proficiency bonus</th><td>+2</td></tr>
+              <tr><th>passive perception</th><td>+3</td></tr>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="attacks">
+        <div class="badge-title">attacks</div>
+        <table>
+          <tr>
+            <th>Attack</th>
+            <th>To Hit/DC</th>
+            <th>Damage</th>
+            <th>Range</th>
+            <th>Notes</th>
+          </tr>
+          <tr>
+            <td>Eldritch Blast</td>
+            <td>+7</td>
+            <td>1d10 force</td>
+            <td>120 ft</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Frostbite</td>
+            <td>DC 18 CON</td>
+            <td>4d6+4 cold</td>
+            <td>60 ft</td>
+            <td>on save: half damage</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+<!--
+Quick reference
+     [X] Name
+     [X] Class / Subclass / Race
+     [X] Armor class (met alternatieve formules)
+     [X] Max HP / Current HP / Temp HP
+     [ ] Hit Dice
+     [X] Speed
+     [X] Initiative
+     [X] Passive perception
+     [ ] Attack table
+     [X] Abilities
+     [X] Skills
+     [X] Saving throw
+     [X] Proficiency bonus
+-->
+
     
+    
+    <div class="hit-dice-section">
+      <div class="badge-title">hit dice</div>
+      <div class="hit-dice">
+        <img src="icons/d8.svg">
+        <img src="icons/d8.svg">
+        <img src="icons/d6.svg">
+        <img src="icons/d6.svg">
+        <img src="icons/d6.svg">
+      </div>
+    </div>
+
   </div>
 </body>
 
