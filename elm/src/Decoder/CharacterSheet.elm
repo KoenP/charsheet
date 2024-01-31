@@ -5,7 +5,7 @@ import Json.Decode.Extra as D
 
 import Types exposing (..)
 import Util exposing (exactMatchDec)
-import Decoder.AbilityTable exposing (abilityTableDec)
+import Decoder.AbilityTable exposing (abilityTableDec, skillTableDec)
 
 sheetDec : Decoder CharacterSheet
 sheetDec =
@@ -13,7 +13,7 @@ sheetDec =
     |> D.andMap (D.field "name" D.string)
     |> D.andMap (D.field "summary" summaryDec)
     |> D.andMap (D.field "ability_table" abilityTableDec)
-    |> D.andMap (D.field "skill_table" (D.dict D.int))
+    |> D.andMap (D.field "skill_table" skillTableDec)
     |> D.andMap (D.field "languages" (D.list D.string))
     |> D.andMap (D.field "weapons" (D.list D.string))
     |> D.andMap (D.field "armor" (D.list D.string))

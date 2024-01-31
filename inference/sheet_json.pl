@@ -85,17 +85,26 @@ ability_table_json_dict(Dict) :-
     findall(Entry, ability_table_entry(Entry), Pairs),
     dict_pairs(Dict, _, Pairs).
 
-ability_table_entry(Abi-_{score: Score, base: Base, total_bonus: TotalBonus, mod: Mod, st: ST}) :-
+ability_table_entry(Abi-_{ score: Score,
+                           base: Base,
+                           total_bonus: TotalBonus,
+                           mod: Mod,
+                           st: ST,
+                           stProf: STProf
+                         }) :-
     ability(Abi, Score),
     base_ability(Abi, Base),
     sum_bonuses(Abi, TotalBonus),
     ability_mod(Abi, Mod),
-    saving_throw(Abi, ST).
+    saving_throw(Abi, ST),
+    (trait(saving_throw(Abi)) -> STProf = true ; STProf = false).
 
 % Skill table.
 skill_table_json_dict(Dict) :-
-    findall(Skill-Mod,
-            skill(Skill,Mod),
+    findall(Skill-_{ score: Mod, proficient: Prof },
+            ( skill(Skill,Mod),
+              (trait(skill(Skill)) -> Prof = true ; Prof = false)
+            ),
             Pairs),
     dict_pairs(Dict, _, Pairs).
 

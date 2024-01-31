@@ -1,4 +1,4 @@
-module Decoder.AbilityTable exposing (abilityTableDec)
+module Decoder.AbilityTable exposing (abilityTableDec, skillTableDec)
 
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra as D
@@ -12,4 +12,11 @@ abilityTableDec =
             |> D.andMap (D.field "total_bonus" D.int)
             |> D.andMap (D.field "score" D.int)
             |> D.andMap (D.field "mod" D.int)
-            |> D.andMap (D.field "st" D.int))
+            |> D.andMap (D.field "st" D.int)
+            |> D.andMap (D.field "stProf" D.bool))
+
+skillTableDec : Decoder SkillTable
+skillTableDec =
+  D.dict (D.succeed SkillTableEntry
+            |> D.andMap (D.field "score" D.int)
+            |> D.andMap (D.field "proficient" D.bool))

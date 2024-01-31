@@ -9,7 +9,15 @@ import Maybe exposing (Maybe)
 -- the hassle.
 type alias Ability = String
 type alias AbilityTable = Dict Ability AbilityTableEntry
-type alias AbilityTableEntry = {base : Int, totalBonus : Int, score : Int, mod : Int, st : Int}
+type alias AbilityTableEntry =
+  { base       : Int
+  , totalBonus : Int
+  , score      : Int
+  , mod        : Int
+  , st         : Int
+  , stProf     : Bool
+  }
+
 abilities : List String
 abilities = ["str", "dex", "con", "wis", "int", "cha"]
 
@@ -24,7 +32,8 @@ listFromAbilityTable extract table =
        )
 
 type alias Skill = String
-type alias SkillTable = Dict Skill Int
+type alias SkillTable = Dict Skill SkillTableEntry
+type alias SkillTableEntry = { score : Int, proficient : Bool }
 
 skillsPerAbility : List ( Ability , List Skill )
 skillsPerAbility =

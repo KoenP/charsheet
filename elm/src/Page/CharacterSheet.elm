@@ -164,7 +164,8 @@ viewSkillTableSection skillTable ( ability, skills ) =
 viewSkillTableRowContent : SkillTable -> Skill -> List (Html msg)
 viewSkillTableRowContent skillTable skill =
   [ simpleTd skill
-  , simpleTd (Maybe.map formatModifier (Dict.get skill skillTable)
+  , simpleTd (Dict.get skill skillTable
+             |> Maybe.map (.score >> formatModifier) 
              |> Maybe.withDefault "ERROR")
   ]
   

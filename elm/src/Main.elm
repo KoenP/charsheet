@@ -24,6 +24,7 @@ import Debug exposing (log, toString)
 import Time exposing (Posix)
 
 import Page.CharacterSheet as Sheet
+import Page.PrintableCharSheet as PSheet
 import Page.EditCharacter as Edit
 import Page.CardsPage as Cards
 import Request exposing (requestUrl)
@@ -74,7 +75,8 @@ init _ url key =
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     }
-  , loadSelectCharacterPage
+  -- , loadSelectCharacterPage
+  , PSheet.load
   -- , Cards.load
   -- , Edit.load
   -- , Nav.pushUrl key "/list_characters"
@@ -86,7 +88,7 @@ navigate model route = -- ( { model | page = Loading } , Sheet.load )
     CharacterRoute charName ->
       Debug.log ("navigate (CharacterRoute " ++ charName ++ ")")
         ( { model | page = Loading }
-        , Sheet.load
+        , PSheet.load
         )
       
     SelectCharacterRoute ->
@@ -201,6 +203,8 @@ update msg model =
           applyPage model (updateCharacterSelectionPage msg pageData)
         CharacterSheetPage sheet ->
           Sheet.update msg model
+        PrintableCharSheetPage sheet ->
+          PSheet.update msg model
         EditCharacterPage data ->
           Edit.update msg model data
         CardsPage options data ->
@@ -250,6 +254,10 @@ handleHttpResponseMsg msg model =
             | page = CharacterSheetPage sheet
             , preparedSpells = initPreparedSpells sheet.spellcasting_sections
           }
+        , none
+        )
+      GotPrintableCharSheet sheet ->
+        ( { model | page = PrintableCharSheetPage sheet }
         , none
         )
       GotCharacterOptions abilityTable optionsPerLevel traitsAndBonusesPerLevel ->
@@ -324,6 +332,12 @@ view model =
       , Html.Attributes.attribute "rel" "stylesheet"
       ]
       []
+    :: Html.node
+      "link"
+      [ Html.Attributes.attribute "href" "css/printable-char-sheet.css"
+      , Html.Attributes.attribute "rel" "stylesheet"
+      ]
+    []
     :: toUnstyled globalCss
     ::
     List.map toUnstyled 
@@ -336,6 +350,8 @@ view model =
            characterSelectionPage data model
          CharacterSheetPage data ->
            Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
+         PrintableCharSheetPage data ->
+           PSheet.view data
          EditCharacterPage data ->
            Edit.view model.focusedDropdownId data
          CardsPage options data ->

@@ -191,6 +191,7 @@ type Page
   | Error String
   | CharacterSelectionPage CharacterSelectionPageData
   | CharacterSheetPage CharacterSheet
+  | PrintableCharSheetPage CharacterSheet
   | EditCharacterPage EditCharacterPageData
   | CardsPage CardsPageOptions CharacterSheet
 
@@ -260,6 +261,7 @@ type HttpResponseMsg
   = GotCharacterList (List String)
   | CharacterLoaded String
   | GotCharacterSheet CharacterSheet
+  | GotPrintableCharSheet CharacterSheet
   | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
   | ChoiceRegistered
   | LeveledUp
