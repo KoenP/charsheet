@@ -196,23 +196,53 @@
 
      border: 2pt solid lightgrey;
    }
-
-   .blank {
-     width: 28pt;
-     height: 28pt;
-
-     border: 1pt solid black;
-     border-radius: 1mm;
-   }
-
    .row {
      display: flex;
      flex-direction: row;
+     align-items: center;
    }
 
    .column {
      display: flex;
      flex-direction: column;
+   }
+
+   .blank {
+     width: 20pt;
+     height: 20pt;
+     border: 1pt solid black;
+     border-radius: 1mm;
+   }
+
+   .small-blank {
+     width: 14pt;
+     height: 14pt;
+     border: 1pt solid black;
+     border-radius: 0.5mm;
+   }
+
+   .filled-in {
+     /*width: 50pt;*/
+     text-align: center;
+     color: black;
+     font-size: 20pt;
+     line-height: 20pt;
+     height: 20pt;
+     width: 20pt;
+     /*border: 1pt dashed black;*/
+     border-radius: 4pt;
+   }
+
+   .small-filled-in {
+     /*width: 50pt;*/
+     text-align: center;
+     color: black;
+     font-size: 12pt;
+     line-height: 20pt;
+     height: 15pt;
+     width: 14pt;
+     /*border: 1pt dashed black;*/
+     border-radius: 4pt;
    }
 
    .labeled-flex {
@@ -224,26 +254,25 @@
      text-transform: uppercase;
      font-weight: bold;
      color: dimgrey;
-     width: 28pt;
+     width: 20pt;
    }
 
-   .filled-in {
-     /*width: 50pt;*/
+   .small-labeled-flex {
+     display: flex;
+     flex-direction: column;
      text-align: center;
-     color: black;
-     font-size: 20pt;
-     line-height: 28pt;
-     height: 28pt;
-     width: 28pt;
-     /*border: 1pt dashed black;*/
-     border-radius: 4pt;
+     font-size: 5pt;
+     line-height: 6pt;
+     text-transform: uppercase;
+     font-weight: bold;
+     color: dimgrey;
+     width: 14pt;
    }
 
    .ac {
      border-radius: 4pt;
      padding: 2pt;
-     font-size: 28pt;
-     line-height: 38pt;
+     font-size: 10pt;
      background-color: white !important;
      print-color-adjust: exact;
      border-radius: 4pt;
@@ -644,7 +673,7 @@
           <div class="ac">
             <div class="column">
               <div class="ac-formula">
-                <div class="ac-formula-name">unarmored defense</div>
+                <div class="ac-formula-name">▢ unarmored defense</div>
                 <div class="row">
 
                   <div class="labeled-flex">
@@ -655,16 +684,41 @@
               </div>
 
               <div class="ac-formula">
-                <div class="ac-formula-name">mage armor</div>
+                <div class="ac-formula-name">▢ half plate</div>
                 <div class="row">
                   <div class="labeled-flex">
+                    <div class="blank"></div>
+                    <div>total</div>
+                  </div>
+                  <div>&nbsp;=&nbsp;</div>
+                  <div class="small-labeled-flex">
+                    <div class="small-filled-in">16</div>
+                    <div>dex&leq;2</div>
+                  </div>
+                  <div>&nbsp;+&nbsp;</div>
+                  <div class="small-labeled-flex">
+                    <div class="small-blank"></div>
+                    <div>shield</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ac-formula">
+                <div class="ac-formula-name">▢ mage armor</div>
+                <div class="row">
+                  <div class="labeled-flex">
+                    <div class="filled-in">14</div>
                     <div>base</div>
-                    <div class="filled-in">13</div>
                   </div>
                   <div>&nbsp;+&nbsp;</div>
                   <div class="labeled-flex">
-                    <div>shield</div>
                     <div class="blank"></div>
+                    <div>shield</div>
+                  </div>
+                  <div>&nbsp;=&nbsp;</div>
+                  <div class="labeled-flex">
+                    <div class="blank"></div>
+                    <div>total</div>
                   </div>
                 </div>
               </div>

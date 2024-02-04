@@ -85,8 +85,7 @@ formatModifier : Int -> String
 formatModifier mod =
   case compare mod 0 of
     LT -> String.fromInt mod
-    EQ -> " 0"
-    GT -> "+" ++ String.fromInt mod
+    _  -> "+" ++ String.fromInt mod
 
 formatSnakeCase : String -> String
 formatSnakeCase =

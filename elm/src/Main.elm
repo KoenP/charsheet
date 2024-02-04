@@ -328,7 +328,9 @@ view model =
   , body =
     Html.node
       "link"
-      [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Dosis&family=Epilogue:wght@300&family=Fira+Code&family=Quattrocento+Sans&family=Roboto:wght@300&display=swap"
+      [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Dosis:wght@400;700&display=swap"
+--"https://fonts.googleapis.com/css2?family=Dosis&family=Epilogue:wght@300&family=Fira+Code&family=Quattrocento+Sans&family=Roboto:wght@300-800&display=swap"
+
       , Html.Attributes.attribute "rel" "stylesheet"
       ]
       []

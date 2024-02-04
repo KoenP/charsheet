@@ -12,6 +12,8 @@ sheetDec =
   D.succeed CharacterSheet
     |> D.andMap (D.field "name" D.string)
     |> D.andMap (D.field "summary" summaryDec)
+    |> D.andMap (D.field "ac_formulas" (D.list acFormulaDec))
+    |> D.andMap (D.field "hit_dice" (D.list hitDiceDec))
     |> D.andMap (D.field "ability_table" abilityTableDec)
     |> D.andMap (D.field "skill_table" skillTableDec)
     |> D.andMap (D.field "languages" (D.list D.string))
@@ -36,6 +38,19 @@ summaryDec =
     |> D.andMap (D.field "prof_bon" D.int)
     |> D.andMap (D.field "race" D.string)
     |> D.andMap (D.field "speed" D.int)
+
+acFormulaDec : Decoder AcFormula
+acFormulaDec =
+  D.succeed AcFormula
+    |> D.andMap (D.field "name" D.string)
+    |> D.andMap (D.field "ac" D.int)
+    |> D.andMap (D.field "shield" (D.nullable D.int))
+
+hitDiceDec : Decoder HitDice
+hitDiceDec =
+  D.succeed HitDice
+    |> D.andMap (D.field "n" D.int)
+    |> D.andMap (D.field "d" D.int)
 
 notableTraitsDec : Decoder (List NotableTraitCategory)
 notableTraitsDec =

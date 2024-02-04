@@ -1,5 +1,7 @@
 sheet_json_dict(_{name: Name,
                   summary: Summary,
+                  ac_formulas: ACFormulas,
+                  hit_dice: HitDice,
                   ability_table: AbiTable,
                   skill_table: SkillTable,
                   languages: Languages,
@@ -13,6 +15,8 @@ sheet_json_dict(_{name: Name,
                   spellcasting_sections: SpellcastingSections}) :-
     name(Name),
     summary_json_dict(Summary),
+    ac_formulas_json_dict(ACFormulas),
+    hit_dice_json_dict(HitDice),
     ability_table_json_dict(AbiTable),
     skill_table_json_dict(SkillTable),
     findall(X, trait(language(X)), Languages),
@@ -79,6 +83,37 @@ race_str("").
 hit_dice_string(Str) :-
     hit_dice(HD),
     fmt(format_dice_sum(HD), Str).
+
+% AC Formulas
+ac_formulas_json_dict(Jsons) :-
+    findall(AcFormulaJson, ac_formula_json_dict(AcFormulaJson), Jsons).
+
+ac_formula_json_dict(_{name: NameString, ac: AC, shield: Shield}) :-
+    ac(Name, AC, Options),
+    get_formula_name(Name, NameString),
+    ac_formula_shield_value(Options, Shield).
+
+ac_formula_shield_value(ACOptions, ShieldAC) :-
+    member(shield(_):ShieldAC, ACOptions).
+ac_formula_shield_value(ACOptions, null) :-
+    \+ member(shield(_):_, ACOptions).
+
+get_formula_name(armor(Armor), Armor) :- !.
+get_formula_name(armor(Armor) + N, Str) :-
+    !,
+    atomics_to_string([Armor, " + ", N], Str).
+get_formula_name(Other, Str) :-
+    fmt(format_term(Other), Str).
+    
+% Hit dice.
+hit_dice_json_dict(HitDiceJson) :-
+    hit_dice(HitDice),
+    hit_dice_json_dict_(HitDice, HitDiceJson).
+hit_dice_json_dict_([], []).
+hit_dice_json_dict_(N d M, [_{d: M, n: N}]).
+hit_dice_json_dict_(HitDice + N d M, [_{d: M, n: N} | HitDiceJson]) :-
+    hit_dice_json_dict_(HitDice, HitDiceJson).
+
 
 % Ability table.
 ability_table_json_dict(Dict) :-

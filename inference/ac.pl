@@ -22,7 +22,7 @@ ac_formula(armor(Armor), AC + Enchantment + dex + shield) :-
 ac_formula(Origin, Formula) :-
     bonus(Origin, ac_formula(Formula)).
 ac_formula(unarmored, 10 + dex + shield).
-    
+
 %! eval_ac_formula(?Formula, ?AC:int, ?Options)
 %
 %  Evaluate an AC formula to an integer, and a list of options of the form `Id:Modifier`.
@@ -39,11 +39,16 @@ eval_ac_formula(min(F1,F2), AC, Options) :-
     (AC1 =< AC2 -> (AC = AC1, Options = Opts1) ; (AC = AC2, Options = Opts2)).
 eval_ac_formula(Num, Num, []) :-
     number(Num).
-eval_ac_formula(shield, 0, [Shield:AC]) :-
-    trait(armor(shield)),
+eval_ac_formula(shield, 0, [shield(Shield):AC]) :-
+    trait(armor(shield)), !,
     shield_ac(Shield, AC).
 eval_ac_formula(shield, 0, []) :-
     \+ (trait(armor(shield)), shield_ac(_, _)).
+
+% TODO user should select a single shield they like to not explode the
+% options for calculating AC
+shield_ac(shield + N, AC) :- has(shield + N), AC is 2 + N.
+shield_ac(shield, 2) :- has(shield).
 
 %! unarmored_defense_formula(?Origin, ?Formula)
 %

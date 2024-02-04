@@ -95,11 +95,12 @@
 }
 
 .skill-td tr:first-child > td {
-  /*
-  border-bottom: 1pt dotted black;
-     */
   background-color: #e8e8e8;
   text-transform: uppercase;
+}
+
+.skill-td tr:not(:first-child) > td {
+  text-transform: capitalize;
 }
 
 .skill-td tr:first-child > td:first-child {

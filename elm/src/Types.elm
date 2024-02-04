@@ -16,6 +16,8 @@ import Types.Ability exposing (..)
 type alias CharacterSheet =
   { name : String
   , summary : CharacterSummary
+  , ac_formulas : List AcFormula
+  , hit_dice : List HitDice
   , ability_table : AbilityTable
   , skill_table : SkillTable
   , languages : List String
@@ -48,6 +50,17 @@ type alias CharacterSummary =
 
 type alias NotableTraitCategory = { category: String, traits: List Trait }
 type alias Trait = { name: String, desc: Maybe String }
+
+type alias AcFormula =
+  { name : String
+  , ac : Int
+  , shield : Maybe Int
+  }
+
+type alias HitDice =
+  { n : Int
+  , d : Int
+  }
 
 type alias Attack =
   { name : String
