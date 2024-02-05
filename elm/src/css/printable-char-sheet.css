@@ -331,6 +331,7 @@
 .hit-dice {
   background-color: white !important;
   print-color-adjust: exact;
+  border: 2pt solid lightgrey;
   border-radius: 4pt;
   display: flex;
   flex-direction: row;
@@ -373,4 +374,39 @@
   padding-right: 10pt;
 }
 
-  
+.other-proficiencies {
+  border-radius: 4pt;
+  padding: 2pt;
+  border: 2pt solid lightgrey;
+}
+
+h3 {
+  color: dimgrey;
+  text-transform: uppercase;
+  font-size: 8pt;
+  margin-bottom: 0;
+}
+
+.other-proficiencies hr {
+  color: lightgrey;
+}
+
+.notable-traits {
+  border-radius: 4pt;
+  padding: 2pt;
+  border: 2pt solid lightgrey;
+}
+
+.notable-traits li {
+  font-size: 8pt;
+}
+
+.notable-traits b {
+  text-transform: capitalize;
+}
+
+.details {
+  font-size: 9pt;
+  text-transform: capitalize;
+  margin-left: 2mm;
+}

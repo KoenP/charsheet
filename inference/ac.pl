@@ -40,7 +40,7 @@ eval_ac_formula(min(F1,F2), AC, Options) :-
 eval_ac_formula(Num, Num, []) :-
     number(Num).
 eval_ac_formula(shield, 0, [shield(Shield):AC]) :-
-    trait(armor(shield)), !,
+    trait(armor(shield)),
     shield_ac(Shield, AC).
 eval_ac_formula(shield, 0, []) :-
     \+ (trait(armor(shield)), shield_ac(_, _)).

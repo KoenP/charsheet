@@ -63,6 +63,7 @@ bonus_source(trait('improved divine smite'),
 
 trait_source(paladin >: 13, 'cleansing touch').
 resource('cleansing touch', 'cleansing touch', N) :-
+    trait('cleansing touch'),
     ability_mod(cha, Mod), N is max(1, Mod).
 on_rest(long, 'cleansing touch', full_restore).
 
