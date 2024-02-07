@@ -318,6 +318,30 @@
   text-align: right;
 }
 
+.spellcasting-table {
+  border-spacing: 1.5mm;
+}
+
+.spellcasting-table th {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 10pt;
+  color: dimgrey;
+}
+
+.spellcasting-table tr:first-child th {
+  text-align: center;
+}
+
+.spellcasting-table tr:not(:first-child) th {
+  text-align: left;
+}
+
+.spellcasting-table td {
+  font-weight: bold;
+  text-align: center;
+}
+
 .hit-dice-section {
   position: absolute;
   right: 8pt;
@@ -387,7 +411,7 @@ h3 {
   margin-bottom: 0;
 }
 
-.other-proficiencies hr {
+hr {
   color: lightgrey;
 }
 
@@ -409,4 +433,14 @@ h3 {
   font-size: 9pt;
   text-transform: capitalize;
   margin-left: 2mm;
+}
+
+.spellcasting {
+  border-radius: 4pt;
+  padding: 2pt;
+  border: 2pt solid lightgrey;
+}
+
+.spellcasting > table {
+  width: 100%;
 }
