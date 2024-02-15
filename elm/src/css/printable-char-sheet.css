@@ -293,11 +293,15 @@
   text-align: center;
 }
 
+.badge-content {
+  border-radius: 4pt;
+  border: 2pt solid lightgrey;
+}
+
 .stat-table {
   background-color: white !important;
   print-color-adjust: exact;
   border-radius: 4pt;
-
   border: 2pt solid lightgrey;
 }
 
@@ -362,7 +366,7 @@
 }
 
 .hit-dice img {
-  width: 24pt;
+  width: 17pt;
 }
 
 .attacks {
@@ -404,29 +408,18 @@
   border: 2pt solid lightgrey;
 }
 
+.other-proficiencies h3 {
+  font-size: 8pt;
+}
+
 h3 {
   color: dimgrey;
   text-transform: uppercase;
-  font-size: 8pt;
   margin-bottom: 0;
 }
 
 hr {
   color: lightgrey;
-}
-
-.notable-traits {
-  border-radius: 4pt;
-  padding: 2pt;
-  border: 2pt solid lightgrey;
-}
-
-.notable-traits li {
-  font-size: 8pt;
-}
-
-.notable-traits b {
-  text-transform: capitalize;
 }
 
 .details {
@@ -443,4 +436,49 @@ hr {
 
 .spellcasting > table {
   width: 100%;
+}
+
+.notable-traits ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 0;
+  margin-left: 1.3mm;
+}
+
+.notable-traits {
+  border-radius: 4pt;
+  padding: 2pt;
+  border: 2pt solid lightgrey;
+  font-size: 10pt;
+}
+
+.notable-traits h3 {
+  font-size: 10pt;
+}
+
+input {
+    width: 1.3em;
+    height: 1.3em;
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid black;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+input:checked {
+    background-color: gray;
+}
+
+.notable-traits {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.notable-traits-section {
+    flex-basis: 40%;
 }

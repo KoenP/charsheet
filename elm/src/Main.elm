@@ -77,6 +77,7 @@ init _ url key =
     }
   -- , loadSelectCharacterPage
   , PSheet.load
+  -- , Sheet.load
   -- , Cards.load
   -- , Edit.load
   -- , Nav.pushUrl key "/list_characters"

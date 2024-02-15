@@ -98,8 +98,8 @@ ac_formula_shield_value(ACOptions, ShieldAC) :-
 ac_formula_shield_value(ACOptions, null) :-
     \+ member(shield(_):_, ACOptions).
 
-get_formula_name(armor(Armor), Armor) :- !.
-get_formula_name(armor(Armor) + N, Str) :-
+get_formula_name(armor(Armor), Armor) :- atom(Armor), !.
+get_formula_name(armor(Armor + N), Str) :-
     !,
     atomics_to_string([Armor, " + ", N], Str).
 get_formula_name(Other, Str) :-

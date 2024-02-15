@@ -42,6 +42,7 @@ skillsPerAbility =
              , "sleight of hand"
              , "stealth"
              ] ) 
+  , ( "con", [] )
   , ( "wis", [ "animal handling"
              , "insight"
              , "medicine"
