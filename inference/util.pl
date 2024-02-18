@@ -35,6 +35,13 @@ map_matching_subterms(Goal, T1, T2) :-
     T2 =.. [Functor|Args2].
 map_matching_subterms(_, X, X).
 
+fully_unwrap(Atom, Atom) :-
+    atomic(Atom),
+    !.
+fully_unwrap(Compound, Kernel) :-
+    Compound =.. [_, Subterm],
+    fully_unwrap(Subterm, Kernel).
+
 test(G, x) :- G =.. [g|_].
 
 sequence([], X, X).

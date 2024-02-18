@@ -149,8 +149,14 @@ notable_traits_json_dict(TraitDictsPerCat) :-
     maplist(trait_category_json_dict, TraitsPerCat, TraitDictsPerCat).
 
 trait_category_json_dict(Cat-Traits, _{category:CatStr, traits:TraitDicts}) :-
-    fmt(format_term(Cat), CatStr),
+    trait_category_string(Cat, CatStr),
     maplist(trait_json_dict, Traits, TraitDicts).
+
+trait_category_string(Compound, Atom) :-
+    fully_unwrap(Compound, Atom),
+    !.
+trait_category_string(Cat, Str) :-
+    fmt(format_term(Cat), Str).
 
 trait_json_dict(TraitVal, _{name: Trait, desc: Desc}) :-
     %\+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_), skill(_)]),

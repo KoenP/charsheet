@@ -34,10 +34,14 @@ load =
 view : CharacterSheet -> List (Html Msg)
 view sheet =
   [ div [ class "page" ]
-      [ div [ class "abilities" ] (viewAbilities sheet.ability_table sheet.skill_table)
-      , div [ class "main-body" ] (viewMainBody sheet)
-      , div [ class "hit-dice-section" ] (viewHitDiceSection sheet.hit_dice)
-      ]
+    [ div [ class "abilities" ] (viewAbilities sheet.ability_table sheet.skill_table)
+    , div [ class "main-body" ] (viewMainBody sheet)
+    , div [ class "hit-dice-section" ] (viewHitDiceSection sheet.hit_dice)
+    ]
+  , hr [] []
+  , div [ class "page" ]
+    [ div [ class "column" ] (viewNotableTraits sheet.notable_traits)
+    ]
   ]
 
 viewAbilities : AbilityTable -> SkillTable -> List (Html Msg)
@@ -178,6 +182,23 @@ viewHitpointsBadgeContent maxHp =
     , viewLabeledFlexBot "bonus max hp" viewBlank
     ]
   ]
+
+-- TODO merge related categories like "dwarf" and "hill dwarf"
+viewNotableTraits : List NotableTraitCategory -> List (Html Msg)
+viewNotableTraits categories =
+  [ viewBadgeDiv "notable traits" "notable-traits"
+    <| List.map (div [] << viewNotableTraitCategory)
+    <| List.sortBy (negate << List.length << .traits) categories
+  ] 
+
+viewNotableTraitCategory : NotableTraitCategory -> List (Html Msg)
+viewNotableTraitCategory { category, traits } =
+  [ h3 [] [ text category ]
+  , ul []
+    <| List.map (li [] << List.singleton << text << .name )
+    <| traits
+  ]
+  
 
 viewBadgeDiv : String -> String -> List (Html Msg) -> Html Msg
 viewBadgeDiv badgeTitle contentClass content =
