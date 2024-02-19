@@ -75,8 +75,8 @@ init _ url key =
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     }
-  -- , loadSelectCharacterPage
-  , PSheet.load
+  , loadSelectCharacterPage
+  -- , PSheet.load
   -- , Sheet.load
   -- , Cards.load
   -- , Edit.load

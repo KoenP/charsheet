@@ -40,9 +40,38 @@ view sheet =
     ]
   , hr [] []
   , div [ class "page" ]
-    [ div [ class "column" ] (viewNotableTraits sheet.notable_traits)
-    ]
+    <| div [ class "column" ]
+         (viewNotableTraits sheet.notable_traits
+          ++
+          viewOtherProficiencies sheet.weapons sheet.armor sheet.languages sheet.tools)
+       :: viewSpellcastingTable sheet.spellcasting_sections
   ]
+
+viewSpellcastingTable : List SpellcastingSection -> List (Html Msg)
+viewSpellcastingTable sections =
+  case sections of
+      []          -> []
+      [ section ] -> [ viewBadgeDiv "spellcasting" "spellcasting"
+                       (viewSingleSectionSpellcastingTable section) ]
+      _           -> [ viewBadgeDiv "spellcasting" "spellcasting"
+                       (viewMultiSectionSpellcastingTable sections) ]
+
+viewSingleSectionSpellcastingTable : SpellcastingSection -> List (Html Msg)
+viewSingleSectionSpellcastingTable section =
+  [ table [ class "spellcasting-table" ]
+    <| List.map
+       (\(field, val) -> tr [] [ simple th field, simple td val ])
+       [ ("save DC", String.fromInt section.spell_save_dc)
+       , ("attack mod", Util.formatModifier section.spell_attack_mod)
+       , ("prepared", String.fromInt
+                      <| Maybe.withDefault 0 section.max_prepared_spells)
+       , ("ability", section.spellcasting_ability)
+       ]
+  ]
+
+viewMultiSectionSpellcastingTable : List SpellcastingSection -> List (Html Msg)
+viewMultiSectionSpellcastingTable sections =
+  []
 
 viewAbilities : AbilityTable -> SkillTable -> List (Html Msg)
 viewAbilities abilityTable skillTable =
@@ -199,6 +228,29 @@ viewNotableTraitCategory { category, traits } =
     <| traits
   ]
   
+viewOtherProficiencies :  List String -> List String -> List String -> List String
+                       -> List (Html Msg)
+viewOtherProficiencies weapons armor languages tools =
+  [ viewBadgeDiv "other proficiencies" "other-proficiencies"
+      <| List.concatMap
+         (\(category, entries)
+            -> [ h3 [] [ text category ]
+               , div [ class "details" ]
+                 [ text <| String.concat <| List.intersperse ", " entries ]
+               ])
+         [ ("weapons", defaultWhenEmpty "-" weapons)
+         , ("armor", defaultWhenEmpty "-" armor)
+         , ("languages", defaultWhenEmpty "-" languages)
+         , ("tools", defaultWhenEmpty "-" tools)
+         ]
+  ]
+
+defaultWhenEmpty : a -> List a -> List a
+defaultWhenEmpty default l =
+  case l of
+      _::_ -> l 
+      []   -> [ default ]
+       
 
 viewBadgeDiv : String -> String -> List (Html Msg) -> Html Msg
 viewBadgeDiv badgeTitle contentClass content =
