@@ -60,9 +60,11 @@ add_die_to_list(N d X, OldList, NewList) :-
 add_die_to_list(N d X, List, [N d X | List]) :-
     \+ member(_ d X, List).
 
+list_to_sum([], 0).
 list_to_sum([DX], X) :-
     normalize_dice_sum_term(X, DX).
 list_to_sum([DX|Xs], Sum + X) :-
+    Xs = [_|_],
     list_to_sum(Xs, Sum),
     normalize_dice_sum_term(X, DX).
 

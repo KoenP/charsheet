@@ -65,7 +65,7 @@ viewSingleSectionSpellcastingTable section =
        , ("attack mod", Util.formatModifier section.spell_attack_mod)
        , ("prepared", String.fromInt
                       <| Maybe.withDefault 0 section.max_prepared_spells)
-       , ("ability", section.spellcasting_ability)
+       , ("ability", String.toUpper section.spellcasting_ability)
        ]
   ]
 

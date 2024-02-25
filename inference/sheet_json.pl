@@ -110,6 +110,7 @@ hit_dice_json_dict(HitDiceJson) :-
     hit_dice(HitDice),
     hit_dice_json_dict_(HitDice, HitDiceJson).
 hit_dice_json_dict_([], []).
+hit_dice_json_dict_(0, []).
 hit_dice_json_dict_(N d M, [_{d: M, n: N}]).
 hit_dice_json_dict_(HitDice + N d M, [_{d: M, n: N} | HitDiceJson]) :-
     hit_dice_json_dict_(HitDice, HitDiceJson).
