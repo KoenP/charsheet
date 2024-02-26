@@ -135,17 +135,6 @@ defunctor tm =
     Atomic atom -> [ Atomic atom ]
     Compound _ args -> args
 
-showPrologTerm : PrologTerm -> String
-showPrologTerm t =
-  case t of
-    Atomic atom -> atom
-    Compound "/" [Atomic "1", Atomic "2"] ->
-      "1 / 2" -- TODO unicode
-    Compound "cr" [val] ->
-      "CR " ++ showPrologTerm val
-    Compound f args ->
-      f ++ "(" ++ String.concat (List.intersperse ", " (List.map showPrologTerm args)) ++ ")"
-
 ----------------------------------------------------------------------
 -- CHARACTER SELECTION PAGE
 type alias CharacterSelectionPageData =

@@ -75,11 +75,11 @@ init _ url key =
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     }
-  , loadSelectCharacterPage
+  -- , loadSelectCharacterPage
   -- , PSheet.load
   -- , Sheet.load
   -- , Cards.load
-  -- , Edit.load
+  , Edit.load
   -- , Nav.pushUrl key "/list_characters"
   )
 
@@ -249,7 +249,10 @@ handleHttpResponseMsg msg model =
         , none
         )
       CharacterLoaded id ->
-        ( { model | page = Loading }, Nav.pushUrl model.key ("/character/" ++ id) )
+        ( { model | page = Loading }
+        -- , Nav.pushUrl model.key ("/character/" ++ id ++ "/edit")
+        , Nav.pushUrl model.key "/edit"
+        )
       GotCharacterSheet sheet ->
         ( { model
             | page = CharacterSheetPage sheet

@@ -330,7 +330,7 @@ viewEffectCategory : (String, List Effect) -> Html Msg
 viewEffectCategory (category, effects) =
   let 
     showEffect : (String -> String) -> Effect -> String
-    showEffect f = .effect >> defunctor >> List.map (showPrologTerm >> f) >> String.concat
+    showEffect f = .effect >> defunctor >> List.map (Util.showPrologTerm >> f) >> String.concat
 
     viewEffects : (String -> String) -> List Effect -> List (Html Msg)
     viewEffects f
@@ -380,10 +380,10 @@ viewEffectCategory (category, effects) =
           formatCategory "Channel divinity" <| commaSeparatedArgs id effects
         "destroy_undead" ->
           formatCategory "Destroy undead" <| commaSeparatedArgs id effects
-        _ -> formatCategory (Util.formatSnakeCase category)
-             <| commaSeparatedArgs id effects
-             -- <| List.intersperse (text ", ")
-             -- <| List.map (.effect >> showPrologTerm >> Util.formatSnakeCase >> text) effects
+        _ ->
+          formatCategory (Util.formatSnakeCase category)
+            [ text <| String.concat <| List.intersperse ", "
+                <| List.map (Util.showPrologTermAlt << .effect) effects ]
 
 
     -- showEffect f = .effect >> defunctor >> List.map (showPrologTerm >> f) >> String.concat
@@ -399,7 +399,7 @@ formatEffect tm =
   case tm of
     Compound "armor" [Atomic "shield"] -> "Proficiency with shields."
     Compound "armor" [Atomic arg] -> "Proficiency with " ++ arg ++ " armor."
-    _ -> showPrologTerm tm
+    _ -> Util.showPrologTerm tm
 
 viewLevelUpPage : List (Html Msg)
 viewLevelUpPage =

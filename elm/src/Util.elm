@@ -5,6 +5,7 @@ import Html.Styled.Attributes exposing (..)
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra as D
 import Dict exposing (Dict)
+import Set exposing (Set)
 import Debug
 import Types exposing (..)
 
@@ -94,6 +95,46 @@ formatSnakeCase =
 formatSnakeCaseCapitalized : String -> String
 formatSnakeCaseCapitalized =
   formatSnakeCase >> stringMapFirst Char.toUpper
+
+showPrologTermAlt : PrologTerm -> String
+showPrologTermAlt = showPrologTerm_ formatSnakeCase " (" ")"
+
+showPrologTerm : PrologTerm -> String
+showPrologTerm = showPrologTerm_ (\x -> x) "(" ")"
+
+showPrologTerm_ : (String -> String) -> String -> String -> PrologTerm -> String
+showPrologTerm_ formatString openParen closeParen t =
+  let spt = showPrologTerm_ formatString openParen closeParen
+      showCompound f args = formatString f
+        ++ openParen
+        ++ String.concat (List.intersperse ", " (List.map spt args))
+        ++ closeParen
+  in case t of
+    Atomic atom -> formatString atom
+    Compound "in" [s] ->
+      "in " ++ spt s
+    Compound "damage" [Atomic ty, damage] ->
+      spt damage ++ " " ++ ty ++ " damage"
+    Compound "dc" [Atomic ability, Atomic dc] ->
+      "DC " ++ dc ++ " " ++ String.toUpper ability
+    Compound "/" [Atomic "1", Atomic "2"] ->
+      "1 / 2" -- TODO unicode
+    Compound binOp [n, m] ->
+      if Set.member binOp prologTermInfixOperators
+      then String.concat [spt n, " ", binOp, " ", spt m]
+      else showCompound binOp [n, m]
+    -- Compound "+" [n, m] ->
+    --   spt n ++ " + " ++ spt m
+    -- Compound ":" [n, m] ->
+    --   spt n ++ " : " ++ spt m
+    Compound "cr" [val] ->
+      "CR " ++ spt val
+    Compound f args ->
+      showCompound f args
+
+prologTermInfixOperators : Set String
+prologTermInfixOperators = Set.fromList ["+", ":", "by", "ft", "d", "else"]
+
 
 listMapFirst : (a -> a) -> List a -> List a
 listMapFirst f l =
