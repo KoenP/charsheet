@@ -176,3 +176,20 @@ chunks chunkSize list =
   case split chunkSize list of
     ( hd , [] ) -> [ hd ]
     ( hd , tl ) -> hd :: chunks chunkSize tl
+
+classAbbrev : String -> String
+classAbbrev className =
+  case className of
+      "barbarian" -> "bb"
+      "bard"      -> "bd"
+      "cleric"    -> "cl"
+      "druid"     -> "dr"
+      "fighter"   -> "fi"
+      "monk"      -> "mo"
+      "paladin"   -> "pa"
+      "ranger"    -> "ra"
+      "rogue"     -> "ro"
+      "sorcerer"  -> "so"
+      "warlock"   -> "wl"
+      "wizard"    -> "wz"
+      _           -> "??"

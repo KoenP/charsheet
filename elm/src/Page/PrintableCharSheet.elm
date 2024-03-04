@@ -45,33 +45,8 @@ view sheet =
           ++
           viewOtherProficiencies sheet.weapons sheet.armor sheet.languages sheet.tools)
        :: viewSpellcastingTable sheet.spellcasting_sections
+       ++ viewSpellSlots sheet.spell_slots
   ]
-
-viewSpellcastingTable : List SpellcastingSection -> List (Html Msg)
-viewSpellcastingTable sections =
-  case sections of
-      []          -> []
-      [ section ] -> [ viewBadgeDiv "spellcasting" "spellcasting"
-                       (viewSingleSectionSpellcastingTable section) ]
-      _           -> [ viewBadgeDiv "spellcasting" "spellcasting"
-                       (viewMultiSectionSpellcastingTable sections) ]
-
-viewSingleSectionSpellcastingTable : SpellcastingSection -> List (Html Msg)
-viewSingleSectionSpellcastingTable section =
-  [ table [ class "spellcasting-table" ]
-    <| List.map
-       (\(field, val) -> tr [] [ simple th field, simple td val ])
-       [ ("save DC", String.fromInt section.spell_save_dc)
-       , ("attack mod", Util.formatModifier section.spell_attack_mod)
-       , ("prepared", String.fromInt
-                      <| Maybe.withDefault 0 section.max_prepared_spells)
-       , ("ability", String.toUpper section.spellcasting_ability)
-       ]
-  ]
-
-viewMultiSectionSpellcastingTable : List SpellcastingSection -> List (Html Msg)
-viewMultiSectionSpellcastingTable sections =
-  []
 
 viewAbilities : AbilityTable -> SkillTable -> List (Html Msg)
 viewAbilities abilityTable skillTable =
@@ -244,6 +219,46 @@ viewOtherProficiencies weapons armor languages tools =
          , ("tools", defaultWhenEmpty "-" tools)
          ]
   ]
+
+viewSpellcastingTable : List SpellcastingSection -> List (Html Msg)
+viewSpellcastingTable sections =
+  case sections of
+      []          -> []
+      [ section ] -> [ viewBadgeDiv "spellcasting" "spellcasting"
+                       (viewSingleSectionSpellcastingTable section) ]
+      _           -> [ viewBadgeDiv "spellcasting" "spellcasting"
+                       (viewMultiSectionSpellcastingTable sections) ]
+
+viewSingleSectionSpellcastingTable : SpellcastingSection -> List (Html Msg)
+viewSingleSectionSpellcastingTable section =
+  [ table [ class "spellcasting-table" ]
+    <| List.map
+       (\(field, val) -> tr [] [ simple th field, simple td val ])
+       [ ("save DC", String.fromInt section.spell_save_dc)
+       , ("attack mod", Util.formatModifier section.spell_attack_mod)
+       , ("prepared", String.fromInt
+                      <| Maybe.withDefault 0 section.max_prepared_spells)
+       , ("ability", String.toUpper section.spellcasting_ability)
+       ]
+  ]
+
+viewMultiSectionSpellcastingTable : List SpellcastingSection -> List (Html Msg)
+viewMultiSectionSpellcastingTable sections =
+  [ table [ class "spellcasting-table" ]
+    <| tr [] (simple td "" :: List.map (simple th << Util.classAbbrev << .origin) sections)
+      :: List.map
+      (\(field, fn) -> tr [] (simple th field :: List.map (simple td << fn) sections))
+      [ ("DC", String.fromInt << .spell_save_dc)
+      , ("mod", Util.formatModifier << .spell_attack_mod)
+      , ("prep", String.fromInt << Maybe.withDefault 0 << .max_prepared_spells)
+      , ("abi", String.toUpper << .spellcasting_ability)
+      ]
+  ]
+
+
+viewSpellSlots : List Int -> List (Html Msg)
+viewSpellSlots slots =
+  []
 
 defaultWhenEmpty : a -> List a -> List a
 defaultWhenEmpty default l =

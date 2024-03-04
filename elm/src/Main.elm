@@ -76,10 +76,10 @@ init _ url key =
     , lastTick = Time.millisToPosix 0
     }
   -- , loadSelectCharacterPage
-  -- , PSheet.load
+  , PSheet.load
   -- , Sheet.load
   -- , Cards.load
-  , Edit.load
+  -- , Edit.load
   -- , Nav.pushUrl key "/list_characters"
   )
 
@@ -101,7 +101,7 @@ navigate model route = -- ( { model | page = Loading } , Sheet.load )
     SheetRoute ->
       Debug.log "navigate (SheetRoute)"
         ( { model | page = Loading }
-        , Sheet.load
+        , PSheet.load
         )
 
     EditRoute ->
