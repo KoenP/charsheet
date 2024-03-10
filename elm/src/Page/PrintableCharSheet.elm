@@ -118,9 +118,9 @@ viewAttackTableRow : Attack -> Html Msg
 viewAttackTableRow { name, range, to_hit_or_dc, damage, notes } =
   tr []
   [ td [ css [ Css.textTransform Css.capitalize ] ] [ text name ]
-  , simple td range
   , simple td to_hit_or_dc
   , simple td damage
+  , simple td range
   , simple td notes
   ]
 

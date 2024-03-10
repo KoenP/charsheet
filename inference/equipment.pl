@@ -13,6 +13,7 @@ is_shield(ShieldF) :- ShieldF =.. [shield|_].
 
 body_armor('studded leather', light, ac(12)).
 body_armor('half plate', medium, ac(15)).
+body_armor('chain mail', heavy, ac(16)).
 body_armor(Armor+N, Weight, ac(AC)) :-
     body_armor(Armor, Weight, ac(BaseAC)),
     AC is BaseAC + N.
@@ -28,6 +29,8 @@ weapon(club, simple, melee,
        [damage(bludgeoning, 1 d 4)], [light]).
 weapon(quarterstaff, simple, melee,
        [damage(bludgeoning, 1 d 6)], [versatile(1 d 8)]).
+weapon(mace, simple, melee,
+       [damage(bludgeoning, 1 d 6)], []).
 
 weapon(greataxe, martial, melee,
        [damage(slashing, 1 d 12)], [heavy, twohanded]).
@@ -42,7 +45,7 @@ weapon(longbow, martial, ranged(feet(150) / feet(600)),
        [damage(piercing, 1 d 8)], [ammunition, heavy, twohanded]).
 
 weapon(javelin, simple, melee,
-       [damage(piercing(1 d 6))], [thrown(feet(30) / feet(120))]).
+       [damage(piercing, 1 d 6)], [thrown(feet(30) / feet(120))]).
 
 % Possibilities
 % "Melee weapons" can always melee and sometimes be thrown.

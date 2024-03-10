@@ -1,4 +1,4 @@
-:- multifile attack/5, attack_variant/5, add_weapon_note/2.
+:- multifile attack/5, attack_variant/5, add_weapon_note/2, suppress_unarmed/0.
 
 %! attack(?Name, ?Range, ?ToHitOrDC, ?DamageFormula, ?Notes)
 attack(Cantrip, Range, to_hit(ToHit), [DamageDice], []) :-
@@ -44,7 +44,8 @@ weapon_base_damage_rolls(Weapon, Rolls) :-
 weapon_base_damage_rolls(Weapon, Rolls) :-
     weapon(Weapon, _, _, Rolls, _).
 
-weapon(unarmed, unarmed, melee, [damage(bludgeoning,1)], []).
+weapon(unarmed, unarmed, melee, [damage(bludgeoning,1)], []) :-
+    \+ suppress_unarmed.
 
 %! attack_variant(?Id, ?Range, ?ToHit, ?DamageFormula)
 %

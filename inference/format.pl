@@ -7,7 +7,7 @@ fmt(Spec, Out) :-
 format_term(T) --> custom_format(T), {!}.
 format_term(X d Y) --> format_dice(X d Y), {!}.
 format_term(1 / 2) --> {!}, ["½"].
-format_term(X / Y) --> {!}, [X], ['/'], [Y].
+format_term(X / Y) --> {!}, format_term(X), ['/'], format_term(Y).
 format_term(X : Y) --> {!}, format_term(X), [':'], format_term(Y).
 format_term(X + Y) --> {!}, format_term(X), ['+'], format_term(Y).
 format_term(X = Y) --> {!}, format_term(X), ['='], format_term(Y).

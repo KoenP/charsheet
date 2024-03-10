@@ -12,6 +12,7 @@
 :- [race/half_orc].
 :- [race/halfling].
 :- [race/human].
+:- [race/tabaxi].
 :- [race/tiefling].
 
 race(Race) :-
