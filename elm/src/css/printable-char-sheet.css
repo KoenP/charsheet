@@ -467,13 +467,21 @@ hr {
     width: 40mm;
 }
 
+.spell-slots table {
+    width: 100%;
+}
+
 .spell-slots th {
     font-size: 10.5pt;
 }
 
+.spell-slots td {
+    text-align: right;
+}
+
 .spell-slots input {
-    width: 0.8em;
-    height: 0.8em;
+    width: 1.2em;
+    height: 1.2em;
     background-color: white;
     border-radius: 50%;
     vertical-align: middle;
@@ -483,6 +491,7 @@ hr {
     outline: none;
     cursor: pointer;
     margin: 0;
+    margin: 1pt;
 }
 
 input:checked {

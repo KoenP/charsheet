@@ -123,7 +123,6 @@ selected_at_class_level(Class:Level, Id, Choice) :-
 %  options/3 specifications.
 from(1, Spec, Choice) :-
     \+ is_list(Choice),
-    !,
     from_(1, Spec, [Choice]).
 from(N, Spec, Choice) :-
     from_(N, Spec, Choice).
@@ -134,9 +133,10 @@ from_(N, List, Choices) :-
     length(Choices, N),
     subset(Choices, List).
 from_(N, Pred, Choices) :-
-    is_list(Choices),
+    %is_list(Choices),
+    between(1, N, M), % TODO this is inefficient if M is known
     length(Choices, M),
-    M =< N,
+    %M =< N,
     maplist(call(Pred), Choices).
 
 %! unique_from(+N:int, :Pred, ?Choices)
@@ -286,7 +286,16 @@ desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
     ;
     (is_list(Desc), List=Desc, N=1).
 
+fill_in_all_options :-
+    fill_in_option(Origin, Id, Choice),
+    writeln(Origin : Id : Choice),
+    fill_in_all_options.
 
+fill_in_option(Origin, Id, Choice) :-
+    todo(options(Origin, Id, Spec)),
+    call(Spec, Choice), !,
+    assert(choice(Origin, Id, Choice)).
+    
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

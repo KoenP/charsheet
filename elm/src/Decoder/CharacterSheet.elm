@@ -22,6 +22,7 @@ sheetDec =
     |> D.andMap (D.field "tools" (D.list D.string))
     |> D.andMap (D.field "notable_traits" notableTraitsDec)
     |> D.andMap (D.field "attacks" (D.list attackDec))
+    |> D.andMap (D.field "pact_magic" pactMagicDec)
     |> D.andMap (D.field "spellcasting_sections" (D.list spellcastingSectionDec))
     |> D.andMap (D.field "spell_slots" (D.list D.int))
   
@@ -105,7 +106,7 @@ spellDec =
     |> D.andMap (D.field "prepared" preparedDec)
     |> D.andMap (D.field "range" D.string)
     |> D.andMap (D.field "resources" (D.list D.string))
-    |> D.andMap (D.field "ritual" Util.yesNoDec)
+    |> D.andMap (D.field "ritual" ritualDec)
     |> D.andMap (D.field "school" D.string)
     |> D.andMap (D.field "shortdesc" (D.nullable (D.list D.string)))
     |> D.andMap (D.field "summary" D.string)
@@ -119,6 +120,14 @@ preparedDec =
     , exactMatchDec D.string "maybe" |> D.map (\_ -> False)
     ]
 
+ritualDec : Decoder Ritual
+ritualDec =
+  D.oneOf
+    [ Util.matchStringDec "yes" |> D.map (\_ -> Ritual)
+    , Util.matchStringDec "no" |> D.map (\_ -> NotRitual)
+    , Util.matchStringDec "only" |> D.map (\_ -> OnlyRitual)
+    ]
+
 componentDec : Decoder Component
 componentDec =
   D.oneOf
@@ -130,3 +139,10 @@ componentDec =
                      _   -> D.fail "Expected either \"v\" or \"s\"")
     , D.field "args" (D.list D.string) |> D.map String.concat |> D.map M
     ]
+
+pactMagicDec : Decoder (Maybe PactMagic)
+pactMagicDec =
+  D.nullable
+    ( D.succeed PactMagic
+    |> D.andMap (D.field "slot_count" D.int)
+    |> D.andMap (D.field "slot_level" D.int))

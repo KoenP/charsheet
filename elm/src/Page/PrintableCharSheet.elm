@@ -4,7 +4,7 @@ import Dict exposing (Dict)
 import Set exposing (Set)
 import Maybe exposing (Maybe)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css, class, src)
+import Html.Styled.Attributes exposing (css, class, src, type_)
 import Html.Styled.Events as E
 import Css
 import Css.Global
@@ -44,8 +44,15 @@ view sheet =
          (viewNotableTraits sheet.notable_traits
           ++
           viewOtherProficiencies sheet.weapons sheet.armor sheet.languages sheet.tools)
-       :: viewSpellcastingTable sheet.spellcasting_sections
-       ++ viewSpellSlots sheet.spell_slots
+       ::
+       div [ class "column" ]
+         (  viewSpellcastingTable sheet.spellcasting_sections
+         ++ viewSpellSlots sheet.spell_slots
+         ++ viewPactMagic sheet.pact_magic
+         )
+       ::
+       []
+  , hr [] []
   ]
 
 viewAbilities : AbilityTable -> SkillTable -> List (Html Msg)
@@ -110,7 +117,7 @@ viewMainBody sheet =
     , table [] <|
         tr [] (List.map (simple th) ["Attack", "To Hit/DC", "Damage", "Range", "Notes"])
         ::
-        List.map viewAttackTableRow sheet.attacks
+        List.map viewAttackTableRow (List.take 5 sheet.attacks)
     ]
   ]
 
@@ -163,7 +170,7 @@ viewAcFormula { name, ac, shield } =
 
 viewHitDiceSection : List HitDice -> List (Html Msg)
 viewHitDiceSection hitDice =
-  [ div [ class "badge-title" ] [ text "hit dice" ]
+  [ div [ class "badge-title" ] [ text "hd" ]
   , div [ class "hit-dice" ]
     <| List.concatMap viewHitDice
     <| List.sortBy .d
@@ -258,14 +265,43 @@ viewMultiSectionSpellcastingTable sections =
 
 viewSpellSlots : List Int -> List (Html Msg)
 viewSpellSlots slots =
-  []
+  case slots of
+    [] -> []
+    _  -> 
+      [ div [ class "badge" ]
+        [ div [ class "badge-title" ] [ text "spell slots" ]
+        , div [ class "badge-content spell-slots"]
+          [ table [] <| List.map2 viewSpellSlotTableRow (List.range 1 9) slots ]
+        ]
+      ]
+
+viewSpellSlotTableRow : Int -> Int -> Html Msg
+viewSpellSlotTableRow slotLevel count =
+  tr []
+  [ simple th (String.fromInt slotLevel)
+  , td [] <| List.repeat count viewSlot
+  ]
+
+viewPactMagic : Maybe PactMagic -> List (Html Msg)
+viewPactMagic pactMagic =
+  case pactMagic of
+    Nothing -> []
+    Just { slot_count, slot_level } ->
+      [ viewBadgeDiv "pact magic" "badge-content spell-slots"
+        [ table []
+          [ tr []
+            [ simple th (String.fromInt slot_level)
+            , td [] <| List.repeat slot_count viewSlot
+            ] 
+          ]
+        ]
+      ]
 
 defaultWhenEmpty : a -> List a -> List a
 defaultWhenEmpty default l =
   case l of
       _::_ -> l 
       []   -> [ default ]
-       
 
 viewBadgeDiv : String -> String -> List (Html Msg) -> Html Msg
 viewBadgeDiv badgeTitle contentClass content =
@@ -283,6 +319,9 @@ viewLabeledFlexBot label blank = div [ class "labeled-flex"] [ blank , div [] [ 
 viewFilledIn : Int -> Html Msg
 viewFilledIn value =
   div [ class "filled-in" ] [ text (String.fromInt value) ]
+
+viewSlot : Html Msg
+viewSlot = input [ type_ "checkbox" ] []
 
 viewBlank : Html Msg
 viewBlank = div [ class "blank" ] []

@@ -26,6 +26,7 @@ type alias CharacterSheet =
   , tools : List String
   , notable_traits : List NotableTraitCategory
   , attacks : List Attack
+  , pact_magic: Maybe PactMagic
   , spellcasting_sections : List SpellcastingSection
   , spell_slots : List Int
   }
@@ -96,7 +97,7 @@ type alias Spell =
   , prepared : AlwaysPrepared
   , range : String
   , resources : List String
-  , ritual : Bool
+  , ritual : Ritual
   , school : String
   , shortdesc : Maybe (List String)
   , summary : String
@@ -107,6 +108,13 @@ type Component = V | S | M String
 type alias AlwaysPrepared = Bool
 type alias SpellName = String
 type alias Level = Int
+
+type Ritual = Ritual | NotRitual | OnlyRitual
+
+type alias PactMagic =
+  { slot_count : Int
+  , slot_level : Int
+  }
 
 type PrologTerm = Compound String (List PrologTerm)
                 | Atomic String

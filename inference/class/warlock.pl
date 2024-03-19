@@ -30,8 +30,9 @@ trait_source(warlock >: 11, 'mystic arcanum').
 options_source(warlock >: WarlockLevel, 'arcanum spell',
                [Spell]>>spell_property(Spell, level, SpellLevel)) :-
     member(WarlockLevel-SpellLevel, [11-6, 13-7, 15-8, 17-9]).
-known_spell(warlock('mystic arcanum'), cha, always, [per_rest(long, 1)], todo, Spell) :-
+known_spell(warlock('mystic arcanum'), cha, always, [per_rest(long, 1)], no, Spell) :-
     choice_member(_, 'arcanum spell', Spell).
+meta_todo('mystic arcanum', "check whether it's ritual (now defaulting to no)").
 
 % Eldritch master.
 trait_source(warlock >: 20, 'eldritch master').

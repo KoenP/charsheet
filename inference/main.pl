@@ -241,7 +241,6 @@ full_restore(Max, _, Max).
 restore(N, Max, Cur, New) :-
     New is min(Cur+N, Max).
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Shorthands.
 %search(X) :-

@@ -121,7 +121,10 @@ cardSubtitle spell =
   let levelAndSchool = if spell.level == 0
                        then spell.school ++ " cantrip"
                        else Util.ordinal spell.level ++ " level " ++ spell.school
-  in if spell.ritual then levelAndSchool ++ " (ritual)" else levelAndSchool
+  in case spell.ritual of
+       NotRitual -> levelAndSchool
+       Ritual -> levelAndSchool ++ " (ritual)"
+       OnlyRitual -> levelAndSchool ++ " (only ritual)"
 
 cardBox : String -> String -> Html Msg
 cardBox iconName value =
