@@ -12,22 +12,29 @@ sheet_json_dict(_{name: Name,
                   attacks: Attacks,
                   spell_slots: SpellSlots,
                   pact_magic: PactMagic,
-                  spellcasting_sections: SpellcastingSections}) :-
+                  spellcasting_sections: SpellcastingSections,
+                  resources: Resources}) :-
     name(Name),
     summary_json_dict(Summary),
     ac_formulas_json_dict(ACFormulas),
     hit_dice_json_dict(HitDice),
     ability_table_json_dict(AbiTable),
     skill_table_json_dict(SkillTable),
-    findall(X, trait(language(X)), Languages),
-    findall(X, trait(weapon(X)), Weapons),
-    findall(X, trait(armor(X)), Armor),
-    findall(X, trait(tools(X)), Tools),
+    setof_or_empty(X, trait(language(X)), Languages),
+    setof_or_empty(X, trait(weapon(X)), Weapons),
+    setof_or_empty(X, trait(armor(X)), Armor),
+    setof_or_empty(X, trait(tools(X)), Tools),
     notable_traits_json_dict(NotableTraits),
     attack_table_json_dict(Attacks),
     spell_slot_dict(SpellSlots),
     pact_magic_json_dict(PactMagic),
-    findall(X, spellcasting_section_json_dict(X), SpellcastingSections).
+    findall(X, spellcasting_section_json_dict(X), SpellcastingSections),
+    resource_json(Resources).
+
+setof_or_empty(X, Spec, Xs) :-
+    setof(X, Spec, Xs), !.
+setof_or_empty(_, _, []).
+
 
 % TODO move somewhere else
 traits_and_bonuses_json(Json) :-
@@ -279,17 +286,38 @@ known_spell_aoe_or_null(Origin, Name, AoeStr) :-
     !.
 known_spell_aoe_or_null(_, _, null).
 
-resources_json(R1 or R2, _{tag: or, val: Val}) :-
-    maplist(resources_json, [R1,R2], Val),
+resource_to_json(R1 or R2, _{tag: or, val: Val}) :-
+    maplist(resource_to_json, [R1,R2], Val),
     !.
-resources_json(per_rest(Dur, N), _{tag: per_rest,
-                                   rest_type: Dur,
-                                   count: N}) :-
+resource_to_json(per_rest(Dur, N), _{tag: per_rest,
+                                     rest_type: Dur,
+                                     count: N}) :-
     !.
-resources_json(List, _{tag: list, val: JsonList}) :-
-    maplist(resources_json, List, JsonList),
+resource_to_json(List, _{tag: list, val: JsonList}) :-
+    maplist(resource_to_json, List, JsonList),
     !.
-resources_json(X, _{tag: val, val: X}).
+resource_to_json(X, _{tag: val, val: X}).
+
+resources_json(List) :-
+    findall(R, resource_json(R), List).
+resource_json(_{feature_name: FeatureName,
+                unit_name: UnitName,
+                number: Num,
+                short_rest: ShortRest,
+                long_rest: LongRest
+               }) :-
+    resource(FeatureName, UnitName, Num),
+    FeatureName \= 'pact magic', % this is a special case
+    rest_description(short, UnitName, ShortRest),
+    rest_description(long, UnitName, LongRest).
+
+rest_description(Type, UnitName, DescStr) :-
+    on_rest(Type, UnitName, Desc),
+    !,
+    fmt(format_term(Desc), DescStr).
+rest_description(_, _, null).
+custom_format(restore(N)) --> ["+"], format_number(N).
+    
 
 %! term_to_json(+List, -Json)
 %

@@ -60,7 +60,7 @@ traits_from_source(monk >: 2, [ki_feature('flurry of blows'),
                                ki_feature('step of the wind')]).
 resource(ki, 'ki points', N) :-
     trait(ki(N, _)).
-on_rest(short, ki, full_restore).
+on_rest(short, ki, 'full restore').
 
 % Unarmored movement.
 trait_source(monk >: 2, unarmored_movement(ft(Ft))) :-
@@ -120,7 +120,7 @@ trait_source(monk('open hand') >: 6, wholeness_of_body(hp(HP))) :-
     HP is L*3.
 resource('wholeness of body', 'wholeness of body', 1) :-
     trait(wholeness_of_body(_)).
-on_rest(long, 'wholeness of body', full_restore).
+on_rest(long, 'wholeness of body', 'full restore').
 
 trait_source(monk('open hand') >: 11, tranquility(dc(DC))) :-
     add_ability_mod_and_profbon(8, wis, DC).

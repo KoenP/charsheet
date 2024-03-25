@@ -402,7 +402,7 @@
       </div>
       <div class="badge">
         <div class="badge-title">other proficiencies</div>
-        <div class="other-proficiencies">
+        <div class="badge-content other-proficiencies">
           <h3>weapons</h3>
           <div class="details">simple, battleaxe, handaxe, light hammer, warhammer</div>
           <h3>armor</h3>
@@ -415,97 +415,134 @@
       </div>
     </div>
     
-    <div class="badge">
-      <div class="badge-title">
-        spellcasting
-      </div>
-      <div class="spellcasting">
-        <table class="spellcasting-table">
-          <tr><td></td><th>cl</th><th>wz</th></tr>
-          <tr><th>save DC</th><td>15</td><td>12</td></tr>
-          <tr><th>attack mod</th><td>+6</td><td>+3</td></tr>
-          <tr><th>prepared</th><td>12</td><td>5</td></tr>
-          <tr><th>ability</th><td>WIS</td><td>INT</td></tr>
-        </table>
-        
-      </div>
-    </div>
+    <div class="column">
+        <div class="badge">
+            <div class="badge-title">
+                spellcasting
+            </div>
+            <div class="spellcasting">
+                <table class="spellcasting-table">
+                    <tr><td></td><th>cl</th><th>wz</th></tr>
+                    <tr><th>save DC</th><td>15</td><td>12</td></tr>
+                    <tr><th>attack mod</th><td>+6</td><td>+3</td></tr>
+                    <tr><th>prepared</th><td>12</td><td>5</td></tr>
+                    <tr><th>ability</th><td>WIS</td><td>INT</td></tr>
+                </table>
+                
+            </div>
+        </div>
 
-    <div class="badge">
-      <div class="badge-title">spell slots</div>
-      <div class="badge-content spell-slots">
-        <table>
-          <tr>
-            <th>1</th>
-            <td>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-            </td>
-          </tr>
-          <tr>
-            <th>2</th>
-            <td>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-            </td>
-          </tr>
-          <tr>
-            <th>3</th>
-            <td>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-            </td>
-          </tr>
-          <tr>
-            <th>4</th>
-            <td>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-            </td>
-          </tr>
-          <tr>
-            <th>5</th>
-            <td>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-            </td>
-          </tr>
-          <tr>
-            <th>6</th>
-            <td>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-            </td>
-          </tr>
-          <tr>
-            <th>7</th>
-            <td>
-              <input type="checkbox"/>
-              <input type="checkbox"/>
-            </td>
-          </tr>
-          <tr>
-            <th>8</th>
-            <td>
-              <input type="checkbox"/>
-            </td>
-          </tr>
-          <tr>
-            <th>9</th>
-            <td>
-              <input type="checkbox"/>
-            </td>
-          </tr>
-        </table>
-      </div>
+        <div class="badge">
+            <div class="badge-title">spell slots</div>
+            <div class="badge-content spell-slots">
+                <table>
+                    <tr>
+                        <th>1</th>
+                        <td>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>2</th>
+                        <td>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>3</th>
+                        <td>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>4</th>
+                        <td>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>5</th>
+                        <td>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>6</th>
+                        <td>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>7</th>
+                        <td>
+                            <input type="checkbox"/>
+                            <input type="checkbox"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>8</th>
+                        <td>
+                            <input type="checkbox"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>9</th>
+                        <td>
+                            <input type="checkbox"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
-
     
+    
+    <div class="badge">
+      <div class="badge-title">Resources</div>
+      <div class="badge-content other-proficiencies spell-slots" style="width: 100%;">
+          <h3>arcane recovery</h3>
+          <div class="resource-details">
+              <input type="checkbox"/>
+              <input type="checkbox"/>
+              <input type="checkbox"/>
+              <input type="checkbox"/>
+              <input type="checkbox"/>
+              <input type="checkbox"/>
+              <input type="checkbox"/>
+              <input type="checkbox"/>
+              <div class="resource-restore-info">
+                  <table>
+                      <tr> <td>long rest:</td><td>full&nbsp;restore</td> </tr>
+                  </table>
+              </div>
+          </div>
+
+          <h3>sorcery points</h3>
+          <div class="resource-details">
+              <div class="row">
+                  <div class="small-blank"></div> &nbsp; / 12
+              </div>
+              <div class="resource-restore-info">
+                  <table>
+                      <tr><td>long rest:</td><td>full&nbsp;restore</td> </tr>
+                      <tr><td>short rest:</td><td>+2</td></tr>
+                  </table>
+              </div>
+          </div>
+          
+      </div>
+    </div>
 
     
     

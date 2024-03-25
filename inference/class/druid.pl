@@ -45,7 +45,7 @@ wild_shape_constraint(8, 'no flying speed').
 resource('wild shape', 'wild shape', 2) :-
     trait(wild_shape(_)),
     \+ trait(archdruid).
-on_rest(short, 'wild shape', full_restore).
+on_rest(short, 'wild shape', 'full restore').
 
 trait_source(druid >: 18, 'timeless body').
 trait_source(druid >: 18, 'beast spells').
@@ -104,7 +104,7 @@ trait_source(druid(land) >: 2, natural_recovery(Total)) :-
     Total is ceiling(L / 2).
 resource('natural recovery', 'spell slot total', Slots) :-
     trait(natural_recovery(Slots)).
-on_rest(long, 'natural recovery', full_restore).
+on_rest(long, 'natural recovery', 'full restore').
 
 trait_options_source(
     druid(land) >: 3,

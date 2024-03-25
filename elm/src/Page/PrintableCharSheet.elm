@@ -243,8 +243,8 @@ viewSingleSectionSpellcastingTable section =
        (\(field, val) -> tr [] [ simple th field, simple td val ])
        [ ("save DC", String.fromInt section.spell_save_dc)
        , ("attack mod", Util.formatModifier section.spell_attack_mod)
-       , ("prepared", String.fromInt
-                      <| Maybe.withDefault 0 section.max_prepared_spells)
+       , ("prepared", Maybe.withDefault "-"
+                      <| Maybe.map String.fromInt section.max_prepared_spells)
        , ("ability", String.toUpper section.spellcasting_ability)
        ]
   ]
@@ -257,11 +257,10 @@ viewMultiSectionSpellcastingTable sections =
       (\(field, fn) -> tr [] (simple th field :: List.map (simple td << fn) sections))
       [ ("DC", String.fromInt << .spell_save_dc)
       , ("mod", Util.formatModifier << .spell_attack_mod)
-      , ("prep", String.fromInt << Maybe.withDefault 0 << .max_prepared_spells)
+      , ("prep", Maybe.withDefault "-" << Maybe.map String.fromInt << .max_prepared_spells)
       , ("abi", String.toUpper << .spellcasting_ability)
       ]
   ]
-
 
 viewSpellSlots : List Int -> List (Html Msg)
 viewSpellSlots slots =

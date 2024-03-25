@@ -12,7 +12,7 @@ traits_from_source(race('half-orc'),
 trait_source(race('half-orc'), 'relentless endurance').
 resource('relentless endurance', 'relentless endurance', 1) :-
     trait('relentless endurance').
-on_rest(long, 'relentless endurance', full_restore).
+on_rest(long, 'relentless endurance', 'full restore').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 'menacing' ?= "You gain proficiency in the Intimidation skill.".

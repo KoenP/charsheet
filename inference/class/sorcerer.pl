@@ -48,9 +48,9 @@ trait_source(sorcerer >: 20, 'sorcerous restoration').
 
 %  Calculate the maximum number of sorcery points your character has available.
 resource(metamagic, 'sorcery point', Max) :-
-    trait(metamagic),
+    sorcerer >: 3,
     class_level(sorcerer:Max).
-on_rest(long, 'sorcery point', full_restore) :- trait(metamagic).
+on_rest(long, 'sorcery point', 'full restore') :- trait(metamagic).
 on_rest(short, 'sorcery point', restore(4)) :- trait('sorcerous restoration').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

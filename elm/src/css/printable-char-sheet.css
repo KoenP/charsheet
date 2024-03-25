@@ -200,7 +200,13 @@
 .blank {
     width: 28pt;
     height: 28pt;
+    border: 1pt solid black;
+    border-radius: 1mm;
+}
 
+.small-blank {
+    width: 20pt;
+    height: 20pt;
     border: 1pt solid black;
     border-radius: 1mm;
 }
@@ -506,4 +512,25 @@ input:checked {
 
 .notable-traits-section {
     flex-basis: 40%;
+}
+
+.resource-details {
+    font-size: 9pt;
+    margin-left: 2mm;
+}
+
+.resource-details > .row {
+    font-size: 18pt;
+    font-weight: bold;
+}
+
+.resource-restore-info table {
+    font-size: 9pt;
+    font-style: italic;
+    border-collapse: collapse;
+}
+
+.resource-restore-info td:first-child {
+    width: 100%;
+    margin-left: 1mm;
 }

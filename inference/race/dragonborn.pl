@@ -27,7 +27,7 @@ attack('breath weapon', self, saving_throw(DC, Abi), [damage(Element, N d 6)],
 
 resource('breath weapon', 'breath weapon', 1) :-
     trait(breath_weapon(_)).
-on_rest(long, 'breath weapon', full_restore).
+on_rest(long, 'breath weapon', 'full restore').
 
 trait(trait(draconic_ancestry(Color)), resistance(Element)) :-
     trait(draconic_ancestry(Color)),

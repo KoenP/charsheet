@@ -35,7 +35,7 @@ trait_source(bard >: 1, 'bardic inspiration').
 resource('bardic inspiration', 'bardic inspiration', N) :-
     trait('bardic inspiration'),
     ability_mod(cha, N).
-on_rest(long, 'bardic inspiration', full_restore).
+on_rest(long, 'bardic inspiration', 'full restore').
 trait_source(bard >: 1, spellcasting_focus('musical instrument')).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -48,7 +48,7 @@ trait_options_source(bard >: 2, expertise, deep_wrap(skill(expertise)),
                      2 unique_from proficient_at_skill).
 
 trait_source(bard >: 5, 'font of inspiration').
-on_rest(short, 'bardic insipiration', full_restore) :-
+on_rest(short, 'bardic insipiration', 'full restore') :-
     trait('font of inspiration').
 
 trait_source(bard >: 6, countercharm).

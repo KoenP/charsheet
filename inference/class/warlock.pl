@@ -58,7 +58,7 @@ pact_magic_slot_level(N) :-
 resource('pact magic', pact_slot(L), N) :-
     pact_magic_slots(N),
     pact_magic_slot_level(L).
-on_rest(short, pact_slot(L), full_restore) :-
+on_rest(short, pact_slot(L), 'full restore') :-
     pact_magic_slot_level(L).
 
 % Learning spells.
@@ -170,6 +170,9 @@ bonus_source(trait(eldritch_invocation('agonizing blast')),
 eldritch_invocation_option('armor of shadows').
 known_spell(warlock(eldritch_invocation('armor of shadows')), cha, always, [], no, 'mage armor') :-
     trait(eldritch_invocation('armor of shadows')).
+custom_format(known_spell(warlock(eldritch_invocation('armor of shadows')), 'mage armor')) -->
+    ['armor of shadows'].
+
 
 eldritch_invocation_option('ascendant step') :-
     warlock >: 9.

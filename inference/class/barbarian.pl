@@ -35,7 +35,7 @@ resource(rage, rage, Max) :-
                                 17 -> 6,
                                 20 -> unlimited], L, Max).
 meta_todo(barbarian, "how to handle 'unlimited' rages in UI").
-on_rest(long, rage, full_restore) :- trait(rage).
+on_rest(long, rage, 'full restore') :- trait(rage).
 
 trait_source(barbarian >: 1, unarmored_defense(10 + dex + con + shield)).
 
