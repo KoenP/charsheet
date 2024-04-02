@@ -101,6 +101,9 @@ bonus_source(trait('disciple of life'),
     Level >= 1,
     healing_spell(HealingSpell),
     Bonus is 2 + Level.
+
+meta_todo(trait('disciple of life'), "How to communicate the upcasting effect on the spell card?").
+
 trait_source(cleric(life) >: 2, channel_divinity(preserve_life(Pool))) :-
     class_level(cleric:L),
     Pool is 5*L.

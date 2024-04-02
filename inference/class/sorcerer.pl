@@ -50,7 +50,7 @@ trait_source(sorcerer >: 20, 'sorcerous restoration').
 resource(metamagic, 'sorcery point', Max) :-
     sorcerer >: 3,
     class_level(sorcerer:Max).
-on_rest(long, 'sorcery point', 'full restore') :- trait(metamagic).
+on_rest(long, 'sorcery point', 'full restore') :- sorcerer >: 3.
 on_rest(short, 'sorcery point', restore(4)) :- trait('sorcerous restoration').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

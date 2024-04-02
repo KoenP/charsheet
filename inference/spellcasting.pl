@@ -438,6 +438,9 @@ increase_all_spell_damage_rolls(Bonus, Old, New) :-
                           NewEffects),
     New = Old.put(effects, NewEffects).
 
+%! increase_all_spell_healing_rolls(-Bonus, -Old, +New)
+%
+%  Add a flat bonus to every spell healing roll.
 increase_all_spell_healing_rolls(Bonus, Old, New) :-
     get_or_default(Old, effects, [], OldEffects),
     map_matching_subterms({Bonus}/[heal(OldFormula),heal(NewFormula)]
@@ -445,6 +448,8 @@ increase_all_spell_healing_rolls(Bonus, Old, New) :-
                           OldEffects,
                           NewEffects),
     New = Old.put(effects, NewEffects).
+custom_format(increase_all_spell_healing_rolls(Bonus)) -->
+    ["healing rolls + "], [Bonus].
 
 %spell_damage_bonus(Bonus, Old, New) :-
 %    get_or_default(Old, effects, [], OldEffects),

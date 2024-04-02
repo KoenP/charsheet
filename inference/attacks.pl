@@ -47,7 +47,7 @@ weapon_base_damage_rolls(Weapon, Rolls) :-
 weapon(unarmed, unarmed, melee, [damage(bludgeoning,1)], []) :-
     \+ suppress_unarmed.
 
-%! attack_variant(?Id, ?Range, ?ToHit, ?DamageFormula)
+%! attack_variant(?Id, ?Range, ?ToHit, ?DamageFormula, ?Notes)
 %
 %  `Id = Name:_`, where `attack(Name,_,_,_,_)`.
 attack_variant(Name:twohanded, Range, ToHit,
@@ -56,7 +56,22 @@ attack_variant(Name:twohanded, Range, ToHit,
     member(versatile(NewBaseDmg), Notes),
     select_first_subterm(_ d _, Formula, NewBaseDmg, NewDmgTerm).
 meta_todo(versatile, "Also shows up when it's strictly worse than the onehanded variant.").
+custom_format(Weapon:twohanded) --> [Weapon], [" (2H)"].
 
+%! attack_or_variant(?Id, ?Range, ?ToHit, ?DamageFormula, ?Notes)
+%
+%  Disjunction between attack/5 and attack_variant/5, structured such that
+%  attacks and their variants are "together".
+attack_or_variant(Id, Range, ToHit, DamageFormula, Notes) :-
+    attack(BaseId, BaseRange, BaseToHit, BaseDamageFormula, BaseNotes),
+    findall((BaseId:VarId)-VarRange-VarToHit-VarDamageFormula-VarNotes,
+            attack_variant(BaseId:VarId, VarRange, VarToHit, VarDamageFormula, VarNotes),
+            Variants),
+    member(Id-Range-ToHit-DamageFormula-Notes,
+           [BaseId-BaseRange-BaseToHit-BaseDamageFormula-BaseNotes | Variants]).
+
+
+%! add_bonus_to_first_die(+Bonus, +Rolls, -NewRolls)
 add_bonus_to_first_die(Bonus, [damage(Type,Roll)|Rolls], [damage(Type,NewRoll)|Rolls]) :-
     EvaldBonus is Bonus,
     simplify_dice_sum(Roll+EvaldBonus, NewRoll).

@@ -1,3 +1,13 @@
+@media print {
+    .page-break {
+        page-break-after: always;
+    }
+
+    .dont-print {
+        display: none;
+    }
+}
+
 @page {
     margin: 6.35mm;
 }
@@ -237,10 +247,10 @@
     /*width: 50pt;*/
     text-align: center;
     color: black;
-    font-size: 20pt;
-    line-height: 28pt;
-    height: 28pt;
-    width: 28pt;
+    font-size: 18pt;
+    line-height: 24pt;
+    height: 24pt;
+    width: 24pt;
     /*border: 1pt dashed black;*/
     border-radius: 4pt;
 }
@@ -248,8 +258,8 @@
 .ac {
     border-radius: 4pt;
     padding: 2pt;
-    font-size: 28pt;
-    line-height: 38pt;
+    font-size: 24pt;
+    line-height: 24pt;
     background-color: white !important;
     print-color-adjust: exact;
     border-radius: 4pt;
@@ -394,8 +404,8 @@
     border-radius: 4pt;
 
     text-align: center;
-    font-size: 10pt;
-    border-spacing: 6pt;
+    font-size: 9pt;
+    border-spacing: 3pt;
 }
 
 .attacks th {
@@ -412,19 +422,20 @@
     border-radius: 4pt;
     padding: 2pt;
     border: 2pt solid lightgrey;
+    max-width: 86mm;
 }
 
 .other-proficiencies h3 {
     font-size: 8pt;
 }
 
-h3 {
+.page h3 {
     color: dimgrey;
     text-transform: uppercase;
     margin-bottom: 0;
 }
 
-hr {
+.page hr {
     color: lightgrey;
 }
 
@@ -462,6 +473,7 @@ hr {
     padding-left: 4pt;
     text-indent: -4pt;
     font-size: 9pt;
+    text-transform: capitalize;
 }
 
 .notable-traits ul {
@@ -533,4 +545,15 @@ input:checked {
 .resource-restore-info td:first-child {
     width: 100%;
     margin-left: 1mm;
+}
+
+.resources {
+    border-radius: 4pt;
+    padding: 2pt;
+    border: 2pt solid lightgrey;
+    width: 100%;
+}
+
+.resources h3 {
+    font-size: 8pt;
 }

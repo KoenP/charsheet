@@ -62,26 +62,32 @@ viewCard origin spell =
     , div [ Attr.css cardBoxesSectionStyle ]
         [ cardBox "action-cost" spell.casting_time
         , cardBox "components" (showComponents spell.components)
-        , cardBox "rolls" (Maybe.withDefault "/" spell.rolls)
+        , cardBox "rolls" (Maybe.withDefault "-" spell.rolls)
         , cardBox "hourglass" spell.duration
         , cardBox "range" spell.range
-        , cardBox "aoe" (Maybe.withDefault "/" spell.aoe)
+        , cardBox "aoe" (Maybe.withDefault "-" spell.aoe)
         ]
     , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
-    , viewSpellDescription (getSpellDescriptionText spell) spell.higher_level
+    , viewSpellDescription (getSpellDescriptionText spell) spell.higher_level spell.bonuses
     ]
     ++
     viewConcentrationBadge spell.concentration
     ++ 
-    [ div [ Attr.css cardTypeStyle ] [text (origin ++ " spell")]
+    [ div [ Attr.css cardTypeStyle ]
+      [ text (origin 
+                ++ case (spell.level, spell.prepared)
+                   of (0, _    ) -> " cantrip"
+                      (_, False) -> " spell"
+                      (_, True ) -> " spell - always prepared")
+      ]
     ]
 
 getSpellDescriptionText : Spell -> List String
 getSpellDescriptionText spell =
   Maybe.withDefault spell.description <| Maybe.map (\d -> "(Summary:)" :: d) spell.shortdesc
 
-viewSpellDescription : List String -> Maybe String -> Html Msg
-viewSpellDescription paragraphs higherLevel =
+viewSpellDescription : List String -> Maybe String -> List SpellBonus -> Html Msg
+viewSpellDescription paragraphs higherLevel bonuses =
   div [ Attr.css (descriptionStyle (estimateDescFontSize paragraphs higherLevel))
       , Attr.class "card-description"
       ]
@@ -103,6 +109,8 @@ viewSpellDescription paragraphs higherLevel =
        --                                  , Css.marginTop (px 0)]]))
        ::
        viewHigherLevelP higherLevel
+       ++
+       viewSpellBonuses bonuses
 
 viewConcentrationBadge : Bool -> List (Html Msg)
 viewConcentrationBadge concentration =
@@ -115,6 +123,24 @@ viewHigherLevelP hl =
   case hl of
     Nothing -> []
     Just hldesc -> [p [] [b [] [text "At higher levels. "], text hldesc]]
+
+viewSpellBonuses : List SpellBonus -> List (Html Msg)
+viewSpellBonuses bonuses =
+  case bonuses of
+    [] -> []
+    _  ->
+      [ p []
+        [ b [] [ text "Bonuses: " ]
+        , List.map (formatSpellBonus) bonuses
+          |> List.intersperse ", "
+          |> String.concat
+          |> text
+        ]
+      ]
+
+formatSpellBonus : SpellBonus -> String
+formatSpellBonus { origin, bonus } =
+  bonus ++ " (from " ++ origin ++ ")"
 
 cardSubtitle : Spell -> String
 cardSubtitle spell =

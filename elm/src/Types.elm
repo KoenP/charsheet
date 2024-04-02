@@ -29,6 +29,7 @@ type alias CharacterSheet =
   , pact_magic: Maybe PactMagic
   , spellcasting_sections : List SpellcastingSection
   , spell_slots : List Int
+  , resources : List Resource
   }
 {-
 NotableTraits = [( Category, List Trait )]
@@ -103,6 +104,7 @@ type alias Spell =
   , summary : String
   , to_hit : Maybe Int
   , rolls : Maybe String
+  , bonuses : List SpellBonus
   }
 type Component = V | S | M String
 type alias AlwaysPrepared = Bool
@@ -111,9 +113,22 @@ type alias Level = Int
 
 type Ritual = Ritual | NotRitual | OnlyRitual
 
+type alias SpellBonus =
+  { origin : String
+  , bonus : String
+  }
+
 type alias PactMagic =
   { slot_count : Int
   , slot_level : Int
+  }
+
+type alias Resource =
+  { feature_name : String
+  , unit_name : String
+  , number : Int
+  , short_rest : Maybe String
+  , long_rest : Maybe String
   }
 
 type PrologTerm = Compound String (List PrologTerm)
@@ -243,6 +258,7 @@ setSpellPreparedness origin spell prepared old =
 type Msg
   = HttpResponse (Result Http.Error HttpResponseMsg)
   | SelectCharacter String
+  | GotoSelectCharacterPage
   | NewCharacterName String
   | CreateNewCharacter
   | EditCharacter

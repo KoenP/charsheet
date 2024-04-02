@@ -29,7 +29,7 @@ sheet_json_dict(_{name: Name,
     spell_slot_dict(SpellSlots),
     pact_magic_json_dict(PactMagic),
     findall(X, spellcasting_section_json_dict(X), SpellcastingSections),
-    resource_json(Resources).
+    resources_json(Resources).
 
 setof_or_empty(X, Spec, Xs) :-
     setof(X, Spec, Xs), !.
@@ -179,7 +179,8 @@ attack_table_json_dict_entry(_{name: Name,
                                to_hit_or_dc: ToHitOrDC,
                                damage: Damage,
                                notes: Notes}) :-
-    attack(Name, RangeVal, ToHitOrDCVal, DamageVal, NotesVal),
+    attack_or_variant(NameVal, RangeVal, ToHitOrDCVal, DamageVal, NotesVal),
+    fmt(format_term(NameVal), Name),
     fmt(format_range(RangeVal), Range),
     fmt(format_to_hit_or_dc(ToHitOrDCVal), ToHitOrDC),
     fmt(format_damage(DamageVal), Damage),
@@ -244,7 +245,8 @@ spell_json_dict(BaseOrigin,
                   ritual: Ritual,
                   resources: ResourcesStrs,
                   rolls: Rolls,
-                  aoe: Aoe
+                  aoe: Aoe,
+                  bonuses: Bonuses
                  }) :-
     (Origin =.. [BaseOrigin,_] ; Origin = BaseOrigin),
     known_spell(Origin, _Ability, _, ResourcesVal, Ritual, Name),
@@ -267,7 +269,8 @@ spell_json_dict(BaseOrigin,
     default_on_fail(null, known_spell_to_hit(BaseOrigin:_,Name), ToHit),
     known_spell_saving_throw_or_null(Origin, Name, DC, DCAbi),
     known_spell_dice_formula_or_null(Origin, Name, Rolls),
-    known_spell_aoe_or_null(Origin, Name, Aoe).
+    known_spell_aoe_or_null(Origin, Name, Aoe),
+    findall(Bonus, spell_bonus_json(Origin, Name, Bonus), Bonuses).
 
 known_spell_saving_throw_or_null(Origin, Name, DC, Abi) :-
     known_spell_saving_throw(Origin, Name, DC, Abi),
@@ -286,18 +289,16 @@ known_spell_aoe_or_null(Origin, Name, AoeStr) :-
     !.
 known_spell_aoe_or_null(_, _, null).
 
-resource_to_json(R1 or R2, _{tag: or, val: Val}) :-
-    maplist(resource_to_json, [R1,R2], Val),
-    !.
-resource_to_json(per_rest(Dur, N), _{tag: per_rest,
-                                     rest_type: Dur,
-                                     count: N}) :-
-    !.
-resource_to_json(List, _{tag: list, val: JsonList}) :-
-    maplist(resource_to_json, List, JsonList),
-    !.
-resource_to_json(X, _{tag: val, val: X}).
+spell_bonus_json(SpellOrigin, Spell, _{ origin : OriginStr,
+                                        bonus : BonusStr
+                                      }) :-
+    bonus(Origin, modify_spell(SpellOrigin, Spell, Bonus)),
+    (Origin = trait(SubOrigin)
+      -> fmt(format_term(SubOrigin), OriginStr)
+      ;  fmt(format_term(Origin), OriginStr)),
+    fmt(format_term(Bonus), BonusStr).
 
+% Resources.
 resources_json(List) :-
     findall(R, resource_json(R), List).
 resource_json(_{feature_name: FeatureName,
@@ -318,7 +319,6 @@ rest_description(Type, UnitName, DescStr) :-
 rest_description(_, _, null).
 custom_format(restore(N)) --> ["+"], format_number(N).
     
-
 %! term_to_json(+List, -Json)
 %
 %  One-way conversion from terms to a canonical JSON representation of Prolog

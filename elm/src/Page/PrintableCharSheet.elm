@@ -33,12 +33,17 @@ load =
 
 view : CharacterSheet -> List (Html Msg)
 view sheet =
-  [ div [ class "page" ]
+  [ div [ class "dont-print" ]
+    [ viewNavButtons ]
+    -- [ button [ E.onClick EditCharacter ]
+    --   [ text "edit" ]
+    -- ]
+  , div [ class "page" ]
     [ div [ class "abilities" ] (viewAbilities sheet.ability_table sheet.skill_table)
     , div [ class "main-body" ] (viewMainBody sheet)
     , div [ class "hit-dice-section" ] (viewHitDiceSection sheet.hit_dice)
     ]
-  , hr [] []
+  , div [ class "page-break" ] []
   , div [ class "page" ]
     <| div [ class "column" ]
          (viewNotableTraits sheet.notable_traits
@@ -51,8 +56,9 @@ view sheet =
          ++ viewPactMagic sheet.pact_magic
          )
        ::
+       div [ class "column" ] (viewResources sheet.resources)
+       ::
        []
-  , hr [] []
   ]
 
 viewAbilities : AbilityTable -> SkillTable -> List (Html Msg)
@@ -296,6 +302,44 @@ viewPactMagic pactMagic =
         ]
       ]
 
+viewResources : List Resource -> List (Html Msg)
+viewResources resources =
+  case resources of
+    [] -> []
+    _  -> [ viewBadgeDiv "resources" "resources spell-slots" (List.map viewResource resources) ]
+
+viewResource : Resource -> Html Msg
+viewResource { feature_name , unit_name , number , short_rest , long_rest } =
+  div []
+  [ simple h3 unit_name
+  , div [ class "resource-details" ]
+    (viewResourceSlots number ++ viewResourceRestoreInfo short_rest long_rest)
+  ]
+
+viewResourceSlots : Int -> List (Html Msg)
+viewResourceSlots num =
+  if num <= 8
+  then List.repeat num (input [ type_ "checkbox" ] [])
+  else [ div [ class "row" ]
+         [ viewSmallBlank, text (nbsp ++ "/" ++ nbsp ++ String.fromInt num) ]
+       ]
+
+viewResourceRestoreInfo : Maybe String -> Maybe String -> List (Html Msg)
+viewResourceRestoreInfo maybeShortRest maybeLongRest =
+  [ table []
+      <| List.concat
+      <| List.map Util.maybeToList
+         [ Maybe.map (viewResourceRestoreInfoLine "short rest") maybeShortRest
+         , Maybe.map (viewResourceRestoreInfoLine "long rest") maybeLongRest
+         ]
+
+  ]
+
+viewResourceRestoreInfoLine : String -> String -> Html Msg
+viewResourceRestoreInfoLine restType restoreInfo =
+  tr [] [ simple td (restType ++ ":"), simple td restoreInfo ]
+  
+
 defaultWhenEmpty : a -> List a -> List a
 defaultWhenEmpty default l =
   case l of
@@ -324,6 +368,9 @@ viewSlot = input [ type_ "checkbox" ] []
 
 viewBlank : Html Msg
 viewBlank = div [ class "blank" ] []
+
+viewSmallBlank : Html Msg
+viewSmallBlank = div [ class "small-blank" ] []
 
 raceAndClassesToString : String -> String -> String
 raceAndClassesToString class race = String.concat [ race, " — ", class ]

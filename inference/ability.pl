@@ -138,3 +138,7 @@ saving_throw(Ability, Bonus) :-
 %    between(1, N, M),
 %    N1 is N-M,
 %    split_nat(N1, Ns).
+
+problem(ability_score_missing(Abi)) :-
+    ability(Abi),
+    \+ ability(Abi, _).

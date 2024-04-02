@@ -76,10 +76,10 @@ init _ url key =
     , lastTick = Time.millisToPosix 0
     }
   -- , loadSelectCharacterPage
-  , PSheet.load
+  -- , PSheet.load
   -- , Sheet.load
   -- , Cards.load
-  -- , Edit.load
+  , Edit.load
   -- , Nav.pushUrl key "/list_characters"
   )
 
@@ -178,6 +178,9 @@ update msg model =
 
     EditCharacter ->
       ( { model | page = Loading }, Edit.load )
+
+    GotoSelectCharacterPage ->
+      ( { model | page = Loading }, loadSelectCharacterPage )
 
     GotoCardsPage options sheet ->
       ( { model | page = CardsPage options sheet }, Cmd.none)

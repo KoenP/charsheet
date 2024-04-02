@@ -163,8 +163,8 @@ applyBaseAbilityChanges abilityTable setAbilitiesOnNextTick =
 --------------------------------------------------------------------------------
 view : Maybe String -> EditCharacterPageData -> List (Html Msg)
 view focusedDropdownId data =
-  [ viewSideNav data, viewMain focusedDropdownId data ]
-  
+  [ Elements.viewNavButtons, viewSideNav data, viewMain focusedDropdownId data ]
+
 viewSideNav : EditCharacterPageData -> Html Msg
 viewSideNav { desc, optionsPerLevel, selectedLevel } =
   div [ Attr.css sideNavStyle ] <|

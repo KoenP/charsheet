@@ -25,6 +25,7 @@ sheetDec =
     |> D.andMap (D.field "pact_magic" pactMagicDec)
     |> D.andMap (D.field "spellcasting_sections" (D.list spellcastingSectionDec))
     |> D.andMap (D.field "spell_slots" (D.list D.int))
+    |> D.andMap (D.field "resources" (D.list resourceDec))
   
 summaryDec : Decoder CharacterSummary
 summaryDec =
@@ -112,6 +113,7 @@ spellDec =
     |> D.andMap (D.field "summary" D.string)
     |> D.andMap (D.field "to_hit" (D.nullable D.int))
     |> D.andMap (D.field "rolls" (D.nullable D.string))
+    |> D.andMap (D.field "bonuses" (D.list spellBonusDec))
 
 preparedDec : Decoder Bool
 preparedDec =
@@ -140,9 +142,24 @@ componentDec =
     , D.field "args" (D.list D.string) |> D.map String.concat |> D.map M
     ]
 
+spellBonusDec : Decoder SpellBonus
+spellBonusDec =
+  D.succeed SpellBonus
+    |> D.andMap (D.field "origin" D.string)
+    |> D.andMap (D.field "bonus" D.string)
+
 pactMagicDec : Decoder (Maybe PactMagic)
 pactMagicDec =
   D.nullable
     ( D.succeed PactMagic
     |> D.andMap (D.field "slot_count" D.int)
     |> D.andMap (D.field "slot_level" D.int))
+
+resourceDec : Decoder Resource
+resourceDec =
+  D.succeed Resource
+    |> D.andMap (D.field "feature_name" D.string)
+    |> D.andMap (D.field "unit_name" D.string)
+    |> D.andMap (D.field "number" D.int)
+    |> D.andMap (D.field "short_rest" (D.nullable D.string))
+    |> D.andMap (D.field "long_rest" (D.nullable D.string))
