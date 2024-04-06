@@ -42,9 +42,9 @@ resource('action surge', 'action surge', N) :-
     ordered_lookup_largest_leq([2 -> 1, 17 -> 2], L, N).
 on_rest(short, 'action surge', 'full restore').
 
-trait_source(fighter >: 5, extra_attack(N)) :-
+multiclass_trait_source(fighter >: 5, extra_attack(N)) :-
     class_level(fighter:L),
-    ordered_lookup_largest_leq([5 -> 2, 11 -> 3, 20 -> 4], L, N).
+    ordered_lookup_largest_leq([5 -> 1, 11 -> 2, 20 -> 3], L, N).
 
 trait_source(fighter >: 9, indomitable).
 resource(indomitable, reroll, N) :-
@@ -71,8 +71,6 @@ trait_source(fighter(champion) >: 18, survivor(HP)) :-
 second_wind(_) ?= "You have a limited well of stamina that you can draw on to protect yourself from harm. On your turn, you can use a bonus action to regain hit points equal to 1d10 + your fighter level. Once you use this feature, you must finish a short or long rest before you can use it again.".
 
 "action surge" ?= "Starting at 2nd level, you can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action on top of your regular action and a possible bonus action. Once you use this feature, you must finish a short or long rest before you can use it again. Starting at 17th level, you can use it twice before a rest, but only once on the same turn.".
-
-extra_attack(_) ?= "Beginning at 5th level, you can attack twice, instead of once, whenever you take the Attack action on your turn. The number of attacks increases to three when you reach 11th level in this class and to four when you reach 20th level in this class.".
 
 indomitable ?= "Beginning at 9th level, you can reroll a saving throw that you fail. If you do so, you must use the new roll, and you can’t use this feature again until you finish a long rest. You can use this feature twice between long rests starting at 13th level and three times between long rests starting at 17th level.".
 

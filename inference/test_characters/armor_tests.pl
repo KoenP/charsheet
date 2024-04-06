@@ -27,7 +27,7 @@ test_char_level(
     [ac_formula(unarmored, 10 + dex + shield),
      ac_formula(unarmored_defense(monk), 10 + dex + wis),
      %ac_formula(unarmored_defense(barbarian), 10 + dex + con + shield),
-     ac(unarmored, 13, [shield+1 : 3]),
+     ac(unarmored, 13, [shield(shield+1) : 3]),
      ac(unarmored_defense(monk), 18, [])
      %ac(unarmored_defense(barbarian), 20) % 10 + 3 + 4 + 3
     ]).
@@ -60,9 +60,9 @@ test_char_level(
     [ac_formula(unarmored, 10 + dex + shield),
      %ac_formula(unarmored_defense(monk), 10 + dex + wis),
      ac_formula(unarmored_defense(barbarian), 10 + dex + con + shield),
-     ac(unarmored, 13, [shield+1 : 3]),
+     ac(unarmored, 13, [shield(shield+1) : 3]),
      %ac(unarmored_defense(monk), 18, [])
-     ac(unarmored_defense(barbarian), 17, [shield+1 : 3]) % 10 + 3 + 4
+     ac(unarmored_defense(barbarian), 17, [shield(shield+1) : 3]) % 10 + 3 + 4
     ]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,7 +94,7 @@ test_char_level(
     2,
     [gain_level(2, barbarian, hp_avg)],
     [ac_formula(trait('draconic resilience'), 13 + dex + shield),
-     ac(trait('draconic resilience'), 16, [shield+1 : 3]), % with shield proficiency
+     ac(trait('draconic resilience'), 16, [shield(shield+1) : 3]), % with shield proficiency
      ac_formula(unarmored_defense(barbarian), 10 + dex + con + shield),
-     ac(unarmored_defense(barbarian), 17, [shield+1 : 3])
+     ac(unarmored_defense(barbarian), 17, [shield(shield+1) : 3])
     ]).

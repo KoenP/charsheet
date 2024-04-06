@@ -17,8 +17,8 @@ test_char_level(
      choice(race(elf('high elf')), language, gnomish),
 
      choice(init, 'initial class', druid),
-     choice(class(druid), cantrip, [shillelagh, druidcraft]),
-     choice(initial_class(druid), skill, [arcana, 'animal handling'])
+     choice(druid >: 1, cantrip, [shillelagh, druidcraft]),
+     choice(^druid, skill, [arcana, 'animal handling'])
     ],
     [max_hp(10), % 8 (base druid) + 2 (con mod)
      ac(12), % 10 + 2 (dex mod)

@@ -36,17 +36,22 @@ trait_source(class(sorcerer), spellcasting_focus(arcane)).
 % Sorcerer spellcasting features.
 trait_source(sorcerer >: 2, 'font of magic').
 trait_options_source(sorcerer >: 3, metamagic, wrap(metamagic),
-                     2 unique_from from_list(['careful spell',
-                                              'distant spell',
-                                              'empowered spell',
-                                              'extended spell',
-                                              'heightened spell',
-                                              'quickened spell',
-                                              'subtle spell',
-                                              'twinned spell'])).
+                     2 unique_from metamagic_option).
+trait_options_source(sorcerer >: L, metamagic, wrap(metamagic), metamagic_option) :-
+    L = 10 ; L = 17.
 trait_source(sorcerer >: 20, 'sorcerous restoration').
 
-%  Calculate the maximum number of sorcery points your character has available.
+% Metamagic.
+metamagic_option('careful spell').
+metamagic_option('distant spell').
+metamagic_option('empowered spell').
+metamagic_option('extended spell').
+metamagic_option('heightened spell').
+metamagic_option('quickened spell').
+metamagic_option('subtle spell').
+metamagic_option('twinned spell').
+
+% Calculate the maximum number of sorcery points your character has available.
 resource(metamagic, 'sorcery point', Max) :-
     sorcerer >: 3,
     class_level(sorcerer:Max).
@@ -65,11 +70,11 @@ known_spell(sorcerer, cha, always, [slot], Ritual, Name) :-
     spell_property(Name, ritual, Ritual). % TODO: this might be wrong
 
 % Learn cantrips.
-options_source(class(sorcerer), cantrip, 4 unique_from class_cantrip(sorcerer)).
+options_source(sorcerer >: 1, cantrip, 4 unique_from class_cantrip(sorcerer)).
 options_source(sorcerer >: L, cantrip, class_cantrip(sorcerer)) :- L=4 ; L=10.
    
 % Learn proper spells.
-options_source(class(sorcerer), spell,
+options_source(sorcerer >: 1, spell,
                2 unique_from learnable_proper_spell(sorcerer)).
 options_source(sorcerer >: L, spell,
                learnable_proper_spell(sorcerer)) :-
@@ -82,6 +87,11 @@ options_source(sorcerer >: L, replace(spell),
     Prev is L-1.
 options(sorcerer >: L, replacing(spell, Name), learnable_proper_spell(sorcerer)) :-
     choice_member(sorcerer >: L, replace(spell), Name).
+
+% Suppress showing duplicate spells.
+hide_known_class_spells(sorcerer >: _, cantrip, sorcerer).
+hide_known_class_spells(sorcerer >: _, spell, sorcerer).
+hide_known_class_spells(sorcerer >: _, replacing(spell,_), sorcerer).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sorcerous origin: draconic bloodline.

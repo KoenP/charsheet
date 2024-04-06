@@ -19,6 +19,7 @@ import Decoder.CharacterSheet exposing (sheetDec)
 import Request exposing (requestUrl)
 import Types exposing (..)
 import Util exposing (simple)
+import Elements exposing (..)
 
 
 ----------------------------------------------------------------------
@@ -32,9 +33,12 @@ update msg model sheet = (model, Cmd.none)
 ----------------------------------------------------------------------
 view : CardsPageOptions -> CharacterSheet -> Dict Origin (Set SpellName) -> List (Html Msg)
 view options sheet preparedSpells =
-  List.map (div [ Attr.css cardsStyle ])
-  <| Util.chunks 8 
-  <| List.concatMap (viewSpellcastingSection options preparedSpells) sheet.spellcasting_sections
+  div [ Attr.class "dont-print" ]
+    [ viewNavButtons [ viewGotoSheetButton, viewEditCharacterButton, viewSelectCharacterButton ] ]
+  ::
+  (List.map (div [ Attr.css cardsStyle ])
+   <| Util.chunks 8 
+   <| List.concatMap (viewSpellcastingSection options preparedSpells) sheet.spellcasting_sections)
 
 viewSpellcastingSection :  CardsPageOptions -> Dict Origin (Set SpellName) -> SpellcastingSection
                         -> List (Html Msg)

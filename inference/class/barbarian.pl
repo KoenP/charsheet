@@ -43,7 +43,7 @@ trait_source(barbarian >: 1, unarmored_defense(10 + dex + con + shield)).
 % Features gained from leveling up.
 trait_source(barbarian >: 2, 'reckless attack').
 trait_source(barbarian >: 2, 'danger sense').
-trait_source(barbarian >: 5, 'extra attack').
+multiclass_trait_source(barbarian >: 5, extra_attack(1)).
 trait_source(barbarian >: 5, 'fast movement').
 bonus_source(trait('fast movement'), speed + 10).
 trait_source(barbarian >: 7, 'feral instinct').
@@ -91,8 +91,6 @@ Once you have raged the number of times shown for your barbarian level in the Ra
 'reckless attack' ?= "Starting at 2nd level, you can throw aside all concern for defense to attack with fierce desperation. When you make your first attack on your turn, you can decide to attack recklessly. Doing so gives you advantage on melee weapon attack rolls using Strength during this turn, but attack rolls against you have advantage until your next turn.".
 
 'danger sense' ?= "At 2nd level, you gain an uncanny sense of when things nearby aren't as they should be, giving you an edge when you dodge away from danger. You have advantage on Dexterity saving throws against effects that you can see, such as traps and spells. To gain this benefit, you can’t be blinded, deafened, or incapacitated.".
-
-'extra attack' ?= "Beginning at 5th level, you can attack twice, instead of once, whenever you take the Attack action on your turn.".
 
 'fast movement' ?= "Starting at 5th level, your speed increases by 10 feet while you aren’t wearing heavy armor.".
 

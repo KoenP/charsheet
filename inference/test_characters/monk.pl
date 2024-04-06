@@ -3,7 +3,7 @@
 test_char_level(
     monk,
     1,
-    [choice(init, 'base race', 'half orc'),
+    [choice(init, 'base race', 'half-orc'),
      choice(init, 'initial class', monk),
      has(club),
      has(quarterstaff),
@@ -18,11 +18,11 @@ test_char_level(
      name(monk)],
     [speed(30),
      attack(club, feet(5), to_hit(6), [damage(bludgeoning, 1 d 4 + 4)],
-            [light, "+ unarmed strike as bonus action"]),
+            [light, "unarmed strike as bonus action"]),
      attack(unarmed, feet(5), to_hit(6), [damage(bludgeoning, 1 d 4 + 4)],
-            ["+ unarmed strike as bonus action"]),
+            ["unarmed strike as bonus action"]),
      attack(quarterstaff, feet(5), to_hit(6), [damage(bludgeoning, 1 d 6 + 4)],
-            [versatile(1 d 8), "+ unarmed strike as bonus action"]),
+            [versatile(1 d 8), "unarmed strike as bonus action"]),
      attack_variant(quarterstaff:twohanded, feet(5), to_hit(6), [damage(bludgeoning, 1 d 8 + 4)],
             []),
      ac(unarmored, 14, []),
@@ -36,14 +36,14 @@ test_char_level(
      has(shield) % shouldn't show up in unarmored defense
     ],
     [attack(club, feet(5), to_hit(6), [damage(bludgeoning, 1 d 4 + 4)],
-            [light, "+ unarmed strike as bonus action"]),
+            [light, "unarmed strike as bonus action"]),
      attack(unarmed, feet(5), to_hit(6), [damage(bludgeoning, 1 d 4 + 4)],
-            ["+ unarmed strike as bonus action"]),
+            ["unarmed strike as bonus action"]),
      attack(quarterstaff, feet(5), to_hit(6), [damage(bludgeoning, 1 d 6 + 4)],
-            [versatile(1 d 8), "+ unarmed strike as bonus action"]),
+            [versatile(1 d 8), "unarmed strike as bonus action"]),
      attack_variant(quarterstaff:twohanded, feet(5), to_hit(6), [damage(bludgeoning, 1 d 8 + 4)],
             []),
-     ac(unarmored, 14, [shield:2]),
+     ac(unarmored, 14, [shield(shield):2]),
      ac(unarmored_defense(monk), 17, [])]
 ).
 
@@ -55,14 +55,14 @@ test_char_level(
     [resource(ki, 'ki points', 2),
      speed(40),
      attack(club, feet(5), to_hit(6), [damage(bludgeoning, 1 d 4 + 4)],
-            [light, "+ unarmed strike as bonus action"]),
+            [light, "unarmed strike as bonus action"]),
      attack(unarmed, feet(5), to_hit(6), [damage(bludgeoning, 1 d 4 + 4)],
-            ["+ unarmed strike as bonus action"]),
+            ["unarmed strike as bonus action"]),
      attack(quarterstaff, feet(5), to_hit(6), [damage(bludgeoning, 1 d 6 + 4)],
-            [versatile(1 d 8), "+ unarmed strike as bonus action"]),
+            [versatile(1 d 8), "unarmed strike as bonus action"]),
      attack_variant(quarterstaff:twohanded, feet(5), to_hit(6), [damage(bludgeoning, 1 d 8 + 4)],
             []),
-     ac(unarmored, 14, [shield:2]),
+     ac(unarmored, 14, [shield(shield):2]),
      ac(unarmored_defense(monk), 17, [])]
 ).
 
@@ -73,18 +73,25 @@ test_char_level(
     [resource(ki, 'ki points', 3),
      speed(40),
      attack(club, feet(5), to_hit(6), [damage(bludgeoning, 1 d 4 + 4)],
-            [light, "+ unarmed strike as bonus action"]),
+            [light, "unarmed strike as bonus action"]),
      attack(unarmed, feet(5), to_hit(6), [damage(bludgeoning, 1 d 4 + 4)],
-            ["+ unarmed strike as bonus action"]),
+            ["unarmed strike as bonus action"]),
      attack(quarterstaff, feet(5), to_hit(6), [damage(bludgeoning, 1 d 6 + 4)],
-            [versatile(1 d 8), "+ unarmed strike as bonus action"]),
+            [versatile(1 d 8), "unarmed strike as bonus action"]),
      attack_variant(quarterstaff:twohanded, feet(5), to_hit(6), [damage(bludgeoning, 1 d 8 + 4)],
             []),
-     ac(unarmored, 14, [shield:2]),
+     ac(unarmored, 14, [shield(shield):2]),
      ac(unarmored_defense(monk), 17, [])]
 ).
 
-test_char_level(monk, 5, [gain_level(5, monk, hp_avg)], []).
+test_char_level(
+    monk,
+    5,
+    [gain_level(5, monk, hp_avg),
+     choice(monk >: 4, 'asi or feat', alert)],
+    [feat(alert),
+     initiative(9) % dex mod (+4) + alert feat (+5)
+    ]).
 
 test_char_level(
     monk, 6, [gain_level(6, monk, hp_avg)],
@@ -92,15 +99,15 @@ test_char_level(
       resource(ki, 'ki points', 5),
       speed(40),
       attack(club, feet(5), to_hit(7), [damage(bludgeoning, 1 d 6 + 4)],
-             [light, "+ unarmed strike as bonus action"]),
+             [light, "unarmed strike as bonus action"]),
       attack(unarmed, feet(5), to_hit(7), [damage(bludgeoning, 1 d 6 + 4)],
-             ["+ unarmed strike as bonus action"]),
+             ["unarmed strike as bonus action"]),
       attack(quarterstaff, feet(5), to_hit(7), [damage(bludgeoning, 1 d 6 + 4)],
-             [versatile(1 d 8), "+ unarmed strike as bonus action"]),
+             [versatile(1 d 8), "unarmed strike as bonus action"]),
       attack_variant(quarterstaff:twohanded, feet(5), to_hit(7),
                      [damage(bludgeoning, 1 d 8 + 4)],
                      []),
-      ac(unarmored, 14, [shield:2]),
+      ac(unarmored, 14, [shield(shield):2]),
       ac(unarmored_defense(monk), 17, [])
     ]).
 
@@ -114,14 +121,14 @@ test_char_level(
       resource(ki, 'ki points', 17),
       speed(55),
       attack(club, feet(5), to_hit(10), [damage(bludgeoning, 1 d 10 + 4)],
-             [light, "+ unarmed strike as bonus action"]),
+             [light, "unarmed strike as bonus action"]),
       attack(unarmed, feet(5), to_hit(10), [damage(bludgeoning, 1 d 10 + 4)],
-             ["+ unarmed strike as bonus action", magical]),
+             ["unarmed strike as bonus action", magical]),
       attack(quarterstaff, feet(5), to_hit(10), [damage(bludgeoning, 1 d 10 + 4)],
-             [versatile(1 d 8), "+ unarmed strike as bonus action"]),
+             [versatile(1 d 8), "unarmed strike as bonus action"]),
       attack_variant(quarterstaff:twohanded, feet(5), to_hit(10),
                      [damage(bludgeoning, 1 d 8 + 4)],
                      []),
-      ac(unarmored, 14, [shield:2]),
+      ac(unarmored, 14, [shield(shield):2]),
       ac(unarmored_defense(monk), 17, [])
     ]).

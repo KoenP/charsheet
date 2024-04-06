@@ -44,8 +44,8 @@
 :- [origin_category].
 :- [spell_data].
 :- [spellcasting].
-:- [class].
 :- [multiclassing].
+:- [class].
 :- [race].
 :- [background].
 :- [feat].

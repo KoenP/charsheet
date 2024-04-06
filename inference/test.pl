@@ -7,6 +7,7 @@
 :- [test_characters/monk].
 :- [test_characters/paladin].
 :- [test_characters/ranger_human].
+:- [test_characters/extra_attack].
 
 % test_char_level(?Name, ?Level, ?Facts, ?Expectations)
 test_char_level(_,_,_,_) :- false.

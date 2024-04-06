@@ -127,3 +127,4 @@ other_bonuses_to_hit(Weapon, TotalBonus) :-
     weapon(Weapon, _, _, _, _),
     findall(B, bonus(to_hit(Weapon) + B), Bonuses),
     sum_list(Bonuses, TotalBonus).
+

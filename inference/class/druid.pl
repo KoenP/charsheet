@@ -69,7 +69,7 @@ meta_todo(archdruid, "implement more robust way to check material cost").
 % Druids get to pick cantrips.
 known_spell(druid, wis, always, [], no, Spell) :-
     class_choice(druid, cantrip, Spell).
-options_source(class(druid), cantrip, 2 unique_from class_cantrip(druid)).
+options_source(druid >: 1, cantrip, 2 unique_from class_cantrip(druid)).
 options_source(druid >: L, cantrip, class_cantrip(druid)) :-
     L=4; L=10.
 

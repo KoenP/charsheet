@@ -2,6 +2,7 @@ module Page.EditCharacter exposing (..)
 
 import Browser.Navigation as Nav
 import Css exposing (Style)
+import Debug
 import Dict exposing (Dict)
 import Set exposing (Set)
 import Json.Decode as D exposing (Decoder)
@@ -139,6 +140,7 @@ update msg model oldData =
                            OrSC _ left right -> { opt | spec = OrSC (Just dir) left right }
                            _                 -> opt))
             oldData.optionsPerLevel
+        _ = Debug.log "" (origin, id, dir)
       in
         ( applyPageData model { oldData | optionsPerLevel = newOptions, desc = Nothing }
         , Cmd.none
@@ -163,7 +165,15 @@ applyBaseAbilityChanges abilityTable setAbilitiesOnNextTick =
 --------------------------------------------------------------------------------
 view : Maybe String -> EditCharacterPageData -> List (Html Msg)
 view focusedDropdownId data =
-  [ Elements.viewNavButtons, viewSideNav data, viewMain focusedDropdownId data ]
+  [ Elements.viewNavButtons
+      [ Elements.viewGotoSheetButton
+      , Elements.viewSelectCharacterButton
+      ]
+  , viewSideNav data
+  , viewMain focusedDropdownId data
+  ]
+
+tooltipSize = 80
 
 viewSideNav : EditCharacterPageData -> Html Msg
 viewSideNav { desc, optionsPerLevel, selectedLevel } =
@@ -173,7 +183,7 @@ viewSideNav { desc, optionsPerLevel, selectedLevel } =
         h2 [ Attr.css descStyle ] [ text title ]
         ::
         List.map
-          (p [ Attr.css (Css.fontSize (Css.px 12) :: descStyle)] << List.singleton << text)
+          (p [ Attr.css (Css.fontSize (Css.px 12) :: descStyle) ] << List.singleton << text)
           paragraphs
       _ -> 
         viewLevelUpButton selectedLevel 
@@ -219,8 +229,7 @@ viewTopBar : AbilityTable -> Dict Ability Int -> Html Msg
 viewTopBar abilityTable setAbilitiesOnNextTick =
   div
     [ Attr.css topBarStyle ]
-    [ button [E.onClick GotoSheet] [text "View character sheet"]   
-    , table
+    [ table
         [ Attr.css
             [ Css.maxWidth (Css.px 600)
             , Css.width (Css.pct 100)
@@ -340,7 +349,7 @@ viewEffectCategory (category, effects) =
                  [] -> 
                    text (showEffect f effect)
                  desc -> 
-                   tooltip Bottom
+                   tooltip tooltipSize Bottom
                      (text <| showEffect f effect)
                      (div [] <| List.map (simple p) desc))
 
@@ -561,7 +570,7 @@ viewOrSC ctx dir (lname, lspec) (rname, rspec) =
                              False
                              (case dir_ of
                                 L -> lspec
-                                R -> rspec)
+                                R -> Debug.log "" rspec)
                          ]
       ]
 

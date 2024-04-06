@@ -14,8 +14,7 @@ class_saving_throw(monk, dex).
 class_skill_list(monk,
                  [acrobatics, athletics, history, insight, religion, stealth]).
 trait_options_source(^monk, skill, wrap(skill), 2 unique_from class_skill(monk)).
-trait_options_source(^monk, 'tool or instrument', id,
-                     artisans_tool or musical_instrument).
+trait_options_source(^monk, 'tool or instrument', id, free_choice).
 meta_todo(artisans_tool, "make an artisans_tool predicate").
 meta_todo(musical_instrument, "make a musical_instrument predicate").
 
@@ -43,7 +42,7 @@ bonus(trait(martial_arts(1 d N)),
     weapon(Weapon, _, _, [damage(Type,Die)], _),
     ((Die = 1 d M, N > M) ; Die = 1).
 bonus_source(trait(martial_arts(_)),
-             add_weapon_note(Weapon, "+ unarmed strike as bonus action")) :-
+             add_weapon_note(Weapon, "unarmed strike as bonus action")) :-
     monk_weapon(Weapon).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,7 +59,10 @@ traits_from_source(monk >: 2, [ki_feature('flurry of blows'),
                                ki_feature('step of the wind')]).
 resource(ki, 'ki points', N) :-
     trait(ki(N, _)).
-on_rest(short, ki, 'full restore').
+on_rest(short, 'ki points', 'full restore').
+
+custom_format(ki(N, dc(DC))) -->
+    ["ki: "], [N], [" points, "], [DC], [" save DC"].
 
 % Unarmored movement.
 trait_source(monk >: 2, unarmored_movement(ft(Ft))) :-
@@ -80,7 +82,7 @@ trait_source(monk >: 4, slow_fall(Red)) :-
     class_level(monk:L),
     Red is L*5.
 
-trait_source(monk >: 5, extra_attack(1)).
+multiclass_trait_source(monk >: 5, extra_attack(1)).
 
 trait_source(monk >: 5, ki_feature('stunning strike')).
 

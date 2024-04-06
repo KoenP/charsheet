@@ -133,7 +133,7 @@ from_(N, List, Choices) :-
     length(Choices, N),
     subset(Choices, List).
 from_(N, Pred, Choices) :-
-    %is_list(Choices),
+    is_list(Choices),
     between(1, N, M), % TODO this is inefficient if M is known
     length(Choices, M),
     %M =< N,
@@ -152,6 +152,11 @@ from_list(L, X) :- member(X, L).
 
 or(Goal1, Goal2, X) :-
     call(Goal1, X) ; call(Goal2, X).
+
+%! free_choice(?Choice)
+%
+%  True for all Choice.
+free_choice(_).
 
 %! inspect_options(?Origin, ?Id, ?Desc)
 %  Desc describes all valid choices for the options/3 clause with

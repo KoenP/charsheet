@@ -25,6 +25,11 @@ feat(durable) ?= "Hardy and resilient, you gain the following benefits:
     the roll equals twice your Constitution modifier (minimum of 2).".
 bonus_source(feat(durable), con+1).
 
+% Example from Tasha's
+% TODO: prereq
+%feat_option(metamagic)
+%todo feats dont work
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PLAYER HANDBOOK (NOT SRD)                                                    %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -35,12 +40,12 @@ feat(lucky) ?= "Three times per long rest: reroll a die (own die or attack roll 
 % TASHA'S CAULDRON OF EVERYTHING                                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 feat_option('fey touched').
-bonus_options_source(trait(feat('fey touched')), asi, id,
+bonus_options_source(feat('fey touched'), asi, id,
                      from_list([int+1, wis+1, cha+1])).
-options_source(trait(feat('fey touched')), spell, fey_touched_spell).
+options_source(feat('fey touched'), spell, fey_touched_spell).
 known_spell(feat('fey touched'), Abi, always, [per_rest(long,1)], no, Spell) :-
-    choice(trait(feat('fey touched')), asi, Abi),
-    (Spell = 'misty step' ; choice(trait(feat('fey touched')), spell, Spell)).
+    choice(feat('fey touched'), asi, Abi),
+    (Spell = 'misty step' ; choice(feat('fey touched'), spell, Spell)).
 fey_touched_spell(Spell) :-
     spell_data(Spell, Data),
     Data.get(level) = 1, Data.get(school) = School,

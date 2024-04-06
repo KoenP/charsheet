@@ -14,13 +14,14 @@ import Types exposing (..)
 -- TOOLTIPS
 --------------------------------------------------------------------------------
 
-type TooltipDir = Bottom | Right
+type TooltipDir = Bottom | Right | BottomLeft
 
-tooltip : TooltipDir -> Html msg -> Html msg -> Html msg
-tooltip dir trigger content =
+tooltip : Float -> TooltipDir -> Html msg -> Html msg -> Html msg
+tooltip width dir trigger content =
   let dirAttrs = case dir of
                      Bottom -> [ Css.top (Css.pct 105), Css.left Css.zero ]
                      Right  -> [ Css.top Css.zero, Css.left (Css.pct 105) ]
+                     BottomLeft -> [ Css.top (Css.pct 105), Css.right (Css.pct 95) ]
   in 
     div
       [ class "tooltip"
@@ -43,7 +44,7 @@ tooltip dir trigger content =
               [ Css.visibility Css.hidden
               , Css.position Css.absolute
               , Css.backgroundColor <| Css.hex "000000"
-              , Css.width <| Css.px 560
+              , Css.width <| Css.mm width
               , Css.color <| Css.hex "ffffff"
               , Css.fontFamilies [ "Dosis", .value Css.sansSerif ]
               , Css.zIndex (Css.int 1)
@@ -59,21 +60,43 @@ tooltip dir trigger content =
 -- NAV BUTTONS
 --------------------------------------------------------------------------------
 
-viewNavButtons : Html Msg
-viewNavButtons =
-  div
-  [ css navButtonsStyle ]
-  [ button
-    [ css navButtonStyle
-    , E.onClick EditCharacter
-    ]
-    [ text "\u{270F}" ]
-  , button
-    [ css navButtonStyle
-    , E.onClick GotoSelectCharacterPage
-    ]
-    [ text "\u{00d7}" ]
-  ]
+viewNavButtons : List (Html Msg) -> Html Msg
+viewNavButtons buttons =
+  div [ css navButtonsStyle ] buttons
+
+viewNavButton : Msg -> String -> String -> Html Msg
+viewNavButton msg symbol tooltipText =
+  tooltip
+    50
+    BottomLeft
+    (button
+       [ css navButtonStyle
+       , E.onClick msg
+       ]
+       [ img [ css [ Css.width (Css.px 16) ], src ("/icons/" ++ symbol) ] [] ])
+    (text tooltipText)
+
+viewEditCharacterButton : Html Msg
+viewEditCharacterButton =
+  viewNavButton EditCharacter "edit.png" "Edit this character"
+
+viewSelectCharacterButton : Html Msg
+viewSelectCharacterButton =
+  viewNavButton GotoSelectCharacterPage "close.png"  "Return to character selection"
+
+viewGotoSheetButton : Html Msg
+viewGotoSheetButton =
+  viewNavButton GotoSheet "sheet.png" "View/print character sheet"
+
+viewGotoCardsButton : CharacterSheet -> Html Msg
+viewGotoCardsButton sheet =
+  viewNavButton (GotoCardsPage { showSpells = AllSpells } sheet) "cards.png" "View/print cards"
+
+-- "\u{270F}" "\u{00d7}"  "\u{1f4c4}" 
+
+
+-- viewGotoSheetButton : Html Msg
+-- viewGotoSheetButton 
 
 navButtonsStyle : List Style
 navButtonsStyle =

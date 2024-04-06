@@ -49,7 +49,7 @@ trait_options_source(ranger >: 2, 'fighting style',
                                 'two-weapon fighting'])).
 
 trait_source(ranger >: 3, 'primeval awareness').
-trait_source(ranger >: 5, 'extra attack').
+multiclass_trait_source(ranger >: 5, extra_attack(1)).
 trait_source(ranger >: 8, 'land\'s stride').
 trait_source(ranger >: 10, 'hide in plain sight').
 trait_source(ranger >: 14, vanish).

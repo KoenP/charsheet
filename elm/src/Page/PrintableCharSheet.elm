@@ -34,7 +34,11 @@ load =
 view : CharacterSheet -> List (Html Msg)
 view sheet =
   [ div [ class "dont-print" ]
-    [ viewNavButtons ]
+    [ viewNavButtons [ viewGotoCardsButton sheet
+                     , viewEditCharacterButton
+                     , viewSelectCharacterButton
+                     ]
+    ]
     -- [ button [ E.onClick EditCharacter ]
     --   [ text "edit" ]
     -- ]

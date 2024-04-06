@@ -100,6 +100,9 @@ view currentlyPreparedSpells showOnlyPreparedSpells sheet =
       ]
   ]
 
+tooltipSize : Float
+tooltipSize = 24
+
 viewSummaryTable : CharacterSummary -> Html msg
 viewSummaryTable sm =
   table
@@ -202,7 +205,7 @@ viewTrait { name, desc } =
     Nothing ->
       text name
     Just actualDesc ->
-      tooltip Right (text name) (text actualDesc)
+      tooltip tooltipSize Right (text name) (text actualDesc)
 
 viewAttacks : List Attack -> Html msg
 viewAttacks attacks =
@@ -312,7 +315,7 @@ viewSpellTableRow showOnlyPreparedSpells origin spell currentlyPrepared =
     ++
     [ simpleTd <| String.fromInt spell.level
     , td tdAttrs <| List.singleton <|
-        tooltip Right
+        tooltip tooltipSize Right
           (text spell.name)
           (div [] <|
              List.map
@@ -351,7 +354,7 @@ viewComponent component =
   case component of
     V -> text "v"
     S -> text "s"
-    M desc -> tooltip Right (text "m") (text desc)
+    M desc -> tooltip tooltipSize Right (text "m") (text desc)
 
 simpleTh : String -> Html msg
 simpleTh str = th thAttrs [ text str ]
