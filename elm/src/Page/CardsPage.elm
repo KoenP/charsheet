@@ -38,12 +38,47 @@ view options sheet preparedSpells =
   ::
   (List.map (div [ Attr.css cardsStyle ])
    <| Util.chunks 8 
-   <| List.concatMap (viewSpellcastingSection options preparedSpells) sheet.spellcasting_sections)
+   <| List.concatMap (viewSpellcastingSection options preparedSpells) sheet.spellcasting_sections
+      ++ List.concatMap (viewNotableTraitCategory options) sheet.notable_traits
+  )
+
+viewNotableTraitCategory : CardsPageOptions -> NotableTraitCategory -> List (Html Msg)
+viewNotableTraitCategory options { category, traits } =
+  traits
+    |> List.filter (\trait -> trait.desc /= Nothing)
+    |> List.map (viewNotableTrait options category)
+
+viewNotableTrait : CardsPageOptions -> String -> Trait -> Html Msg    
+viewNotableTrait options category { name, desc } =
+  div
+    [ Attr.css cardStyle ]
+    [ div [ Attr.css cardTitleSectionStyle ]
+        [ div [ Attr.css cardTitleStyle ] [ text name ] ]
+    , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
+    , div [ Attr.css (descriptionStyle
+                        (Maybe.withDefault 0
+                           (Maybe.map (estimateFontSize << String.length) desc)))
+          , Attr.class "card-description"
+          ]
+        [  Maybe.withDefault "" desc
+           |> Markdown.toHtmlWith
+                { githubFlavored = Just { tables = True, breaks = False }
+                , defaultHighlighting = Nothing
+                , sanitize = False
+                , smartypants = True
+                }
+                []
+           |> fromUnstyled
+        ]
+
+    , div [ Attr.css cardTypeStyle ] [ text (category ++ " feature") ]
+      -- TODO: will show feats as class traits, which is a bit weird
+    ]
 
 viewSpellcastingSection :  CardsPageOptions -> Dict Origin (Set SpellName) -> SpellcastingSection
                         -> List (Html Msg)
 viewSpellcastingSection options preparedSpells section =
-  List.map (viewCard section.origin)
+  List.map (viewSpellCard section.origin)
     <| List.filter
          (shouldIncludeSpell options
             (Maybe.withDefault Set.empty <| Dict.get section.origin preparedSpells))
@@ -56,8 +91,8 @@ shouldIncludeSpell { showSpells } preparedSpells { name, prepared } =
     OnlyPreparedSpells -> prepared || Set.member name preparedSpells
     NoSpells -> False
 
-viewCard : Origin -> Spell -> Html Msg
-viewCard origin spell =
+viewSpellCard : Origin -> Spell -> Html Msg
+viewSpellCard origin spell =
   div [ Attr.css cardStyle ] <|
     [ div [ Attr.css cardTitleSectionStyle ]
         [ div [ Attr.css cardTitleStyle ] [text spell.name]
@@ -92,7 +127,7 @@ getSpellDescriptionText spell =
 
 viewSpellDescription : List String -> Maybe String -> List SpellBonus -> Html Msg
 viewSpellDescription paragraphs higherLevel bonuses =
-  div [ Attr.css (descriptionStyle (estimateDescFontSize paragraphs higherLevel))
+  div [ Attr.css (descriptionStyle (estimateSpellDescFontSize paragraphs higherLevel))
       , Attr.class "card-description"
       ]
     <| (  paragraphs
@@ -269,18 +304,32 @@ descriptionStyle fontSize =
   , Css.marginBottom (mm 2)
   ]
 
-estimateDescFontSize : List String -> Maybe String -> Float
-estimateDescFontSize paragraphs higherLevel =
-  let
-    len = spellDescriptionLength paragraphs higherLevel
-  in 
-    if len >= 1800 || descriptionContainsTable paragraphs
-    then 6
-      else if len >= 1600
-           then 7
-           else if len >= 1000
-                then 8
-                else 10
+estimateSpellDescFontSize : List String -> Maybe String -> Float
+estimateSpellDescFontSize paragraphs higherLevel =
+  if descriptionContainsTable paragraphs
+  then 6
+  else estimateFontSize (spellDescriptionLength paragraphs higherLevel)
+
+estimateFontSize : Int -> Float
+estimateFontSize len =
+  lookupLargestLeq len [(0, 14), (500, 12), (700, 10), (1000, 8), (1600, 7), (1800, 6)]
+    |> Maybe.withDefault 6
+    -- if len >= 1800
+    -- then 6
+    -- else if len >= 1600
+    --      then 7
+    --      else if len >= 1000
+    --           then 8
+    --           else 10
+
+lookupLargestLeq : comparable -> List (comparable, a) -> Maybe a
+lookupLargestLeq x l =
+  case l of
+    (y, val) :: ys ->
+      if x >= y
+      then lookupLargestLeq x ys |> Maybe.withDefault val |> Just
+      else Nothing
+    [] -> Nothing
 
 spellDescriptionLength : List String -> Maybe String -> Int
 spellDescriptionLength paragraphs higherLevel =

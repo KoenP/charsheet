@@ -612,13 +612,13 @@ sideNavButtonStyle highlighted =
   , Css.fontSize (Css.px 25)
   , Css.display Css.block
   , Css.hover [Css.color (Css.hex "ffffff")]
-  , Css.fontFamilies [ "Dosis" ]
+  -- , Css.fontFamilies [ "Dosis" ]
   ]
 
 mainSectionStyle : List Style
 mainSectionStyle =
   [ Css.marginLeft (Css.px sideNavWidth)
-  , Css.fontFamilies [ "Dosis" ]
+  -- , Css.fontFamilies [ "Dosis" ]
   -- , Css.padding2 Css.zero (Css.px 10)
   ]
 
@@ -628,7 +628,7 @@ originCategoryStyle =
   , Css.borderRadius (Css.px 10)
   , Css.padding4 (Css.px 1) (Css.px 0) (Css.px 16) (Css.px 20) -- top right bot left
   , Css.marginTop (Css.px 8)
-  , Css.fontFamilies [ "Dosis" ]
+  -- , Css.fontFamilies [ "Dosis" ]
   ]
 
 optionsSectionStyle : List Style

@@ -75,11 +75,11 @@ init _ url key =
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     }
-  -- , loadSelectCharacterPage
+  , loadSelectCharacterPage
   -- , PSheet.load
   -- , Sheet.load
   -- , Cards.load
-  , Edit.load
+  -- , Edit.load
   -- , Nav.pushUrl key "/list_characters"
   )
 
@@ -184,6 +184,9 @@ update msg model =
 
     GotoCardsPage options sheet ->
       ( { model | page = CardsPage options sheet }, Cmd.none)
+
+    GotoSheet ->
+      applyPage model (Loading, Nav.pushUrl model.key "/sheet")
 
     Choice origin id choice ->
       ( { model | focusedDropdownId = Nothing } , registerChoice origin id choice )
@@ -335,6 +338,7 @@ view model =
   , body =
     Html.node
       "link"
+      -- [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
       [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Dosis:wght@400;700&display=swap"
 --"https://fonts.googleapis.com/css2?family=Dosis&family=Epilogue:wght@300&family=Fira+Code&family=Quattrocento+Sans&family=Roboto:wght@300-800&display=swap"
 

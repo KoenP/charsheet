@@ -2,7 +2,10 @@ origin_category(init, init).
 origin_category(class(Class), Origin) :-
     class_option(Class),
     class_origin_to_class(Origin, Class).
-origin_category(race(Race), race(Race)).
+origin_category(race(Race), race(Race)) :-
+    Race =.. [_].
+origin_category(race(BaseRace), race(Race)) :-
+    Race =.. [BaseRace, _].
 origin_category(background(BG), background(BG)).
 origin_category(feat(F), feat(F)).
 origin_category(Category, trait(Trait)) :-

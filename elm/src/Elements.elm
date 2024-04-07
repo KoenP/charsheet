@@ -100,7 +100,7 @@ viewGotoCardsButton sheet =
 
 navButtonsStyle : List Style
 navButtonsStyle =
-  [ Css.position Css.absolute
+  [ Css.position Css.fixed
   , Css.top Css.zero
   , Css.right Css.zero
   , Css.zIndex (Css.int 3)
