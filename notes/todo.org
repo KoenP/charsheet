@@ -14,6 +14,7 @@
   - feat condities
   - feats met een parameter (bv elemental adept)
   - feats die je meerdere keren kan kiezen (bv elemental adept)
+  - feats met meerderer parameters (bv metamagic adept)
 
 - classes
   - multiclass condities

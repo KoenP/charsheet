@@ -64,6 +64,10 @@ trait_options(Source, Id, ToTrait, Spec) :-
     call(Source).
 options(Source, Id, Spec) :-
     trait_options(Source, Id, _, Spec).
+lookup_option_doc(Source, Id, Option, Doc) :-
+    trait_options(Source, Id, ToTrait, _),
+    call(ToTrait, Option, Trait),
+    (Trait ?= Doc).
 
 % Don't display traits that have already been picked as options to the
 % user (see inspect_options/3).

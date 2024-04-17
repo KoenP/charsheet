@@ -4,7 +4,8 @@
        choice/3,
        choice_creates_category/3,
        ignore/2,
-       hide_base_option/3.
+       hide_base_option/3,
+       lookup_option_doc/4.
 :- dynamic ignore/2.
 
 % :- table (options/3, hide_base_option/3) as incremental.
@@ -186,6 +187,12 @@ suppress_base_option(Origin, Id, X) :-
 %  True iff Option shouldn't be displayed to the user as a valid
 %  choice for the option with given Source and Id.
 hide_base_option(_,_,_) :- false.
+
+%! lookup_option_doc(-Source, -Id, -Option, +Doc)
+%
+%  Find the documentation associated with a given Option for a given Source and Id.
+lookup_option_doc(_, _, Option, Doc) :-
+    (Option ?= Doc).
     
 %! option_todo(?Origin, ?Id, ?Spec)
 options_todo(Origin, Id, Spec) :-
@@ -259,7 +266,7 @@ spec_to_json(Origin, Id, Spec,
             (call(Spec, X),
              (\+ suppress_base_option(Origin, Id, X)),
              term_string(X, XStr),
-             default_on_fail("", ?=(X), Desc)),
+             default_on_fail("", lookup_option_doc(Origin, Id, X), Desc)),
              %fmt(format_term(X), XStr)),
             List).
 

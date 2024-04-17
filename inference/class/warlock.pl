@@ -159,6 +159,10 @@ known_spell(warlock(eldritch_invocation(Inv)),
 trait(warlock >: Level, eldritch_invocation(Inv)) :-
     find_choice_level(warlock:Level, 'eldritch invocation', Inv).
 
+% Need a manual rule to lookup the doc for each invocation.
+lookup_option_doc(warlock >: _, 'eldritch invocation', Inv, Doc) :-
+    (eldritch_invocation(Inv) ?= Doc).
+
 % Eldritch invocation options and effects.
 
 eldritch_invocation_option('agonizing blast') :-
