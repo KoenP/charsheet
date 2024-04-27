@@ -22,6 +22,7 @@
 :- op(650, xfx, from).
 :- op(650, xfx, from).
 :- op(650, xfx, unique_from).
+:- op(650, xfx, at).
 :- op(1000, xfx, ?=).
 :- op(1000, xfx, ?=).
 :- op(650, xfx, ft).

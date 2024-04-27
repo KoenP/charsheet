@@ -317,8 +317,8 @@ viewMainContents focusedDropdownId opts tbs selectedLevel =
           (opts
           |> Dict.get level
           |> Maybe.withDefault []
-          |> Util.multiDictFromList (\{origin_category, origin_category_index} ->
-                                       (origin_category_index, origin_category))
+          |> Util.multiDictFromList (\{display_origin_category, origin_category_index} ->
+                                       (origin_category_index, display_origin_category))
           |> Dict.map (viewOriginCategoryOptions focusedDropdownId)
           |> Dict.values)
 
@@ -431,10 +431,10 @@ viewOriginCategoryOptions focusedDropdownId (_, category) optionsList =
     (simple h2 ("From " ++ category ++ ":") :: List.map (viewOptions focusedDropdownId) optionsList)
 
 viewOptions : Maybe String -> Options -> Html Msg
-viewOptions focusedDropdownId {origin, spec, id} =
+viewOptions focusedDropdownId {origin, spec, id, display_id} =
   div
     [ Attr.css optionsSectionStyle ]
-    [ simple h3 id
+    [ simple h3 display_id
     , viewSpec
         { origin            = origin
         , id                = id

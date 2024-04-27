@@ -25,20 +25,19 @@ feat(durable) ?= "Hardy and resilient, you gain the following benefits:
     the roll equals twice your Constitution modifier (minimum of 2).".
 bonus_source(feat(durable), con+1).
 
-% Example from Tasha's
-% TODO: prereq
-%feat_option(metamagic)
-%todo feats dont work
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PLAYER HANDBOOK (NOT SRD)                                                    %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 feat_option(lucky).
 feat(lucky) ?= "Three times per long rest: reroll a die (own die or attack roll against you) after the roll, but before outcome is determined. Pick whichever outcome you prefer.".
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TASHA'S CAULDRON OF EVERYTHING                                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% FEY TOUCHED
+%%%%%%%%%%%%%
 feat_option('fey touched').
 bonus_options_source(feat('fey touched'), asi, id,
                      from_list([int+1, wis+1, cha+1])).
@@ -55,3 +54,30 @@ feat('fey touched') ?= "Your exposure to the Feywild's magic has changed you, gr
     Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.
 
     You learn the Misty Step spell and one 1st-level spell of your choice. The 1st-level spell must be from the Divination or Enchantment school of magic. You can cast each of these spells without expending a spell slot. Once you cast either of these spells in this way, you can’t cast that spell in this way again until you finish a long rest. You can also cast these spells using spell slots you have of the appropriate level. The spells’ spellcasting ability is the ability increased by this feat.".
+
+% METAMAGIC ADEPT
+%%%%%%%%%%%%%%%%%
+feat_option('metamagic adept').
+
+% Pick two metamagic options.
+options_source(feat('metamagic adept'), metamagic, 2 unique_from metamagic_option).
+   
+% One option can be replaced any time the character gets an ASI or feat from their class
+% (except on the level this feat is picked).
+replace_at_character_level(feat('metamagic adept'), CharLevel, metamagic, 1, metamagic_option) :-
+    options(Class >: ClassLevel, 'asi or feat', _),
+    origin_level(Class >: ClassLevel, CharLevel),
+    trait(Origin, feat('metamagic adept')),
+    \+ origin_level(Origin, CharLevel).
+
+% Actually add the chosen metamagic options as traits.
+trait(feat('metamagic adept'), metamagic(MetaMagic)) :-
+    selected_at_current_level(feat('metamagic adept'), metamagic, MetaMagic).
+
+% Metamagic adept grants two sorcery points which can only be used for metamagic, not for
+% conversion into spell slots, so they need to be tracked as a separate resource from regular
+% sorcery points.
+resource(metamagic, 'adept sorcery point', 2) :-
+    feat('metamagic adept').
+on_rest(long, 'adept sorcery point', 'full restore').
+

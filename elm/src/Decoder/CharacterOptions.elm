@@ -71,8 +71,10 @@ optionsDec =
   D.succeed Options
     |> D.andMap (D.field "charlevel" D.int)
     |> D.andMap (D.field "id" D.string)
+    |> D.andMap (D.field "display_id" D.string)
     |> D.andMap (D.field "origin" D.string)
     |> D.andMap (D.field "origin_category" D.string)
+    |> D.andMap (D.field "display_origin_category" D.string)
     |> D.andMap (D.field "origin_category_index" D.int)
     |> D.andMap extractSpecAndChoice
 

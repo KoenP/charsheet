@@ -60,9 +60,14 @@ origin_level(trait(Trait), TraitOriginLevel) :-
     !,
     trait(TraitOrigin, Trait),
     origin_level(TraitOrigin, TraitOriginLevel).
+origin_level(feat(Feat), FeatOriginLevel) :-
+    !,
+    trait(TraitOrigin, feat(Feat)),
+    origin_level(TraitOrigin, FeatOriginLevel).
 origin_level(choice(ChoiceOrigin, _), ChoiceOriginLevel) :-
     !,
     origin_level(ChoiceOrigin, ChoiceOriginLevel).
+origin_level(_ at Level, Level) :- !.
 origin_level(_, unknown) :- !.
 
 

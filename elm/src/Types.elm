@@ -170,8 +170,10 @@ type alias CharacterSelectionPageData =
 type alias Options =
   { charlevel : Level
   , id : String
+  , display_id : String
   , origin : String
   , origin_category : String
+  , display_origin_category : String
   , origin_category_index : Int
   , spec : SpecAndChoice
   }

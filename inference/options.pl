@@ -97,25 +97,6 @@ choice_member(Origin, Id, Choice) :-
     choice(Origin, Id, C),
     (member(Choice, C); \+ is_list(C), Choice = C).
 
-%! selected_at_class_level(?ClassLevel, ?Id, ?Choice)
-%
-%  Some choices can be replaced at a later moment.
-%  For example, a sorcerer may choose to forget one spell
-%  to gain another every level starting from level 2.
-%  This predicate helps keep track of what is selected
-%  at which class level by looking at the current and past
-%  class levels.
-selected_at_class_level(Class:Level, Id, Choice) :-
-    class_origin_to_class_level(Origin, Class:Level),
-    (choice_member(Origin, Id, Choice) ; choice_member(Origin, replacing(Id,_), Choice)).
-selected_at_class_level(Class:Level, Id, Choice) :-
-    class_level(Class:CurLevel),
-    between(2, CurLevel, Level), % ground Level
-    PrevLevel is Level-1,
-    selected_at_class_level(Class:PrevLevel, Id, Choice),
-    \+ (class_origin_to_class_level(Origin, Class:Level),
-        choice_member(Origin, replace(Id), Choice)).
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Helper predicates
 
@@ -217,16 +198,21 @@ dict_get_pred(Dict, Field, Val) :-
     Dict.get(Field) = Val.
 
 %! options_json(?Origin, ?Id, ?Json)
-options_json(Origin, Id, _{origin: OriginStr, origin_category: CategoryStr, origin_category_index: CatIdx,
-                           charlevel: CharLevel, id: IdStr, spec: SpecJson, choice: ChoiceJson}) :-
+options_json(Origin, Id, _{origin: OriginStr,
+                           origin_category: CategoryStr, display_origin_category: DisplayCategory,
+                           origin_category_index: CatIdx,
+                           charlevel: CharLevel, id: IdStr, display_id: DisplayId, spec: SpecJson,
+                           choice: ChoiceJson}) :-
     options(Origin, Id, Spec),
     origin_category_or_uncategorized(Category, Origin), term_string(Category, CategoryStr),
+    fmt(format_term(Category), DisplayCategory),
     origin_category_canonical_order(Category, CatIdx),
     origin_level(Origin, CharLevel),
     spec_to_json(Origin, Id, Spec, SpecJson),
     choice_json(Origin, Id, Spec, ChoiceJson),
     term_string(Origin, OriginStr),
-    term_string(Id, IdStr).
+    term_string(Id, IdStr),
+    fmt(format_term(Id), DisplayId).
 
 %! resolve_not_eligible
 %

@@ -231,15 +231,6 @@ default_asi_level(L) :-
 
 options_source(Class >: Level, 'asi or feat', (2 from ability) or feat_option) :-
     asi_level(Class:Level).
-%asi_or_feat(feat(Feat)) :-
-%    selectable_feat_option(Feat).
-%asi_or_feat(Ability + 2) :-
-%    ability(Ability).
-%asi_or_feat([Ability1 + 1, Ability2 + 1]) :-
-%    ability(Ability1),
-%    ability(Ability2),
-%    Ability1 \= Ability2.
-
 trait(choice(AsiLevel,'asi or feat'), feat(Feat)) :-
     choice(AsiLevel, 'asi or feat', Feat),
     feat_option(Feat).
