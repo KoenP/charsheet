@@ -1,6 +1,16 @@
 :- multifile attack/5, attack_variant/5, add_weapon_note/2, suppress_unarmed/0.
 
 %! attack(?Name, ?Range, ?ToHitOrDC, ?DamageFormula, ?Notes)
+%
+%  Stats for an attack (typically weapon or cantrip) that is available
+%  to the character.
+%  For weapons (or weapon variants), this means the weapon has to be
+%  in the character's posession (see has/1)
+%  For cantrips, the spell has to be known (see known_spell/2).
+attack(Weapon, Range, ToHit, DamageRolls, Notes) :-
+    (has(Weapon) ; Weapon = unarmed),
+    ( weapon_attack(Weapon, Range, ToHit, DamageRolls, Notes)
+    ; weapon_variant_attack(Weapon, Range, ToHit, DamageRolls, Notes)).
 attack(Cantrip, Range, to_hit(ToHit), [DamageDice], []) :-
     known_spell_to_hit(Origin, Cantrip, ToHit),
     known_spell_data(Origin, Cantrip, Data),
@@ -18,8 +28,13 @@ attack(Cantrip, Range, saving_throw(DC, Abi), [DamageDice], Notes) :-
        DamageDice = damage(_,_)),
        Notes = [Str],
        format(string(Str), "on save: ~w", Alt)).
-attack(Weapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
-    (has(Weapon) ; Weapon = unarmed),
+
+%! weapon_attack(?Weapon, ?Range, ?ToHit, ?DamageRolls, ?Notes)
+%
+%  Stats for an attack with a given Weapon (does not check has/1).
+%  The Weapon can be a base weapon as defined by the weapon/5 predicate;
+%  it can also be a compound term of the form `Weapon + Enchantment`.
+weapon_attack(Weapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
     expand_to_sum(Weapon, BaseWeapon + Enchantment),
     weapon(BaseWeapon, _, _, _, _),
     %weapon_base_damage_rolls(BaseWeapon, BaseDamageRolls),
@@ -31,6 +46,17 @@ attack(Weapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
     ToHit is Mod + ProfBon + OtherBonuses + Enchantment,
     weapon_damage_rolls(BaseWeapon, Mod, Enchantment, FinalDamageRolls).
     %add_bonus_to_first_die(Mod + Enchantment, BaseDamageRolls, FinalDamageRolls).
+
+%! weapon_variant_attack(?WeaponVariant, ?Range, ?ToHit, ?DamageRolls, ?Notes)
+%
+%  Stats for an attack with a given weapon variant (does not check has/1).
+%  WeaponVariant must be exactly a term defined by the weapon_variant/4
+%  predicate.
+weapon_variant_attack(WeaponVariant, Range, ToHit, DamageRolls, Notes) :-
+    weapon_variant(WeaponVariant, Weapon, ExtraDamageRolls, ExtraNotes),
+    weapon_attack(Weapon, Range, ToHit, BaseDamageRolls, BaseNotes),
+    append(BaseDamageRolls, ExtraDamageRolls, DamageRolls),
+    append(BaseNotes, ExtraNotes, Notes).
 
 weapon_damage_rolls(BaseWeapon, Mod, Enchantment, FinalRolls) :-
     weapon_base_damage_rolls(BaseWeapon, BaseRolls),

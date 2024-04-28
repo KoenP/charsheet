@@ -21,17 +21,21 @@ body_armor(Armor+N, Weight, ac(AC)) :-
 weapon_proficiency(Weapon) :-
     trait(weapon(Weapon)).
 weapon_proficiency(Weapon) :-
-    weapon(Weapon, WeaponClass, _, _, _),
-    trait(weapon(WeaponClass)).
+    weapon(Weapon, Category, _, _, _),
+    trait(weapon(Category)).
     
-%! weapon(?Name, ?WeaponClass, ?Rangedness, ?DamageFormula, ?Notes)
+%! weapon(?Name, ?Category, ?Rangedness, ?DamageFormula, ?Notes)
 weapon(club, simple, melee,
        [damage(bludgeoning, 1 d 4)], [light]).
 weapon(quarterstaff, simple, melee,
        [damage(bludgeoning, 1 d 6)], [versatile(1 d 8)]).
 weapon(mace, simple, melee,
        [damage(bludgeoning, 1 d 6)], []).
+weapon(handaxe, simple, melee,
+       [damage(slashing, 1 d 6)], [light, thrown(feet(20) / feet(60))]).
 
+weapon(battleaxe, martial, melee,
+       [damage(slashing, 1 d 8)], [versatile(1 d 10)]).
 weapon(greataxe, martial, melee,
        [damage(slashing, 1 d 12)], [heavy, twohanded]).
 weapon(longsword, martial, melee,
@@ -64,3 +68,29 @@ weapon_melee(Weapon) :-
     weapon(Weapon, _, melee, _, _).
 weapon_ranged(Weapon) :-
     weapon(Weapon, _, ranged(_), _, _).
+
+%! weapon_variant(?NamedWeapon, ?BaseWeapon, ?ExtraRolls, ?ExtraNotes)
+%  Some (magic) weapons have a specific name but
+%  inherit their base stats from a regular weapon.
+%  The notation for an enchantment bonus works on the BaseWeapon parameter, so
+%  BaseWeapon can be `longsword + 2`, for example.
+%  The variant weapon can add extra damage rolls and notes, but can't change
+%  any other stats. If other stats need to be changed, it's no longer considered
+%  a variant.
+weapon_variant(berserker_axe(BaseWeapon), BaseWeapon + 1, [], [attunement, cursed]) :-
+    member(BaseWeapon, [handaxe, battleaxe, greataxe]).
+custom_format(berserker_axe(BaseWeapon)) -->
+    ["berserker "], [BaseWeapon].
+%bonus(has(berserker_axe(_)), )
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Equipment JSON 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%equipment_json_dict(_{weapons: Weapons}) :-
+%    weapons_json_dict(Weapons).
+%
+%weapon_json_dict(_{ weapon: Weapon,
+%                    bonus: 
+%                     
+%                 }) :-
+%    weapon(Weapon, Category, Range, DamageFormula, Notes).

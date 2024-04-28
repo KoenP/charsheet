@@ -205,7 +205,7 @@ options_json(Origin, Id, _{origin: OriginStr,
                            choice: ChoiceJson}) :-
     options(Origin, Id, Spec),
     origin_category_or_uncategorized(Category, Origin), term_string(Category, CategoryStr),
-    fmt(format_term(Category), DisplayCategory),
+    trait_category_string(Category, DisplayCategory),
     origin_category_canonical_order(Category, CatIdx),
     origin_level(Origin, CharLevel),
     spec_to_json(Origin, Id, Spec, SpecJson),

@@ -426,9 +426,14 @@ viewLevelUpPage =
 
 viewOriginCategoryOptions : Maybe String -> (Int, String) -> List Options -> Html Msg
 viewOriginCategoryOptions focusedDropdownId (_, category) optionsList =
-  div
-    [ Attr.css originCategoryStyle ]
-    (simple h2 ("From " ++ category ++ ":") :: List.map (viewOptions focusedDropdownId) optionsList)
+  let
+    headerMsg = case category of
+                  "init" -> "Choose your background, class, and race:"
+                  _      -> "From " ++ category ++ ":"
+  in 
+    div
+      [ Attr.css originCategoryStyle ]
+      (simple h2 headerMsg :: List.map (viewOptions focusedDropdownId) optionsList)
 
 viewOptions : Maybe String -> Options -> Html Msg
 viewOptions focusedDropdownId {origin, spec, id, display_id} =
