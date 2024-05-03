@@ -122,7 +122,7 @@ viewMainBody sheet =
     , viewBadgeDiv "armor class" "ac" (viewArmorClassContent sheet.ac_formulas)
     , viewBadgeDiv "stats" "stat-table" (viewStatTableContent sheet.summary)
     ]
-  , div [ class "attacks" ]
+  , div [ class "attacks attacks-positioning" ]
     [ div [ class "badge-title" ] [ text "attacks" ]
     , table [] <|
         tr [] (List.map (simple th) ["Attack", "To Hit/DC", "Damage", "Range", "Notes"])

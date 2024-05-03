@@ -386,12 +386,11 @@
     width: 17pt;
 }
 
-.attacks {
+.attacks-positioning {
     position: absolute;
     bottom: 16mm;
     left: 0mm;
     right: 0mm;
-
     display: flex;
     flex-direction: column;
     align-items: center;

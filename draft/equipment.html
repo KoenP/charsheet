@@ -1,0 +1,109 @@
+<head>
+
+    <style>
+    /* From https://www.w3schools.com/css/css_tooltip.asp */
+    /* Tooltip container */
+    .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+    }
+
+    /* Tooltip text */
+    .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 560px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+
+    top: 0%;
+    left: 100%;
+    /* margin-left: -300px; /* Use half of the width (120/2 = 60), to center the tooltip */
+    }
+    .tooltiptext {
+        font-size: 12px;
+        font-family: "Liberation", sans-serif;
+    }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .tooltip:hover .tooltiptext {
+    visibility: visible;
+    }
+    </style>
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;700&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="../elm/src/css/printable-char-sheet.css">
+
+</head>
+
+<body>
+    <h1>Equipment</h1>
+    <h2>Armor</h2>
+    <div class="attacks">
+        <table>
+            <tr>
+                <th></th>
+                <th>Armor</th>
+                <th>Category</th>
+                <th>AC</th>
+                <th>Str Req</th>
+                <th>Stealth</th>
+            </tr>
+            <tr>
+                <td><button>x</button></td>
+                <td>Scale Mail + 1</td>
+                <td>Medium</td>
+                <td>15 + <div class="tooltip">2 <span class="tooltiptext">Dex modifier, capped at 2</span></div></td>
+                <td>-</td>
+                <td>Disadvantage</td>
+            </tr>
+            <tr>
+                <td><button>x</button></td>
+                <td>Shield</td>
+                <td>Shield</td>
+                <td>+2</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        </table>
+    </div>
+    <p><button>Add armor</button></p>
+
+    <h2>Weapons</h2>
+    <div class="attacks">
+        <table>
+            <tr>
+                <th></th>
+                <th>Weapon</th>
+                <th>To Hit/DC</th>
+                <th>Damage</th>
+                <th>Range</th>
+                <th>Notes</th>
+            </tr>
+            <tr>
+                <td><button>x</button><button>👁 </button></td>
+                <td>Longsword + 1</td>
+                <td>+7</td>
+                <td>1d8+5 slashing</td>
+                <td>5 ft</td>
+                <td>versatile</td>
+            </tr>
+            <tr style=" color: grey;">
+                <td><button>👁 </button></td>
+                <td>↳ Longsword + 1 (two-handed)</td>
+                <td>+7</td>
+                <td>1d10+5 slashing</td>
+                <td>5 ft</td>
+                <td></td>
+            </tr>
+        </table>
+        <p><button>Add weapon</button></p>
+    </div>
+
+</body>
