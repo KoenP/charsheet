@@ -1,11 +1,13 @@
 module Decoder.CharacterSheet exposing (sheetDec)
 
+--------------------------------------------------------------------------------
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra as D
 
 import Types exposing (..)
 import Util exposing (exactMatchDec)
 import Decoder.AbilityTable exposing (abilityTableDec, skillTableDec)
+--------------------------------------------------------------------------------
 
 sheetDec : Decoder CharacterSheet
 sheetDec =

@@ -136,6 +136,9 @@ remote_query(_, '/cur_level') :-
 remote_query(_, '/list_class_options') :- % TODO: filter for available class options
     findall(O, class_option(O), Options),
     reply_json_dict(Options).
+remote_query(_, '/equipment') :-
+    equipment_json_dict(D),
+    reply_json_dict(D).
     
 quoted_term_string(T, S) :-
     term_string(T, S, [quoted(true)]).

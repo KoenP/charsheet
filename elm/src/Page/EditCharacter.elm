@@ -167,6 +167,7 @@ view : Maybe String -> EditCharacterPageData -> List (Html Msg)
 view focusedDropdownId data =
   [ Elements.viewNavButtons
       [ Elements.viewGotoSheetButton
+      , Elements.viewGotoEquipmentButton
       , Elements.viewSelectCharacterButton
       ]
   , viewSideNav data

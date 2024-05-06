@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+----------------------------------------------------------------------
 import Browser
 import Browser.Navigation as Nav
 import Browser.Events
@@ -27,9 +28,9 @@ import Page.CharacterSheet as Sheet
 import Page.PrintableCharSheet as PSheet
 import Page.EditCharacter as Edit
 import Page.CardsPage as Cards
+import Page.Equipment as Equipment
 import Request exposing (requestUrl)
 import Types exposing (..)
-
 ----------------------------------------------------------------------
 
 -- MAIN
@@ -75,11 +76,12 @@ init _ url key =
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     }
-  , loadSelectCharacterPage
+  -- , loadSelectCharacterPage
   -- , PSheet.load
   -- , Sheet.load
   -- , Cards.load
   -- , Edit.load
+  , Equipment.load
   -- , Nav.pushUrl key "/list_characters"
   )
 
@@ -109,6 +111,13 @@ navigate model route = -- ( { model | page = Loading } , Sheet.load )
         ( { model | page = Loading }
         , Edit.load
         )
+
+    EquipmentRoute ->
+      Debug.log "navigate (EquipmentRoute)"
+        ( { model | page = Loading }
+        , Equipment.load
+        )
+
     _ -> ( model, none )
 
 loadSelectCharacterPage : Cmd Msg
@@ -127,6 +136,7 @@ type Route
   | EditRoute
   | NotFound
   | CharacterRoute String
+  | EquipmentRoute
   
 routeParser : Parser (Route -> a) a
 routeParser =
@@ -137,6 +147,7 @@ routeParser =
     , Parser.map SheetRoute (Parser.s "sheet")
     , Parser.map EditRoute (Parser.s "edit")
     , Parser.map CharacterRoute (Parser.s "character" </> Parser.string)
+    , Parser.map EquipmentRoute (Parser.s "equipment")
 
       -- Parser.s "char" : Parser a a
       -- </> : Parser (String -> d) (String -> d) -> Parser (String -> d) c -> Parser (String -> d) c
@@ -188,6 +199,9 @@ update msg model =
     GotoSheet ->
       applyPage model (Loading, Nav.pushUrl model.key "/sheet")
 
+    GotoEquipmentPage ->
+      applyPage model (Loading, Nav.pushUrl model.key "/equipment")
+
     Choice origin id choice ->
       ( { model | focusedDropdownId = Nothing } , registerChoice origin id choice )
 
@@ -216,6 +230,8 @@ update msg model =
           Edit.update msg model data
         CardsPage options data ->
           Cards.update msg model data
+        EquipmentPage data ->
+          Equipment.update msg model data
         Loading ->
           case msg of
             HttpResponse (Ok responseMsg) ->
@@ -285,6 +301,10 @@ handleHttpResponseMsg msg model =
              }
            , none
            )
+      GotEquipment equipment ->
+        ( { model | page = EquipmentPage equipment }
+        , none
+        )
       ChoiceRegistered ->
         (model, Edit.load)
       _ ->
@@ -368,7 +388,10 @@ view model =
          EditCharacterPage data ->
            Edit.view model.focusedDropdownId data
          CardsPage options data ->
-           Cards.view options data model.preparedSpells )
+           Cards.view options data model.preparedSpells
+         EquipmentPage data ->
+           Equipment.view data
+      )
   }
 
 globalCss : Html msg

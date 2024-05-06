@@ -92,6 +92,10 @@ viewGotoCardsButton : CharacterSheet -> Html Msg
 viewGotoCardsButton sheet =
   viewNavButton (GotoCardsPage { showSpells = AllSpells } sheet) "cards.png" "View/print cards"
 
+viewGotoEquipmentButton : Html Msg
+viewGotoEquipmentButton =
+  viewNavButton GotoEquipmentPage "equipment.png" "Edit equipment"
+
 -- "\u{270F}" "\u{00d7}"  "\u{1f4c4}" 
 
 

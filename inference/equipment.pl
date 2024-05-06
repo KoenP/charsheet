@@ -86,11 +86,21 @@ custom_format(berserker_axe(BaseWeapon)) -->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Equipment JSON 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%equipment_json_dict(_{weapons: Weapons}) :-
-%    weapons_json_dict(Weapons).
-%
-%weapon_json_dict(_{ weapon: Weapon,
-%                    bonus: 
-%                     
-%                 }) :-
-%    weapon(Weapon, Category, Range, DamageFormula, Notes).
+equipment_json_dict(_{weapons: Weapons}) :-
+    findall(Weapon, weapon_json_dict(Weapon), Weapons).
+
+weapon_json_dict(_{ weapon: Weapon,
+                    category: Category,
+                    range: Range,
+                    to_hit: ToHit,
+                    damage: Damage,
+                    notes: Notes
+                 }) :-
+    attack_or_variant(WeaponVal, RangeVal, ToHitVal, DamageVal, NotesVal),
+    destructure_weapon_or_variant(WeaponVal, BaseWeaponVal, _),
+    weapon(BaseWeaponVal, Category, _, _, _),
+    fmt(format_term(WeaponVal), Weapon),
+    fmt(format_range(RangeVal), Range),
+    fmt(format_to_hit_or_dc(ToHitVal), ToHit),
+    fmt(format_damage(DamageVal), Damage),
+    fmt(format_list(NotesVal), Notes).

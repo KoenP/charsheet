@@ -221,6 +221,7 @@ type Page
   | PrintableCharSheetPage CharacterSheet
   | EditCharacterPage EditCharacterPageData
   | CardsPage CardsPageOptions CharacterSheet
+  | EquipmentPage Equipment
 
 type alias EditCharacterPageData = 
   { abilityTable : AbilityTable
@@ -255,6 +256,19 @@ setSpellPreparedness origin spell prepared old =
                               True  -> Set.insert spell set)
       old
 
+type alias Equipment =
+  { weapons : List Weapon
+  }
+
+type alias Weapon =
+  { weapon : String
+  , category : String
+  , range : String
+  , to_hit : String
+  , damage : String
+  , notes : String
+  }
+
 ----------------------------------------------------------------------
 -- MSG
 type Msg
@@ -282,6 +296,7 @@ type Msg
   | Null
   | Tick Posix
   | SetBaseAbilityScore Ability Int
+  | GotoEquipmentPage
 
 type Choice = ListChoice (List String) | SingletonChoice String
 
@@ -291,6 +306,7 @@ type HttpResponseMsg
   | GotCharacterSheet CharacterSheet
   | GotPrintableCharSheet CharacterSheet
   | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
+  | GotEquipment Equipment
   | ChoiceRegistered
   | LeveledUp
   | UpdatedBaseAbilityScores
