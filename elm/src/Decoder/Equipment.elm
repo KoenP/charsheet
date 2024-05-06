@@ -21,3 +21,4 @@ weaponDec =
     |> D.andMap (D.field "to_hit" D.string)
     |> D.andMap (D.field "damage" D.string)
     |> D.andMap (D.field "notes" D.string)
+    |> D.andMap (D.field "is_variant" D.bool)

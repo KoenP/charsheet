@@ -267,6 +267,7 @@ type alias Weapon =
   , to_hit : String
   , damage : String
   , notes : String
+  , is_variant : Bool
   }
 
 ----------------------------------------------------------------------
@@ -297,6 +298,7 @@ type Msg
   | Tick Posix
   | SetBaseAbilityScore Ability Int
   | GotoEquipmentPage
+  | UnequipWeapon String
 
 type Choice = ListChoice (List String) | SingletonChoice String
 

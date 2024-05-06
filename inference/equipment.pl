@@ -94,9 +94,10 @@ weapon_json_dict(_{ weapon: Weapon,
                     range: Range,
                     to_hit: ToHit,
                     damage: Damage,
-                    notes: Notes
+                    notes: Notes,
+                    is_variant: IsVariant
                  }) :-
-    attack_or_variant(WeaponVal, RangeVal, ToHitVal, DamageVal, NotesVal),
+    attack_or_variant(WeaponVal, RangeVal, ToHitVal, DamageVal, NotesVal, IsVariant),
     destructure_weapon_or_variant(WeaponVal, BaseWeaponVal, _),
     weapon(BaseWeaponVal, Category, _, _, _),
     fmt(format_term(WeaponVal), Weapon),

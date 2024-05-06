@@ -84,17 +84,24 @@ attack_variant(Name:twohanded, Range, ToHit,
 meta_todo(versatile, "Also shows up when it's strictly worse than the onehanded variant.").
 custom_format(Weapon:twohanded) --> format_term(Weapon), [" (2H)"].
 
-%! attack_or_variant(?Id, ?Range, ?ToHit, ?DamageFormula, ?Notes)
+%! attack_or_variant(?Id, ?Range, ?ToHit, ?DamageFormula, ?Notes, ?IsVariant:bool)
 %
 %  Disjunction between attack/5 and attack_variant/5, structured such that
-%  attacks and their variants are "together".
-attack_or_variant(Id, Range, ToHit, DamageFormula, Notes) :-
+%  attacks and their variants are "together" and tagged with a boolean indicating
+%  whether the attack is a variant or not.
+attack_or_variant(Id, Range, ToHit, DamageFormula, Notes, IsVariant) :-
     attack(BaseId, BaseRange, BaseToHit, BaseDamageFormula, BaseNotes),
-    findall((BaseId:VarId)-VarRange-VarToHit-VarDamageFormula-VarNotes,
+    findall((BaseId:VarId)-VarRange-VarToHit-VarDamageFormula-VarNotes-true,
             attack_variant(BaseId:VarId, VarRange, VarToHit, VarDamageFormula, VarNotes),
             Variants),
-    member(Id-Range-ToHit-DamageFormula-Notes,
-           [BaseId-BaseRange-BaseToHit-BaseDamageFormula-BaseNotes | Variants]).
+    member(Id-Range-ToHit-DamageFormula-Notes-IsVariant,
+           [BaseId-BaseRange-BaseToHit-BaseDamageFormula-BaseNotes-false | Variants]).
+
+%! attack_or_variant(?Id, ?Range, ?ToHit, ?DamageFormula, ?Notes)
+%
+%  attack_or_variant/6 with the IsVariant parameter removed.
+attack_or_variant(Id, Range, ToHit, DamageFormula, Notes) :-
+    attack_or_variant(Id, Range, ToHit, DamageFormula, Notes, _).
 
 
 %! add_bonus_to_first_die(+Bonus, +Rolls, -NewRolls)
@@ -105,9 +112,12 @@ add_bonus_to_first_die(Bonus, [damage(Type,Roll)|Rolls], [damage(Type,NewRoll)|R
 attack_notes(Weapon, Notes) :-
     weapon(Weapon, _, _, _, WeaponNotes),
     findall(Note,
-            bonus(add_weapon_note(Weapon, Note)),
+            (bonus(add_weapon_note(Weapon, Note)) ; not_proficient_note(Weapon, Note)),
             BonusNotes),
     append(WeaponNotes, BonusNotes, Notes).
+
+not_proficient_note(Weapon, "not proficient") :-
+    \+ weapon_proficiency(Weapon).
 
 %! base_weapon_range(?Weapon, ?Range)
 %

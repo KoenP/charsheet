@@ -139,6 +139,11 @@ remote_query(_, '/list_class_options') :- % TODO: filter for available class opt
 remote_query(_, '/equipment') :-
     equipment_json_dict(D),
     reply_json_dict(D).
+remote_query(Request, '/unequip_weapon') :-
+    http_parameters(Request, [weapon(Weapon,[])]),
+    retractall(has(Weapon)),
+    equipment_json_dict(D),
+    reply_json_dict(D).
     
 quoted_term_string(T, S) :-
     term_string(T, S, [quoted(true)]).

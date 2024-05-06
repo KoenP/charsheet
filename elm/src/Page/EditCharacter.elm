@@ -678,9 +678,6 @@ effectCategories = Set.fromList
                     , "sense", "tool", "spellcasting_focus", "weapon", "skill",
                       "channel_divinity", "destroy_undead"
                     ]
---------------------------------------------------------------------------------
--- UTIL
---------------------------------------------------------------------------------
 applyPageData : Model -> EditCharacterPageData -> Model
 applyPageData model data =
   { model | page = EditCharacterPage data }
