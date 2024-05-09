@@ -1,8 +1,10 @@
 :- multifile weapon/5.
 :- multifile has/1.
 :- dynamic has/1.
+:- dynamic attuned/1.
 
 has(_) :- false.
+attuned(_) :- false.
 
 expand_to_sum(Item    , Item + 0) :- Item \= _+_.
 expand_to_sum(Item + N, Item + N).
@@ -81,7 +83,8 @@ weapon_variant(berserker_axe(BaseWeapon), BaseWeapon + 1, [], [attunement, curse
     member(BaseWeapon, [handaxe, battleaxe, greataxe]).
 custom_format(berserker_axe(BaseWeapon)) -->
     ["berserker "], [BaseWeapon].
-%bonus(has(berserker_axe(_)), )
+bonus(attuned(berserker_axe(_)), 'max hp' + Lvl) :-
+    level(Lvl).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Equipment JSON 
