@@ -140,7 +140,9 @@ remote_query(_, '/equipment') :-
     equipment_json_dict(D),
     reply_json_dict(D).
 remote_query(Request, '/unequip_weapon') :-
-    http_parameters(Request, [weapon(Weapon,[])]),
+    http_parameters(Request, [base_weapon(BaseWeapon,[]), enchantment(EnchantmentAtom, [])]),
+    atom_number(EnchantmentAtom, Enchantment),
+    destructure_weapon_or_variant(Weapon, BaseWeapon, Enchantment),
     retractall(has(Weapon)),
     equipment_json_dict(D),
     reply_json_dict(D).

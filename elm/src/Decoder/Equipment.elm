@@ -15,7 +15,8 @@ gotEquipmentDec =
 weaponDec : Decoder Weapon
 weaponDec =
   D.succeed Weapon
-    |> D.andMap (D.field "weapon" D.string)
+    |> D.andMap (D.field "base_weapon" D.string)
+    |> D.andMap (D.field "enchantment" D.int)
     |> D.andMap (D.field "category" D.string)
     |> D.andMap (D.field "range" D.string)
     |> D.andMap (D.field "to_hit" D.string)

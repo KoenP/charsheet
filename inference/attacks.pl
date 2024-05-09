@@ -163,9 +163,3 @@ other_bonuses_to_hit(Weapon, TotalBonus) :-
     weapon(Weapon, _, _, _, _),
     findall(B, bonus(to_hit(Weapon) + B), Bonuses),
     sum_list(Bonuses, TotalBonus).
-
-destructure_weapon_or_variant(Variant : _, BaseWeapon, Enchantment) :-
-    destructure_weapon_or_variant(Variant, BaseWeapon, Enchantment).
-destructure_weapon_or_variant(BaseWeapon + Enchantment, BaseWeapon, Enchantment).
-destructure_weapon_or_variant(Weapon, Weapon, 0) :-
-    atomic(Weapon).

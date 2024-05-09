@@ -31,13 +31,17 @@ expectGotEquipment = Http.expectJson (mkHttpResponseMsg GotEquipment) gotEquipme
 update : Msg -> Model -> Equipment -> (Model, Cmd Msg)
 update msg model oldEquipment =
   case msg of
-      UnequipWeapon weapon ->
+      UnequipWeapon { base_weapon, enchantment } ->
         ( applyPageData model
             { oldEquipment
-            | weapons = List.filter (\w -> w.weapon /= weapon) oldEquipment.weapons
+            | weapons = List.filter
+                (\w -> ( w.base_weapon, w.enchantment ) /= ( base_weapon, enchantment ))
+                oldEquipment.weapons
             }
         , Http.get
-            { url = requestUrl "unequip_weapon" [ ( "weapon", weapon ) ]
+            { url = requestUrl "unequip_weapon" [ ( "base_weapon", base_weapon )
+                                                , ( "enchantment", String.fromInt enchantment )
+                                                ]
             , expect = expectGotEquipment
             }
         )
@@ -45,7 +49,12 @@ update msg model oldEquipment =
         
 view : Equipment -> List (Html Msg)
 view { weapons } =
-  [ simple h1 "Equipment"
+  [ Elements.viewNavButtons
+      [ Elements.viewGotoSheetButton
+      , Elements.viewEditCharacterButton
+      , Elements.viewSelectCharacterButton
+      ]
+  , simple h1 "Equipment"
   , simple h2 "Weapons"
   , viewWeaponsTable weapons
   , p [] [ button [] [ text "Add weapon" ] ]
@@ -63,14 +72,20 @@ viewWeaponsTable weapons =
     )
 
 viewWeapon : Weapon -> Html Msg
-viewWeapon { weapon, category, to_hit, damage, range, notes, is_variant } =
+viewWeapon { base_weapon, enchantment, category, to_hit, damage, range, notes, is_variant } =
   let indentIfVariant str = if is_variant then "↳ " ++ str else str
       omitIfVariant html = if is_variant then [] else [ html ]
+      weapon = base_weapon
+               ++ if enchantment > 0
+                  then "+" ++ String.fromInt enchantment
+                  else ""
   in 
     tr []
       <| td [] (omitIfVariant
                   <| Elements.viewNavButton
-                     (UnequipWeapon weapon)
+                     (UnequipWeapon { base_weapon = base_weapon
+                                    , enchantment = enchantment
+                                    })
                      "close.png"
                      "Unequip weapon")
       :: List.map (simple td)

@@ -261,7 +261,8 @@ type alias Equipment =
   }
 
 type alias Weapon =
-  { weapon : String
+  { base_weapon : String
+  , enchantment : Int
   , category : String
   , range : String
   , to_hit : String
@@ -298,7 +299,7 @@ type Msg
   | Tick Posix
   | SetBaseAbilityScore Ability Int
   | GotoEquipmentPage
-  | UnequipWeapon String
+  | UnequipWeapon { base_weapon : String, enchantment : Int }
 
 type Choice = ListChoice (List String) | SingletonChoice String
 

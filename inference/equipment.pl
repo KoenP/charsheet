@@ -92,7 +92,8 @@ bonus(attuned(berserker_axe(_)), 'max hp' + Lvl) :-
 equipment_json_dict(_{weapons: Weapons}) :-
     findall(Weapon, weapon_json_dict(Weapon), Weapons).
 
-weapon_json_dict(_{ weapon: Weapon,
+weapon_json_dict(_{ base_weapon: BaseWeapon,
+                    enchantment: Enchantment,
                     category: Category,
                     range: Range,
                     to_hit: ToHit,
@@ -101,10 +102,17 @@ weapon_json_dict(_{ weapon: Weapon,
                     is_variant: IsVariant
                  }) :-
     attack_or_variant(WeaponVal, RangeVal, ToHitVal, DamageVal, NotesVal, IsVariant),
-    destructure_weapon_or_variant(WeaponVal, BaseWeaponVal, _),
+    destructure_weapon_or_variant(WeaponVal, BaseWeaponVal, Enchantment),
     weapon(BaseWeaponVal, Category, _, _, _),
-    fmt(format_term(WeaponVal), Weapon),
+    fmt(format_term(BaseWeaponVal), BaseWeapon),
     fmt(format_range(RangeVal), Range),
     fmt(format_to_hit_or_dc(ToHitVal), ToHit),
     fmt(format_damage(DamageVal), Damage),
     fmt(format_list(NotesVal), Notes).
+
+destructure_weapon_or_variant(Variant : _, BaseWeapon, Enchantment) :-
+    Variant \= _:_,
+    destructure_weapon_or_variant(Variant, BaseWeapon, Enchantment).
+destructure_weapon_or_variant(BaseWeapon + Enchantment, BaseWeapon, Enchantment).
+destructure_weapon_or_variant(Weapon, Weapon, 0) :-
+    atomic(Weapon).

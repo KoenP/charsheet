@@ -36,6 +36,7 @@ view sheet =
   [ div [ class "dont-print" ]
     [ viewNavButtons [ viewGotoCardsButton sheet
                      , viewEditCharacterButton
+                     , viewGotoEquipmentButton
                      , viewSelectCharacterButton
                      ]
     ]
