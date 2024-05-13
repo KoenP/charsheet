@@ -89,8 +89,22 @@ bonus(attuned(berserker_axe(_)), 'max hp' + Lvl) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Equipment JSON 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-equipment_json_dict(_{weapons: Weapons}) :-
-    findall(Weapon, weapon_json_dict(Weapon), Weapons).
+equipment_json_dict(_{ weapons: Weapons,
+                       weapon_options: WeaponOptions
+                     }) :-
+    findall(Weapon, weapon_json_dict(Weapon), Weapons),
+    findall(WeaponOption, weapon_option_json_dict(WeaponOption), WeaponOptions).
+
+weapon_option_json_dict(_{ base_weapon: BaseWeapon,
+                           category: Category,
+                           range: Range,
+                           to_hit: ToHit,
+                           damage: Damage,
+                           notes: Notes
+                         }) :-
+    weapon(BaseWeapon, Category, _, _, _),
+    BaseWeapon \= unarmed,
+    weapon_attack(BaseWeapon, Range, ToHit, Damage, Notes).
 
 weapon_json_dict(_{ base_weapon: BaseWeapon,
                     enchantment: Enchantment,
