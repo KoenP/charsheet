@@ -11,6 +11,7 @@ gotEquipmentDec : Decoder Equipment
 gotEquipmentDec =
   D.succeed Equipment
     |> D.andMap (D.field "weapons" (D.list weaponDec))
+    |> D.andMap (D.field "weapon_options" (D.list D.string))
 
 weaponDec : Decoder Weapon
 weaponDec =

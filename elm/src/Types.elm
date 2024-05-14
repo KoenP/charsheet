@@ -258,6 +258,7 @@ setSpellPreparedness origin spell prepared old =
 
 type alias Equipment =
   { weapons : List Weapon
+  , weapon_options : List String
   }
 
 type alias Weapon =
@@ -300,6 +301,7 @@ type Msg
   | SetBaseAbilityScore Ability Int
   | GotoEquipmentPage
   | UnequipWeapon { base_weapon : String, enchantment : Int }
+  | EquipWeapon String
 
 type Choice = ListChoice (List String) | SingletonChoice String
 

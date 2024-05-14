@@ -93,18 +93,7 @@ equipment_json_dict(_{ weapons: Weapons,
                        weapon_options: WeaponOptions
                      }) :-
     findall(Weapon, weapon_json_dict(Weapon), Weapons),
-    findall(WeaponOption, weapon_option_json_dict(WeaponOption), WeaponOptions).
-
-weapon_option_json_dict(_{ base_weapon: BaseWeapon,
-                           category: Category,
-                           range: Range,
-                           to_hit: ToHit,
-                           damage: Damage,
-                           notes: Notes
-                         }) :-
-    weapon(BaseWeapon, Category, _, _, _),
-    BaseWeapon \= unarmed,
-    weapon_attack(BaseWeapon, Range, ToHit, Damage, Notes).
+    findall(WeaponOption, weapon(WeaponOption,_,_,_,_), WeaponOptions).
 
 weapon_json_dict(_{ base_weapon: BaseWeapon,
                     enchantment: Enchantment,
@@ -127,6 +116,7 @@ weapon_json_dict(_{ base_weapon: BaseWeapon,
 destructure_weapon_or_variant(Variant : _, BaseWeapon, Enchantment) :-
     Variant \= _:_,
     destructure_weapon_or_variant(Variant, BaseWeapon, Enchantment).
-destructure_weapon_or_variant(BaseWeapon + Enchantment, BaseWeapon, Enchantment).
+destructure_weapon_or_variant(BaseWeapon + Enchantment, BaseWeapon, Enchantment) :-
+    Enchantment \= 0.
 destructure_weapon_or_variant(Weapon, Weapon, 0) :-
     atomic(Weapon).

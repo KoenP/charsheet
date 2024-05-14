@@ -146,6 +146,11 @@ remote_query(Request, '/unequip_weapon') :-
     retractall(has(Weapon)),
     equipment_json_dict(D),
     reply_json_dict(D).
+remote_query(Request, '/equip_weapon') :-
+    http_parameters(Request, [weapon(Weapon,[])]),
+    assert(has(Weapon)),
+    equipment_json_dict(D),
+    reply_json_dict(D).
     
 quoted_term_string(T, S) :-
     term_string(T, S, [quoted(true)]).

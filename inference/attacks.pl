@@ -149,6 +149,8 @@ weapon_ability_candidate(Weapon, str) :- weapon(Weapon, _, melee, _, _).
 weapon_ability_candidate(Weapon, Abi) :- bonus(use_ability(Weapon, Abi)).
 weapon_ability_candidate(Weapon, dex) :-
     weapon(Weapon, _, _, _, Notes), member(finesse, Notes).
+weapon_ability_candidate(Weapon, dex) :- weapon(Weapon, _, ranged(_), _, _).
+    
 
 %! weapon_proficiency_bonus(?Weapon, ?ProfBon)
 %
