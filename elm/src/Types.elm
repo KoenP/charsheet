@@ -300,8 +300,9 @@ type Msg
   | Tick Posix
   | SetBaseAbilityScore Ability Int
   | GotoEquipmentPage
-  | UnequipWeapon { base_weapon : String, enchantment : Int }
-  | EquipWeapon String
+  | SetEquippedWeapons (List { base_weapon : String, enchantment : Int })
+  --  | UnequipWeapon { base_weapon : String, enchantment : Int }
+  --  | EquipWeapon String
 
 type Choice = ListChoice (List String) | SingletonChoice String
 

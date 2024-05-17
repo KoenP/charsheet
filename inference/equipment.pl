@@ -1,9 +1,15 @@
 :- multifile weapon/5.
 :- multifile has/1.
 :- dynamic has/1.
+:- dynamic weapons_equipped/1.
 :- dynamic attuned/1.
 
-has(_) :- false.
+weapons_equipped(_) :- false.
+
+has(Weapon) :-
+    weapons_equipped(Weapons),
+    member(Weapon, Weapons).
+
 attuned(_) :- false.
 
 expand_to_sum(Item    , Item + 0) :- Item \= _+_.
