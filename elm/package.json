@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "swipl": "^1.0.6"
+  }
+}

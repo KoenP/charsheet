@@ -41,7 +41,7 @@ summaryDec =
     |> D.andMap (D.field "pp" D.int)
     |> D.andMap (D.field "prof_bon" D.int)
     |> D.andMap (D.field "race" D.string)
-    |> D.andMap (D.field "speed" D.int)
+    |> D.andMap (D.field "speed" D.string)
 
 acFormulaDec : Decoder AcFormula
 acFormulaDec =

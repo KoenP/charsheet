@@ -1,0 +1,61 @@
+    <!DOCTYPE HTML>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+    
+      <script type="text/javascript" src="swipl.js"></script>
+    </head>
+    
+    <body>
+      <div id="solution"></div>
+      <script type="text/javascript">
+       let swipl;
+       let text;
+       async function main() {
+           swipl = await SWIPL({arguments: []});
+           text = await fetch('main.pl').then((response) => response.text());
+           console.log(text);
+           console.log(await swipl.prolog.load_string(text, 'main.pl'));
+       }
+       main();
+
+
+
+
+
+       //   let Prolog;
+       //   let data;
+       //   const Module = {};
+       //   (async function() {
+       //       await SWIPL(Module).then(async (module) => {
+       //           Prolog = Module.prolog;
+    
+       //           // load_string approach (tons of syntax errors, I suspect string encoding mangles the qlf file)
+       //           let response = await fetch('main.pl');
+       //           console.log(response);
+       //           data = await response.text();
+       //           console.log(data);
+       //           await Prolog.load_string(data, 'main.pl');
+    
+    
+       //           // <script> approach (fails without error message)
+       //           // const response = await fetch('main.qlf');
+    
+       //           // const arrayBuffer = await response.arrayBuffer();
+       //           // const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
+       //           // const blobUrl = URL.createObjectURL(blob);
+    
+       //           // let qlfscript = document.createElement('script');
+       //           // qlfscript.type = 'text/prolog';
+       //           // qlfscript.src = blobUrl;
+       //           // document.body.appendChild(qlfscript);
+       //           // console.log(await Prolog.load_scripts());
+       //           // prints empty string, should print list of loaded files
+       //       });
+       //       console.log('done loading');
+       //   })();
+        </script>
+    </body>
+    
+    </html>
+

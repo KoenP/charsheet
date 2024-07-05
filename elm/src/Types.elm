@@ -46,7 +46,7 @@ type alias CharacterSummary =
   , pp : Int
   , prof_bon : Int
   , race : String
-  , speed : Int
+  , speed : String
   }
 
 

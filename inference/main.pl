@@ -1,36 +1,13 @@
-:- use_module(library(pldoc)).
+%:- use_module(library(pldoc)).
 :- use_module(library(yall)).
 :- use_module(library(pairs)).
+:- use_module(library(pure_input)).
 
-:- doc_server(4000).
-:- set_prolog_flag(toplevel_print_anon, false).
+%:- doc_server(4000).
+%:- set_prolog_flag(toplevel_print_anon, false).
 :- portray_text(true).
 
-:- multifile
-       (?=)/2,
-       on_rest/3,
-       todo/1,
-       meta_todo/2,
-       problem/1,
-       resource/2,
-       content_source/2.
-
-:- op(600, xfx, upto).
-:- op(500, xfy, or).
-:- op(400, xfy, and).
-:- op(700, xfx, else).
-:- op(650, xfx, from).
-:- op(650, xfx, from).
-:- op(650, xfx, unique_from).
-:- op(650, xfx, at).
-:- op(1000, xfx, ?=).
-:- op(1000, xfx, ?=).
-:- op(650, xfx, ft).
-:- op(700, xfx, by).
-:- op(100, xf, pct).
-:- op(1000, xf, qq).
-:- op(500, xfx, >:).
-:- op(500, fx, ^).
+:- [directives].
 
 :- [dragon_ancestry].
 :- [util].
@@ -178,6 +155,9 @@ speed(Speed) :-
     racial_speed(Race, BaseSpeed),
     findall(Bonus, bonus(speed+Bonus), Bonuses),
     sumlist([BaseSpeed|Bonuses], Speed).
+unarmored_speed_bonus(TotalBonus) :-
+    findall(Bonus, bonus('unarmored speed'+Bonus), Bonuses),
+    sumlist([Bonuses], TotalBonus).
 
 %! proficiency_bonus(?Bonus:int)
 proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).
@@ -257,7 +237,10 @@ todo :-
     forall(todo(T), writeln_quoted_term(T)).
 
 traits :-
-    forall(trait(Origin, Trait), writeln_quoted_term(Origin:Trait)).
+    forall(trait(Origin, Trait), writeln_quoted_term(Origin/Trait)).
+
+bonuses :-
+    forall(bonus(Origin, Bonus), writeln_quoted_term(Origin/Bonus)).
 
 abilities :-
     forall(ability(Abi,Score), writeln_quoted_term(Abi:Score)).

@@ -98,17 +98,17 @@ viewWeapon { base_weapon, enchantment, category, to_hit, damage, range, notes, i
                   then "+" ++ String.fromInt enchantment
                   else ""
   in 
-    tr []
-      [ td [] (omitIfVariant
-                  [ Elements.viewNavButton
-                      (UnequipWeapon { base_weapon = base_weapon
-                                     , enchantment = enchantment
-                                     })
-                      "close.png"
-                      "Unequip weapon"
-                  ])
-      , simple td (indentIfVariant weapon)
-      , "", category, to_hit, damage, range, notes ]
+    tr [] []
+      -- [ td [] (omitIfVariant
+      --             [ Elements.viewNavButton
+      --                 (UnequipWeapon { base_weapon = base_weapon
+      --                                , enchantment = enchantment
+      --                                })
+      --                 "close.png"
+      --                 "Unequip weapon"
+      --             ])
+      -- , simple td (indentIfVariant weapon)
+      -- , "", category, to_hit, damage, range, notes ]
 
 --------------------------------------------------------------------------------
 -- UTIL

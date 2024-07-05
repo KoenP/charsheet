@@ -76,12 +76,12 @@ init _ url key =
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     }
-  -- , loadSelectCharacterPage
+  , loadSelectCharacterPage
   -- , PSheet.load
   -- , Sheet.load
   -- , Cards.load
   -- , Edit.load
-  , Equipment.load
+  -- , Equipment.load
   -- , Nav.pushUrl key "/list_characters"
   )
 
