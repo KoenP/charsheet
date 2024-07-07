@@ -103,7 +103,23 @@ trait_options_source(ranger(hunter) >: 15,
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Beast master
-meta_todo(ranger, "beast master").
+meta_todo(ranger('beast master'), "currently only have primal companion").
+subclass_option(ranger, 'beast master').
+
+trait_source(ranger('beast master') >: 3, 'primal companion').
+trait_source(trait('primal companion'),
+             beast_of_the_land(ac(AC), hp(HP), pb(ProfBon), to_hit(ToHit),
+                               damage(1 d 8 + DamageBonus))) :-
+    proficiency_bonus(ProfBon),
+    class_level(ranger:RangerLevel),
+    AC is 13 + ProfBon,
+    HP is 5 + 5*RangerLevel,
+    spell_attack_modifier(ranger, ToHit),
+    DamageBonus is 2 + ProfBon.
+
+trait_source(ranger('beast master') >: 7, 'exceptional training').
+trait_source(ranger('beast master') >: 11, 'bestial fury').
+trait_source(ranger('beast master') >: 15, 'share spells').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DESCRIPTIONS
@@ -157,3 +173,38 @@ multiattack('whirlwind attack') ?= "You can use your action to make a melee atta
 superior_hunters_defense('evasion') ?= "When you are subjected to an effect, such as a red dragon's fiery breath or a lightning bolt spell, that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail.".
 superior_hunters_defense('stand against the tide') ?= "When a hostile creature misses you with a melee attack, you can use your reaction to force that creature to repeat the same attack against another creature (other than itself) of your choice.".
 superior_hunters_defense('uncanny dodge') ?= "When an attacker that you can see hits you with an attack, you can use your reaction to halve the attack's damage against you.".
+
+'primal companion' ?= "You magically summon a primal beast, which draws strength from your bond with nature. The beast is friendly to you and your companions and obeys your commands. Choose its stat block-Beast of the Land, Beast of the Sea, or Beast of the Sky-which uses your proficiency bonus (PB) in several places. You also determine the kind of animal the beast is, choosing a kind appropriate for the stat block. Whatever kind you choose, the beast bears primal markings, indicating its mystical origin.
+
+In combat, the beast acts during your turn. It can move and use its reaction on its own, but the only action it takes is the Dodge action, unless you take a bonus action on your turn to command it to take another action. That action can be one in its stat block or some other action. You can also sacrifice one of your attacks when you take the Attack action to command the beast to take the Attack action. If
+you are incapacitated, the beast can take any action of its choice, not just Dodge.
+
+If the beast has died within the last hour, you can use your action to touch it and expend a spell slot of 1st level or higher. The beast returns to life after 1 minute with all its hit points restored. When you finish a long rest, you can summon a different primal beast. The new beast appears in an unoccupied space within 5 feet of you, and you choose its stat block and appearance. If you already have a beast from this feature, it vanishes when the new beast appears. The beast also vanishes if you die.".
+
+(beast_of_the_land(ac(AC), hp(HP), pb(ProfBon), to_hit(ToHit), damage(1 d 8 + DamageBonus)) ?= Str) :-
+    format(
+        string(Str),
+"Medium beast
+
+**Armor Class**: ~w
+
+**Hit Points**: ~w
+
+**Speed**: 40 ft., climb 40ft.
+
+| STR 	  | DEX 	  | CON 	  | INT 	  | WIS 	  | CHA     |
+|---------|---------|---------|---------|---------|---------|
+| 14 (+2) | 14 (+2) | 15 (+2) | 8 (−1) 	| 14 (+2) | 11 (+0) |
+
+**Senses**: darkvision 60 ft., passive Perception 12
+
+**Languages**: understands the languages you speak
+
+**Proficiency Bonus (PB)**: +~w
+
+**Charge**: If the beast moves at least 20 feet straight toward a target and then hits it with a maul attack on the same turn, the target takes an extra 1d6 slashing damage. If the target is a creature, it must succeed on a Strength saving throw against your spell save DC or be knocked prone.
+
+**Primal Bond**: You can add your proficiency bonus to any ability check or saving throw that the beast makes.
+
+**Maul**. Melee Weapon Attack: ~w to hit, reach 5 ft., one target. Hit: 1d8 + ~w slashing damage.",
+        [AC,HP,ProfBon,ToHit,DamageBonus]).

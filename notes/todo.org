@@ -1,3 +1,9 @@
+Problemen 2014-05-18
+- modify_spell bonus formatten leidt tot infinite recursion (zie alexander)
+- baba anoush spells worden duplicaten voorgesteld
+
+
+
 - Tooltips leesbaarder maken (paragrafen, evt html of markdown opmaak)
 
 - lijst van atomen die ik wil hernoemen
