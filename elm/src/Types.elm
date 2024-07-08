@@ -46,7 +46,7 @@ type alias CharacterSummary =
   , pp : Int
   , prof_bon : Int
   , race : String
-  , speed : Int
+  , speed : String
   }
 
 
@@ -300,9 +300,8 @@ type Msg
   | Tick Posix
   | SetBaseAbilityScore Ability Int
   | GotoEquipmentPage
-  | SetEquippedWeapons (List { base_weapon : String, enchantment : Int })
-  --  | UnequipWeapon { base_weapon : String, enchantment : Int }
-  --  | EquipWeapon String
+  | UnequipWeapon { base_weapon : String, enchantment : Int }
+  | EquipWeapon String
 
 type Choice = ListChoice (List String) | SingletonChoice String
 

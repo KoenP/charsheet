@@ -7,6 +7,7 @@
 client/node_modules
 
 elm/elm-stuff
+elm/build
 
 server/.stack-work
 *.yaml.lock

@@ -113,7 +113,7 @@ viewSummaryTable sm =
   , viewSummaryTableRow "Max HP" (String.fromInt sm.maxhp)
   , viewSummaryTableRow "AC" (String.fromInt sm.ac)
   , viewSummaryTableRow "Initiative" (String.fromInt sm.initiative)
-  , viewSummaryTableRow "Speed" (String.fromInt sm.speed)
+  , viewSummaryTableRow "Speed" sm.speed
   , viewSummaryTableRow "HD" sm.hd
   , viewSummaryTableRow "PP" (String.fromInt sm.pp)
   , viewSummaryTableRow "Prof Bon" (String.fromInt sm.prof_bon)

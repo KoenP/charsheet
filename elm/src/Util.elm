@@ -7,8 +7,6 @@ import Json.Decode.Extra as D
 import Dict exposing (Dict)
 import Set exposing (Set)
 import Debug
-import Tuple
-
 import Types exposing (..)
 
 id x = x
@@ -75,16 +73,6 @@ nubSorted sortedList =
       if x == y then nubSorted (y :: ys) else x :: nubSorted (y :: ys)
     _            ->
       sortedList
-
-enumerate : List a -> List (Int, a)
-enumerate =
-  let
-    go i l =
-      case l of
-        []      -> []
-        x :: xs -> (i, x) :: go (i+1) xs
-  in
-    go 0
 
 guardM : String -> (a -> Decoder Bool) -> Decoder a -> Decoder a
 guardM errMsg predDec valDec =

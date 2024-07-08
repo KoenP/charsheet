@@ -1,8 +1,7 @@
-:- dynamic spell_auto_data/2.
-:- multifile spell_auto_data/2, extend_spell_data/3.
-:- discontiguous add_spell_effect/2, known_spell_effect/3, suppress_autoderived_spell_effect/1.
-
-:- [resources/spells/srd].
+%:- [resources/spells/srd].
+:- [spell_auto_data].
+:- multifile extend_spell_data/3.
+:- multifile add_spell_effect/2, known_spell_effect/3, suppress_autoderived_spell_effect/1.
 
 %! spell_property(?Name:atomic, ?Field:atomic, ?Val)
 %
@@ -275,3 +274,108 @@ spell_short_desc(
       "You can use a particular special component to create only one prison at a time. If you cast the spell again using the same component, the target of the first casting is immediately freed from its binding."
     ]
 ).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TODO copied from srd.pl
+spell_auto_property(Spell, Field, Value) :-
+    spell_auto_data(Spell, Data),
+    Data.get(Field) = Value,
+    Value \= false.
+
+spell_data_class(Dict, Class) :-
+    to_lowercase_atom(Dict.index, Class).
+
+spell_data_higher_level([], no).
+spell_data_higher_level([Desc], Desc).
+
+spell_data_components(Data, Components) :-
+    maplist(spell_data_component(Data), Data.components, Components).
+
+spell_data_component(Data, "M", m(Data.material)) :- !.
+spell_data_component(_, Component, Atom) :-
+    to_lowercase_atom(Component, Atom).
+
+to_lowercase_atom(Str, Atom) :-
+    string_lower(Str, Lower),
+    string_to_atom(Lower, Atom).
+
+yesno(true, yes).
+yesno(false, no).
+
+parse_range("Self", self) :- !.
+parse_range("Touch", touch) :- !.
+parse_range(Str, feet(Feet)) :-
+    member(Suffix, [" feet", " foot"]),
+    string_concat(FeetStr, Suffix, Str),
+    number_string(Feet, FeetStr),
+    !.
+parse_range(Str, miles(Miles)) :-
+    member(Suffix, [" mile", " miles"]),
+    string_concat(MilesStr, Suffix, Str),
+    number_string(Miles, MilesStr),
+    !.
+parse_range(Str, Atom) :-
+    to_lowercase_atom(Str, Atom).
+
+wrap_list(List, List) :- is_list(List), !.
+wrap_list(X, [X]) :- \+ is_list(X).
+
+spell_data_damage_with_cantrip_scaling(Data, damage(Type, BaseRoll)) :-
+    Data.get(damage) = _{ damage_at_character_level: DmgScalingDict, 
+                          damage_type: DmgType },
+    to_lowercase_atom(DmgType.get(name), Type),
+    term_string(BaseRoll, DmgScalingDict.get('1')),
+    !.
+spell_data_damage_with_cantrip_scaling(_, false) :- !.
+
+spell_data_damage_at_slot_level(Data, ParsedDict) :-
+    wrap_list(Data.get(damage), DamageDicts),
+    maplist(damage_at_slot_level_term, DamageDicts, Terms),
+    merge_damage_dicts(Terms, ParsedDict),
+    !.
+spell_data_damage_at_slot_level(_, []).
+
+damage_at_slot_level_term(_{ damage_type: TypeDict,
+                             damage_at_slot_level: ScalingDict
+                           },
+                          ParsedDict) :-
+    to_lowercase_atom(TypeDict.get(name), Type),
+    dict_pairs(ScalingDict, _, Pairs),
+    findall(Lvl-damage(Type, Roll),
+            (member(LvlAtom-RollStr,Pairs), atom_number(LvlAtom,Lvl), term_string(Roll,RollStr,[variable_names([])])), % TODO: parse and handle "+ MOD"
+            NewPairs),
+    dict_pairs(ParsedDict, _, NewPairs).
+
+merge_damage_dicts([D|Ds], Out) :-
+    merge_damage_dicts(Ds, DRest),
+    merge_damage_dicts(D, DRest, Out).
+merge_damage_dicts([D], D).
+merge_damage_dicts(D1, D2, Out) :-
+    dict_pairs(D1, _, Pairs1), dict_pairs(D2, _, Pairs2),
+    merge_damage_lists(Pairs1, Pairs2, NewPairs),
+    dict_pairs(Out, _, NewPairs).
+merge_damage_lists([L-Dmg1|R1], [L-Dmg2|R2], [L-(Dmg1+Dmg2)|R]) :-
+    merge_damage_lists(R1, R2, R).
+merge_damage_lists([], [], []).
+
+% in(20 ft sphere):
+spell_data_aoe(Data, Size ft Type) :-
+    Data.get(area_of_effect) = _{type: TypeStr, size: Size},
+    !,
+    string_to_atom(TypeStr, Type).
+spell_data_aoe(_, false).
+
+spell_data_dc(Data, Abi else Succ) :-
+    Data.get(dc) = DCDict,
+    !,
+    DCDict.get(dc_type).get(index) = AbiStr,
+    string_to_atom(AbiStr, Abi),
+    DCDict.get(dc_success) = SuccStr,
+    string_to_atom(SuccStr, Succ).
+spell_data_dc(_, false).
+
+spell_data_attack_type(Data, Type) :-
+    Data.get(attack_type) = Str,
+    string_to_atom(Str, Type). 
+spell_data_attack_type(_, false).
