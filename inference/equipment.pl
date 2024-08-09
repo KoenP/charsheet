@@ -89,7 +89,7 @@ weapon_variant(berserker_axe(BaseWeapon), BaseWeapon + 1, [], [attunement, curse
     member(BaseWeapon, [handaxe, battleaxe, greataxe]).
 custom_format(berserker_axe(BaseWeapon)) -->
     ["berserker "], [BaseWeapon].
-bonus(attuned(berserker_axe(_)), 'max hp' + Lvl) :-
+bonus_source(attuned(berserker_axe(_)), 'max hp' + Lvl) :-
     level(Lvl).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

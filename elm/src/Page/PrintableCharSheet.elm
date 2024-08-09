@@ -14,16 +14,16 @@ import Debug
 import Platform.Cmd as Cmd
 
 import Elements exposing (..)
-import Request exposing (requestUrl)
+import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Types.Ability exposing (..)
 import Util exposing (simple, formatModifier)
 import Decoder.CharacterSheet exposing (sheetDec)
 
-load : Cmd Msg
-load =
+load : CharId -> Cmd Msg
+load charId =
   Http.get
-    { url = requestUrl "sheet" []
+    { url = characterRequestUrl charId ["sheet"] []
     , expect = Http.expectJson
                (mkHttpResponseMsg GotPrintableCharSheet)
                sheetDec
@@ -31,12 +31,12 @@ load =
 
 --------------------------------------------------------------------------------
 
-view : CharacterSheet -> List (Html Msg)
-view sheet =
+view : CharId -> CharacterSheet -> List (Html Msg)
+view charId sheet =
   [ div [ class "dont-print" ]
-    [ viewNavButtons [ viewGotoCardsButton sheet
-                     , viewEditCharacterButton
-                     , viewGotoEquipmentButton
+    [ viewNavButtons [ viewGotoCardsButton charId sheet
+                     , viewEditCharacterButton charId
+                     , viewGotoEquipmentButton charId
                      , viewSelectCharacterButton
                      ]
     ]
@@ -314,9 +314,9 @@ viewResources resources =
     _  -> [ viewBadgeDiv "resources" "resources spell-slots" (List.map viewResource resources) ]
 
 viewResource : Resource -> Html Msg
-viewResource { feature_name , unit_name , number , short_rest , long_rest } =
+viewResource { name , number , short_rest , long_rest } =
   div []
-  [ simple h3 unit_name
+  [ simple h3 name
   , div [ class "resource-details" ]
     (viewResourceSlots number ++ viewResourceRestoreInfo short_rest long_rest)
   ]

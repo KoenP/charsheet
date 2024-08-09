@@ -12,7 +12,7 @@
        todo/1,
        meta_todo/2,
        problem/1,
-       resource/2,
+       res/2,
        content_source/2.
 
 :- op(600, xfx, upto).
@@ -127,7 +127,6 @@ content_source(_,_) :- false.
 %current_class_level(_) :- false.
 %
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Leveling up.
 level(Level) :-
@@ -200,17 +199,8 @@ problem('pick a name!') :- \+ name(_).
 %   finite resource in a short rest, but only once per long rest, and
 %   you get to pick which slots get restored.
 
-%! resource(?Origin, ?Name, ?Max)
-%
-%  Name is a finite resource your character has, such as sorcery
-%  points, second wind, ...
-resource(_,_,_) :- false.
-
-%! resource(?Name, ?Max)
-%
-%  Shorthand for resource/3, for when you're not interested in the
-%  origin of a resource.
-resource(Name, Max) :- resource(_, Name, Max).
+%! res(?Name, ?Max)
+res(_,_) :- false.
 
 %! on_rest(?Duration, ?ResourceName, ?Goal)
 %
@@ -223,9 +213,9 @@ resource(Name, Max) :- resource(_, Name, Max).
 %  current values aren't implemented right now), and New is the value
 %  after resting.
 on_rest(_,_,_) :- false.
-meta_todo(resource(Resource), 'rest for nonexistant resource') :-
+meta_todo(res(Resource), 'rest for nonexistant resource') :-
     on_rest(_, Resource, _),
-    \+ resource(_, Resource, _).
+    \+ res(_, Resource, _).
 
 %! full_restore(?Max, ?Cur, ?New)
 %
@@ -313,3 +303,46 @@ qq(Pred) :-
     Functor =.. [Pred|Args],
     call(Functor),
     forall(member(Arg,Args), writeln(Arg)).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Persistency test (TODO delete)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+store_monk :-
+    char_db:record_name(monk, 'monk 5 fighter 11'),
+    char_db:record_base_ability(monk, str,14),
+    char_db:record_base_ability(monk, dex,18),
+    char_db:record_base_ability(monk, con,12),
+    char_db:record_base_ability(monk, int,10),
+    char_db:record_base_ability(monk, wis,16),
+    char_db:record_base_ability(monk, cha,8),
+    char_db:record_gain_level(monk, 2,monk,hp_avg),
+    char_db:record_gain_level(monk, 3,monk,hp_avg),
+    char_db:record_gain_level(monk, 4,monk,hp_avg),
+    char_db:record_gain_level(monk, 5,monk,hp_avg),
+    char_db:record_gain_level(monk, 6,fighter,hp_avg),
+    char_db:record_gain_level(monk, 7,fighter,hp_avg),
+    char_db:record_gain_level(monk, 8,fighter,hp_avg),
+    char_db:record_gain_level(monk, 9,fighter,hp_avg),
+    char_db:record_gain_level(monk, 10,fighter,hp_avg),
+    char_db:record_gain_level(monk, 11,fighter,hp_avg),
+    char_db:record_gain_level(monk, 12,fighter,hp_avg),
+    char_db:record_gain_level(monk, 13,fighter,hp_avg),
+    char_db:record_gain_level(monk, 14,fighter,hp_avg),
+    char_db:record_gain_level(monk, 15,fighter,hp_avg),
+    char_db:record_gain_level(monk, 16,fighter,hp_avg),
+    char_db:record_choice(monk, init,'base race',human),
+    char_db:record_choice(monk, init,'initial class',monk),
+    char_db:record_choice(monk, ^monk,skill,[acrobatics,insight]),
+    char_db:record_choice(monk, race(human),subrace,standard),
+    char_db:record_choice(monk, race(human),language,dwarvish),
+    char_db:record_choice(monk, init,background,archaeologist),
+    char_db:record_choice(monk, background(archaeologist),language,goblin).
+
+store_current_character_as(CharId) :-
+    forall(name(Name), char_db:record_name(CharId, Name)),
+    forall(base_ability(Ability, Score), char_db:record_base_ability(CharId, Ability, Score)),
+    forall(gain_level(Level, Class, HpMode), char_db:record_gain_level(CharId, Level, Class, HpMode)),
+    forall(choice(Origin, Id, Choice), char_db:record_choice(CharId, Origin, Id, Choice)).
+    

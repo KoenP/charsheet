@@ -1,7 +1,7 @@
 :- multifile multiclass_trait/2, multiclass_trait_source/2.
 
 % Channel divinity has specific multiclassing rules.
-resource('channel divinity', 'channel divinity', Uses) :-
+res('channel divinity', Uses) :-
     findall(N, bonus(channel_divinity_uses(N)), Ns),
     max_member(Uses, Ns).
 on_rest(short, 'channel divinity', 'full restore').

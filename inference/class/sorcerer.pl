@@ -52,11 +52,11 @@ metamagic_option('subtle spell').
 metamagic_option('twinned spell').
 
 % Calculate the maximum number of sorcery points your character has available.
-resource(metamagic, 'sorcery point', Max) :-
+res('sorcery points', Max) :-
     sorcerer >: 3,
     class_level(sorcerer:Max).
-on_rest(long, 'sorcery point', 'full restore') :- sorcerer >: 3.
-on_rest(short, 'sorcery point', restore(4)) :- trait('sorcerous restoration').
+on_rest(long, 'sorcery points', 'full restore') :- sorcerer >: 3.
+on_rest(short, 'sorcery points', restore(4)) :- trait('sorcerous restoration').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Learning new sorcerer spells.

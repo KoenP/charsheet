@@ -10,7 +10,7 @@ import List
 
 import Elements
 import Decoder.Equipment exposing (gotEquipmentDec)
-import Request exposing (requestUrl)
+import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Util exposing (simple)
 --------------------------------------------------------------------------------
@@ -18,18 +18,18 @@ import Util exposing (simple)
 --------------------------------------------------------------------------------
 -- LOAD
 --------------------------------------------------------------------------------
-load : Cmd Msg
-load =
+load : CharId -> Cmd Msg
+load charId =
   Http.get
-    { url = requestUrl "equipment" []
+    { url = characterRequestUrl charId ["equipment"] []
     , expect = expectGotEquipment
     }
 
 expectGotEquipment : Expect Msg
 expectGotEquipment = Http.expectJson (mkHttpResponseMsg GotEquipment) gotEquipmentDec
 
-update : Msg -> Model -> Equipment -> (Model, Cmd Msg)
-update msg model oldEquipment =
+update : Msg -> Model -> CharId -> Equipment -> (Model, Cmd Msg)
+update msg model charId oldEquipment =
   case msg of
       UnequipWeapon { base_weapon, enchantment } ->
         ( model
@@ -39,30 +39,32 @@ update msg model oldEquipment =
             --     oldEquipment.weapons
             -- }
         , Http.get
-            { url = requestUrl "unequip_weapon" [ ( "base_weapon", base_weapon )
-                                                , ( "enchantment", String.fromInt enchantment )
-                                                ]
+            { url = characterRequestUrl charId
+                ["unequip_weapon"]
+                [ ( "base_weapon", base_weapon )
+                , ( "enchantment", String.fromInt enchantment )
+                ]
             , expect = expectGotEquipment
             }
         )
       EquipWeapon w ->
         ( model
         , Http.get
-            { url = requestUrl "equip_weapon" [ ("weapon", w) ]
+            { url = characterRequestUrl charId ["equip_weapon"] [ ("weapon", w) ]
             , expect = expectGotEquipment
             }
         )
       HttpResponse (Ok (GotEquipment newEquipment)) ->
-        ( applyPageData model newEquipment
+        ( applyPageData model charId newEquipment
         , Cmd.none
         )
       _ -> ( model, Cmd.none )
         
-view : Equipment -> List (Html Msg)
-view { weapons, weapon_options } =
+view : CharId -> Equipment -> List (Html Msg)
+view charId { weapons, weapon_options } =
   [ Elements.viewNavButtons
-      [ Elements.viewGotoSheetButton
-      , Elements.viewEditCharacterButton
+      [ Elements.viewGotoSheetButton charId
+      , Elements.viewEditCharacterButton charId
       , Elements.viewSelectCharacterButton
       ]
   , simple h1 "Equipment"
@@ -114,6 +116,6 @@ viewWeapon { base_weapon, enchantment, category, to_hit, damage, range, notes, i
 -- UTIL
 --------------------------------------------------------------------------------
 
-applyPageData : Model -> Equipment -> Model
-applyPageData model data =
-  { model | page = EquipmentPage data }
+applyPageData : Model -> CharId -> Equipment -> Model
+applyPageData model charId data =
+  { model | page = EquipmentPage charId data }

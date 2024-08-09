@@ -17,14 +17,14 @@ import Html.Styled.Attributes exposing (style, placeholder, type_)
 import Html.Styled.Events exposing (onClick, onInput)
 import Http
 import Dict exposing (Dict)
-import Json.Decode exposing (Decoder, field, list, string, succeed)
+import Json.Decode as D exposing (Decoder, field, list, string, succeed)
+import Json.Decode.Extra as D
 import Platform.Cmd exposing (none)
 import List
 import Maybe
 import Debug exposing (log, toString)
 import Time exposing (Posix)
 
-import Page.CharacterSheet as Sheet
 import Page.PrintableCharSheet as PSheet
 import Page.EditCharacter as Edit
 import Page.CardsPage as Cards
@@ -57,7 +57,7 @@ subscriptions { focusedDropdownId, page } =
 
     timeSub =
       case page of
-        EditCharacterPage _ ->
+        EditCharacterPage _ _ ->
           Time.every 500 Tick
         _ ->
           Sub.none
@@ -72,7 +72,7 @@ init _ url key =
     , key = key
     , preparedSpells = Dict.empty
     , showOnlyPreparedSpells = False
-    , page = Loading
+    , page = Loading Nothing
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     }
@@ -85,48 +85,52 @@ init _ url key =
   -- , Nav.pushUrl key "/list_characters"
   )
 
-navigate : Model -> Route -> ( Model, Cmd Msg )
-navigate model route = -- ( { model | page = Loading } , Sheet.load )
-  case route of
-    CharacterRoute charName ->
-      Debug.log ("navigate (CharacterRoute " ++ charName ++ ")")
-        ( { model | page = Loading }
-        , PSheet.load
-        )
-      
-    SelectCharacterRoute ->
-      Debug.log "navigate (SelectCharacterRoute)"
-        ( { model | page = Loading }
-        , loadSelectCharacterPage
-        )
-      
-    SheetRoute ->
-      Debug.log "navigate (SheetRoute)"
-        ( { model | page = Loading }
-        , PSheet.load
-        )
-
-    EditRoute ->
-      Debug.log "navigate (EditRoute)"
-        ( { model | page = Loading }
-        , Edit.load
-        )
-
-    EquipmentRoute ->
-      Debug.log "navigate (EquipmentRoute)"
-        ( { model | page = Loading }
-        , Equipment.load
-        )
-
-    _ -> ( model, none )
+-- navigate : Model -> Route -> ( Model, Cmd Msg )
+-- navigate model route = -- ( { model | page = Loading } , Sheet.load )
+--   case route of
+--     CharacterRoute charName ->
+--       Debug.log ("navigate (CharacterRoute " ++ charName ++ ")")
+--         ( { model | page = Loading }
+--         , PSheet.load
+--         )
+--       
+--     SelectCharacterRoute ->
+--       Debug.log "navigate (SelectCharacterRoute)"
+--         ( { model | page = Loading }
+--         , loadSelectCharacterPage
+--         )
+--       
+--     SheetRoute ->
+--       Debug.log "navigate (SheetRoute)"
+--         ( { model | page = Loading }
+--         , PSheet.load
+--         )
+-- 
+--     EditRoute ->
+--       Debug.log "navigate (EditRoute)"
+--         ( { model | page = Loading }
+--         , Edit.load
+--         )
+-- 
+--     EquipmentRoute ->
+--       Debug.log "navigate (EquipmentRoute)"
+--         ( { model | page = Loading }
+--         , Equipment.load
+--         )
+-- 
+--     _ -> ( model, none )
 
 loadSelectCharacterPage : Cmd Msg
 loadSelectCharacterPage = 
   Http.get
-    { url = requestUrl "list_characters" []
+    { url = requestUrl ["list_characters"] []
     , expect = Http.expectJson
                (mkHttpResponseMsg GotCharacterList)
-               (field "list" (list string))
+               (list (D.succeed (\x y -> (x,y))
+                        |> D.andMap (D.field "char_id" D.string |> D.map CharId)
+                        |> D.andMap (D.field "name" D.string)
+                     )
+               )
     }
   
 
@@ -184,26 +188,26 @@ update msg model =
         Browser.External href ->
           ( model, Nav.load href )
 
-    UrlChanged url ->
-      navigate model (urlToRoute url)
+    -- UrlChanged url ->
+    --   navigate model (urlToRoute url)
 
-    EditCharacter ->
-      ( { model | page = Loading }, Edit.load )
+    EditCharacter charId ->
+      ( { model | page = Loading (Just charId) }, Edit.load charId )
 
     GotoSelectCharacterPage ->
-      ( { model | page = Loading }, loadSelectCharacterPage )
+      ( { model | page = Loading Nothing }, loadSelectCharacterPage )
 
-    GotoCardsPage options sheet ->
-      ( { model | page = CardsPage options sheet }, Cmd.none)
+    GotoCardsPage charId options sheet ->
+      ( { model | page = CardsPage charId options sheet }, Cmd.none)
 
-    GotoSheet ->
-      applyPage model (Loading, Nav.pushUrl model.key "/sheet")
+    GotoSheet charId ->
+      applyPage model (Loading (Just charId), PSheet.load charId)
 
-    GotoEquipmentPage ->
-      applyPage model (Loading, Nav.pushUrl model.key "/equipment")
+    GotoEquipmentPage charId ->
+      applyPage model (Loading (Just charId), Equipment.load charId)
 
-    Choice origin id choice ->
-      ( { model | focusedDropdownId = Nothing } , registerChoice origin id choice )
+    Choice charId origin id choice ->
+      ( { model | focusedDropdownId = Nothing } , registerChoice charId origin id choice )
 
     SelectDropdownOption dropdownId optionId -> 
       let _ = Debug.log "" ("Selected dropdown option " ++ optionId ++ " from dropdown " ++ dropdownId)
@@ -222,20 +226,18 @@ update msg model =
       case model.page of
         CharacterSelectionPage pageData ->
           applyPage model (updateCharacterSelectionPage msg pageData)
-        CharacterSheetPage sheet ->
-          Sheet.update msg model
-        PrintableCharSheetPage sheet ->
+        PrintableCharSheetPage charId sheet ->
           PSheet.update msg model
-        EditCharacterPage data ->
-          Edit.update msg model data
-        CardsPage options data ->
+        EditCharacterPage charId data ->
+          Edit.update msg model charId data
+        CardsPage charId options data ->
           Cards.update msg model data
-        EquipmentPage data ->
-          Equipment.update msg model data
-        Loading ->
+        EquipmentPage charId data ->
+          Equipment.update msg model charId data
+        Loading maybeCharId ->
           case msg of
             HttpResponse (Ok responseMsg) ->
-              handleHttpResponseMsg responseMsg model
+              handleHttpResponseMsg maybeCharId responseMsg model
             _ ->
               let
                 error = "Main.update: Expected HttpResponse, got " ++
@@ -251,45 +253,39 @@ updateCharacterSelectionPage msg pageData =
   case msg of
     NewCharacterName name ->
       ( CharacterSelectionPage { pageData | newCharacterName = name }, none )
-    SelectCharacter name ->
-      ( Loading, loadCharacter name )
+    SelectCharacter charId ->
+      ( Loading (Just charId), Edit.load charId )
     CreateNewCharacter ->
-      ( Loading, newCharacter pageData.newCharacterName )
+      ( Loading Nothing, newCharacter pageData.newCharacterName )
     _ ->
       ( Error ("Main.updateCharacterSelectionPage: unrecognized msg "
                  ++ Debug.toString msg)
       , none
       )
   
-handleHttpResponseMsg : HttpResponseMsg -> Model -> (Model, Cmd Msg)
-handleHttpResponseMsg msg model =
-  case msg of
-      GotCharacterList chars -> 
+handleHttpResponseMsg : Maybe CharId -> HttpResponseMsg -> Model -> (Model, Cmd Msg)
+handleHttpResponseMsg maybeCharId msg model =
+  case (maybeCharId, msg) of
+      (_, GotCharacterList chars) -> 
         ( { model
             | page = CharacterSelectionPage { characters = chars, newCharacterName = "" }
           }
         , none
         )
-      CharacterLoaded id ->
-        ( { model | page = Loading }
+      (_, NewCharacterCreated charId) ->
+        ( { model | page = Loading (Just charId) }
+        , Edit.load charId
         -- , Nav.pushUrl model.key ("/character/" ++ id ++ "/edit")
-        , Nav.pushUrl model.key "/edit"
         )
-      GotCharacterSheet sheet ->
-        ( { model
-            | page = CharacterSheetPage sheet
-            , preparedSpells = initPreparedSpells sheet.spellcasting_sections
-          }
+      (Just charId, GotPrintableCharSheet sheet) ->
+        ( { model | page = PrintableCharSheetPage charId sheet }
         , none
         )
-      GotPrintableCharSheet sheet ->
-        ( { model | page = PrintableCharSheetPage sheet }
-        , none
-        )
-      GotCharacterOptions abilityTable optionsPerLevel traitsAndBonusesPerLevel ->
+      (Just charId, GotCharacterOptions abilityTable optionsPerLevel traitsAndBonusesPerLevel) ->
         let charLevel = Dict.keys optionsPerLevel |> List.maximum |> Maybe.withDefault 1
         in ( { model
                | page = EditCharacterPage
+                        charId
                         { abilityTable = abilityTable
                         , optionsPerLevel = optionsPerLevel
                         , traitsAndBonusesPerLevel = traitsAndBonusesPerLevel 
@@ -301,42 +297,39 @@ handleHttpResponseMsg msg model =
              }
            , none
            )
-      GotEquipment equipment ->
-        ( { model | page = EquipmentPage equipment }
+      (Just charId, GotEquipment equipment) ->
+        ( { model | page = EquipmentPage charId equipment }
         , none
         )
-      ChoiceRegistered ->
-        (model, Edit.load)
+      -- ChoiceRegistered ->
+      --   (model, Edit.load)
       _ ->
         errorPage
           model
           ("handleHttpResponseMsg called with unsupported message: "
           ++ Debug.toString msg)
                
-loadCharacter : String -> Cmd Msg
-loadCharacter charName =
-  Http.get
-    { url = requestUrl "load_character" [("name", charName)]
-    , expect = Http.expectJson (mkHttpResponseMsg (\_ -> CharacterLoaded charName)) (succeed ())
-    }
-
 newCharacter : String -> Cmd Msg
 newCharacter charName =
-  Http.get
-    { url = requestUrl "new_character" [("name", charName)]
+  Http.post
+    { url = requestUrl ["new_character"] [("name", charName)]
+    , body = Http.emptyBody
     , expect =
         Http.expectJson
-        (mkHttpResponseMsg (\_ -> CharacterLoaded charName))
-        (succeed ())
+        (mkHttpResponseMsg (NewCharacterCreated << CharId))
+        string
     }
 
-registerChoice : String -> String -> Choice -> Cmd Msg
-registerChoice origin id choice = let _ = Debug.log "registerChoice" choice in 
-  Http.get
-    { url = requestUrl "choice" [ ("source", origin)
-                                , ("id", id)
-                                , ("choice", choiceToString choice)
-                                ]
+registerChoice : CharId -> String -> String -> Choice -> Cmd Msg
+registerChoice (CharId charId) origin id choice = let _ = Debug.log "registerChoice" choice in 
+  Http.post
+    { url = requestUrl
+        ["character", charId, "choice"]
+        [ ("source", origin)
+        , ("id", id)
+        , ("choice", choiceToString choice)
+        ]
+    , body = Http.emptyBody
     , expect =
         Http.expectJson (mkHttpResponseMsg (\_ -> ChoiceRegistered)) (succeed ())
     }
@@ -375,22 +368,20 @@ view model =
     ::
     List.map toUnstyled 
       (case model.page of
-         Loading ->
+         Loading _ ->
            [ text "Loading..." ]
          Error msg -> 
            [ text msg ]
          CharacterSelectionPage data ->
            characterSelectionPage data model
-         CharacterSheetPage data ->
-           Sheet.view model.preparedSpells model.showOnlyPreparedSpells data
-         PrintableCharSheetPage data ->
-           PSheet.view data
-         EditCharacterPage data ->
-           Edit.view model.focusedDropdownId data
-         CardsPage options data ->
-           Cards.view options data model.preparedSpells
-         EquipmentPage data ->
-           Equipment.view data
+         PrintableCharSheetPage charId data ->
+           PSheet.view charId data
+         EditCharacterPage charId data ->
+           Edit.view charId model.focusedDropdownId data
+         CardsPage charId options data ->
+           Cards.view charId options data model.preparedSpells
+         EquipmentPage charId data ->
+           Equipment.view charId data
       )
   }
 
@@ -426,7 +417,7 @@ globalCss =
   
 
 -- Character selection page
-characterSelectionPage : { characters : List String, newCharacterName : String }
+characterSelectionPage : { characters : List (CharId, String), newCharacterName : String }
                        -> Model
                        -> List (Html Msg)
 characterSelectionPage { characters, newCharacterName } { focusedDropdownId } =
@@ -446,12 +437,12 @@ characterSelectionPage { characters, newCharacterName } { focusedDropdownId } =
 textSingleton : String -> List (Html msg)
 textSingleton = List.singleton << text
 
-selectCharButton : String -> Html Msg
-selectCharButton char =
+selectCharButton : (CharId, String) -> Html Msg
+selectCharButton (id, name) =
   li []
     [ button
-        ( onClick (SelectCharacter char) :: linkButtonStyle )
-        [ text char ]
+        ( onClick (SelectCharacter id) :: linkButtonStyle )
+        [ text name ]
     ]
 
 linkButtonStyle : List (Attribute msg)

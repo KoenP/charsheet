@@ -26,7 +26,7 @@ traits_from_source(barbarian >: 1,
 trait_source(barbarian >: 1, rage(damage + N)) :-
     class_level(barbarian:L),
     ordered_lookup_largest_leq([1 -> 2, 9 -> 3, 16 -> 4], L, N).
-resource(rage, rage, Max) :-
+res(rage, Max) :-
     class_level(barbarian:L),
     ordered_lookup_largest_leq([1 -> 2,
                                 3 -> 3,

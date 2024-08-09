@@ -70,7 +70,7 @@ summary_json_dict(Dict) :-
         maxhp-max_hp,
         ac-ac,
         initiative-initiative,
-        speed-default_on_fail(0, speed),
+        speed-default_on_fail("", speed_str),
         hd-default_on_fail("", hit_dice_string),
         pp-passive_perception,
         prof_bon-proficiency_bonus ],
@@ -86,6 +86,11 @@ race_str(Str) :-
     !,
     fmt(format_term(Race), Str).
 race_str("").
+
+speed_str(Str) :-
+    speed(Speed),
+    number_string(Speed, SpeedStr),
+    string_concat(SpeedStr, " ft", Str).
 
 hit_dice_string(Str) :-
     hit_dice(HD),
@@ -301,19 +306,18 @@ spell_bonus_json(SpellOrigin, Spell, _{ origin : OriginStr,
 % Resources.
 resources_json(List) :-
     findall(R, resource_json(R), List).
-resource_json(_{feature_name: FeatureName,
-                unit_name: UnitName,
+resource_json(_{name: FeatureName,
                 number: Num,
                 short_rest: ShortRest,
                 long_rest: LongRest
                }) :-
-    resource(FeatureName, UnitName, Num),
+    res(FeatureName, Num),
     FeatureName \= 'pact magic', % this is a special case
-    rest_description(short, UnitName, ShortRest),
-    rest_description(long, UnitName, LongRest).
+    rest_description(short, FeatureName, ShortRest),
+    rest_description(long, FeatureName, LongRest).
 
-rest_description(Type, UnitName, DescStr) :-
-    on_rest(Type, UnitName, Desc),
+rest_description(Type, Name, DescStr) :-
+    on_rest(Type, Name, Desc),
     !,
     fmt(format_term(Desc), DescStr).
 rest_description(_, _, null).

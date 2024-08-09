@@ -55,12 +55,6 @@ pact_magic_slot_level(N) :-
     class_level(warlock:L),
     ordered_lookup_largest_leq([1 -> 1, 3 -> 2, 5 -> 3, 7 -> 4, 9 -> 5], L, N).
 
-resource('pact magic', pact_slot(L), N) :-
-    pact_magic_slots(N),
-    pact_magic_slot_level(L).
-on_rest(short, pact_slot(L), 'full restore') :-
-    pact_magic_slot_level(L).
-
 % Learning spells.
 known_spell(warlock, cha, always, [], no, Name) :-
     class_origin_to_class(Origin, warlock),
@@ -360,7 +354,7 @@ extend_class_spell_list(warlock, Spell) :-
 
 trait_source(warlock(fiend) >: 1, 'dark one\'s blessing').
 trait_source(warlock(fiend) >: 6, 'dark one\'s own luck').
-resource('dark one\'s own luck', 'dark one\'s own luck', 1) :-
+res('dark one\'s own luck', 1) :-
     trait('dark one\'s own luck').
 trait_source(warlock(fiend) >: 10, 'fiendish resilience').
 trait_source(warlock(fiend) >: 14, 'hurl through hell').

@@ -42,7 +42,7 @@ wild_shape_cr(CR) :-
     ordered_lookup_largest_leq([2 -> 1/4, 4 -> 1/2, 8 -> 1], Level, CR).
 wild_shape_constraint(4, 'no swimming speed').
 wild_shape_constraint(8, 'no flying speed').
-resource('wild shape', 'wild shape', 2) :-
+res('wild shape', 2) :-
     trait(wild_shape(_)),
     \+ trait(archdruid).
 on_rest(short, 'wild shape', 'full restore').
@@ -102,7 +102,7 @@ options_source(druid(land) >: 2, cantrip, class_cantrip(druid)).
 trait_source(druid(land) >: 2, natural_recovery(Total)) :-
     class_level(druid:L),
     Total is ceiling(L / 2).
-resource('natural recovery', 'spell slot total', Slots) :-
+res('natural recovery', Slots) :-
     trait(natural_recovery(Slots)).
 on_rest(long, 'natural recovery', 'full restore').
 

@@ -76,25 +76,25 @@ viewNavButton msg symbol tooltipText =
        [ img [ css [ Css.width (Css.px 16) ], src ("/icons/" ++ symbol) ] [] ])
     (text tooltipText)
 
-viewEditCharacterButton : Html Msg
-viewEditCharacterButton =
-  viewNavButton EditCharacter "edit.png" "Edit this character"
+viewEditCharacterButton : CharId -> Html Msg
+viewEditCharacterButton charId =
+  viewNavButton (EditCharacter charId) "edit.png" "Edit this character"
 
 viewSelectCharacterButton : Html Msg
 viewSelectCharacterButton =
   viewNavButton GotoSelectCharacterPage "close.png"  "Return to character selection"
 
-viewGotoSheetButton : Html Msg
-viewGotoSheetButton =
-  viewNavButton GotoSheet "sheet.png" "View/print character sheet"
+viewGotoSheetButton : CharId -> Html Msg
+viewGotoSheetButton charId =
+  viewNavButton (GotoSheet charId) "sheet.png" "View/print character sheet"
 
-viewGotoCardsButton : CharacterSheet -> Html Msg
-viewGotoCardsButton sheet =
-  viewNavButton (GotoCardsPage { showSpells = AllSpells } sheet) "cards.png" "View/print cards"
+viewGotoCardsButton : CharId -> CharacterSheet -> Html Msg
+viewGotoCardsButton charId sheet =
+  viewNavButton (GotoCardsPage charId { showSpells = AllSpells } sheet) "cards.png" "View/print cards"
 
-viewGotoEquipmentButton : Html Msg
-viewGotoEquipmentButton =
-  viewNavButton GotoEquipmentPage "equipment.png" "Edit equipment"
+viewGotoEquipmentButton : CharId -> Html Msg
+viewGotoEquipmentButton charId =
+  viewNavButton (GotoEquipmentPage charId) "equipment.png" "Edit equipment"
 
 -- "\u{270F}" "\u{00d7}"  "\u{1f4c4}" 
 

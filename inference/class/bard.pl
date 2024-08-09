@@ -32,7 +32,7 @@ trait_options_source(bard >: 1, 'musical instrument', wrap(musical_instrument),
 musical_instrument(lute). % TODO
 meta_todo('musical instrument', "move this predicate out of bard class and list instruments").
 trait_source(bard >: 1, 'bardic inspiration').
-resource('bardic inspiration', 'bardic inspiration', N) :-
+res('bardic inspiration', N) :-
     trait('bardic inspiration'),
     ability_mod(cha, N).
 on_rest(long, 'bardic inspiration', 'full restore').

@@ -1,5 +1,7 @@
 :- [inference/main].
 
+:- table trait/2, known_spell/6, bonus/2, ability/2, class_level/1 as private.
+
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/http_parameters)).
@@ -10,17 +12,117 @@
 :- use_module(library(http/http_server_files)).
 :- use_module(library(http/http_path)).
 :- use_module(library(http/http_error)).
+:- use_module(library(http/http_cors)).
 :- use_module(library(sgml)).
+:- use_module(library(settings)).
+:- use_module('inference/char_db').
 
 user:file_search_path(html, 'client/dist').
 user:file_search_path(css, 'client/dist/css').
 user:file_search_path(js, 'client/dist/js').
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Handlers.
+
+:- set_setting(http:cors, [*]).
+
+% Static files.
 :- http_handler(css(.), serve_files_in_directory(css), [prefix]).
 :- http_handler(js(.), serve_files_in_directory(js), [prefix]).
-:- http_handler(root(request), remote_query, [method=post, prefix]).
 
-:- initialization(run_server).
+% Character management.
+:- http_handler(root(list_characters), h_list_characters, [method(get)]).
+:- http_handler(root(new_character), h_new_character, [method(post)]).
+
+% Single-character queries.
+:- http_handler(root(character / CharId / sheet),
+                handle_with_char_snapshot(h_get_sheet, CharId),
+                [method(get)]).
+:- http_handler(root(character / CharId / options),
+                handle_with_char_snapshot(h_get_options, CharId),
+                [method(get)]).
+:- http_handler(root(character / CharId / edit_character_page),
+                handle_with_char_snapshot(h_get_edit_character_page, CharId),
+                [method(get)]).
+
+% Single-character updates.
+:- http_handler(root(character / CharId / choice), h_post_choice(CharId), [method(post)]).
+:- http_handler(root(character / CharId / gain_level), h_post_gain_level(CharId), [method(post)]).
+:- http_handler(root(character / CharId / set_base_abilities),
+                h_post_set_base_abilities(CharId),
+                [method(post)]).
+
+h_list_characters(_Request) :-
+    cors_enable,
+    char_db:list_characters(Chars),
+    reply_json_dict(Chars).
+    
+h_new_character(Request) :-
+    cors_enable,
+    http_parameters(Request, [name(Name,[])]),
+    char_db:create_character(Name, Uuid),
+    reply_json_dict(Uuid).
+         
+h_get_sheet(_Request) :-
+    cors_enable,
+    sheet_json_dict(Dict),
+    reply_json_dict(Dict).
+
+h_get_options(_Request) :-
+    cors_enable,
+    all_options_by_level_json(Json),
+    reply_json_dict(Json).
+
+h_get_edit_character_page(_Request) :-
+    cors_enable,
+    all_options_by_level_json(OptsJson),
+    traits_and_bonuses_json(TBJson),
+    ability_table_json_dict(AbiJson),
+    reply_json_dict(_{options: OptsJson, ability_table: AbiJson, traits_and_bonuses: TBJson}).
+
+h_post_choice(CharId, Request) :-
+    cors_enable,
+    http_parameters(Request, [ source(SourceAtom,[]),
+                               id(IdAtom,[]),
+                               choice(ChoiceAtom,[])
+                             ]),
+    read_term_from_atom(SourceAtom, Source, []),
+    read_term_from_atom(IdAtom, Id, []),
+    read_term_from_atom(ChoiceAtom, Choice, []),
+    char_db:record_choice(CharId, Source, Id, Choice),
+    reply_json_dict("Success!").
+
+h_post_gain_level(CharId, Request) :-
+    cors_enable,
+    http_parameters(Request, [class(Class,[])]),
+    char_db:current_level(CharId, CurLevel),
+    NewLevel is CurLevel + 1,
+    char_db:record_gain_level(CharId, NewLevel, Class, hp_avg),
+    reply_json_dict("Success!").
+
+h_post_set_base_abilities(CharId, Request) :-
+    cors_enable,
+    member(search(Params), Request),
+    forall((member(Abi=ScoreStr,Params),
+            read_term_from_atom(ScoreStr,Score,[]),
+            integer(Score)),
+           char_db:record_base_ability(CharId, Abi, Score)),
+    reply_json_dict("success!").
+
+handle_with_char_snapshot(Handler, CharId, Request) :-
+    snapshot(
+        (load_character_from_db(CharId),
+         call(Handler, Request),
+         abolish_private_tables)).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Persistency.
+load_character_from_db(CharId) :-
+    ground(CharId),
+    forall(char_db:name(CharId, Name), assert(name(Name))),
+    forall(char_db:base_ability(CharId, Ability, Score), assert(base_ability(Ability, Score))),
+    forall(char_db:gain_level(CharId, Level, Class, HpMode), assert(gain_level(Level, Class, HpMode))),
+    forall(char_db:choice(CharId, Origin, Id, Choice), assert(choice(Origin, Id, Choice))).
 
 %! run_server
 %
@@ -50,13 +152,10 @@ user:file_search_path(js, 'client/dist/js').
 %   - =|/request/choice?source=_&id=_&choice=_|=: Register the given
 %      choice for the character. This is immediately committed to permanent
 %      storage.
+:- initialization(run_server).
+
 run_server :-
     http_server(http_dispatch, [port(8000)]).
-
-send_char_sheet(_) :-
-    char_sheet_head(Head),
-    char_sheet_body(Body),
-    reply_html_page(Head, Body).
 
 remote_query(Request) :-
     member(path_info(PathInfo), Request),
@@ -81,13 +180,6 @@ remote_query(_, '/list_characters') :-
 remote_query(Request, '/new_character') :-
     http_parameters(Request, [name(Name,[])]),
     initialize_new_character(Name),
-    reply_json_dict("success!").
-remote_query(Request, '/load_character') :-
-    http_parameters(Request, [name(Name,[])]),
-    load_character_file(Name),
-    reply_json_dict("success!").
-remote_query(_, '/save_character') :-
-    write_character_file,
     reply_json_dict("success!").
 remote_query(_, '/ability_table') :-
     ability_table_json_dict(Dict),

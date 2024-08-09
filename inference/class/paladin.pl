@@ -29,13 +29,13 @@ traits_from_source(paladin >: 1,
 
 % Divine sense.
 trait_source(paladin >: 1, 'divine sense').
-resource('divine sense', 'divine sense', N) :-
+res('divine sense', N) :-
     trait('divine sense'), ability_mod(cha, Mod), N is max(0, Mod+1).
 on_rest(long, 'divine sense', 'full restore').
 
 % Lay on hands.
 trait_source(paladin >: 1, 'lay on hands').
-resource('lay on hands', 'hit points', HP) :-
+res('lay on hands', HP) :-
     class_level(paladin:L), HP is 5*L.
 on_rest(long, 'lay on hands', 'full restore').
 
@@ -62,7 +62,7 @@ bonus_source(trait('improved divine smite'),
     weapon(BaseWeapon, _, melee, _, _).
 
 trait_source(paladin >: 13, 'cleansing touch').
-resource('cleansing touch', 'cleansing touch', N) :-
+res('cleansing touch', N) :-
     trait('cleansing touch'),
     ability_mod(cha, Mod), N is max(1, Mod).
 on_rest(long, 'cleansing touch', 'full restore').
@@ -114,6 +114,6 @@ trait_source(paladin(devotion) >: 7, aura_of_devotion(feet(Dst))) :-
     (paladin(devotion) >: 18) -> (Dst = 30) ; (Dst = 10).
 trait_source(paladin(devotion) >: 15, 'purity of spirit').
 trait_source(paladin(devotion) >: 20, 'holy nimbus').
-resource('holy nimbus', 'holy nimbus', 1) :-
+res('holy nimbus', 1) :-
     trait('holy nimbus').
 on_rest(long, 'holy nimbus', 'full restore').

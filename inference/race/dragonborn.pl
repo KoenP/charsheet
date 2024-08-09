@@ -1,6 +1,8 @@
 race_option(dragonborn).
 race_shorthand(dragonborn, db).
 racial_speed(dragonborn, 30).
+bonus_source(race(dragonborn), str + 2).
+bonus_source(race(dragonborn), cha + 1).
 
 traits_from_source(race(dragonborn), [language(common), language(draconic)]).
 
@@ -25,7 +27,7 @@ attack('breath weapon', self, saving_throw(DC, Abi), [damage(Element, N d 6)],
     breath_weapon_dc(DC),
     fmt(format_area(AoE), AoEFmt).
 
-resource('breath weapon', 'breath weapon', 1) :-
+res('breath weapon', 1) :-
     trait(breath_weapon(_)).
 on_rest(long, 'breath weapon', 'full restore').
 

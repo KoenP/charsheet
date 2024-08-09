@@ -77,9 +77,9 @@ trait(feat('metamagic adept'), metamagic(MetaMagic)) :-
 % Metamagic adept grants two sorcery points which can only be used for metamagic, not for
 % conversion into spell slots, so they need to be tracked as a separate resource from regular
 % sorcery points.
-resource(metamagic, 'adept sorcery point', 2) :-
+res('metamagic adept sorcery point', 2) :-
     feat('metamagic adept').
-on_rest(long, 'adept sorcery point', 'full restore').
+on_rest(long, 'metamagic adept sorcery point', 'full restore').
 
 % Documentation.
 feat('metamagic adept') ?= "You’ve learned how to exert your will on your spells to alter how they function:

@@ -57,7 +57,7 @@ trait_source(monk >: 2, ki(N, dc(DC))) :-
 traits_from_source(monk >: 2, [ki_feature('flurry of blows'),
                                ki_feature('patient defense'),
                                ki_feature('step of the wind')]).
-resource(ki, 'ki points', N) :-
+res('ki points', N) :-
     trait(ki(N, _)).
 on_rest(short, 'ki points', 'full restore').
 
@@ -120,7 +120,7 @@ trait_source(monk('open hand') >: 3, 'open hand technique').
 trait_source(monk('open hand') >: 6, wholeness_of_body(hp(HP))) :-
     class_level(monk:L),
     HP is L*3.
-resource('wholeness of body', 'wholeness of body', 1) :-
+res('wholeness of body', 1) :-
     trait(wholeness_of_body(_)).
 on_rest(long, 'wholeness of body', 'full restore').
 

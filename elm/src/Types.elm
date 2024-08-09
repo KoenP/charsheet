@@ -13,6 +13,9 @@ import Types.Ability exposing (..)
 
 ----------------------------------------------------------------------
 -- CHARACTER SHEET
+
+type CharId = CharId String
+
 type alias CharacterSheet =
   { name : String
   , summary : CharacterSummary
@@ -124,8 +127,7 @@ type alias PactMagic =
   }
 
 type alias Resource =
-  { feature_name : String
-  , unit_name : String
+  { name : String
   , number : Int
   , short_rest : Maybe String
   , long_rest : Maybe String
@@ -161,7 +163,7 @@ defunctor tm =
 ----------------------------------------------------------------------
 -- CHARACTER SELECTION PAGE
 type alias CharacterSelectionPageData =
-  { characters : List String
+  { characters : List (CharId, String)
   , newCharacterName : String
   }
 
@@ -214,14 +216,13 @@ type alias Model =
   , lastTick : Posix
   }
 type Page
-  = Loading
+  = Loading (Maybe CharId)
   | Error String
   | CharacterSelectionPage CharacterSelectionPageData
-  | CharacterSheetPage CharacterSheet
-  | PrintableCharSheetPage CharacterSheet
-  | EditCharacterPage EditCharacterPageData
-  | CardsPage CardsPageOptions CharacterSheet
-  | EquipmentPage Equipment
+  | PrintableCharSheetPage CharId CharacterSheet
+  | EditCharacterPage CharId EditCharacterPageData
+  | CardsPage CharId CardsPageOptions CharacterSheet
+  | EquipmentPage CharId Equipment
 
 type alias EditCharacterPageData = 
   { abilityTable : AbilityTable
@@ -276,21 +277,21 @@ type alias Weapon =
 -- MSG
 type Msg
   = HttpResponse (Result Http.Error HttpResponseMsg)
-  | SelectCharacter String
+  | SelectCharacter CharId
   | GotoSelectCharacterPage
   | NewCharacterName String
   | CreateNewCharacter
-  | EditCharacter
+  | EditCharacter CharId
   | UrlChanged Url
   | LinkClicked Browser.UrlRequest
   | SetSpellPreparedness Origin SpellName Bool
   | SetShowOnlyPreparedSpells Bool
   | EditCharacterLevel Level
-  | Choice String String Choice
+  | Choice CharId String String Choice
   | OrSCChooseDir String String Dir
-  | GotoSheet
+  | GotoSheet CharId
   | GotoLevelUp
-  | GotoCardsPage CardsPageOptions CharacterSheet
+  | GotoCardsPage CharId CardsPageOptions CharacterSheet
   | LevelUpAs String
   | SetEditCharacterPageDesc (Maybe (List String))
   | SelectDropdownOption String String
@@ -299,15 +300,15 @@ type Msg
   | Null
   | Tick Posix
   | SetBaseAbilityScore Ability Int
-  | GotoEquipmentPage
+  | GotoEquipmentPage CharId
   | UnequipWeapon { base_weapon : String, enchantment : Int }
   | EquipWeapon String
 
 type Choice = ListChoice (List String) | SingletonChoice String
 
 type HttpResponseMsg
-  = GotCharacterList (List String)
-  | CharacterLoaded String
+  = GotCharacterList (List (CharId, String))
+  | NewCharacterCreated CharId
   | GotCharacterSheet CharacterSheet
   | GotPrintableCharSheet CharacterSheet
   | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))

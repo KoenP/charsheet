@@ -29,7 +29,7 @@ trait_options_source(fighter >: 1, 'fighting style',
 
 trait_source(fighter >: 1, second_wind(1 d 10 + L)) :-
     class_level(fighter:L).
-resource('second wind', 'second wind', 1) :-
+res('second wind', 1) :-
     trait(second_wind(_)).
 on_rest(short, 'second wind', 'full restore') :-
     trait(second_wind(_)).
@@ -37,7 +37,7 @@ on_rest(short, 'second wind', 'full restore') :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Traits from leveling up.
 trait_source(fighter >: 2, 'action surge').
-resource('action surge', 'action surge', N) :-
+res('action surge', N) :-
     class_level(fighter:L),
     ordered_lookup_largest_leq([2 -> 1, 17 -> 2], L, N).
 on_rest(short, 'action surge', 'full restore').
@@ -47,7 +47,7 @@ multiclass_trait_source(fighter >: 5, extra_attack(N)) :-
     ordered_lookup_largest_leq([5 -> 1, 11 -> 2, 20 -> 3], L, N).
 
 trait_source(fighter >: 9, indomitable).
-resource(indomitable, reroll, N) :-
+res(indomitable, N) :-
     class_level(fighter:L),
     ordered_lookup_largest_leq([9 -> 1, 13 -> 2, 17 -> 3], L, N).
 
