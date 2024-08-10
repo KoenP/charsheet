@@ -1,5 +1,3 @@
-:- discontiguous fighting_style/1.
-
 class_option(fighter).
 hd_per_level(fighter, 1 d 10).
 initial_class_base_hp(fighter, 10).
@@ -55,11 +53,16 @@ res(indomitable, N) :-
 % MARTIAL ARCHETYPES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subclass_option(fighter, champion).
+
+trait_source(fighter(champion) >: 3, 'improved critical') :-
+    class_level(fighter(champion):CurLevel),
+    between(3, 14, CurLevel). % Overridden by superior critical. TODO this is ad-hoc, perhaps nice to have a systematic way of overriding traits.
+
 trait_source(fighter(champion) >: 3, 'improved critical').
 trait_source(fighter(champion) >: 7, 'remarkable athlete').
 trait_options_source(fighter(champion) >: 10, 'fighting style',
                      wrap(fighting_style), fighting_style).
-trait_source(fighter(champion) >: 15, 'superior critical').
+trait_source(fighter(champion) >: 15, 'superior critical'). % overrides 'improved critical'
 trait_source(fighter(champion) >: 18, survivor(HP)) :-
     ability_mod(con, Mod),
     HP is 5 + Mod.
@@ -74,11 +77,6 @@ second_wind(_) ?= "You have a limited well of stamina that you can draw on to pr
 
 indomitable ?= "Beginning at 9th level, you can reroll a saving throw that you fail. If you do so, you must use the new roll, and you can’t use this feature again until you finish a long rest. You can use this feature twice between long rests starting at 13th level and three times between long rests starting at 17th level.".
 
-fighting_style(archery) ?= "You gain a +2 bonus to attack rolls you make with ranged weapons.".
-fighting_style(dueling) ?= "When you are wielding a melee weapon in one hand and no other weapons, you gain a +2 bonus to damage rolls with that weapon.".
-fighting_style('great weapon fighting') ?= "When you roll a 1 or 2 on a damage die for an attack you make with a melee weapon that you are wielding with two hands, you can reroll the die and must use the new roll, even if the new roll is a 1 or a 2. The weapon must have the two-handed or versatile property for you to gain this benefit.".
-fighting_style(protection) ?= "When a creature you can see attacks a target other than you that is within 5 feet of you, you can use your reaction to impose disadvantage on the attack roll. You must be wielding a shield.".
-fighting_style('two-weapon fighting') ?= "When you engage in two-weapon fighting, you can add your ability modifier.".
 
 'improved critical' ?= "Beginning when you choose this archetype at 3rd level, your weapon attacks score a critical hit on a roll of 19 or 20.".
 

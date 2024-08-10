@@ -66,10 +66,10 @@ problem(not_eligible(Origin, Id, Choice)) :-
     % Flag a problem if we have a choice/3 clause without corresponding options/3 clause.
     choice(Origin, Id, Choice),
     \+ options(Origin, Id, _).
-problem(choice_does_not_match_spec(Origin, Id, Choice)) :-
-    % Flag a problem if a choice clause does not match the spec of the corresponding options clause.
-    choice(Origin, Id, Choice),
-    \+ choice_matches_spec(Origin, Id, Choice).
+%problem(choice_does_not_match_spec(Origin, Id, Choice)) :-
+%    % Flag a problem if a choice clause does not match the spec of the corresponding options clause.
+%    choice(Origin, Id, Choice),
+%    \+ choice_matches_spec(Origin, Id, Choice).
 choice(_,_) :- false. % Suppress a warning which I think is caused a bug in swipl.
 problem(chosen_same_trait_twice(Origin1, Origin2, Id1, Id2, Trait)) :-
     % Flag a problem if the same trait is chosen twice.
@@ -83,9 +83,9 @@ problem(chosen_same_trait_twice(Origin1, Origin2, Id1, Id2, Trait)) :-
 %  options/3 clause with matching Origin and Id. So,
 %  choice_matches_spec(Origin, Id, Choice) does not imply choice(Origin, Id,
 %  Choice).
-choice_matches_spec(Origin, Id, Choice) :-
-    options(Origin, Id, Spec),
-    call(Spec, Choice).
+%choice_matches_spec(Origin, Id, Choice) :-
+%    options(Origin, Id, Spec),
+%    call(Spec, Choice).
 
 %! choice_member(?Origin, ?Id, ?Choice)
 %
@@ -226,13 +226,15 @@ resolve_not_eligible :-
 
 % Case: `from` or `unique_from` spec.
 spec_to_json(Origin, Id, Spec,
-             _{spectype: Functor,
-               num: N,
-               spec: SubSpec1}) :-
+             _{ spectype: Functor,
+                num: N,
+                spec: SubSpec1
+              }) :-
     Spec =.. [Functor, N, SubSpec],
     (Functor = from ; Functor = unique_from),
     !,
     spec_to_json(Origin, Id, SubSpec, SubSpec1).
+
 % Case: `or` spec.
 spec_to_json(Origin, Id, Spec1 or Spec2,
              _{spectype: or,
@@ -250,7 +252,7 @@ spec_to_json(Origin, Id, Spec,
              _{spectype: list, list: List}) :-
     findall(_{opt: XStr, desc: Desc},
             (call(Spec, X),
-             (\+ suppress_base_option(Origin, Id, X)),
+             (\+ hide_base_option(Origin, Id, X)),
              term_string(X, XStr),
              default_on_fail("", lookup_option_doc(Origin, Id, X), Desc)),
              %fmt(format_term(X), XStr)),

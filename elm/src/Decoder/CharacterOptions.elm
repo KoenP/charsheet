@@ -90,7 +90,7 @@ addChoiceDec : SpecAndChoice -> Decoder SpecAndChoice
 addChoiceDec spec = 
   case spec of
     ListSC _ options ->
-      D.map (\choice -> ListSC (Just choice) options) <| D.string
+      D.map (\choice -> ListSC (Just choice) options) D.string
     OrSC _ left right ->
       D.field "choicetype" (Util.matchStringDec "or") |>
       D.andThen (\_ -> D.field "side" dirDec) |>

@@ -53,7 +53,7 @@ view charId sheet =
     <| div [ class "column" ]
          (viewNotableTraits sheet.notable_traits
           ++
-          viewOtherProficiencies sheet.weapons sheet.armor sheet.languages sheet.tools)
+          viewOtherProficiencies sheet.weapons sheet.armor sheet.languages sheet.tools sheet.resistances)
        ::
        div [ class "column" ]
          (  viewSpellcastingTable sheet.spellcasting_sections
@@ -221,9 +221,9 @@ viewNotableTraitCategory { category, traits } =
     <| traits
   ]
   
-viewOtherProficiencies :  List String -> List String -> List String -> List String
+viewOtherProficiencies :  List String -> List String -> List String -> List String -> List Resistance
                        -> List (Html Msg)
-viewOtherProficiencies weapons armor languages tools =
+viewOtherProficiencies weapons armor languages tools resistances =
   [ viewBadgeDiv "other proficiencies" "other-proficiencies"
       <| List.concatMap
          (\(category, entries)
@@ -235,8 +235,13 @@ viewOtherProficiencies weapons armor languages tools =
          , ("armor", defaultWhenEmpty "-" armor)
          , ("languages", defaultWhenEmpty "-" languages)
          , ("tools", defaultWhenEmpty "-" tools)
+         , ("resistances", defaultWhenEmpty "-" (List.map showResistance resistances))
          ]
   ]
+
+showResistance : Resistance -> String
+showResistance { damage_type, resistance } =
+  String.concat [damage_type, " (", resistance, ")"]
 
 viewSpellcastingTable : List SpellcastingSection -> List (Html Msg)
 viewSpellcastingTable sections =

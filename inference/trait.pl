@@ -106,12 +106,12 @@ deep_wrap(Atom, X, AtomX) :-
 %! notable_trait(?Origin, ?Trait)
 %
 %  Somewhat arbitrarily, a trait is "notable" when it's not an
-%  expertise, skill, language, tool, weapon, armor or shield proficiency.
+%  expertise; skill; language; resistance/immunity; or proficiency in tool, weapon, armor or shield.
 notable_trait(Origin, Trait) :-
     trait(Origin, Trait),
     \+ member(Trait,
               [expertise(_), skill(_), language(_), tool(_),
-               weapon(_), armor(_), shield, saving_throw(_)]).
+               weapon(_), armor(_), shield, saving_throw(_), resistance(_,_)]).
 
 notable_traits :-
     forall(notable_trait(_,T), writeln_quoted_term(T)).

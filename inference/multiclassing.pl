@@ -6,6 +6,9 @@ res('channel divinity', Uses) :-
     max_member(Uses, Ns).
 on_rest(short, 'channel divinity', 'full restore').
 
+custom_format(channel_divinity(CD)) -->
+    ["Channel Divinity: "], format_term(CD).
+
 %! multiclass_trait(?Origin, ?Trait)
 %
 %  A trait that can originate from multiple classes at once,
@@ -29,5 +32,9 @@ bonus(trait(extra_attack(N)), add_weapon_note(_, Note)) :-
     atomics_to_string(["attack ", M, "x"], Note).
 custom_format(extra_attack(1)) --> ["extra attack"].
 custom_format(extra_attack(N)) --> {N \= 1}, [N], [" extra attacks"].
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 extra_attack(_) ?= "You can attack more than once whenever you take the Attack action on your turn.".

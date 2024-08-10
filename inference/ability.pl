@@ -23,6 +23,11 @@ ability_max(Ability, Max) :-
     sum_bonuses(max_ability(Ability), Bonus),
     Max is 20 + Bonus.
 
+maxed_ability(Ability) :-
+    ability(Ability, Score),
+    ability_max(Ability, Max),
+    Score >= Max.
+
 ability_plus_n(N, Ability+N) :-
     ability(Ability).
 

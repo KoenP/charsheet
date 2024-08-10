@@ -8,6 +8,7 @@ sheet_json_dict(_{name: Name,
                   weapons: Weapons,
                   armor: Armor,
                   tools: Tools,
+                  resistances: Resistances,
                   notable_traits: NotableTraits,
                   attacks: Attacks,
                   spell_slots: SpellSlots,
@@ -24,6 +25,7 @@ sheet_json_dict(_{name: Name,
     setof_or_empty(X, trait(weapon(X)), Weapons),
     setof_or_empty(X, trait(armor(X)), Armor),
     setof_or_empty(X, trait(tools(X)), Tools),
+    resistances_json_dict(Resistances),
     notable_traits_json_dict(NotableTraits),
     attack_table_json_dict(Attacks),
     spell_slot_dict(SpellSlots),
@@ -155,6 +157,20 @@ skill_table_json_dict(Dict) :-
             ),
             Pairs),
     dict_pairs(Dict, _, Pairs).
+
+% Resistances and immunities.
+best_resistance_for_damage_type(DamageType, full) :-
+    damage_type(DamageType),
+    trait(resistance(DamageType, full)).
+best_resistance_for_damage_type(DamageType, half) :-
+    damage_type(DamageType),
+    \+ trait(resistance(DamageType, full)),
+    trait(resistance(DamageType, half)).
+
+resistances_json_dict(Resistances) :-
+    findall(_{damage_type: Type, resistance: Resistance},
+            best_resistance_for_damage_type(Type, Resistance),
+            Resistances).
 
 % Notable traits.
 notable_traits_json_dict(TraitDictsPerCat) :-

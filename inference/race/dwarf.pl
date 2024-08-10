@@ -5,7 +5,7 @@ bonus_source(race(dwarf), con+2).
 trait_source(race(dwarf), sense(darkvision)).
 trait_source(race(dwarf), 'no heavy armor speed penalty').
 trait_source(race(dwarf), 'dwarven resilience').
-trait_source(trait('dwarven resilience'), resistance(poison)).
+trait_source(trait('dwarven resilience'), resistance(poison, half)).
 traits_from_source(race(dwarf),
                    [weapon(battleaxe), weapon(handaxe),
                     weapon('light hammer'), weapon(warhammer)]).

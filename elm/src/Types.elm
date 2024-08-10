@@ -27,6 +27,7 @@ type alias CharacterSheet =
   , weapons : List String
   , armor : List String
   , tools : List String
+  , resistances : List Resistance
   , notable_traits : List NotableTraitCategory
   , attacks : List Attack
   , pact_magic: Maybe PactMagic
@@ -52,6 +53,7 @@ type alias CharacterSummary =
   , speed : String
   }
 
+type alias Resistance = { damage_type: String, resistance: String }
 
 type alias NotableTraitCategory = { category: String, traits: List Trait }
 type alias Trait = { name: String, desc: Maybe String }
@@ -187,9 +189,18 @@ type alias Unique = Bool
 
 type Dir = L | R
 type SpecAndChoice
-  = ListSC (Maybe String) (List (String, List String))
-  | OrSC (Maybe Dir) (String, SpecAndChoice) (String, SpecAndChoice)
-  | FromSC Unique Int (List SpecAndChoice)
+  = ListSC
+    (Maybe String)               -- The user's choice (if relevant).
+    (List (String, List String)) -- List of options, and option description (list of paragraphs).
+  | OrSC
+    (Maybe Dir)                  -- The user's choice (if relevant).
+    (String, SpecAndChoice)      -- Name and spec on the left side.
+    (String, SpecAndChoice)      -- Name and spec on the right side.
+  | FromSC 
+    Unique                       -- Whether this spec is a "from" or "unique_from" spec.
+    Int                          -- Number of choices `n` the user gets to make.
+    (List SpecAndChoice)         -- `n` repetitions of the spec, each potentially with its own
+                                 --   registered choice
 
 type alias Effect = { effect : PrologTerm
                     , origin : PrologTerm

@@ -165,3 +165,17 @@ other_bonuses_to_hit(Weapon, TotalBonus) :-
     weapon(Weapon, _, _, _, _),
     findall(B, bonus(to_hit(Weapon) + B), Bonuses),
     sum_list(Bonuses, TotalBonus).
+
+damage_type(acid).
+damage_type(bludgeoning).
+damage_type(cold).
+damage_type(fire).
+damage_type(force).
+damage_type(lightning).
+damage_type(necrotic).
+damage_type(piercing).
+damage_type(poison).
+damage_type(psychic).
+damage_type(radiant).
+damage_type(slashing).
+damage_type(thunder).

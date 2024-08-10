@@ -5,7 +5,7 @@ bonus_source(race(tiefling), int+1).
 bonus_source(race(tiefling), cha+2).
 
 traits_from_source(race(tiefling), [darkvision(60),
-                                    resistance(fire),
+                                    resistance(fire, half),
                                     trait('infernal legacy'),
                                     language(common),
                                     language(infernal)]).

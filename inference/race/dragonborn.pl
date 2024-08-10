@@ -31,7 +31,7 @@ res('breath weapon', 1) :-
     trait(breath_weapon(_)).
 on_rest(long, 'breath weapon', 'full restore').
 
-trait(trait(draconic_ancestry(Color)), resistance(Element)) :-
+trait(trait(draconic_ancestry(Color)), resistance(Element, half)) :-
     trait(draconic_ancestry(Color)),
     dragon_element(Color, Element).
 
@@ -53,7 +53,16 @@ breath_weapon_damage_dice(N) :-
     level(Level),
     ordered_lookup_largest_leq([1 -> 2, 6 -> 3, 11 -> 4, 16 -> 5], Level, N).
 
-custom_format(breath_weapon(Effect)) -->
+custom_format(breath_weapon(in(Ft ft cone):saving_throw(dc(Abi,DC)):(damage(Element, N d 6) else half))) -->
     ["breath weapon ("],
-    format_effect(Effect),
+    [Ft], [" ft cone, "],
+    ["DC "], [DC], [" "], [Abi], [", "],
+    [N], ["d6 "], [Element],
     [")"].
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+breath_weapon(_) ?= "You can use your action to exhale destructive energy. Your draconic ancestry determines the size, shape, and damage type of the exhalation. When you use your breath weapon, each creature in the area of the exhalation must make a saving throw, the type of which is determined by your draconic ancestry. The DC for this saving throw equals 8 + your Constitution modifier + your proficiency bonus. A creature takes 2d6 damage on a failed save, and half as much damage on a successful one. The damage increases to 3d6 at 6th level, 4d6 at 11th level, and 5d6 at 16th level. After you use your breath weapon, you can’t use it again until you complete a short or long rest.".

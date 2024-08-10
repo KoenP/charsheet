@@ -22,6 +22,7 @@ sheetDec =
     |> D.andMap (D.field "weapons" (D.list D.string))
     |> D.andMap (D.field "armor" (D.list D.string))
     |> D.andMap (D.field "tools" (D.list D.string))
+    |> D.andMap (D.field "resistances" (D.list resistanceDec))
     |> D.andMap (D.field "notable_traits" notableTraitsDec)
     |> D.andMap (D.field "attacks" (D.list attackDec))
     |> D.andMap (D.field "pact_magic" pactMagicDec)
@@ -55,6 +56,12 @@ hitDiceDec =
   D.succeed HitDice
     |> D.andMap (D.field "n" D.int)
     |> D.andMap (D.field "d" D.int)
+
+resistanceDec : Decoder Resistance
+resistanceDec =
+  D.succeed Resistance
+    |> D.andMap (D.field "damage_type" D.string)
+    |> D.andMap (D.field "resistance" D.string)
 
 notableTraitsDec : Decoder (List NotableTraitCategory)
 notableTraitsDec =

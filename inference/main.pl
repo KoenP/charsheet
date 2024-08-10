@@ -215,7 +215,7 @@ res(_,_) :- false.
 on_rest(_,_,_) :- false.
 meta_todo(res(Resource), 'rest for nonexistant resource') :-
     on_rest(_, Resource, _),
-    \+ res(_, Resource, _).
+    \+ res(Resource, _).
 
 %! full_restore(?Max, ?Cur, ?New)
 %
