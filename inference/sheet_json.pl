@@ -72,7 +72,7 @@ summary_json_dict(Dict) :-
         maxhp-max_hp,
         ac-ac,
         initiative-initiative,
-        speed-default_on_fail("", speed_str),
+        speed-speeds_json,
         hd-default_on_fail("", hit_dice_string),
         pp-passive_perception,
         prof_bon-proficiency_bonus ],
@@ -89,10 +89,13 @@ race_str(Str) :-
     fmt(format_term(Race), Str).
 race_str("").
 
-speed_str(Str) :-
-    speed(Speed),
-    number_string(Speed, SpeedStr),
-    string_concat(SpeedStr, " ft", Str).
+speeds_json(Json) :-
+    findall(_{ mode: Mode, speed: Speed }, speed(Mode,Speed), Json).
+
+%speeds_to_str([walking-Speed]) :-
+%    number_string(Speed, SpeedStr),
+%    string_concat(SpeedStr, " ft", Str).
+%speeds_to_str([])
 
 hit_dice_string(Str) :-
     hit_dice(HD),

@@ -1,6 +1,7 @@
 race_option(tabaxi).
 race_shorthand(tabaxi, tx).
-racial_speed(tabaxi, 30).
+racial_speed(tabaxi, walking, 30).
+racial_speed(tabaxi, climbing, 30).
 
 meta_todo("tabaxi ability_plus_n", "forbid stacking ability plus on same attr").
 
@@ -23,8 +24,6 @@ trait_source(race(tabaxi), 'cat\'s claws').
 meta_todo("tabaxi claws", "add tabaxi claws").
 suppress_unarmed :-
     trait(race(tabaxi), 'cat\'s claws').
-
-meta_todo("other speeds", "figure out how to encode other speeds (climbing, swimming, etc)").
 
 traits_from_source(race(tabaxi),
                    [skill(perception), skill(stealth), language(common)]).

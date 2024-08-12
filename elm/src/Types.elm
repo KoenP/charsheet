@@ -50,8 +50,10 @@ type alias CharacterSummary =
   , pp : Int
   , prof_bon : Int
   , race : String
-  , speed : String
+  , speed : List Speed
   }
+
+type alias Speed = { mode: String, speed: Int }
 
 type alias Resistance = { damage_type: String, resistance: String }
 

@@ -1,5 +1,5 @@
 race_option(elf).
-racial_speed(elf, 30).
+racial_speed(elf, walking, 30).
 race_shorthand(elf, el).
 
 traits_from_source(race(elf), [sense(darkvision), 

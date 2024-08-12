@@ -145,13 +145,24 @@ viewAttackTableRow { name, range, to_hit_or_dc, damage, notes } =
 viewStatTableContent : CharacterSummary -> List (Html Msg)
 viewStatTableContent { speed, initiative, prof_bon, pp } =
   [ table []
-    [ tr [] [ simple th "speed" , simple td speed ]
+    [ tr [] [ simple th "speed" , td [] [showSpeeds speed] ]
     , tr [] [ simple th "initiative" , simple td (formatModifier initiative) ]
     , tr [] [ simple th "proficiency bonus" , simple td (formatModifier prof_bon) ]
     , tr [] [ simple th "passive perception" , simple td (String.fromInt pp) ]
     ]
    
   ]
+
+showSpeeds : List Speed -> Html Msg
+showSpeeds speeds =
+  case speeds of
+    [ { speed } ] -> text <| String.fromInt speed ++ " ft"
+    _ -> ul [class "multiple-speeds-list"] <| List.map showSpeed speeds 
+
+showSpeed : Speed -> Html Msg
+showSpeed { mode, speed } =
+  li [] <| List.singleton <| text <|
+    mode ++ ": " ++ String.fromInt speed ++ " ft"
 
 viewArmorClassContent : List AcFormula -> List (Html Msg)
 viewArmorClassContent acFormulas =

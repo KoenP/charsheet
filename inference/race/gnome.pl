@@ -1,6 +1,6 @@
 race_option(gnome).
 race_shorthand(gnome, gn).
-racial_speed(gnome, 25).
+racial_speed(gnome, walking, 25).
 bonus_source(race(gnome), int+2).
 trait_source(race(gnome), sense(darkvision)).
 trait_source(race(gnome), 'gnome cunning').

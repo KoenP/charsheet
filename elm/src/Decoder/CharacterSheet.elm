@@ -42,7 +42,13 @@ summaryDec =
     |> D.andMap (D.field "pp" D.int)
     |> D.andMap (D.field "prof_bon" D.int)
     |> D.andMap (D.field "race" D.string)
-    |> D.andMap (D.field "speed" D.string)
+    |> D.andMap (D.field "speed" (D.list speedDec))
+
+speedDec : Decoder Speed
+speedDec =
+  D.succeed Speed
+    |> D.andMap (D.field "mode" D.string)
+    |> D.andMap (D.field "speed" D.int)
 
 acFormulaDec : Decoder AcFormula
 acFormulaDec =

@@ -172,11 +172,13 @@ hit_dice(Class, M d X) :-
     M is N * Level.
 
 %! speed(?Speed:int)
-speed(Speed) :-
+speed(Speed) :- speed(walking, Speed).
+speed(Mode, Speed) :-
     race(Race),
-    racial_speed(Race, BaseSpeed),
-    findall(Bonus, bonus(speed+Bonus), Bonuses),
+    racial_speed(Race, Mode, BaseSpeed),
+    findall(Bonus, (bonus(speed+Bonus);bonus(speed(Mode)+Bonus)), Bonuses),
     sumlist([BaseSpeed|Bonuses], Speed).
+    
 
 %! proficiency_bonus(?Bonus:int)
 proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).

@@ -72,12 +72,12 @@ init _ url key =
     , key = key
     , preparedSpells = Dict.empty
     , showOnlyPreparedSpells = False
-    , page = Loading Nothing
+    , page = Loading (Just <| CharId "f0320a0a-5898-11ef-9f04-a7a70e2fc9c6")
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     }
-  , loadSelectCharacterPage
-  -- , PSheet.load
+  -- , loadSelectCharacterPage
+  , PSheet.load (CharId "f0320a0a-5898-11ef-9f04-a7a70e2fc9c6")
   -- , Sheet.load
   -- , Cards.load
   -- , Edit.load

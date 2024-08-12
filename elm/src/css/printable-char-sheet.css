@@ -339,6 +339,15 @@
     text-align: right;
 }
 
+.multiple-speeds-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 1.3mm;
+    font-size: 9pt;
+}
+
 .spellcasting-table {
     border-spacing: 1.5mm;
 }

@@ -1,6 +1,6 @@
 race_option('half-orc').
 race_shorthand('half-orc', ho).
-racial_speed('half-orc', 30).
+racial_speed('half-orc', walking, 30).
 bonus_source(race('half-orc'), str+2).
 bonus_source(race('half-orc'), con+1).
 trait_source(race('half-orc'), sense(darkvision)).

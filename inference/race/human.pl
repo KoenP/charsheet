@@ -1,5 +1,5 @@
 race_option(human).
-racial_speed(human, 30).
+racial_speed(human, walking, 30).
 race_shorthand(human, hu).
 
 trait_source(race(human), language(common)).

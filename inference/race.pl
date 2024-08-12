@@ -1,6 +1,6 @@
 :- multifile
     subrace_option/2,
-    racial_speed/2,
+    racial_speed/3,
     race_shorthand/2,
     race_option/1.
 
@@ -34,7 +34,8 @@ options(race(Race), subrace, subrace_option(Race)) :-
     race(Race),
     race_has_subraces(Race).
 
-racial_speed(_,_) :- false.
+racial_speed(Race, WalkingSpeed) :- racial_speed(Race, walking, WalkingSpeed).
+racial_speed(_,_,_) :- false.
 race_shorthand(_,_) :- false.
 
 meta_todo(race(Race), 'missing racial speed') :-

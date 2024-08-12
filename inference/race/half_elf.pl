@@ -1,5 +1,5 @@
 race_option('half-elf').
-racial_speed('half-elf', 30).
+racial_speed('half-elf', walking, 30).
 race_shorthand(he).
 
 bonus_source(race('half-elf'), cha+2).

@@ -1,6 +1,6 @@
 race_option(dragonborn).
 race_shorthand(dragonborn, db).
-racial_speed(dragonborn, 30).
+racial_speed(dragonborn, walking, 30).
 bonus_source(race(dragonborn), str + 2).
 bonus_source(race(dragonborn), cha + 1).
 

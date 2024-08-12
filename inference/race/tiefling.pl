@@ -1,5 +1,5 @@
 race_option(tiefling).
-racial_speed(tiefling, 30).
+racial_speed(tiefling, walking, 30).
 race_shorthand(tiefling, tf).
 bonus_source(race(tiefling), int+1).
 bonus_source(race(tiefling), cha+2).
