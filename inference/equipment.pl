@@ -26,13 +26,9 @@ body_armor(Armor+N, Weight, ac(AC)) :-
     body_armor(Armor, Weight, ac(BaseAC)),
     AC is BaseAC + N.
 
-weapon_proficiency(Weapon) :-
-    trait(weapon(Weapon)).
-weapon_proficiency(Weapon) :-
-    weapon(Weapon, Category, _, _, _),
-    trait(weapon(Category)).
-    
 %! weapon(?Name, ?Category, ?Rangedness, ?DamageFormula, ?Notes)
+%
+%  The term "weapon" is used incorrectly here to include unarmed strikes.
 weapon(club, simple, melee,
        [damage(bludgeoning, 1 d 4)], [light]).
 weapon(quarterstaff, simple, melee,

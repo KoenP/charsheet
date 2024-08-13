@@ -1,4 +1,4 @@
-:- multifile attack/5, attack_variant/5, add_weapon_note/2, suppress_unarmed/0.
+:- multifile attack/5, attack_variant/5, add_weapon_note/2, counts_as_unarmed/1, has_natural_weapon/1, has_unarmed/1.
 
 %! attack(?Name, ?Range, ?ToHitOrDC, ?DamageFormula, ?Notes)
 %
@@ -8,7 +8,7 @@
 %  in the character's posession (see has/1)
 %  For cantrips, the spell has to be known (see known_spell/2).
 attack(Weapon, Range, ToHit, DamageRolls, Notes) :-
-    (has(Weapon) ; Weapon = unarmed),
+    (has(Weapon) ; has_unarmed(Weapon)),
     ( weapon_attack(Weapon, Range, ToHit, DamageRolls, Notes)
     ; weapon_variant_attack(Weapon, Range, ToHit, DamageRolls, Notes)).
 attack(Cantrip, Range, to_hit(ToHit), [DamageDice], []) :-
@@ -70,8 +70,27 @@ weapon_base_damage_rolls(Weapon, Rolls) :-
 weapon_base_damage_rolls(Weapon, Rolls) :-
     weapon(Weapon, _, _, Rolls, _).
 
-weapon(unarmed, unarmed, melee, [damage(bludgeoning,1)], []) :-
-    \+ suppress_unarmed.
+%! counts_as_unarmed(?Weapon)
+%
+%  Unarmed strikes trivially count as unarmed.
+%  But some characters have natural weapons, which may or may not count
+%  as unarmed strikes. This predicate explicitly enumerates every "weapon"
+%  (including basic unarmed strikes) that can be used to make unarmed strikes.
+counts_as_unarmed(unarmed).
+weapon(unarmed, unarmed, melee, [damage(bludgeoning,1)], []).
+
+%! has_natural_weapon(?Weapon)
+%
+%  Indicates whether character intrinsically has a natural weapon such as claws, horns, etc.
+has_natural_weapon(_) :- false.
+
+%! has_unarmed(?Weapon)
+%
+%  True if Weapon is `unarmed`, or if it's a natural weapon that counts as unarmed.
+has_unarmed(unarmed).
+has_unarmed(NaturalWeapon) :-
+    has_natural_weapon(NaturalWeapon),
+    counts_as_unarmed(NaturalWeapon).
 
 %! attack_variant(?Id, ?Range, ?ToHit, ?DamageFormula, ?Notes)
 %
@@ -156,11 +175,19 @@ weapon_ability_candidate(Weapon, dex) :- weapon(Weapon, _, ranged(_), _, _).
 %
 %  Calculate the proficiency bonus with Weapon (0 if not proficient).
 weapon_proficiency_bonus(Weapon, ProfBon) :-
-    (weapon_proficiency(Weapon) ; Weapon = unarmed),
+    weapon_proficiency(Weapon),
     !,
     proficiency_bonus(ProfBon).
 weapon_proficiency_bonus(_, 0).
 
+weapon_proficiency(Weapon) :-
+    trait(weapon(Weapon)).
+weapon_proficiency(Weapon) :-
+    weapon(Weapon, Category, _, _, _),
+    trait(weapon(Category)).
+weapon_proficiency(Weapon) :-
+    counts_as_unarmed(Weapon).
+    
 other_bonuses_to_hit(Weapon, TotalBonus) :-
     weapon(Weapon, _, _, _, _),
     findall(B, bonus(to_hit(Weapon) + B), Bonuses),

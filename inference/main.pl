@@ -46,6 +46,7 @@
 :- [spell_data].
 :- [spellcasting].
 :- [multiclassing].
+:- [equipment].
 :- [class].
 :- [race].
 :- [background].
@@ -53,7 +54,6 @@
 :- [fighting_style].
 :- [ability].
 :- [skill].
-:- [equipment].
 :- [ac].
 :- [hp].
 :- [fighting_style].

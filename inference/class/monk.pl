@@ -28,7 +28,7 @@ trait_source(monk >: 1, unarmored_defense(10 + dex + wis)).
 trait_source(monk >: 1, martial_arts(1 d N)) :-
     class_level(monk:L),
     ordered_lookup_largest_leq([1 -> 4, 5 -> 6, 11 -> 8, 17 -> 10], L, N).
-monk_weapon(unarmed).
+monk_weapon(Unarmed) :- has_unarmed(Unarmed).
 monk_weapon('short sword').
 monk_weapon(Weapon) :-
     weapon(Weapon, simple, _, _, Notes),

@@ -29,7 +29,7 @@ gain_level(_,_,_,_) :- false.
 
 current_level(CharId, CurLevel) :-
     findall(Level, gain_level(CharId, Level, _, _), Levels),
-    max_member(CurLevel, Levels).
+    ((max_member(CurLevel, Levels), !); CurLevel = 1).
 
 record_name(CharId, Name) :-
     assert_name(CharId, Name).
