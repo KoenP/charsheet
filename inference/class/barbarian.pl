@@ -76,9 +76,9 @@ rage(_) ?= "In battle, you fight with primal ferocity. On your turn, you can ent
 
 While raging, you gain the following benefits if you aren't wearing heavy armor:
 
-    You have advantage on Strength checks and Strength saving throws.
-    When you make a melee weapon attack using Strength, you gain a bonus to the damage roll that increases as you gain levels as a barbarian, as shown in the Rage Damage column of the Barbarian table.
-    You have resistance to bludgeoning, piercing, and slashing damage.
+- You have advantage on Strength checks and Strength saving throws.
+- When you make a melee weapon attack using Strength, you gain a bonus to the damage roll that increases as you gain levels as a barbarian, as shown in the Rage Damage column of the Barbarian table.
+- You have resistance to bludgeoning, piercing, and slashing damage.
 
 If you are able to cast spells, you can't cast them or concentrate on them while raging.
 

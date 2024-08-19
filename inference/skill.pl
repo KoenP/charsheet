@@ -105,3 +105,5 @@ skill(intimidation) ?= ["When you attempt to influence someone through overt thr
 skill(performance) ?= ["Your Charisma (Performance) check determines how well you can delight an audience with music, dance, acting, storytelling, or some other form of entertainment."].
 
 skill(persuasion) ?= ["When you attempt to influence someone or a group of people with tact, social graces, or good nature, the GM might ask you to make a Charisma (Persuasion) check. Typically, you use persuasion when acting in good faith, to foster friendships, make cordial requests, or exhibit proper etiquette. Examples of persuading others include convincing a chamberlain to let your party see the king, negotiating peace between warring tribes, or inspiring a crowd of townsfolk."].
+
+(expertise(skill(Skill)) ?= Desc) :- (skill(Skill) ?= Desc).

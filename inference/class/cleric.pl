@@ -160,7 +160,7 @@ trait_options(trait('blessings of knowledge'), language, wrap(skill),
 trait_options(trait('blessings of knowledge'), skill, wrap(skill),
               2 unique_from from_list([arcana,history,nature,religion])) :-
     cleric(knowledge) >: 1.
-trait(trait('blessings of knowledge'), expertise(skill(Skill))) :-
+trait_source(trait('blessings of knowledge'), expertise(skill(Skill))) :-
     choice_member(trait('blessings of knowledge'), skill, Skill).
 meta_todo(nontermination, "why can't the blessings of knowledge trait options refer to the blessings of knowledge trait without causing an infinite loop? [later note: I don't know what this is about, I can't reproduce a nontermination issue here]").
 meta_todo(trait('blessings of knowledge'), "Technically it's not expertise, but mechanically I'm not sure it's worth making a distinction here. In particular if it's not expertise, I'm not sure how/whether it stacks with expertise.").

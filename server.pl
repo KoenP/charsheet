@@ -31,24 +31,28 @@ user:file_search_path(js, 'client/dist/js').
 :- http_handler(js(.), serve_files_in_directory(js), [prefix]).
 
 % Character management.
-:- http_handler(root(list_characters), h_list_characters, [method(get)]).
-:- http_handler(root(new_character), h_new_character, [method(post)]).
+:- http_handler(root(api / list_characters), h_list_characters, [method(get)]).
+:- http_handler(root(api / new_character), h_new_character, [method(post)]).
 
 % Single-character queries.
-:- http_handler(root(character / CharId / sheet),
+:- http_handler(root(api / character / CharId / sheet),
                 handle_with_char_snapshot(h_get_sheet, CharId),
                 [method(get)]).
-:- http_handler(root(character / CharId / options),
+:- http_handler(root(api / character / CharId / options),
                 handle_with_char_snapshot(h_get_options, CharId),
                 [method(get)]).
-:- http_handler(root(character / CharId / edit_character_page),
+:- http_handler(root(api / character / CharId / edit_character_page),
                 handle_with_char_snapshot(h_get_edit_character_page, CharId),
                 [method(get)]).
 
 % Single-character updates.
-:- http_handler(root(character / CharId / choice), h_post_choice(CharId), [method(post)]).
-:- http_handler(root(character / CharId / gain_level), h_post_gain_level(CharId), [method(post)]).
-:- http_handler(root(character / CharId / set_base_abilities),
+:- http_handler(root(api / character / CharId / choice), h_post_choice(CharId), [method(post)]).
+:- http_handler(root(api / character / CharId / retract_choice), h_post_retract_choice(CharId), [method(post)]).
+:- http_handler(root(api / character / CharId / gain_level), h_post_gain_level(CharId), [method(post)]).
+:- http_handler(root(api / character / CharId / retract_gain_level),
+                h_post_retract_gain_level(CharId),
+                [method(post)]).
+:- http_handler(root(api / character / CharId / set_base_abilities),
                 h_post_set_base_abilities(CharId),
                 [method(post)]).
 
@@ -92,12 +96,36 @@ h_post_choice(CharId, Request) :-
     char_db:record_choice(CharId, Source, Id, Choice),
     reply_json_dict("Success!").
 
+h_post_retract_choice(CharId, Request) :-
+    cors_enable,
+    http_parameters(Request, [ source(SourceAtom, []),
+                               id(IdAtom, [])
+                             ]),
+    read_term_from_atom(SourceAtom, Source, []),
+    read_term_from_atom(IdAtom, Id, []),
+    char_db:withdraw_choice(CharId, Source, Id, _),
+    resolve_ineligible_choices(CharId),
+    reply_json_dict("Success!").
+
 h_post_gain_level(CharId, Request) :-
     cors_enable,
     http_parameters(Request, [class(Class,[])]),
     char_db:current_level(CharId, CurLevel),
     NewLevel is CurLevel + 1,
     char_db:record_gain_level(CharId, NewLevel, Class, hp_avg),
+    reply_json_dict("Success!").
+
+h_post_retract_gain_level(CharId, Request) :-
+    cors_enable,
+    http_parameters(Request, [level(RetractedLevel, [integer])]),
+
+    % Withdraw all levels starting from the retracted level.
+    forall((char_db:gain_level(CharId, L, _, _), L >= RetractedLevel),
+           char_db:withdraw_gain_level(CharId, L, _, _)),
+
+    % Use a character snapshot to determine which choices are now no longer valid.
+    resolve_ineligible_choices(CharId),
+
     reply_json_dict("Success!").
 
 h_post_set_base_abilities(CharId, Request) :-
@@ -114,6 +142,14 @@ handle_with_char_snapshot(Handler, CharId, Request) :-
         (load_character_from_db(CharId),
          call(Handler, Request),
          abolish_private_tables)).
+
+resolve_ineligible_choices(CharId) :-
+    abolish_private_tables,
+    snapshot((load_character_from_db(CharId),
+              findall(Origin-Id, problem(not_eligible(Origin, Id, _)), ChoicesToUndo))),
+    forall(member(Origin-Id, ChoicesToUndo),
+           char_db:withdraw_choice(CharId, Origin, Id, _)),
+    (ChoicesToUndo \= [] -> resolve_ineligible_choices(CharId) ; true).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Persistency.

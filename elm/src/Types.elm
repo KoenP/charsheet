@@ -316,6 +316,10 @@ type Msg
   | GotoEquipmentPage CharId
   | UnequipWeapon { base_weapon : String, enchantment : Int }
   | EquipWeapon String
+  | Retract Retraction
+
+type Retraction = RetractLevelUp Int
+                | RetractChoice { origin : String, id : String }
 
 type Choice = ListChoice (List String) | SingletonChoice String
 
@@ -326,9 +330,10 @@ type HttpResponseMsg
   | GotPrintableCharSheet CharacterSheet
   | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
   | GotEquipment Equipment
-  | ChoiceRegistered
-  | LeveledUp
-  | UpdatedBaseAbilityScores
+  -- | ChoiceRegistered
+  -- | LeveledUp
+  -- | UpdatedBaseAbilityScores
+  | Update
 
 mkHttpResponseMsg : (a -> HttpResponseMsg) -> (Result Http.Error a -> Msg)
 mkHttpResponseMsg f result =

@@ -9,9 +9,8 @@ traits_from_source(race(dragonborn), [language(common), language(draconic)]).
 trait_options_source(race(dragonborn), 'draconic ancestry',
                      wrap(draconic_ancestry), dragon_color).
 
-trait(trait(draconic_ancestry(Color)),
-      breath_weapon(in(AoE):saving_throw(dc(Abi,DC)):(damage(Element, N d 6) else half))) :-
-    trait(draconic_ancestry(Color)),
+trait_source(trait(draconic_ancestry(Color)),
+             breath_weapon(in(AoE):saving_throw(dc(Abi,DC)):(damage(Element, N d 6) else half))) :-
     dragon_element(Color, Element),
     breath_weapon(Color, AoE, Abi),
     breath_weapon_damage_dice(N),
@@ -31,8 +30,7 @@ res('breath weapon', 1) :-
     trait(breath_weapon(_)).
 on_rest(long, 'breath weapon', 'full restore').
 
-trait(trait(draconic_ancestry(Color)), resistance(Element, half)) :-
-    trait(draconic_ancestry(Color)),
+trait_source(trait(draconic_ancestry(Color)), resistance(Element, half)) :-
     dragon_element(Color, Element).
 
 breath_weapon(black, 5 by 30 ft line, dex).
@@ -56,6 +54,12 @@ breath_weapon_damage_dice(N) :-
 custom_format(breath_weapon(in(Ft ft cone):saving_throw(dc(Abi,DC)):(damage(Element, N d 6) else half))) -->
     ["breath weapon ("],
     [Ft], [" ft cone, "],
+    ["DC "], [DC], [" "], [Abi], [", "],
+    [N], ["d6 "], [Element],
+    [")"].
+custom_format(breath_weapon(in(Width by Length ft line):saving_throw(dc(Abi,DC)):(damage(Element, N d 6) else half))) -->
+    ["breath weapon ("],
+    [Width], [ "by "], [Length], [" ft line, "],
     ["DC "], [DC], [" "], [Abi], [", "],
     [N], ["d6 "], [Element],
     [")"].

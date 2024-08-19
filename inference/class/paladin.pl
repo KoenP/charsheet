@@ -77,6 +77,8 @@ trait_source(paladin >: 1, spellcasting_focus('holy symbol')).
 % Paladins know all proper spells on their spell list.
 known_spell(paladin, cha, 'when prepared', [slot], Ritual, Spell) :-
     learnable_proper_spell(paladin, Spell),
+    % Exclude oath spells so they don't show up twice.
+    \+ (subclass(paladin(Oath)), paladin_oath_spell(Oath, Spell)),
     spell_property(Spell, ritual, Ritual).
 
 % Oath spells are always prepared.

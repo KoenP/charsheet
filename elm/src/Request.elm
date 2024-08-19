@@ -7,7 +7,7 @@ requestUrl : List String -> List (String, String) -> String
 requestUrl path params =
   Url.crossOrigin
     "http://localhost:8000"
-    path
+    ("api" :: path)
     (List.map (\(k,v) -> Url.string k v) params)
 
 characterRequestUrl : CharId -> List String -> List (String, String) -> String

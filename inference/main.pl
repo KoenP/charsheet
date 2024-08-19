@@ -61,6 +61,7 @@
 :- [html].
 :- [character_file].
 :- [sheet_json].
+:- [grants].
 :- [test].
 
 %! meta_todo(Source, Todo)

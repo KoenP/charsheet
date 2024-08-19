@@ -2,7 +2,9 @@
           [ record_name/2,
             record_base_ability/3,
             record_gain_level/4,
+            withdraw_gain_level/4,
             record_choice/4,
+            withdraw_choice/4,
             name/2,
             base_ability/3,
             choice/4,
@@ -47,12 +49,23 @@ record_gain_level(CharId, Level, Class, HpMode) :-
     retractall_gain_level(CharId, Level, _, _),
     assert_gain_level(CharId, Level, Class, HpMode).
 
+withdraw_gain_level(CharId, Level, Class, HpMode) :-
+    ground(CharId),
+    number(Level),
+    retract_gain_level(CharId, Level, Class, HpMode).
+
 record_choice(CharId, Origin, Id, Choice) :-
     ground(CharId),
     ground(Origin),
     ground(Choice),
     retractall_choice(CharId, Origin, Id, _),
     assert_choice(CharId, Origin, Id, Choice).
+
+withdraw_choice(CharId, Origin, Id, Choice) :-
+    ground(CharId),
+    ground(Origin),
+    ground(Id),
+    retract_choice(CharId, Origin, Id, Choice).
 
 list_characters(List) :-
     setof(_{char_id: Id, name: Name}, name(Id, Name), List).

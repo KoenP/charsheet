@@ -479,7 +479,6 @@ const(X,_,X).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- multifile
-       drop_all_components_source/3,
        delete_component_source/4.
 
 %! drop_all_components_source(?BonusOrigin, ?SpellOrigin, ?Spell)

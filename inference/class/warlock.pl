@@ -153,7 +153,7 @@ known_spell(warlock(eldritch_invocation(Inv)),
 
 
 % Actually add the selected invocations as traits.
-trait(warlock >: Level, eldritch_invocation(Inv)) :-
+trait_source(warlock >: Level, eldritch_invocation(Inv)) :-
     find_choice_level(warlock:Level, 'eldritch invocation', Inv).
 
 % Need a manual rule to lookup the doc for each invocation.

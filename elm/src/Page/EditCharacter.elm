@@ -66,13 +66,7 @@ update msg model charId oldData =
           , Cmd.none
           )
 
-    HttpResponse (Ok ChoiceRegistered) ->
-      (model, load charId)
-
-    HttpResponse (Ok LeveledUp) ->
-      (model, load charId)
-
-    HttpResponse (Ok UpdatedBaseAbilityScores) ->
+    HttpResponse (Ok Update) ->
       (model, load charId)
 
     Tick _ ->
@@ -88,7 +82,7 @@ update msg model charId oldData =
                 )
             , body = Http.emptyBody
             , expect = Http.expectJson
-                       (mkHttpResponseMsg (\_ -> UpdatedBaseAbilityScores))
+                       (mkHttpResponseMsg (\_ -> Update))
                        (D.succeed ())
             }
             
@@ -111,7 +105,7 @@ update msg model charId oldData =
          { url = characterRequestUrl charId ["gain_level"] [("class", class)]
          , body = Http.emptyBody
          , expect = Http.expectJson
-                    (mkHttpResponseMsg (\_ -> LeveledUp))
+                    (mkHttpResponseMsg (\_ -> Update))
                     (D.succeed ())
          }
       )
@@ -149,6 +143,24 @@ update msg model charId oldData =
       ( applyPageData model charId { oldData | desc = desc }
       , Cmd.none
       ) 
+
+    Retract retraction ->
+      case retraction of
+        RetractLevelUp level ->
+          ( model , Http.post
+              { url = characterRequestUrl charId ["retract_gain_level"] [("level", String.fromInt level)]
+              , body = Http.emptyBody
+              , expect = Http.expectJson (mkHttpResponseMsg (\_ -> Update)) (D.succeed ())
+              }
+          )
+
+        RetractChoice { origin, id } ->
+          ( model , Http.post
+              { url = characterRequestUrl charId ["retract_choice"] [("source", origin), ("id", id)]
+              , body = Http.emptyBody
+              , expect = Http.expectJson (mkHttpResponseMsg (\_ -> Update)) (D.succeed ())
+              }
+          )
 
     _ ->
       let _ = Debug.log "" msg
@@ -200,11 +212,21 @@ descStyle =
 
 viewSideNavLevelButton : Maybe Level -> Level -> Html Msg
 viewSideNavLevelButton selectedLevel lvl =
-  button
-    [ Attr.css (sideNavButtonStyle (Just lvl == selectedLevel))
-    , E.onClick (EditCharacterLevel lvl)
+  div
+    [ Attr.css [ Css.displayFlex, Css.flexGrow (Css.int 1) ] ]
+    [ button
+        [ E.onClick (EditCharacterLevel lvl)
+        , Attr.css (sideNavButtonStyle (Just lvl == selectedLevel))
+        ]
+        [ text ("Level " ++ String.fromInt lvl) ]
+    , case lvl of
+        1 -> div [] []
+        _ -> button
+               [ E.onClick (Retract (RetractLevelUp lvl))
+               , Attr.css (Css.textAlign Css.right :: sideNavButtonStyle False)
+               ]
+               [ text "x" ]
     ]
-    [ text ("Level " ++ String.fromInt lvl) ]
 
 viewLevelUpButton : Maybe Level -> Html Msg
 viewLevelUpButton selectedLevel =
@@ -339,24 +361,24 @@ viewMainContents charId focusedDropdownId opts tbs selectedLevel =
 viewEffectCategory : (String, List Effect) -> Html Msg
 viewEffectCategory (category, effects) =
   let 
-    showEffect : (String -> String) -> Effect -> String
-    showEffect f = .effect >> defunctor >> List.map (Util.showPrologTerm >> f) >> String.concat
+    unwrap : Effect -> String
+    unwrap = .effect >> defunctor >> List.map Util.showPrologTerm >> String.concat
 
-    viewEffects : (String -> String) -> List Effect -> List (Html Msg)
-    viewEffects f
+    viewEffects : (Effect -> String) -> List Effect -> List (Html Msg)
+    viewEffects showEffect
       = List.map
           (\effect ->
-             case effect.desc of
+             let _ = Debug.log "effect desc" effect.desc in case effect.desc of
                  [] -> 
-                   text (showEffect f effect)
+                   text (showEffect effect)
                  desc -> 
                    tooltip tooltipSize Bottom
-                     (text <| showEffect f effect)
+                     (text <| showEffect effect)
                      (div [] <| List.map (simple p) desc))
 
     commaSeparatedArgs f = viewEffects f >> List.intersperse (text ", ")
 
-    showTool toolName = toolName ++ "'s tools"
+    showTool eff = let toolName = unwrap eff in toolName ++ "'s tools"
     id x = x
 
     formatCategory : String -> List (Html Msg) -> List (Html Msg)
@@ -367,38 +389,41 @@ viewEffectCategory (category, effects) =
       case category of
         "armor" ->
           formatCategory "Armor proficiencies"
-            <| commaSeparatedArgs id effects ++ [text "."]
+            <| commaSeparatedArgs unwrap effects ++ [text "."]
         "language" ->
           formatCategory "Languages"
-            <| commaSeparatedArgs id effects
+            <| commaSeparatedArgs unwrap effects
 
         "resistance" ->
-          formatCategory "Resistances" <| commaSeparatedArgs id effects
+          formatCategory "Resistances" <| commaSeparatedArgs unwrap effects
         "saving_throw" ->
-          formatCategory "Saving throws" <| commaSeparatedArgs id effects
+          formatCategory "Saving throws" <| commaSeparatedArgs unwrap effects
         "sense" ->
-          formatCategory "Senses" <| commaSeparatedArgs id effects
+          formatCategory "Senses" <| commaSeparatedArgs unwrap effects
         "tool" ->
           formatCategory "Tool proficiencies" <| commaSeparatedArgs showTool effects
         "spellcasting_focus" ->
-          formatCategory "You can use a(n) " <| commaSeparatedArgs id effects ++ [text " spellcasting focus"]
+          formatCategory "You can use a(n) " <| commaSeparatedArgs unwrap effects ++ [text " spellcasting focus"]
         "weapon" ->
-          formatCategory "Weapon proficiencies" <| commaSeparatedArgs id effects
+          formatCategory "Weapon proficiencies" <| commaSeparatedArgs unwrap effects
         "skill" ->
-          formatCategory "Skills" <| commaSeparatedArgs id effects
+          formatCategory "Skills" <| commaSeparatedArgs unwrap effects
+        "expertise" ->
+          formatCategory "Expertise" <| commaSeparatedArgs (.effect >> defunctor >> List.map defunctor >> List.concat >> List.map Util.showPrologTerm >> String.concat) effects
         "channel_divinity" ->
-          formatCategory "Channel divinity" <| commaSeparatedArgs id effects
+          formatCategory "Channel divinity" <| commaSeparatedArgs unwrap effects
         "destroy_undead" ->
-          formatCategory "Destroy undead" <| commaSeparatedArgs id effects
+          formatCategory "Destroy undead" <| commaSeparatedArgs unwrap effects
         _ ->
-          formatCategory (Util.formatSnakeCase category)
-            [ text <| String.concat <| List.intersperse ", "
-                <| List.map (Util.showPrologTermAlt << .effect) effects ]
+          formatCategory (Util.formatSnakeCase category) <|
+            commaSeparatedArgs (.effect >> Util.showPrologTerm) effects
+            -- [ text <| String.concat <| List.intersperse ", "
+            --     <| List.map (Util.showPrologTermAlt << .effect) effects ]
 
 
     -- showEffect f = .effect >> defunctor >> List.map (showPrologTerm >> f) >> String.concat
   in
-    div [ Attr.css originCategoryStyle ] content
+    div [ Attr.css effectCategoryStyle ] content
       
 
 
@@ -440,7 +465,9 @@ viewOptions : CharId -> Maybe String -> Options -> Html Msg
 viewOptions charId focusedDropdownId {origin, spec, id, display_id} =
   div
     [ Attr.css optionsSectionStyle ]
-    [ simple h3 display_id
+    [ h3 [] [ text display_id
+            , button [E.onClick (Retract (RetractChoice {origin = origin, id = id}))] [text "x"]
+            ]
     , viewSpec
         { charId            = charId
         , origin            = origin
@@ -634,9 +661,13 @@ originCategoryStyle : List Style
 originCategoryStyle =
   [ Css.backgroundColor (Css.hex "eeeeee")
   , Css.borderRadius (Css.px 10)
-  , Css.padding4 (Css.px 1) (Css.px 0) (Css.px 16) (Css.px 20) -- top right bot left
+  , Css.padding4 (Css.px 8) (Css.px 0) (Css.px 16) (Css.px 20) -- top right bot left
   , Css.marginTop (Css.px 8)
-  -- , Css.fontFamilies [ "Dosis" ]
+  ]
+
+effectCategoryStyle : List Style
+effectCategoryStyle =
+  [
   ]
 
 optionsSectionStyle : List Style
@@ -678,7 +709,7 @@ effectCategories : Set String
 effectCategories = Set.fromList
                     [ "armor", "language", "resistance", "saving_throw"
                     , "sense", "tool", "spellcasting_focus", "weapon", "skill",
-                      "channel_divinity", "destroy_undead"
+                      "channel_divinity", "destroy_undead", "expertise"
                     ]
 applyPageData : Model -> CharId -> EditCharacterPageData -> Model
 applyPageData model charId data =

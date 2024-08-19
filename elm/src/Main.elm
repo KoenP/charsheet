@@ -68,57 +68,54 @@ subscriptions { focusedDropdownId, page } =
 -- MODEL
 init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
 init _ url key =
-  ( { url = url
-    , key = key
-    , preparedSpells = Dict.empty
-    , showOnlyPreparedSpells = False
-    , page = Loading (Just <| CharId "f0320a0a-5898-11ef-9f04-a7a70e2fc9c6")
-    , focusedDropdownId = Nothing
-    , lastTick = Time.millisToPosix 0
-    }
-  -- , loadSelectCharacterPage
-  , PSheet.load (CharId "f0320a0a-5898-11ef-9f04-a7a70e2fc9c6")
-  -- , Sheet.load
-  -- , Cards.load
-  -- , Edit.load
-  -- , Equipment.load
-  -- , Nav.pushUrl key "/list_characters"
+  let
+    _ = Debug.log "url" url
+  in 
+    ( { url = url
+      , key = key
+      , preparedSpells = Dict.empty
+      , showOnlyPreparedSpells = False
+      , page = Loading Nothing -- (Just <| CharId "80fb5464-58a4-11ef-8b8b-4720ccf3cd11")
+      , focusedDropdownId = Nothing
+      , lastTick = Time.millisToPosix 0
+      }
+    , loadSelectCharacterPage
+    -- , PSheet.load (CharId "80fb5464-58a4-11ef-8b8b-4720ccf3cd11")
+    -- , Sheet.load
+    -- , Cards.load
+    -- , Edit.load
+    -- , Equipment.load
+    -- , Nav.pushUrl key "/list_characters"
   )
 
--- navigate : Model -> Route -> ( Model, Cmd Msg )
--- navigate model route = -- ( { model | page = Loading } , Sheet.load )
---   case route of
---     CharacterRoute charName ->
---       Debug.log ("navigate (CharacterRoute " ++ charName ++ ")")
---         ( { model | page = Loading }
---         , PSheet.load
---         )
---       
---     SelectCharacterRoute ->
---       Debug.log "navigate (SelectCharacterRoute)"
---         ( { model | page = Loading }
---         , loadSelectCharacterPage
---         )
---       
---     SheetRoute ->
---       Debug.log "navigate (SheetRoute)"
---         ( { model | page = Loading }
---         , PSheet.load
---         )
--- 
---     EditRoute ->
---       Debug.log "navigate (EditRoute)"
---         ( { model | page = Loading }
---         , Edit.load
---         )
--- 
---     EquipmentRoute ->
---       Debug.log "navigate (EquipmentRoute)"
---         ( { model | page = Loading }
---         , Equipment.load
---         )
--- 
---     _ -> ( model, none )
+navigate : Model -> Route -> ( Model, Cmd Msg )
+navigate model route = -- ( { model | page = Loading } , Sheet.load )
+  case route of
+    SelectCharacterRoute ->
+      Debug.log "navigate (SelectCharacterRoute)"
+        ( { model | page = Loading Nothing }
+        , loadSelectCharacterPage
+        )
+      
+    SheetRoute charId ->
+      Debug.log "navigate (SheetRoute)"
+        ( { model | page = Loading (Just charId) }
+        , PSheet.load charId
+        )
+
+    EditRoute charId ->
+      Debug.log "navigate (EditRoute)"
+        ( { model | page = Loading (Just charId) }
+        , Edit.load charId
+        )
+
+    EquipmentRoute charId ->
+      Debug.log "navigate (EquipmentRoute)"
+        ( { model | page = Loading (Just charId) }
+        , Equipment.load charId
+        )
+
+    _ -> ( model, none )
 
 loadSelectCharacterPage : Cmd Msg
 loadSelectCharacterPage = 
@@ -136,11 +133,10 @@ loadSelectCharacterPage =
 
 type Route
   = SelectCharacterRoute
-  | SheetRoute
-  | EditRoute
+  | SheetRoute CharId
+  | EditRoute CharId
   | NotFound
-  | CharacterRoute String
-  | EquipmentRoute
+  | EquipmentRoute CharId
   
 routeParser : Parser (Route -> a) a
 routeParser =
@@ -148,22 +144,25 @@ routeParser =
     [ Parser.map SelectCharacterRoute Parser.top
     , Parser.map SelectCharacterRoute (Parser.s "src" </> Parser.s "Main.elm")
     , Parser.map SelectCharacterRoute (Parser.s "list_characters")
-    , Parser.map SheetRoute (Parser.s "sheet")
-    , Parser.map EditRoute (Parser.s "edit")
-    , Parser.map CharacterRoute (Parser.s "character" </> Parser.string)
-    , Parser.map EquipmentRoute (Parser.s "equipment")
+    , Parser.map SheetRoute (Parser.s "character" </> parseCharId </> Parser.s "sheet")
+    -- , Parser.map EditRoute (Parser.s "edit")
+    -- , Parser.map CharacterRoute (Parser.s "character" </> Parser.string)
+    -- , Parser.map EquipmentRoute (Parser.s "equipment")
 
       -- Parser.s "char" : Parser a a
       -- </> : Parser (String -> d) (String -> d) -> Parser (String -> d) c -> Parser (String -> d) c
       -- Parser.string : Parser (String -> d) d
     ]
 
+parseCharId : Parser (CharId -> a) a
+parseCharId = Parser.map CharId Parser.string
+
 urlToRoute : Url -> Route
 urlToRoute url =
   Maybe.withDefault NotFound (Parser.parse routeParser url)
 
 -- UPDATE
-verbose = True
+verbose = False
 
 updateOrTick : Msg -> Model -> (Model, Cmd Msg)
 updateOrTick msg model =
@@ -188,8 +187,8 @@ update msg model =
         Browser.External href ->
           ( model, Nav.load href )
 
-    -- UrlChanged url ->
-    --   navigate model (urlToRoute url)
+    UrlChanged url ->
+      navigate model (urlToRoute url)
 
     EditCharacter charId ->
       ( { model | page = Loading (Just charId) }, Edit.load charId )
@@ -290,7 +289,7 @@ handleHttpResponseMsg maybeCharId msg model =
                         , optionsPerLevel = optionsPerLevel
                         , traitsAndBonusesPerLevel = traitsAndBonusesPerLevel 
                         , charLevel = charLevel
-                        , selectedLevel = Just 1 -- Just charLevel (TODO restore)
+                        , selectedLevel = Just charLevel
                         , desc = Nothing
                         , setAbilitiesOnNextTick = Dict.empty
                         }
@@ -331,7 +330,7 @@ registerChoice (CharId charId) origin id choice = let _ = Debug.log "registerCho
         ]
     , body = Http.emptyBody
     , expect =
-        Http.expectJson (mkHttpResponseMsg (\_ -> ChoiceRegistered)) (succeed ())
+        Http.expectJson (mkHttpResponseMsg (\_ -> Update)) (succeed ())
     }
 
 choiceToString : Choice -> String

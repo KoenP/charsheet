@@ -236,9 +236,17 @@ hide_base_option(_ >: _, 'asi or feat', MaxedAbility) :-
 trait(choice(AsiLevel,'asi or feat'), feat(Feat)) :-
     choice(AsiLevel, 'asi or feat', Feat),
     feat_option(Feat).
+
 bonus(choice(AsiLevel,'asi or feat'), Ability+1) :-
-    choice_member(AsiLevel, 'asi or feat', Ability),
+    choice(AsiLevel, 'asi or feat', [Abi1, Abi2]),
+    ability(Abi1),
+    ability(Abi2),
+    Abi1 \= Abi2,
+    (Ability = Abi1 ; Ability = Abi2).
+bonus(choice(AsiLevel,'asi or feat'), Ability+2) :-
+    choice(AsiLevel, 'asi or feat', [Ability, Ability]),
     ability(Ability).
+    
 
     %(Bonus = Ability + N ; member(Ability+N, Bonus)).
 
