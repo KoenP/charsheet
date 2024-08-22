@@ -296,8 +296,11 @@ handleHttpResponseMsg maybeCharId msg model =
              }
            , none
            )
-      (Just charId, GotEquipment equipment) ->
-        ( { model | page = EquipmentPage charId equipment }
+      (Just charId, GotEquipment (Ok equipment)) ->
+        ( { model | page = EquipmentPage charId { equipment = equipment
+                                                , inputFieldVal = ""
+                                                , error = Nothing
+                                                } }
         , none
         )
       -- ChoiceRegistered ->

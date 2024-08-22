@@ -6,9 +6,28 @@
 
 weapons_equipped(_) :- false.
 
+item_exists(Shield) :-
+    is_shield(Shield).
+item_exists(BodyArmor) :-
+    body_armor(BodyArmor, _, _).
+item_exists(Weapon) :-
+    weapon_option(W, _, _, _, _),
+    (Weapon = W ; Weapon = W + _).
+    
+
 has(Weapon) :-
     weapons_equipped(Weapons),
     member(Weapon, Weapons).
+
+has_weapon(Weapon) :-
+    has(Weapon),
+    attack(Weapon, _, _, _, _).
+
+weapon_index(Index, Weapon) :-
+    number(Index),
+    findall(W, has_weapon(W), Weapons),
+    length(Prefix, Index),
+    append(Prefix, [Weapon|_], Weapons).
 
 attuned(_) :- false.
 
@@ -55,6 +74,13 @@ weapon(longbow, martial, ranged(feet(150) / feet(600)),
 weapon(javelin, simple, melee,
        [damage(piercing, 1 d 6)], [thrown(feet(30) / feet(120))]).
 
+%! weapon_item(?Name, ?Category, ?Rangedness, ?DamageFormula, ?Notes)
+%
+%  Weapons that are also items (basically ignoring natural weapons).
+weapon_option(Weapon, Category, Range, Damage, Notes) :-
+    weapon(Weapon, Category, Range, Damage, Notes),
+    Category \= natural.
+
 % Possibilities
 % "Melee weapons" can always melee and sometimes be thrown.
 %   -> they always use STR (also when thrown), unless they are finesse weapons, in which case you can pick STR/DEX
@@ -95,7 +121,7 @@ equipment_json_dict(_{ weapons: Weapons,
                        weapon_options: WeaponOptions
                      }) :-
     findall(Weapon, weapon_json_dict(Weapon), Weapons),
-    findall(WeaponOption, weapon(WeaponOption,_,_,_,_), WeaponOptions).
+    findall(WeaponOption, weapon_option(WeaponOption,_,_,_,_), WeaponOptions).
 
 weapon_json_dict(_{ base_weapon: BaseWeapon,
                     enchantment: Enchantment,
@@ -103,10 +129,9 @@ weapon_json_dict(_{ base_weapon: BaseWeapon,
                     range: Range,
                     to_hit: ToHit,
                     damage: Damage,
-                    notes: Notes,
-                    is_variant: IsVariant
+                    notes: Notes
                  }) :-
-    attack_or_variant(WeaponVal, RangeVal, ToHitVal, DamageVal, NotesVal, IsVariant),
+    attack(WeaponVal, RangeVal, ToHitVal, DamageVal, NotesVal),
     destructure_weapon_or_variant(WeaponVal, BaseWeaponVal, Enchantment),
     weapon(BaseWeaponVal, Category, _, _, _),
     fmt(format_term(BaseWeaponVal), BaseWeapon),

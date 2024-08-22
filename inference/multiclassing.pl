@@ -30,7 +30,7 @@ bonus(trait(extra_attack(N)), add_weapon_note(_, Note)) :-
     trait(extra_attack(N)),
     M is N+1,
     atomics_to_string(["attack ", M, "x"], Note).
-custom_format(extra_attack(1)) --> ["extra attack"].
+custom_format(extra_attack(1)) --> ["one extra attack"].
 custom_format(extra_attack(N)) --> {N \= 1}, [N], [" extra attacks"].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

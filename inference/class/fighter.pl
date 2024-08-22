@@ -14,7 +14,7 @@ trait_source(^fighter, armor(heavy)).
 trait_options_source(^fighter, skill, wrap(skill),
                      2 unique_from from_list(
                          [acrobatics, 'animal handling', athletics, history,
-                          insight, intimidation, perception, survivial])).
+                          insight, intimidation, perception, survival])).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Level 1 features.

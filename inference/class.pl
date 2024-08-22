@@ -233,6 +233,9 @@ options_source(Class >: Level, 'asi or feat', (2 from ability) or feat_option) :
     asi_level(Class:Level).
 hide_base_option(_ >: _, 'asi or feat', MaxedAbility) :-
     maxed_ability(MaxedAbility).
+hide_base_option(_ >: _, 'asi or feat', Feat) :-
+    feat_option(Feat),
+    \+ selectable_feat_option(Feat).
 trait(choice(AsiLevel,'asi or feat'), feat(Feat)) :-
     choice(AsiLevel, 'asi or feat', Feat),
     feat_option(Feat).

@@ -1,15 +1,16 @@
 module Page.Equipment exposing (..)
 
 --------------------------------------------------------------------------------
+import Css exposing (Style)
 import Debug
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr
 import Html.Styled.Events as E
 import Http exposing (Expect)
+import Json.Decode as D exposing (Decoder)
 import List
 
 import Elements
-import Decoder.Equipment exposing (gotEquipmentDec)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Util exposing (simple)
@@ -26,96 +27,80 @@ load charId =
     }
 
 expectGotEquipment : Expect Msg
-expectGotEquipment = Http.expectJson (mkHttpResponseMsg GotEquipment) gotEquipmentDec
+expectGotEquipment = Http.expectJson
+                     (mkHttpResponseMsg GotEquipment)
+                     (D.oneOf [ D.list D.string |> D.map Ok
+                              , D.string |> D.map Err
+                              ])
 
-update : Msg -> Model -> CharId -> Equipment -> (Model, Cmd Msg)
-update msg model charId oldEquipment =
+update : Msg -> Model -> CharId -> EquipmentPageData -> (Model, Cmd Msg)
+update msg model charId oldData =
   case msg of
-      UnequipWeapon { base_weapon, enchantment } ->
-        ( model
-            -- { oldEquipment
-            -- | weapons = List.filter
-            --     (\w -> ( w.base_weapon, w.enchantment ) /= ( base_weapon, enchantment ))
-            --     oldEquipment.weapons
-            -- }
-        , Http.get
-            { url = characterRequestUrl charId
-                ["unequip_weapon"]
-                [ ( "base_weapon", base_weapon )
-                , ( "enchantment", String.fromInt enchantment )
-                ]
-            , expect = expectGotEquipment
-            }
-        )
-      EquipWeapon w ->
-        ( model
-        , Http.get
-            { url = characterRequestUrl charId ["equip_weapon"] [ ("weapon", w) ]
-            , expect = expectGotEquipment
-            }
-        )
-      HttpResponse (Ok (GotEquipment newEquipment)) ->
-        ( applyPageData model charId newEquipment
-        , Cmd.none
-        )
-      _ -> ( model, Cmd.none )
-        
-view : CharId -> Equipment -> List (Html Msg)
-view charId { weapons, weapon_options } =
-  [ Elements.viewNavButtons
-      [ Elements.viewGotoSheetButton charId
-      , Elements.viewEditCharacterButton charId
-      , Elements.viewSelectCharacterButton
-      ]
-  , simple h1 "Equipment"
-  , simple h2 "Weapons"
-  , viewWeaponsTable weapons
-  , p []
-      [ select [] <|
-          option [ Attr.disabled True, Attr.selected True ] [ text "-- Add a weapon --" ]
-          ::
-          List.map
-            (\s -> option [ E.onClick (EquipWeapon s) ] [ text s ])
-            weapon_options
-      ]
+    AddItemInput newInputFieldVal -> ( applyPageData model charId
+                                         { oldData
+                                           | inputFieldVal = newInputFieldVal
+                                           , error = Nothing
+                                         }
+                               , Cmd.none
+                               )
+    EquipItem item -> ( model
+                      , Http.post
+                          { url = characterRequestUrl charId ["equip_item"] [("item", item)]
+                          , body = Http.emptyBody
+                          , expect = expectGotEquipment
+                          }
+                      )
+    HttpResponse (Ok (GotEquipment (Ok newEquipment))) ->
+      ( applyPageData model charId
+          { oldData
+            | inputFieldVal = ""
+            , equipment = newEquipment
+            , error = Nothing
+          }
+      , Cmd.none
+      )
+
+    HttpResponse (Ok (GotEquipment (Err errmsg))) ->
+      ( applyPageData model charId
+          { oldData
+            | inputFieldVal = ""
+            , error = Just errmsg
+          }
+      , Cmd.none
+      )
+
+
+      
+    _ -> ( { model | page = Error ("Equipment.update called with unsupported message " ++ Debug.toString msg) }
+         , Cmd.none
+         )
+
+view : CharId -> EquipmentPageData -> List (Html Msg)
+view charId { equipment, inputFieldVal, error } =
+  [ ul [] (List.map (li [] << List.singleton << text) equipment)
+  , input [ Attr.type_ "text"
+          , Attr.placeholder "Item name"
+          , Attr.value inputFieldVal
+          , E.onInput AddItemInput
+          ] []
+  , button [ E.onClick (EquipItem inputFieldVal) ] [ text "Add item" ]
   ]
+  ++
+  viewError error
 
-viewWeaponsTable : List Weapon -> Html Msg
-viewWeaponsTable weapons =
-  table
-    [ Attr.class "attacks" ]
-    ( ( tr []
-          <| List.map (simple th)
-             [ "", "weapon", "enchantment", "category", "to hit", "damage", "range", "notes" ] )
-      ::
-      List.map viewWeapon weapons
-    )
+viewError : Maybe String -> List (Html Msg)
+viewError error =
+  case error of
+    Nothing -> []
+    Just msg -> [ div [ Attr.css [Css.color (Css.hex "ff0000") ] ] [ text msg ] ]
 
-viewWeapon : Weapon -> Html Msg
-viewWeapon { base_weapon, enchantment, category, to_hit, damage, range, notes, is_variant } =
-  let indentIfVariant str = if is_variant then "↳ " ++ str else str
-      omitIfVariant html = if is_variant then [] else html
-      weapon = base_weapon
-               ++ if enchantment > 0
-                  then "+" ++ String.fromInt enchantment
-                  else ""
-  in 
-    tr [] []
-      -- [ td [] (omitIfVariant
-      --             [ Elements.viewNavButton
-      --                 (UnequipWeapon { base_weapon = base_weapon
-      --                                , enchantment = enchantment
-      --                                })
-      --                 "close.png"
-      --                 "Unequip weapon"
-      --             ])
-      -- , simple td (indentIfVariant weapon)
-      -- , "", category, to_hit, damage, range, notes ]
+
+
 
 --------------------------------------------------------------------------------
 -- UTIL
 --------------------------------------------------------------------------------
 
-applyPageData : Model -> CharId -> Equipment -> Model
+applyPageData : Model -> CharId -> EquipmentPageData -> Model
 applyPageData model charId data =
   { model | page = EquipmentPage charId data }

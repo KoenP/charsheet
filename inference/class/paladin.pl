@@ -56,7 +56,7 @@ bonus_source(paladin >: 3, channel_divinity_uses(1)).
 
 multiclass_trait_source(paladin >: 5, extra_attack(1)).
 trait_source(paladin >: 6, 'aura of protection').
-trait_source(paladin >: 9, 'aura of courage').
+trait_source(paladin >: 10, 'aura of courage').
 
 trait_source(paladin >: 11, 'improved divine smite').
 bonus_source(trait('improved divine smite'),

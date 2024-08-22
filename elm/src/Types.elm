@@ -235,7 +235,7 @@ type Page
   | PrintableCharSheetPage CharId CharacterSheet
   | EditCharacterPage CharId EditCharacterPageData
   | CardsPage CharId CardsPageOptions CharacterSheet
-  | EquipmentPage CharId Equipment
+  | EquipmentPage CharId EquipmentPageData
 
 type alias EditCharacterPageData = 
   { abilityTable : AbilityTable
@@ -245,6 +245,12 @@ type alias EditCharacterPageData =
   , selectedLevel : Maybe Level
   , desc : Maybe (List String)
   , setAbilitiesOnNextTick : Dict Ability Int
+  }
+
+type alias EquipmentPageData =
+  { equipment : Equipment
+  , inputFieldVal : String
+  , error : Maybe String
   }
 
 applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
@@ -270,21 +276,18 @@ setSpellPreparedness origin spell prepared old =
                               True  -> Set.insert spell set)
       old
 
-type alias Equipment =
-  { weapons : List Weapon
-  , weapon_options : List String
-  }
+type alias Equipment = List String
 
-type alias Weapon =
-  { base_weapon : String
-  , enchantment : Int
-  , category : String
-  , range : String
-  , to_hit : String
-  , damage : String
-  , notes : String
-  , is_variant : Bool
-  }
+-- TODO delete ?
+--  type alias Weapon =
+--    { base_weapon : String
+--    , enchantment : Int
+--    , category : String
+--    , range : String
+--    , to_hit : String
+--    , damage : String
+--    , notes : String
+--    }
 
 ----------------------------------------------------------------------
 -- MSG
@@ -315,8 +318,10 @@ type Msg
   | SetBaseAbilityScore Ability Int
   | GotoEquipmentPage CharId
   | UnequipWeapon { base_weapon : String, enchantment : Int }
-  | EquipWeapon String
+  | EquipItem String
+  | UnequipItem String
   | Retract Retraction
+  | AddItemInput String
 
 type Retraction = RetractLevelUp Int
                 | RetractChoice { origin : String, id : String }
@@ -329,7 +334,7 @@ type HttpResponseMsg
   | GotCharacterSheet CharacterSheet
   | GotPrintableCharSheet CharacterSheet
   | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
-  | GotEquipment Equipment
+  | GotEquipment (Result String Equipment)
   -- | ChoiceRegistered
   -- | LeveledUp
   -- | UpdatedBaseAbilityScores

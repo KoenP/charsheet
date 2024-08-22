@@ -92,6 +92,12 @@ meta_todo(known_spell(Origin, Name), invalid_field(ritual,Ritual)) :-
 known_spell(Origin, Name) :-
     known_spell(Origin, _, _, _, _, Name).
 
+%! can_cast_spell
+%
+%  True iff character can cast at least one spell.
+can_cast_spell :-
+    known_spell(_, _), !.
+
 %! known_spell_data(?Origin:atomic, ?Name:atomic, ?Data)
 %
 %  Retrieves the Data associated with the spell Name, but after

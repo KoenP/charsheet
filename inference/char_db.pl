@@ -9,8 +9,12 @@
             base_ability/3,
             choice/4,
             gain_level/4,
+            has/2,
             list_characters/1,
-            create_character/2
+            create_character/2,
+            record_has/2,
+            withdraw_has/2,
+            show_inventory/2
           ]).
 
 :- use_module(library(persistency)).
@@ -20,7 +24,8 @@
      name(char_id:any, name:atomic),
      base_ability(char_id:any, ability:atom, score:positive_integer),
      choice(char_id:any, origin:any, id:any, choice:any),
-     gain_level(char_id:any, level:positive_integer, class:atom, hp_mode:atom).
+     gain_level(char_id:any, level:positive_integer, class:atom, hp_mode:atom),
+     has(char_id:any, item:any).
 
 :- db_attach('db.pl', []).
 
@@ -67,6 +72,20 @@ withdraw_choice(CharId, Origin, Id, Choice) :-
     ground(Id),
     retract_choice(CharId, Origin, Id, Choice).
 
+record_has(CharId, Item) :-
+    ground(CharId),
+    ground(Item),
+    assert_has(CharId, Item).
+
+withdraw_has(CharId, Item) :-
+    ground(CharId),
+    ground(Item),
+    retract_has(CharId, Item).
+
+show_inventory(CharId, Items) :-
+    ground(CharId),
+    findall(I, (has(CharId, Tm), term_string(Tm, I)), Items).
+
 list_characters(List) :-
     setof(_{char_id: Id, name: Name}, name(Id, Name), List).
 
@@ -75,3 +94,4 @@ create_character(Name, Uuid) :-
     uuid(Uuid),
     assert_name(Uuid, Name),
     forall(ability(Ability), assert_base_ability(Uuid, Ability, 10)).
+

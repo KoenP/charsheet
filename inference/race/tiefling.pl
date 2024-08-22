@@ -10,10 +10,13 @@ traits_from_source(race(tiefling), [darkvision(60),
                                     language(common),
                                     language(infernal)]).
 
-known_spell(race(tiefling), cha, always, [], no, thaumaturgy).
+known_spell(race(tiefling), cha, always, [], no, thaumaturgy) :-
+    race(tiefling).
 known_spell(race(tiefling), cha, always, [per_rest(1)], no, 'hellish rebuke') :-
+    race(tiefling),
     match_level(3).
 known_spell(race(tiefling), cha, always, [per_rest(1)], no, darkness) :-
+    race(tiefling),
     match_level(5).
 
 

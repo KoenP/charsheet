@@ -44,6 +44,9 @@ user:file_search_path(js, 'client/dist/js').
 :- http_handler(root(api / character / CharId / edit_character_page),
                 handle_with_char_snapshot(h_get_edit_character_page, CharId),
                 [method(get)]).
+:- http_handler(root(api / character / CharId / equipment),
+                h_get_equipment(CharId),
+                [method(get)]).
 
 % Single-character updates.
 :- http_handler(root(api / character / CharId / choice), h_post_choice(CharId), [method(post)]).
@@ -55,6 +58,13 @@ user:file_search_path(js, 'client/dist/js').
 :- http_handler(root(api / character / CharId / set_base_abilities),
                 h_post_set_base_abilities(CharId),
                 [method(post)]).
+:- http_handler(root(api / character / CharId / equip_item),
+                h_post_equip_item(CharId),
+                [method(post)]).
+:- http_handler(root(api / character / CharId / unequip_item),
+                h_post_unequip_item(CharId),
+                [method(post)]).
+
 
 h_list_characters(_Request) :-
     cors_enable,
@@ -83,6 +93,11 @@ h_get_edit_character_page(_Request) :-
     traits_and_bonuses_json(TBJson),
     ability_table_json_dict(AbiJson),
     reply_json_dict(_{options: OptsJson, ability_table: AbiJson, traits_and_bonuses: TBJson}).
+
+h_get_equipment(CharId, _Request) :-
+    cors_enable,
+    char_db:show_inventory(CharId, Items),
+    reply_json_dict(Items).
 
 h_post_choice(CharId, Request) :-
     cors_enable,
@@ -137,6 +152,30 @@ h_post_set_base_abilities(CharId, Request) :-
            char_db:record_base_ability(CharId, Abi, Score)),
     reply_json_dict("success!").
 
+h_post_equip_item(CharId, Request) :-
+    cors_enable,
+    http_parameters(Request, [item(ItemAtom,[])]),
+    read_term_from_atom(ItemAtom, Item, []),
+    (  equip_item_error(CharId, Item, Error)
+    -> reply_json_dict(Error)
+    ;  char_db:record_has(CharId, Item),
+       char_db:show_inventory(CharId, Items),
+       reply_json_dict(Items)
+    ).
+
+equip_item_error(CharId, Item, "You already have that item equipped.") :-
+    has(CharId, Item).
+equip_item_error(_, Item, "That item does not exist") :-
+    \+ item_exists(Item).
+
+h_post_unequip_item(CharId, Request) :-
+    cors_enable,
+    http_parameters(Request, [item(Item,[])]),
+    char_db:withdraw_has(CharId, Item),
+    snapshot((load_character_from_db(CharId),
+              findall(I, has(I), Items))),
+    reply_json_dict(Items).
+
 handle_with_char_snapshot(Handler, CharId, Request) :-
     snapshot(
         (load_character_from_db(CharId),
@@ -158,7 +197,14 @@ load_character_from_db(CharId) :-
     forall(char_db:name(CharId, Name), assert(name(Name))),
     forall(char_db:base_ability(CharId, Ability, Score), assert(base_ability(Ability, Score))),
     forall(char_db:gain_level(CharId, Level, Class, HpMode), assert(gain_level(Level, Class, HpMode))),
-    forall(char_db:choice(CharId, Origin, Id, Choice), assert(choice(Origin, Id, Choice))).
+    forall(char_db:choice(CharId, Origin, Id, Choice), assert(choice(Origin, Id, Choice))),
+    forall(char_db:has(CharId, Item), assert(has(Item))),
+    !.
+
+load_by_name(Name) :-
+    char_db:name(CharId, Name),
+    load_character_from_db(CharId),
+    !.
 
 %! run_server
 %
