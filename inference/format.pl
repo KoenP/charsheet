@@ -4,6 +4,7 @@ fmt(Spec, Out) :-
     phrase(Spec, Phrase),
     atomics_to_string(Phrase, Out).
 
+format_term(Var) --> {var(Var), !}, [''].
 format_term(T) --> custom_format(T), {!}.
 format_term(X d Y) --> format_dice(X d Y), {!}.
 format_term(1 / 2) --> {!}, ["½"].

@@ -108,6 +108,8 @@ h_post_choice(CharId, Request) :-
     read_term_from_atom(SourceAtom, Source, []),
     read_term_from_atom(IdAtom, Id, []),
     read_term_from_atom(ChoiceAtom, Choice, []),
+    char_db:withdraw_choice(CharId, Source, Id, _),
+    resolve_ineligible_choices(CharId),
     char_db:record_choice(CharId, Source, Id, Choice),
     reply_json_dict("Success!").
 
@@ -170,10 +172,10 @@ equip_item_error(_, Item, "That item does not exist") :-
 
 h_post_unequip_item(CharId, Request) :-
     cors_enable,
-    http_parameters(Request, [item(Item,[])]),
+    http_parameters(Request, [item(ItemAtom,[])]),
+    read_term_from_atom(ItemAtom, Item, []),
     char_db:withdraw_has(CharId, Item),
-    snapshot((load_character_from_db(CharId),
-              findall(I, has(I), Items))),
+    char_db:show_inventory(CharId, Items),
     reply_json_dict(Items).
 
 handle_with_char_snapshot(Handler, CharId, Request) :-
@@ -185,7 +187,8 @@ handle_with_char_snapshot(Handler, CharId, Request) :-
 resolve_ineligible_choices(CharId) :-
     abolish_private_tables,
     snapshot((load_character_from_db(CharId),
-              findall(Origin-Id, problem(not_eligible(Origin, Id, _)), ChoicesToUndo))),
+              findall(Origin-Id, problem(not_eligible(Origin, Id, _)), ChoicesToUndo),
+              abolish_private_tables)),
     forall(member(Origin-Id, ChoicesToUndo),
            char_db:withdraw_choice(CharId, Origin, Id, _)),
     (ChoicesToUndo \= [] -> resolve_ineligible_choices(CharId) ; true).

@@ -10,7 +10,7 @@ import Http exposing (Expect)
 import Json.Decode as D exposing (Decoder)
 import List
 
-import Elements
+import Elements exposing (..)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Util exposing (simple)
@@ -50,6 +50,14 @@ update msg model charId oldData =
                           , expect = expectGotEquipment
                           }
                       )
+    UnequipItem item -> ( model
+                        , Http.post
+                            { url = characterRequestUrl charId ["unequip_item"] [("item", item)]
+                            , body = Http.emptyBody
+                            , expect = expectGotEquipment
+                            }
+                        )
+
     HttpResponse (Ok (GotEquipment (Ok newEquipment))) ->
       ( applyPageData model charId
           { oldData
@@ -77,16 +85,41 @@ update msg model charId oldData =
 
 view : CharId -> EquipmentPageData -> List (Html Msg)
 view charId { equipment, inputFieldVal, error } =
-  [ ul [] (List.map (li [] << List.singleton << text) equipment)
+  [ div []
+      [ viewNavButtons [ viewEditCharacterButton charId
+                       , viewGotoSheetButton charId
+                       , viewSelectCharacterButton
+                       ]
+      ]
+  , table []
+      (List.map
+         (\item -> tr [] [ td [] [button [E.onClick (UnequipItem item)] [text "x"]]
+                         , simple td item
+                         ])
+         equipment)
   , input [ Attr.type_ "text"
           , Attr.placeholder "Item name"
           , Attr.value inputFieldVal
           , E.onInput AddItemInput
+          , onReturnPressed (EquipItem inputFieldVal)
           ] []
-  , button [ E.onClick (EquipItem inputFieldVal) ] [ text "Add item" ]
+  , button
+      [ E.onClick (EquipItem inputFieldVal)
+      ]
+      [ text "Add item" ]
   ]
   ++
   viewError error
+
+onKeyDown : (Int -> msg) -> Attribute msg
+onKeyDown tagger =
+  E.on "keydown" (D.map tagger E.keyCode)
+
+onReturnPressed : Msg -> Attribute Msg
+onReturnPressed msg =
+  onKeyDown <| \keyCode -> case keyCode of
+                             13 -> msg
+                             _  -> Null
 
 viewError : Maybe String -> List (Html Msg)
 viewError error =

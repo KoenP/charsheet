@@ -38,9 +38,21 @@ is_shield(shield).
 is_shield(Shield + _) :- is_shield(Shield).
 is_shield(ShieldF) :- ShieldF =.. [shield|_].
 
+body_armor(padded, light, ac(11)).
+body_armor(leather, light, ac(11)).
 body_armor('studded leather', light, ac(12)).
+
+body_armor(hide, medium, ac(12)).
+body_armor('chain shirt', medium, ac(13)).
+body_armor('scale mail', medium, ac(14)).
+body_armor(breastplate, medium, ac(14)).
 body_armor('half plate', medium, ac(15)).
+
+body_armor('ring mail', heavy, ac(14)).
 body_armor('chain mail', heavy, ac(16)).
+body_armor(splint, heavy, ac(17)).
+body_armor(plate, heavy, ac(18)).
+
 body_armor(Armor+N, Weight, ac(AC)) :-
     body_armor(Armor, Weight, ac(BaseAC)),
     AC is BaseAC + N.

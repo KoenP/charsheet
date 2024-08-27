@@ -63,14 +63,14 @@ record_choice(CharId, Origin, Id, Choice) :-
     ground(CharId),
     ground(Origin),
     ground(Choice),
-    retractall_choice(CharId, Origin, Id, _),
     assert_choice(CharId, Origin, Id, Choice).
 
 withdraw_choice(CharId, Origin, Id, Choice) :-
     ground(CharId),
     ground(Origin),
-    ground(Id),
-    retract_choice(CharId, Origin, Id, Choice).
+    (  choice(CharId, Origin, Id, _)
+    -> retract_choice(CharId, Origin, Id, Choice)
+    ;  true).
 
 record_has(CharId, Item) :-
     ground(CharId),

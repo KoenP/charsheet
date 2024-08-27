@@ -5,7 +5,11 @@
        replace_at_character_level/5.
 
 custom_format(replacing(Id, ToReplace)) -->
-    [Id], [": replace \""], [ToReplace], ["\""].
+    format_term(Id), [": replace \""], format_term(ToReplace), ["\""].
+custom_format(replace(Atom)) -->
+    {atom(Atom), !}, ["replace "], [Atom].
+custom_format(replace(Compound)) -->
+    {Compound =.. [Functor, Var], var(Var), !}, ["replace "], [Functor].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CLASSLEVEL-BOUND
