@@ -118,10 +118,6 @@ options_source(fighter('eldritch knight') >: L, replace(spell(Constraint)),
     between(4, 20, L),
     Prev is L-1.
 
-try_once(Goal) :-
-    call(Goal), !.
-try_once(_).
-
 options_source(fighter('eldritch knight') >: L, replacing(spell(Constraint), Name),
                learnable_eldritch_knight_spell(Constraint)) :-
     choice_member(fighter('eldritch knight') >: L, replace(spell(_)), Name),
@@ -131,10 +127,6 @@ options_source(fighter('eldritch knight') >: L, replacing(spell(Constraint), Nam
     % we know the correct constraint to apply.
     Prev is L-1,
     selected_at_class_level(fighter:Prev, spell(Constraint), Name).
-    
-    %choice_member(fighter('eldritch knight') >: L0, spell(Constraint), Name),
-    %\+ (choice(fighter('eldritch knight') >: L1, replace(spell(Constraint)), Name),
-    %    L1 > L0).
 
 extend_class_spell_list(fighter, Spell) :-
     fighter('eldritch knight') >: 3,

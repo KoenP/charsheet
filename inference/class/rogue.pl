@@ -89,31 +89,54 @@ options_source(rogue('arcane trickster') >: 3, cantrip,
 options_source(rogue('arcane trickster') >: 10, cantrip,
                class_cantrip(wizard)).
 
-% Learn or replace unconstrained proper spells.
+% Learn proper spells
 known_spell(rogue('arcane trickster'), int, always, [slot], no, Name) :-
     class_level(rogue:L),
-    selected_at_class_level(rogue:L, 'unconstrained spell', Name).
-options_source(rogue('arcane trickster') >: L, 'unconstrained spell',
-               learnable_proper_spell(rogue)) :-
+    selected_at_class_level(rogue:L, spell(_), Name).
+
+hide_known_class_spells(rogue('arcane trickster') >: _, spell(_), rogue).
+hide_known_class_spells(rogue('arcane trickster') >: _, replacing(spell(_), _), rogue).
+
+trickster_unconstrained_spell_level(L) :-
     member(L, [3, 8, 14, 20]).
 
-% Learn or replace enchantment or illusion proper spells.
-known_spell(rogue('arcane trickster'), int, always, [slot], no, Name) :-
-    class_level(rogue:L),
-    selected_at_class_level(rogue:L, 'illusion or enchantment', Name).
-options_source(rogue('arcane trickster') >: 3, 'illusion or enchantment',
-               2 unique_from learnable_arcane_trickster_spell).
-options_source(rogue('arcane trickster') >: L, 'illusion or enchantment',
-               learnable_arcane_trickster_spell) :-
-    member(L, [4,7,8,10,11,13,14,16,19,20]).
-learnable_arcane_trickster_spell(Spell) :-
-    learnable_proper_spell(rogue, Spell),
-    spell_property(Spell, school, School),
-    (School = illusion ; School = enchantment).
+options_source(rogue('arcane trickster') >: 3, spell('enchantment or illusion'),
+               2 unique_from learnable_arcane_trickster_spell('enchantment or illusion')).
+options_source(rogue('arcane trickster') >: L, spell(unconstrained),
+               learnable_arcane_trickster_spell(unconstrained)) :-
+    trickster_unconstrained_spell_level(L).
+options_source(rogue('arcane trickster') >: L, spell('enchantment or illusion'),
+               learnable_arcane_trickster_spell('enchantment or illusion')) :-
+    member(L, [4, 7, 10, 11, 13, 16, 19]).
+
+
+% Replace proper spells.
+options_source(rogue('arcane trickster') >: L, replace(spell(Constraint)),
+               selected_at_class_level(rogue:Prev, spell(Constraint))) :-
+    between(4, 20, L),
+    Prev is L-1.
+
+options_source(rogue('arcane trickster') >: L, replacing(spell(Constraint), Name),
+               learnable_arcane_trickster_spell(Constraint)) :-
+    choice_member(rogue('arcane trickster') >: L, replace(spell(_)), Name),
+
+    % We need to deal with the case that the same spell might have been picked,
+    % replaced, then picked again. The right choice has to be retracted so that
+    % we know the correct constraint to apply.
+    Prev is L-1,
+    selected_at_class_level(rogue:Prev, spell(Constraint), Name).
+
 extend_class_spell_list(rogue, Spell) :-
     rogue('arcane trickster') >: 3,
     spell_property(Spell, classes, Classes),
     member(wizard, Classes).
+
+learnable_arcane_trickster_spell(unconstrained, Spell) :-
+    learnable_proper_spell(rogue, Spell).
+learnable_arcane_trickster_spell('enchantment or illusion', Spell) :-
+    learnable_proper_spell(rogue, Spell),
+    spell_property(Spell, school, School),
+    (School = enchantment ; School = illusion).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
