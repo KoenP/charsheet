@@ -33,10 +33,10 @@ expectGotEquipment = Http.expectJson
                               , D.string |> D.map Err
                               ])
 
-update : Msg -> Model -> CharId -> EquipmentPageData -> (Model, Cmd Msg)
-update msg model charId oldData =
+update : Msg -> Model -> EquipmentPageData -> (Model, Cmd Msg)
+update msg model oldData =
   case msg of
-    AddItemInput newInputFieldVal -> ( applyPageData model charId
+    AddItemInput newInputFieldVal -> ( applyPageData model
                                          { oldData
                                            | inputFieldVal = newInputFieldVal
                                            , error = Nothing
@@ -45,21 +45,21 @@ update msg model charId oldData =
                                )
     EquipItem item -> ( model
                       , Http.post
-                          { url = characterRequestUrl charId ["equip_item"] [("item", item)]
+                          { url = characterRequestUrl model.charId ["equip_item"] [("item", item)]
                           , body = Http.emptyBody
                           , expect = expectGotEquipment
                           }
                       )
     UnequipItem item -> ( model
                         , Http.post
-                            { url = characterRequestUrl charId ["unequip_item"] [("item", item)]
+                            { url = characterRequestUrl model.charId ["unequip_item"] [("item", item)]
                             , body = Http.emptyBody
                             , expect = expectGotEquipment
                             }
                         )
 
     HttpResponse (Ok (GotEquipment (Ok newEquipment))) ->
-      ( applyPageData model charId
+      ( applyPageData model
           { oldData
             | inputFieldVal = ""
             , equipment = newEquipment
@@ -69,7 +69,7 @@ update msg model charId oldData =
       )
 
     HttpResponse (Ok (GotEquipment (Err errmsg))) ->
-      ( applyPageData model charId
+      ( applyPageData model
           { oldData
             | inputFieldVal = ""
             , error = Just errmsg
@@ -83,11 +83,11 @@ update msg model charId oldData =
          , Cmd.none
          )
 
-view : CharId -> EquipmentPageData -> List (Html Msg)
-view charId { equipment, inputFieldVal, error } =
+view : EquipmentPageData -> List (Html Msg)
+view { equipment, inputFieldVal, error } =
   [ div []
-      [ viewNavButtons [ viewEditCharacterButton charId
-                       , viewGotoSheetButton charId
+      [ viewNavButtons [ viewEditCharacterButton
+                       , viewGotoSheetButton
                        , viewSelectCharacterButton
                        ]
       ]
@@ -134,6 +134,6 @@ viewError error =
 -- UTIL
 --------------------------------------------------------------------------------
 
-applyPageData : Model -> CharId -> EquipmentPageData -> Model
-applyPageData model charId data =
-  { model | page = EquipmentPage charId data }
+applyPageData : Model -> EquipmentPageData -> Model
+applyPageData model data =
+  { model | page = EquipmentPage data }

@@ -1,4 +1,6 @@
 :- [inference/main].
+:- [pages/select_character].
+:- [pages/character_editor].
 
 :- table trait/2, known_spell/6, bonus/2, ability/2, class_level/1 as private.
 
@@ -23,13 +25,27 @@ user:file_search_path(js, 'client/dist/js').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Handlers.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 :- set_setting(http:cors, [*]).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Static files.
-:- http_handler(css(.), serve_files_in_directory(css), [prefix]).
-:- http_handler(js(.), serve_files_in_directory(js), [prefix]).
+file_search_path(static, static).
+:- http_handler(root(static), serve_files_in_directory(static), [prefix]).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Server-generated pages.
+:- http_handler(root(.), serve_page(select_character_page), [method(get)]).
+:- http_handler(root(character/CharId), serve_page(character_editor_page(CharId)),
+                [method(get), id(load_character_page)]).
+
+serve_page(Html, _Request) :-
+    phrase(Html, Tokenized),
+    format('Content-type: text/html~n~n'),
+    print_html(Tokenized).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Character management.
 :- http_handler(root(api / list_characters), h_list_characters, [method(get)]).
 :- http_handler(root(api / new_character), h_new_character, [method(post)]).

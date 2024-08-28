@@ -9,7 +9,7 @@ import Css.Global as Css
 import Url exposing (Url)
 import Url.Parser exposing (Parser, (</>))
 import Url.Parser as Parser
-import Html
+import Html as Unstyled
 import Html.Attributes
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr
@@ -35,14 +35,20 @@ import Types exposing (..)
 
 -- MAIN
 main =
-  Browser.application
+  Browser.element
     { init = init
     , view = view
     , update = updateOrTick
     , subscriptions = subscriptions
-    , onUrlRequest = LinkClicked
-    , onUrlChange = UrlChanged
     }
+  -- Browser.application
+  --   { init = init
+  --   , view = view
+  --   , update = updateOrTick
+  --   , subscriptions = subscriptions
+  --   , onUrlRequest = LinkClicked
+  --   , onUrlChange = UrlChanged
+  --   }
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
@@ -57,7 +63,7 @@ subscriptions { focusedDropdownId, page } =
 
     timeSub =
       case page of
-        EditCharacterPage _ _ ->
+        EditCharacterPage _ ->
           Time.every 500 Tick
         _ ->
           Sub.none
@@ -66,52 +72,63 @@ subscriptions { focusedDropdownId, page } =
     
 
 -- MODEL
-init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
-init _ url key =
-  let
-    _ = Debug.log "url" url
-  in 
-    ( { url = url
-      , key = key
-      , preparedSpells = Dict.empty
-      , showOnlyPreparedSpells = False
-      , page = Loading Nothing -- (Just <| CharId "80fb5464-58a4-11ef-8b8b-4720ccf3cd11")
-      , focusedDropdownId = Nothing
-      , lastTick = Time.millisToPosix 0
-      }
-    , loadSelectCharacterPage
-    -- , PSheet.load (CharId "80fb5464-58a4-11ef-8b8b-4720ccf3cd11")
-    -- , Sheet.load
-    -- , Cards.load
-    -- , Edit.load
-    -- , Equipment.load
-    -- , Nav.pushUrl key "/list_characters"
+init : String -> (Model, Cmd Msg)
+init charId =
+  ( { preparedSpells = Dict.empty
+    , showOnlyPreparedSpells = False
+    , page = Loading
+    , focusedDropdownId = Nothing
+    , lastTick = Time.millisToPosix 0
+    , charId = CharId charId
+    }
+  , Edit.load (CharId charId)
   )
+-- init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
+-- init _ url key =
+--   let
+--     _ = Debug.log "url" url
+--   in 
+--     ( { url = url
+--       , key = key
+--       , preparedSpells = Dict.empty
+--       , showOnlyPreparedSpells = False
+--       , page = Loading Nothing -- (Just <| CharId "80fb5464-58a4-11ef-8b8b-4720ccf3cd11")
+--       , focusedDropdownId = Nothing
+--       , lastTick = Time.millisToPosix 0
+--       }
+--     , loadSelectCharacterPage
+--     -- , PSheet.load (CharId "80fb5464-58a4-11ef-8b8b-4720ccf3cd11")
+--     -- , Sheet.load
+--     -- , Cards.load
+--     -- , Edit.load
+--     -- , Equipment.load
+--     -- , Nav.pushUrl key "/list_characters"
+--   )
 
 navigate : Model -> Route -> ( Model, Cmd Msg )
 navigate model route = -- ( { model | page = Loading } , Sheet.load )
   case route of
     SelectCharacterRoute ->
       Debug.log "navigate (SelectCharacterRoute)"
-        ( { model | page = Loading Nothing }
+        ( { model | page = Loading }
         , loadSelectCharacterPage
         )
       
     SheetRoute charId ->
       Debug.log "navigate (SheetRoute)"
-        ( { model | page = Loading (Just charId) }
+        ( { model | page = Loading }
         , PSheet.load charId
         )
 
     EditRoute charId ->
       Debug.log "navigate (EditRoute)"
-        ( { model | page = Loading (Just charId) }
+        ( { model | page = Loading }
         , Edit.load charId
         )
 
     EquipmentRoute charId ->
       Debug.log "navigate (EquipmentRoute)"
-        ( { model | page = Loading (Just charId) }
+        ( { model | page = Loading }
         , Equipment.load charId
         )
 
@@ -180,33 +197,26 @@ update msg model =
   case msg of
     Null ->
       ( model, none )
-    LinkClicked urlRequest ->
-      case urlRequest of
-        Browser.Internal url ->
-          ( model, Nav.pushUrl model.key (Url.toString url))
-        Browser.External href ->
-          ( model, Nav.load href )
-
     UrlChanged url ->
       navigate model (urlToRoute url)
 
-    EditCharacter charId ->
-      ( { model | page = Loading (Just charId) }, Edit.load charId )
+    EditCharacter ->
+      ( { model | page = Loading }, Edit.load model.charId )
 
     GotoSelectCharacterPage ->
-      ( { model | page = Loading Nothing }, loadSelectCharacterPage )
+      ( model, Nav.load "/" )
 
-    GotoCardsPage charId options sheet ->
-      ( { model | page = CardsPage charId options sheet }, Cmd.none)
+    GotoCardsPage options sheet ->
+      ( { model | page = CardsPage options sheet }, Cmd.none)
 
-    GotoSheet charId ->
-      applyPage model (Loading (Just charId), PSheet.load charId)
+    GotoSheet ->
+      applyPage model (Loading, PSheet.load model.charId)
 
-    GotoEquipmentPage charId ->
-      applyPage model (Loading (Just charId), Equipment.load charId)
+    GotoEquipmentPage ->
+      applyPage model (Loading, Equipment.load model.charId)
 
-    Choice charId origin id choice ->
-      ( { model | focusedDropdownId = Nothing } , registerChoice charId origin id choice )
+    Choice origin id choice ->
+      ( { model | focusedDropdownId = Nothing } , registerChoice model.charId origin id choice )
 
     SelectDropdownOption dropdownId optionId -> 
       let _ = Debug.log "" ("Selected dropdown option " ++ optionId ++ " from dropdown " ++ dropdownId)
@@ -223,20 +233,18 @@ update msg model =
 
     _ ->
       case model.page of
-        CharacterSelectionPage pageData ->
-          applyPage model (updateCharacterSelectionPage msg pageData)
-        PrintableCharSheetPage charId sheet ->
+        PrintableCharSheetPage sheet ->
           PSheet.update msg model
-        EditCharacterPage charId data ->
-          Edit.update msg model charId data
-        CardsPage charId options data ->
+        EditCharacterPage data ->
+          Edit.update msg model data
+        CardsPage options data ->
           Cards.update msg model data
-        EquipmentPage charId data ->
-          Equipment.update msg model charId data
-        Loading maybeCharId ->
+        EquipmentPage data ->
+          Equipment.update msg model data
+        Loading ->
           case msg of
             HttpResponse (Ok responseMsg) ->
-              handleHttpResponseMsg maybeCharId responseMsg model
+              handleHttpResponseMsg responseMsg model
             _ ->
               let
                 error = "Main.update: Expected HttpResponse, got " ++
@@ -246,45 +254,24 @@ update msg model =
         Error error  ->
           ( { model | page = Error error }, none )
 
-updateCharacterSelectionPage
-  : Msg -> CharacterSelectionPageData -> (Page, Cmd Msg)
-updateCharacterSelectionPage msg pageData =
+handleHttpResponseMsg : HttpResponseMsg -> Model -> (Model, Cmd Msg)
+handleHttpResponseMsg msg model =
   case msg of
-    NewCharacterName name ->
-      ( CharacterSelectionPage { pageData | newCharacterName = name }, none )
-    SelectCharacter charId ->
-      ( Loading (Just charId), Edit.load charId )
-    CreateNewCharacter ->
-      ( Loading Nothing, newCharacter pageData.newCharacterName )
-    _ ->
-      ( Error ("Main.updateCharacterSelectionPage: unrecognized msg "
-                 ++ Debug.toString msg)
-      , none
-      )
-  
-handleHttpResponseMsg : Maybe CharId -> HttpResponseMsg -> Model -> (Model, Cmd Msg)
-handleHttpResponseMsg maybeCharId msg model =
-  case (maybeCharId, msg) of
-      (_, GotCharacterList chars) -> 
-        ( { model
-            | page = CharacterSelectionPage { characters = chars, newCharacterName = "" }
-          }
-        , none
-        )
-      (_, NewCharacterCreated charId) ->
-        ( { model | page = Loading (Just charId) }
+      GotCharacterList chars -> 
+        ( model , none ) -- TODO delete
+      NewCharacterCreated charId ->
+        ( { model | page = Loading }
         , Edit.load charId
         -- , Nav.pushUrl model.key ("/character/" ++ id ++ "/edit")
         )
-      (Just charId, GotPrintableCharSheet sheet) ->
-        ( { model | page = PrintableCharSheetPage charId sheet }
+      GotPrintableCharSheet sheet ->
+        ( { model | page = PrintableCharSheetPage sheet }
         , none
         )
-      (Just charId, GotCharacterOptions abilityTable optionsPerLevel traitsAndBonusesPerLevel) ->
+      GotCharacterOptions abilityTable optionsPerLevel traitsAndBonusesPerLevel ->
         let charLevel = Dict.keys optionsPerLevel |> List.maximum |> Maybe.withDefault 1
         in ( { model
                | page = EditCharacterPage
-                        charId
                         { abilityTable = abilityTable
                         , optionsPerLevel = optionsPerLevel
                         , traitsAndBonusesPerLevel = traitsAndBonusesPerLevel 
@@ -296,11 +283,11 @@ handleHttpResponseMsg maybeCharId msg model =
              }
            , none
            )
-      (Just charId, GotEquipment (Ok equipment)) ->
-        ( { model | page = EquipmentPage charId { equipment = equipment
-                                                , inputFieldVal = ""
-                                                , error = Nothing
-                                                } }
+      GotEquipment (Ok equipment) ->
+        ( { model | page = EquipmentPage { equipment = equipment
+                                         , inputFieldVal = ""
+                                         , error = Nothing
+                                         } }
         , none
         )
       -- ChoiceRegistered ->
@@ -347,45 +334,42 @@ choiceToString choice =
 ----------------------------------------------------------------------
 -- VIEW
 ----------------------------------------------------------------------
-view : Model -> Browser.Document Msg
+view : Model -> Unstyled.Html Msg
 view model =
-  { title = "Character Sheet"
-  , body =
-    Html.node
-      "link"
-      -- [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-      [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Dosis:wght@400;700&display=swap"
---"https://fonts.googleapis.com/css2?family=Dosis&family=Epilogue:wght@300&family=Fira+Code&family=Quattrocento+Sans&family=Roboto:wght@300-800&display=swap"
-
-      , Html.Attributes.attribute "rel" "stylesheet"
-      ]
-      []
-    :: Html.node
-      "link"
-      [ Html.Attributes.attribute "href" "css/printable-char-sheet.css"
-      , Html.Attributes.attribute "rel" "stylesheet"
-      ]
-    []
-    :: toUnstyled globalCss
-    ::
+  -- Html.node
+    -- "link"
+    -- -- [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    -- [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Dosis:wght@400;700&display=swap"
+    -- --"https://fonts.googleapis.com/css2?family=Dosis&family=Epilogue:wght@300&family=Fira+Code&family=Quattrocento+Sans&family=Roboto:wght@300-800&display=swap"
+       --  
+    -- , Html.Attributes.attribute "rel" "stylesheet"
+    -- ]
+  -- []
+  -- :: Html.node
+  -- "link"
+  -- [ Html.Attributes.attribute "href" "css/printable-char-sheet.css"
+  -- , Html.Attributes.attribute "rel" "stylesheet"
+  -- ]
+-- []
+-- :: toUnstyled globalCss
+  -- ::
+  Unstyled.div [] <|
     List.map toUnstyled 
       (case model.page of
-         Loading _ ->
+         Loading ->
            [ text "Loading..." ]
          Error msg -> 
            [ text msg ]
-         CharacterSelectionPage data ->
-           characterSelectionPage data model
-         PrintableCharSheetPage charId data ->
-           PSheet.view charId data
-         EditCharacterPage charId data ->
-           Edit.view charId model.focusedDropdownId data
-         CardsPage charId options data ->
-           Cards.view charId options data model.preparedSpells
-         EquipmentPage charId data ->
-           Equipment.view charId data
+         PrintableCharSheetPage data ->
+           PSheet.view data
+         EditCharacterPage data ->
+           Edit.view model.focusedDropdownId data
+         CardsPage options data ->
+           Cards.view options data model.preparedSpells
+         EquipmentPage data ->
+           Equipment.view data
       )
-  }
+  -- }
 
 globalCss : Html msg
 globalCss =
@@ -417,23 +401,6 @@ globalCss =
         
     ]
   
-
--- Character selection page
-characterSelectionPage : { characters : List (CharId, String), newCharacterName : String }
-                       -> Model
-                       -> List (Html Msg)
-characterSelectionPage { characters, newCharacterName } { focusedDropdownId } =
-  let
-    characterList = div [] [ul [] (List.map selectCharButton characters)]
-  in 
-    [ h2 [] [ text "Create a new character" ]
-    , input
-        [ type_ "text", placeholder "New character name", onInput NewCharacterName ]
-        []
-    , button [ onClick CreateNewCharacter ] [ text "Create" ]
-    , h2 [] [ text "... or select an existing one" ]
-    , characterList
-    ]
 
 -- Shared
 textSingleton : String -> List (Html msg)

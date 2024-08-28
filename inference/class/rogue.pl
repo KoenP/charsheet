@@ -69,7 +69,7 @@ bonus_source(trait('mage hand legerdemain'),
                           Goal)) :-
     BonusFeatures = ["invisible", "control with bonus action (cunning action)",
                      "can steal, stow, pick locks, disarm traps using relevant skill"],
-    Goal = modify_spell_field(effects, [Es1,Es2]>>append(Es1,BonusFeatures,Es2)).
+    Goal = add_spell_effects(BonusFeatures).
 
 % Other features.
 trait_source(rogue('arcane trickster') >: 9, 'magical ambush').

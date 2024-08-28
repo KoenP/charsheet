@@ -165,13 +165,6 @@ defunctor tm =
     Compound _ args -> args
 
 ----------------------------------------------------------------------
--- CHARACTER SELECTION PAGE
-type alias CharacterSelectionPageData =
-  { characters : List (CharId, String)
-  , newCharacterName : String
-  }
-
-----------------------------------------------------------------------
 -- EDIT CHARACTER PAGE
 type alias Options =
   { charlevel : Level
@@ -220,22 +213,20 @@ extractChoicesList spec =
 ----------------------------------------------------------------------
 -- MODEL
 type alias Model =
-  { url : Url
-  , key : Nav.Key
-  , preparedSpells : Dict Origin (Set SpellName)
+  { preparedSpells : Dict Origin (Set SpellName)
   , showOnlyPreparedSpells : Bool
   , page : Page
   , focusedDropdownId : Maybe String
   , lastTick : Posix
+  , charId : CharId
   }
 type Page
-  = Loading (Maybe CharId)
+  = Loading
   | Error String
-  | CharacterSelectionPage CharacterSelectionPageData
-  | PrintableCharSheetPage CharId CharacterSheet
-  | EditCharacterPage CharId EditCharacterPageData
-  | CardsPage CharId CardsPageOptions CharacterSheet
-  | EquipmentPage CharId EquipmentPageData
+  | PrintableCharSheetPage CharacterSheet
+  | EditCharacterPage EditCharacterPageData
+  | CardsPage CardsPageOptions CharacterSheet
+  | EquipmentPage EquipmentPageData
 
 type alias EditCharacterPageData = 
   { abilityTable : AbilityTable
@@ -297,17 +288,16 @@ type Msg
   | GotoSelectCharacterPage
   | NewCharacterName String
   | CreateNewCharacter
-  | EditCharacter CharId
+  | EditCharacter
   | UrlChanged Url
-  | LinkClicked Browser.UrlRequest
   | SetSpellPreparedness Origin SpellName Bool
   | SetShowOnlyPreparedSpells Bool
   | EditCharacterLevel Level
-  | Choice CharId String String Choice
+  | Choice String String Choice
   | OrSCChooseDir String String Dir
-  | GotoSheet CharId
+  | GotoSheet
   | GotoLevelUp
-  | GotoCardsPage CharId CardsPageOptions CharacterSheet
+  | GotoCardsPage CardsPageOptions CharacterSheet
   | LevelUpAs String
   | SetEditCharacterPageDesc (Maybe (List String))
   | SelectDropdownOption String String
@@ -316,7 +306,7 @@ type Msg
   | Null
   | Tick Posix
   | SetBaseAbilityScore Ability Int
-  | GotoEquipmentPage CharId
+  | GotoEquipmentPage
   | UnequipWeapon { base_weapon : String, enchantment : Int }
   | EquipItem String
   | UnequipItem String

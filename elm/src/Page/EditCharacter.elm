@@ -40,8 +40,8 @@ load charId =
 --------------------------------------------------------------------------------
 -- UPDATE
 --------------------------------------------------------------------------------
-update : Msg -> Model -> CharId -> EditCharacterPageData -> (Model, Cmd Msg)
-update msg model charId oldData =
+update : Msg -> Model -> EditCharacterPageData -> (Model, Cmd Msg)
+update msg model oldData =
   case msg of
     HttpResponse (Ok (GotCharacterOptions newAbilityTable newOptions newTraitsAndBonuses)) ->
       let
@@ -49,7 +49,7 @@ update msg model charId oldData =
       in
         applyPage
           model
-          ( EditCharacterPage charId
+          ( EditCharacterPage
               { abilityTable             = newAbilityTable
               , optionsPerLevel          = newOptions
               , traitsAndBonusesPerLevel = newTraitsAndBonuses
@@ -67,7 +67,7 @@ update msg model charId oldData =
           )
 
     HttpResponse (Ok Update) ->
-      (model, load charId)
+      (model, load model.charId)
 
     Tick _ ->
       ( model
@@ -75,7 +75,7 @@ update msg model charId oldData =
         then Cmd.none
         else
           Http.post
-            { url = characterRequestUrl charId ["set_base_abilities"]
+            { url = characterRequestUrl model.charId ["set_base_abilities"]
                 (  applyBaseAbilityChanges oldData.abilityTable oldData.setAbilitiesOnNextTick
                 |> Dict.map (\_ v -> String.fromInt v)
                 |> Dict.toList
@@ -91,18 +91,18 @@ update msg model charId oldData =
       )
 
     EditCharacterLevel newLevel ->
-      ( applyPageData model charId { oldData | selectedLevel = Just newLevel }
+      ( applyPageData model { oldData | selectedLevel = Just newLevel }
       , Cmd.none
       )
 
     GotoLevelUp ->
-      ( applyPageData model charId { oldData | selectedLevel = Nothing, desc = Nothing }
+      ( applyPageData model { oldData | selectedLevel = Nothing, desc = Nothing }
       , Cmd.none
       ) 
 
     LevelUpAs class ->
       (model, Http.post
-         { url = characterRequestUrl charId ["gain_level"] [("class", class)]
+         { url = characterRequestUrl model.charId ["gain_level"] [("class", class)]
          , body = Http.emptyBody
          , expect = Http.expectJson
                     (mkHttpResponseMsg (\_ -> Update))
@@ -111,7 +111,7 @@ update msg model charId oldData =
       )
 
     SetBaseAbilityScore ability newScore -> 
-      ( applyPageData model charId
+      ( applyPageData model
           { oldData
           | setAbilitiesOnNextTick =
               Dict.insert ability newScore oldData.setAbilitiesOnNextTick
@@ -135,12 +135,12 @@ update msg model charId oldData =
             oldData.optionsPerLevel
         _ = Debug.log "" (origin, id, dir)
       in
-        ( applyPageData model charId { oldData | optionsPerLevel = newOptions, desc = Nothing }
+        ( applyPageData model { oldData | optionsPerLevel = newOptions, desc = Nothing }
         , Cmd.none
         )
 
     SetEditCharacterPageDesc desc ->
-      ( applyPageData model charId { oldData | desc = desc }
+      ( applyPageData model { oldData | desc = desc }
       , Cmd.none
       ) 
 
@@ -148,7 +148,7 @@ update msg model charId oldData =
       case retraction of
         RetractLevelUp level ->
           ( model , Http.post
-              { url = characterRequestUrl charId ["retract_gain_level"] [("level", String.fromInt level)]
+              { url = characterRequestUrl model.charId ["retract_gain_level"] [("level", String.fromInt level)]
               , body = Http.emptyBody
               , expect = Http.expectJson (mkHttpResponseMsg (\_ -> Update)) (D.succeed ())
               }
@@ -156,7 +156,7 @@ update msg model charId oldData =
 
         RetractChoice { origin, id } ->
           ( model , Http.post
-              { url = characterRequestUrl charId ["retract_choice"] [("source", origin), ("id", id)]
+              { url = characterRequestUrl model.charId ["retract_choice"] [("source", origin), ("id", id)]
               , body = Http.emptyBody
               , expect = Http.expectJson (mkHttpResponseMsg (\_ -> Update)) (D.succeed ())
               }
@@ -174,15 +174,15 @@ applyBaseAbilityChanges abilityTable setAbilitiesOnNextTick =
 --------------------------------------------------------------------------------
 -- VIEW
 --------------------------------------------------------------------------------
-view : CharId -> Maybe String -> EditCharacterPageData -> List (Html Msg)
-view charId focusedDropdownId data =
+view : Maybe String -> EditCharacterPageData -> List (Html Msg)
+view focusedDropdownId data =
   [ Elements.viewNavButtons
-      [ Elements.viewGotoSheetButton charId
-      , Elements.viewGotoEquipmentButton charId
+      [ Elements.viewGotoSheetButton
+      , Elements.viewGotoEquipmentButton
       , Elements.viewSelectCharacterButton
       ]
   , viewSideNav data
-  , viewMain charId focusedDropdownId data
+  , viewMain focusedDropdownId data
   ]
 
 tooltipSize = 80
@@ -234,8 +234,8 @@ viewLevelUpButton selectedLevel =
     [ Attr.css (sideNavButtonStyle (selectedLevel == Nothing)), E.onClick GotoLevelUp ]
     [ text "+" ]
 
-viewMain : CharId -> Maybe String -> EditCharacterPageData -> Html Msg
-viewMain charId focusedDropdownId { abilityTable, optionsPerLevel, traitsAndBonusesPerLevel, selectedLevel, setAbilitiesOnNextTick } =
+viewMain : Maybe String -> EditCharacterPageData -> Html Msg
+viewMain focusedDropdownId { abilityTable, optionsPerLevel, traitsAndBonusesPerLevel, selectedLevel, setAbilitiesOnNextTick } =
   div
     [ Attr.css mainSectionStyle ] 
     [ viewTopBar abilityTable setAbilitiesOnNextTick
@@ -244,7 +244,7 @@ viewMain charId focusedDropdownId { abilityTable, optionsPerLevel, traitsAndBonu
             [ Css.padding2 (Css.px 150) (Css.px 25)
             ]
         ]
-        (viewMainContents charId focusedDropdownId optionsPerLevel traitsAndBonusesPerLevel selectedLevel)
+        (viewMainContents focusedDropdownId optionsPerLevel traitsAndBonusesPerLevel selectedLevel)
     ]
 
 viewTopBar : AbilityTable -> Dict Ability Int -> Html Msg
@@ -323,10 +323,9 @@ topBarTd val = td [Attr.css topBarTdCss] [text val]
 topBarTdCss : List Style
 topBarTdCss = [Css.textAlign Css.center]
 
-viewMainContents :  CharId
-                 -> Maybe String -> Dict Level (List Options) -> Dict Level (List Effect) -> Maybe Level
+viewMainContents :  Maybe String -> Dict Level (List Options) -> Dict Level (List Effect) -> Maybe Level
                  -> List (Html Msg)
-viewMainContents charId focusedDropdownId opts tbs selectedLevel =
+viewMainContents focusedDropdownId opts tbs selectedLevel =
   case selectedLevel of
     Just level ->
       let
@@ -342,7 +341,7 @@ viewMainContents charId focusedDropdownId opts tbs selectedLevel =
           |> Maybe.withDefault []
           |> Util.multiDictFromList (\{display_origin_category, origin_category_index} ->
                                        (origin_category_index, display_origin_category))
-          |> Dict.map (viewOriginCategoryOptions charId focusedDropdownId)
+          |> Dict.map (viewOriginCategoryOptions focusedDropdownId)
           |> Dict.values)
 
       in
@@ -450,8 +449,8 @@ viewLevelUpPage =
           ["barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue", "sorcerer", "warlock", "wizard"])
   ]
 
-viewOriginCategoryOptions : CharId -> Maybe String -> (Int, String) -> List Options -> Html Msg
-viewOriginCategoryOptions charId focusedDropdownId (_, category) optionsList =
+viewOriginCategoryOptions : Maybe String -> (Int, String) -> List Options -> Html Msg
+viewOriginCategoryOptions focusedDropdownId (_, category) optionsList =
   let
     headerMsg = case category of
                   "init" -> "Choose your background, class, and race:"
@@ -459,29 +458,27 @@ viewOriginCategoryOptions charId focusedDropdownId (_, category) optionsList =
   in 
     div
       [ Attr.css originCategoryStyle ]
-      (simple h2 headerMsg :: List.map (viewOptions charId focusedDropdownId) optionsList)
+      (simple h2 headerMsg :: List.map (viewOptions focusedDropdownId) optionsList)
 
-viewOptions : CharId -> Maybe String -> Options -> Html Msg
-viewOptions charId focusedDropdownId {origin, spec, id, display_id} =
+viewOptions : Maybe String -> Options -> Html Msg
+viewOptions focusedDropdownId {origin, spec, id, display_id} =
   div
     [ Attr.css optionsSectionStyle ]
     [ h3 [] [ text display_id
             , button [E.onClick (Retract (RetractChoice {origin = origin, id = id}))] [text "x"]
             ]
     , viewSpec
-        { charId            = charId
-        , origin            = origin
+        { origin            = origin
         , id                = id
         , dropdownIdSuffix  = ""
         , focusedDropdownId = focusedDropdownId
         , disabledOptions   = []
         }
-        (Choice charId origin id << SingletonChoice) False spec
+        (Choice origin id << SingletonChoice) False spec
     ]
 
 type alias ViewSpecContext =
-  { charId             : CharId
-  , origin             : String
+  { origin             : String
   , id                 : String
   , dropdownIdSuffix   : String
   , focusedDropdownId  : Maybe String
@@ -526,13 +523,13 @@ viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } 
 viewFromSC : ViewSpecContext -> Unique -> Int -> List SpecAndChoice -> Html Msg
 viewFromSC ctx unique n subspecs =
   let
-    {charId, origin, id} = ctx
+    {origin, id} = ctx
 
     choicesList : List String
     choicesList = List.concatMap extractChoicesList subspecs
 
     editFunctions : List (String -> Msg)
-    editFunctions = choiceEditFunctions charId origin id choicesList
+    editFunctions = choiceEditFunctions origin id choicesList
 
     disabledOptions = if unique then choicesList else []
     k = List.length editFunctions
@@ -552,23 +549,23 @@ viewFromSC ctx unique n subspecs =
       List.map3
         (\i -> viewSpec
            { ctx | disabledOptions = disabledOptions, dropdownIdSuffix = ctx.dropdownIdSuffix ++ "/" ++ String.fromInt i }
-           (\opt -> Choice charId origin id <| ListChoice <| choicesList ++ [opt]))
+           (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
         (List.range (k+1) n)
         (List.isEmpty choicesList :: List.repeat n True)
         (List.drop k subspecs)
 
-choiceEditFunctions : CharId -> String -> String -> List String -> List (String -> Msg)
-choiceEditFunctions charId origin id choices =
+choiceEditFunctions : String -> String -> List String -> List (String -> Msg)
+choiceEditFunctions origin id choices =
   case choices of
     [] ->
-      [ Choice charId origin id << ListChoice << List.singleton ]
+      [ Choice origin id << ListChoice << List.singleton ]
     c :: cs ->
       let
         zipper = Zipper [] c cs
 
         overwriteFocused : Zipper String -> (String -> Msg)
         overwriteFocused (Zipper pre _ post) =
-          \x -> Zipper pre x post |> Zipper.toList |> ListChoice |> Choice charId origin id
+          \x -> Zipper pre x post |> Zipper.toList |> ListChoice |> Choice origin id
       in 
         Zipper.toList (Zipper.extend overwriteFocused zipper)
 
@@ -577,7 +574,7 @@ viewOrSC :  ViewSpecContext
          -> Html Msg
 viewOrSC ctx dir (lname, lspec) (rname, rspec) =
   let
-    { charId, origin, id } = ctx
+    { origin, id } = ctx
     name = origin ++ "_" ++ id
     leftId  = String.concat <| List.intersperse "_" [origin, id, lname]
     rightId = String.concat <| List.intersperse "_" [origin, id, rname]
@@ -601,7 +598,7 @@ viewOrSC ctx dir (lname, lspec) (rname, rspec) =
           case dir of
             Nothing   -> []
             Just dir_ -> [ viewSpec ctx
-                             (Choice charId origin id << SingletonChoice)
+                             (Choice origin id << SingletonChoice)
                              False
                              (case dir_ of
                                 L -> lspec
@@ -711,6 +708,6 @@ effectCategories = Set.fromList
                     , "sense", "tool", "spellcasting_focus", "weapon", "skill",
                       "channel_divinity", "destroy_undead", "expertise"
                     ]
-applyPageData : Model -> CharId -> EditCharacterPageData -> Model
-applyPageData model charId data =
-  { model | page = EditCharacterPage charId data }
+applyPageData : Model -> EditCharacterPageData -> Model
+applyPageData model data =
+  { model | page = EditCharacterPage data }

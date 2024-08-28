@@ -68,6 +68,18 @@ weapon(mace, simple, melee,
        [damage(bludgeoning, 1 d 6)], []).
 weapon(handaxe, simple, melee,
        [damage(slashing, 1 d 6)], [light, thrown(feet(20) / feet(60))]).
+weapon(dagger, simple, melee,
+       [damage(piercing, 1 d 4)], [finesse, light, thrown(feet(20) / feet(60))]).
+weapon(greatclub, simple, melee,
+       [damage(bludgeoning, 1 d 8)], [twohanded]).
+weapon(javelin, simple, melee,
+       [damage(piercing, 1 d 6)], [thrown(feet(30) / feet(120))]).
+weapon('light hammer', simple, melee,
+       [damage(bludgeoning, 1 d 4)], [light, thrown(feet(20) / feet(60))]).
+weapon(sickle, simple, melee,
+       [damage(slashing, 1 d 4)], [light]).
+weapon(spear, simple, melee,
+       [damage(piercing, 1 d 6)], [thrown(feet(20) / feet(60)), versatile(1 d 8)]).
 
 weapon(battleaxe, martial, melee,
        [damage(slashing, 1 d 8)], [versatile(1 d 10)]).

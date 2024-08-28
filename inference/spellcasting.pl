@@ -436,6 +436,9 @@ modify_spell_field(Field, UpdateField, Old, New) :-
 add_spell_effects(NewEffects, Old, New) :-
     modify_spell_field(effects, [Es1,Es2]>>append(Es1,NewEffects,Es2), Old, New).
 
+custom_format(add_spell_effects(Fx)) -->
+    format_list(Fx).
+
 increase_all_spell_damage_rolls(Bonus, Old, New) :-
     get_or_default(Old, effects, [], OldEffects),
     map_matching_subterms({Bonus}/[damage(El,OldRoll),damage(El,NewRoll)]

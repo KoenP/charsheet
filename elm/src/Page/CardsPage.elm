@@ -31,11 +31,11 @@ update msg model sheet = (model, Cmd.none)
 ----------------------------------------------------------------------
 -- VIEW
 ----------------------------------------------------------------------
-view : CharId -> CardsPageOptions -> CharacterSheet -> Dict Origin (Set SpellName) -> List (Html Msg)
-view charId options sheet preparedSpells =
+view : CardsPageOptions -> CharacterSheet -> Dict Origin (Set SpellName) -> List (Html Msg)
+view options sheet preparedSpells =
   div [ Attr.class "dont-print" ]
-    [ viewNavButtons [ viewGotoSheetButton charId
-                     , viewEditCharacterButton charId
+    [ viewNavButtons [ viewGotoSheetButton
+                     , viewEditCharacterButton
                      , viewSelectCharacterButton
                      ]
     ]

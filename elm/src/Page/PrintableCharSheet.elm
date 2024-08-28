@@ -31,12 +31,12 @@ load charId =
 
 --------------------------------------------------------------------------------
 
-view : CharId -> CharacterSheet -> List (Html Msg)
-view charId sheet =
+view : CharacterSheet -> List (Html Msg)
+view sheet =
   [ div [ class "dont-print" ]
-    [ viewNavButtons [ viewGotoCardsButton charId sheet
-                     , viewEditCharacterButton charId
-                     , viewGotoEquipmentButton charId
+    [ viewNavButtons [ viewGotoCardsButton sheet
+                     , viewEditCharacterButton
+                     , viewGotoEquipmentButton
                      , viewSelectCharacterButton
                      ]
     ]

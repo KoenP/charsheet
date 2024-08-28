@@ -11,3 +11,5 @@ elm/build
 
 server/.stack-work
 *.yaml.lock
+
+charsheet.js

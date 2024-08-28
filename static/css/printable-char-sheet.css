@@ -1,0 +1,569 @@
+@media print {
+    .page-break {
+        page-break-after: always;
+    }
+
+    .dont-print {
+        display: none;
+    }
+}
+
+@page {
+    margin: 6.35mm;
+}
+
+.page {
+    height: 131mm;
+    max-height: 131mm;
+    width: 197mm;
+    max-width: 197mm;
+    position: relative;
+    /*background-color: #e8e8e8 !important;*/
+    background-color: white !important;
+    print-color-adjust: exact;
+
+    display: flex;
+    flex-direction: row;
+    gap: 3.5mm;
+}
+
+.abilities {
+    /*
+  position: absolute;
+  left: 3mm;
+  top: 3mm;
+   */
+
+    padding-right: 1mm;
+    padding-left: 1mm;
+
+    min-width: 55mm;
+
+    background-color: white !important;
+    border: 2pt solid lightgrey;
+
+    print-color-adjust: exact;
+    border-radius: 4pt;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.abilities > table {
+    border-collapse: collapse;
+    height: 100%;
+}
+
+.ability-row {
+    height: 20mm;
+}
+
+.ability-row:not(:last-child) {
+    border-bottom: 1pt solid lightgrey;
+}
+
+.ability {
+    font-weight: bold;
+    text-align: center;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.ability-name {
+    /*
+  writing-mode: sideways-lr;
+   */
+    transform: rotate(-90deg);
+    width: 22pt;
+    text-transform: uppercase;
+}
+
+.ability-modifier {
+    width: 16mm;
+    border: 1pt solid black;
+    margin: 1pt 1pt 0 1pt;
+    font-size: 30pt;
+    line-height: 30pt;
+    border-radius: 4pt;
+}
+
+.ability-score {
+    font-size: 10pt;
+    line-height: 8pt;
+    font-weight: normal;
+    padding: 2pt;
+}
+
+.skill-td > table {
+    font-size: 8pt;
+    margin-left: 2mm;
+    border-collapse: collapse;
+    margin-top: 0.7mm;
+}
+
+.skill-td tr:first-child > td {
+    background-color: #e8e8e8;
+    text-transform: uppercase;
+}
+
+.skill-td tr:not(:first-child) > td {
+    text-transform: capitalize;
+}
+
+.skill-td tr:first-child > td:first-child {
+    border-radius: 2pt 0 0 2pt;
+}
+
+.skill-td tr:first-child > td:last-child {
+    border-radius: 0 2pt 2pt 0;
+}
+
+
+.skill-td td {
+    margin: 0pt;
+    padding: 0.5mm;
+    line-height: 8pt;
+}
+
+* {
+    font-family: Dosis;
+    /*font-family: "Atkinson Hyperlegible", sans-serif; */
+}
+
+.main-body {
+    width: 100%;
+    margin-right: 2mm;
+    position: relative;
+
+    /*
+  position: absolute;
+  left: 62mm;
+  top: 3mm;
+  height: 148mm;
+  max-height: 148mm;
+  width: 155mm;
+  max-width: 157mm;
+   */
+}
+
+.charname {
+    text-align: center;
+
+    background-color: white !important;
+    print-color-adjust: exact;
+
+    border-bottom: double lightgrey;
+    border-width: 3pt;
+
+    padding-bottom: 1mm;
+    margin-right: 1mm;
+    margin-top: 0;
+    margin-bottom: 6mm;
+}
+
+.charname > h1 {
+    font-size: 20pt;
+    margin-top: 0;
+    margin-bottom: 0;
+    position: relative;
+}
+
+.race-and-classes {
+    /*
+  text-align: right;
+  font-size: 10pt;
+  font-style: italic;
+   */
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 8pt;
+    color: dimgrey;
+}
+
+.charlevel {
+    position: absolute;
+    right: 4mm;
+    top: 3mm;
+    font-size: 14pt;
+    border: 2px solid black;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22pt;
+    width: 22pt;
+    height: 22pt;
+}
+
+.hp {
+    font-size: 26pt;
+    line-height: 38pt;
+    padding: 4pt;
+
+    background-color: white !important;
+    print-color-adjust: exact;
+    border-radius: 4pt;
+
+    border: 2pt solid lightgrey;
+}
+
+.blank {
+    width: 28pt;
+    height: 28pt;
+    border: 1pt solid black;
+    border-radius: 1mm;
+}
+
+.small-blank {
+    width: 20pt;
+    height: 20pt;
+    border: 1pt solid black;
+    border-radius: 1mm;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.labeled-flex {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: 6pt;
+    line-height: 7pt;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: dimgrey;
+    width: 28pt;
+}
+
+.filled-in {
+    /*width: 50pt;*/
+    text-align: center;
+    color: black;
+    font-size: 18pt;
+    line-height: 24pt;
+    height: 24pt;
+    width: 24pt;
+    /*border: 1pt dashed black;*/
+    border-radius: 4pt;
+}
+
+.ac {
+    border-radius: 4pt;
+    padding: 2pt;
+    font-size: 24pt;
+    line-height: 24pt;
+    background-color: white !important;
+    print-color-adjust: exact;
+    border-radius: 4pt;
+
+    border: 2pt solid lightgrey;
+}
+
+.ac-formula {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4pt;
+}
+
+.ac-formula > .row {
+    border-left: 1pt dotted black;
+    margin-left: 4pt;
+    margin-top: 2pt;
+    padding-left: 4pt;
+    padding-right: 2pt;
+}
+
+.ac-formula-name {
+    font-size: 8pt;
+    text-transform: uppercase;
+    color: dimgrey;
+    font-weight: bold;
+    line-height: 10pt;
+}
+
+.badges {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.badge {
+    display: flex;
+    flex-direction: column;
+}
+
+.badge-title {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 10pt;
+    color: dimgrey;
+    text-align: center;
+}
+
+.badge-content {
+    border-radius: 4pt;
+    border: 2pt solid lightgrey;
+}
+
+.stat-table {
+    background-color: white !important;
+    print-color-adjust: exact;
+    border-radius: 4pt;
+    border: 2pt solid lightgrey;
+}
+
+.stat-table > table {
+    border-spacing: 1.5mm;
+}
+
+.stat-table th {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 10pt;
+    color: dimgrey;
+    text-align: left;
+}
+
+.stat-table td {
+    font-weight: bold;
+    text-align: right;
+}
+
+.multiple-speeds-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 1.3mm;
+    font-size: 9pt;
+}
+
+.spellcasting-table {
+    border-spacing: 1.5mm;
+}
+
+.spellcasting-table th {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 10pt;
+    color: dimgrey;
+}
+
+.spellcasting-table tr:first-child th {
+    text-align: center;
+}
+
+.spellcasting-table tr:not(:first-child) th {
+    text-align: left;
+}
+
+.spellcasting-table td {
+    font-weight: bold;
+    text-align: center;
+}
+
+.hit-dice-section {
+    position: absolute;
+    right: 8pt;
+    bottom: 8pt;
+    display: flex;
+    flex-direction: row;
+    gap: 4pt;
+    line-height: 28pt;
+}
+
+.hit-dice {
+    background-color: white !important;
+    print-color-adjust: exact;
+    border: 2pt solid lightgrey;
+    border-radius: 4pt;
+    display: flex;
+    flex-direction: row;
+}
+
+.hit-dice img {
+    width: 17pt;
+}
+
+.attacks-positioning {
+    position: absolute;
+    bottom: 16mm;
+    left: 0mm;
+    right: 0mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.attacks > table {
+    background-color: white !important;
+    print-color-adjust: exact;
+    border: 2pt solid lightgrey;
+    border-radius: 4pt;
+
+    text-align: center;
+    font-size: 9pt;
+    border-spacing: 3pt;
+}
+
+.attacks th {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: dimgrey;
+}
+
+.attacks td:not(:last-child) {
+    padding-right: 10pt;
+}
+
+.other-proficiencies {
+    border-radius: 4pt;
+    padding: 2pt;
+    border: 2pt solid lightgrey;
+    max-width: 86mm;
+}
+
+.other-proficiencies h3 {
+    font-size: 8pt;
+    margin-top: 0;
+}
+
+.page h3 {
+    color: dimgrey;
+    text-transform: uppercase;
+    margin-bottom: 0;
+}
+
+.page hr {
+    color: lightgrey;
+}
+
+.details {
+    font-size: 9pt;
+    text-transform: capitalize;
+    margin-left: 2mm;
+}
+
+.spellcasting {
+    border-radius: 4pt;
+    padding: 2pt;
+    border: 2pt solid lightgrey;
+}
+
+.spellcasting > table {
+    width: 100%;
+}
+
+.notable-traits {
+    border-radius: 4pt;
+    padding: 2pt;
+    border: 2pt solid lightgrey;
+    font-size: 10pt;
+    max-width: 86mm;
+}
+
+.notable-traits h3 {
+    font-size: 10pt;
+    margin: 0;
+    margin-top: 1mm;
+}
+
+.notable-traits li {
+    padding-left: 4pt;
+    text-indent: -4pt;
+    font-size: 9pt;
+    text-transform: capitalize;
+}
+
+.notable-traits ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 1.3mm;
+    width: 40mm;
+}
+
+.spell-slots table {
+    width: 100%;
+}
+
+.spell-slots th {
+    font-size: 10.5pt;
+}
+
+.spell-slots td {
+    text-align: right;
+}
+
+.spell-slots input {
+    width: 1.2em;
+    height: 1.2em;
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid black;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+    margin: 0;
+    margin: 1pt;
+}
+
+input:checked {
+    background-color: gray;
+}
+
+.notable-traits {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.notable-traits-section {
+    flex-basis: 40%;
+}
+
+.resource-details {
+    font-size: 9pt;
+    margin-left: 2mm;
+}
+
+.resource-details > .row {
+    font-size: 18pt;
+    font-weight: bold;
+}
+
+.resource-restore-info table {
+    font-size: 9pt;
+    font-style: italic;
+    border-collapse: collapse;
+}
+
+.resource-restore-info td:first-child {
+    width: 100%;
+    margin-left: 1mm;
+}
+
+.resources {
+    border-radius: 4pt;
+    padding: 2pt;
+    border: 2pt solid lightgrey;
+    width: 100%;
+}
+
+.resources h3 {
+    font-size: 8pt;
+}
