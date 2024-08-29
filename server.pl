@@ -91,7 +91,7 @@ h_new_character(Request) :-
     cors_enable,
     http_parameters(Request, [name(Name,[])]),
     char_db:create_character(Name, Uuid),
-    reply_json_dict(Uuid).
+    http_redirect(see_other, location_by_id(load_character_page(Uuid)), Request).
          
 h_get_sheet(_Request) :-
     cors_enable,

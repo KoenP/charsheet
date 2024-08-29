@@ -9,6 +9,7 @@ import Html.Styled.Events as E
 import Http exposing (Expect)
 import Json.Decode as D exposing (Decoder)
 import List
+import String
 
 import Elements exposing (..)
 import Request exposing (characterRequestUrl)

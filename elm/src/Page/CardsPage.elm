@@ -213,7 +213,7 @@ cardBox iconName value =
 icon : String -> Html Msg
 icon iconName =
   img
-    [ Attr.src ("/icons/" ++ iconName ++ ".png")
+    [ Attr.src ("/static/icons/" ++ iconName ++ ".png")
     , Attr.css [ Css.width (px 10), Css.paddingLeft (mm 1) ]
     ]
     []

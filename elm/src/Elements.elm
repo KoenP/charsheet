@@ -73,7 +73,7 @@ viewNavButton msg symbol tooltipText =
        [ css navButtonStyle
        , E.onClick msg
        ]
-       [ img [ css [ Css.width (Css.px 16) ], src ("/icons/" ++ symbol) ] [] ])
+       [ img [ css [ Css.width (Css.px 16) ], src ("/static/icons/" ++ symbol) ] [] ])
     (text tooltipText)
 
 viewEditCharacterButton : Html Msg

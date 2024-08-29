@@ -7,9 +7,15 @@ select_character_page -->
               ])).
 
 new_character_box_html -->
-    html([ input([type=text, placeholder='New character name']),
-           button(['Create'])
-         ]).
+    html(form([action='/api/new_character', method=post],
+              [input([type=text, name=name, placeholder='New character name', required=true]),
+               input([type=submit, value='Create'])
+              ]
+             )).
+
+    %html([ input([type=text, placeholder='New character name']),
+    %       button(['Create'])
+    %     ]).
 
 character_list_html -->
     {char_db:list_characters(Chars)},

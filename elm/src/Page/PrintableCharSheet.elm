@@ -202,7 +202,7 @@ viewHitDiceSection hitDice =
 viewHitDice : HitDice -> List (Html Msg) 
 viewHitDice { n, d } =
   List.repeat n <|
-    img [ src ("/icons/d" ++ String.fromInt d ++ ".svg") ] []
+    img [ src ("/static/icons/d" ++ String.fromInt d ++ ".svg") ] []
 
 viewHitpointsBadgeContent : Int -> List (Html Msg)
 viewHitpointsBadgeContent maxHp =
