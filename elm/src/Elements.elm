@@ -78,7 +78,7 @@ viewNavButton msg symbol tooltipText =
 
 viewEditCharacterButton : Html Msg
 viewEditCharacterButton =
-  viewNavButton EditCharacter "edit.png" "Edit this character"
+  viewNavButton GotoEditCharacter "edit.png" "Edit this character"
 
 viewSelectCharacterButton : Html Msg
 viewSelectCharacterButton =
@@ -90,7 +90,7 @@ viewGotoSheetButton =
 
 viewGotoCardsButton : CharacterSheet -> Html Msg
 viewGotoCardsButton sheet =
-  viewNavButton (GotoCardsPage { showSpells = AllSpells } sheet) "cards.png" "View/print cards"
+  viewNavButton (GotoCardsPage { showSpells = AllSpells }) "cards.png" "View/print cards"
 
 viewGotoEquipmentButton : Html Msg
 viewGotoEquipmentButton =

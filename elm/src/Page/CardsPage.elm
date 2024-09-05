@@ -16,11 +16,18 @@ import Set exposing (Set)
 import String
 
 import Decoder.CharacterSheet exposing (sheetDec)
-import Request exposing (requestUrl)
+import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Util exposing (simple)
-import Elements exposing (..)
 
+load : CharId -> Cmd Msg
+load charId =
+  Http.get
+    { url = characterRequestUrl charId ["sheet"] []
+    , expect = Http.expectJson
+               (mkHttpResponseMsg GotCards)
+               sheetDec
+    }
 
 ----------------------------------------------------------------------
 -- UPDATE
@@ -33,13 +40,6 @@ update msg model sheet = (model, Cmd.none)
 ----------------------------------------------------------------------
 view : CardsPageOptions -> CharacterSheet -> Dict Origin (Set SpellName) -> List (Html Msg)
 view options sheet preparedSpells =
-  div [ Attr.class "dont-print" ]
-    [ viewNavButtons [ viewGotoSheetButton
-                     , viewEditCharacterButton
-                     , viewSelectCharacterButton
-                     ]
-    ]
-  ::
   (List.map (div [ Attr.css cardsStyle ])
    <| Util.chunks 8 
    <| List.concatMap (viewSpellcastingSection options preparedSpells) sheet.spellcasting_sections

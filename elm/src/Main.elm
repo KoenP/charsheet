@@ -25,6 +25,7 @@ import Maybe
 import Debug exposing (log, toString)
 import Time exposing (Posix)
 
+import Constants exposing (..)
 import Page.PrintableCharSheet as PSheet
 import Page.EditCharacter as Edit
 import Page.CardsPage as Cards
@@ -41,14 +42,6 @@ main =
     , update = updateOrTick
     , subscriptions = subscriptions
     }
-  -- Browser.application
-  --   { init = init
-  --   , view = view
-  --   , update = updateOrTick
-  --   , subscriptions = subscriptions
-  --   , onUrlRequest = LinkClicked
-  --   , onUrlChange = UrlChanged
-  --   }
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
@@ -80,103 +73,13 @@ init charId =
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
     , charId = CharId charId
+    , sheetCache = Nothing
     }
   , Edit.load (CharId charId)
   )
--- init : () -> Url.Url -> Nav.Key -> (Model, Cmd Msg)
--- init _ url key =
---   let
---     _ = Debug.log "url" url
---   in 
---     ( { url = url
---       , key = key
---       , preparedSpells = Dict.empty
---       , showOnlyPreparedSpells = False
---       , page = Loading Nothing -- (Just <| CharId "80fb5464-58a4-11ef-8b8b-4720ccf3cd11")
---       , focusedDropdownId = Nothing
---       , lastTick = Time.millisToPosix 0
---       }
---     , loadSelectCharacterPage
---     -- , PSheet.load (CharId "80fb5464-58a4-11ef-8b8b-4720ccf3cd11")
---     -- , Sheet.load
---     -- , Cards.load
---     -- , Edit.load
---     -- , Equipment.load
---     -- , Nav.pushUrl key "/list_characters"
---   )
-
-navigate : Model -> Route -> ( Model, Cmd Msg )
-navigate model route = -- ( { model | page = Loading } , Sheet.load )
-  case route of
-    SelectCharacterRoute ->
-      Debug.log "navigate (SelectCharacterRoute)"
-        ( { model | page = Loading }
-        , loadSelectCharacterPage
-        )
-      
-    SheetRoute charId ->
-      Debug.log "navigate (SheetRoute)"
-        ( { model | page = Loading }
-        , PSheet.load charId
-        )
-
-    EditRoute charId ->
-      Debug.log "navigate (EditRoute)"
-        ( { model | page = Loading }
-        , Edit.load charId
-        )
-
-    EquipmentRoute charId ->
-      Debug.log "navigate (EquipmentRoute)"
-        ( { model | page = Loading }
-        , Equipment.load charId
-        )
-
-    _ -> ( model, none )
-
-loadSelectCharacterPage : Cmd Msg
-loadSelectCharacterPage = 
-  Http.get
-    { url = requestUrl ["list_characters"] []
-    , expect = Http.expectJson
-               (mkHttpResponseMsg GotCharacterList)
-               (list (D.succeed (\x y -> (x,y))
-                        |> D.andMap (D.field "char_id" D.string |> D.map CharId)
-                        |> D.andMap (D.field "name" D.string)
-                     )
-               )
-    }
-  
-
-type Route
-  = SelectCharacterRoute
-  | SheetRoute CharId
-  | EditRoute CharId
-  | NotFound
-  | EquipmentRoute CharId
-  
-routeParser : Parser (Route -> a) a
-routeParser =
-  Parser.oneOf
-    [ Parser.map SelectCharacterRoute Parser.top
-    , Parser.map SelectCharacterRoute (Parser.s "src" </> Parser.s "Main.elm")
-    , Parser.map SelectCharacterRoute (Parser.s "list_characters")
-    , Parser.map SheetRoute (Parser.s "character" </> parseCharId </> Parser.s "sheet")
-    -- , Parser.map EditRoute (Parser.s "edit")
-    -- , Parser.map CharacterRoute (Parser.s "character" </> Parser.string)
-    -- , Parser.map EquipmentRoute (Parser.s "equipment")
-
-      -- Parser.s "char" : Parser a a
-      -- </> : Parser (String -> d) (String -> d) -> Parser (String -> d) c -> Parser (String -> d) c
-      -- Parser.string : Parser (String -> d) d
-    ]
 
 parseCharId : Parser (CharId -> a) a
 parseCharId = Parser.map CharId Parser.string
-
-urlToRoute : Url -> Route
-urlToRoute url =
-  Maybe.withDefault NotFound (Parser.parse routeParser url)
 
 -- UPDATE
 verbose = False
@@ -197,26 +100,30 @@ update msg model =
   case msg of
     Null ->
       ( model, none )
-    UrlChanged url ->
-      navigate model (urlToRoute url)
 
-    EditCharacter ->
+    GotoEditCharacter ->
       ( { model | page = Loading }, Edit.load model.charId )
 
     GotoSelectCharacterPage ->
       ( model, Nav.load "/" )
 
-    GotoCardsPage options sheet ->
-      ( { model | page = CardsPage options sheet }, Cmd.none)
+    GotoCardsPage options ->
+      case model.sheetCache of
+        Just cachedSheet -> applyPage model (CardsPage options cachedSheet, Cmd.none)
+        Nothing          -> applyPage model (Loading, Cards.load model.charId)
 
     GotoSheet ->
-      applyPage model (Loading, PSheet.load model.charId)
+      case model.sheetCache of
+        Just cachedSheet -> applyPage model (PrintableCharSheetPage cachedSheet, Cmd.none)
+        Nothing          -> applyPage model (Loading, PSheet.load model.charId)
 
     GotoEquipmentPage ->
       applyPage model (Loading, Equipment.load model.charId)
 
     Choice origin id choice ->
-      ( { model | focusedDropdownId = Nothing } , registerChoice model.charId origin id choice )
+      ( invalidateCaches { model | focusedDropdownId = Nothing }
+      , registerChoice model.charId origin id choice
+      )
 
     SelectDropdownOption dropdownId optionId -> 
       let _ = Debug.log "" ("Selected dropdown option " ++ optionId ++ " from dropdown " ++ dropdownId)
@@ -265,9 +172,21 @@ handleHttpResponseMsg msg model =
         -- , Nav.pushUrl model.key ("/character/" ++ id ++ "/edit")
         )
       GotPrintableCharSheet sheet ->
-        ( { model | page = PrintableCharSheetPage sheet }
+        ( { model
+            | page = PrintableCharSheetPage sheet
+            , sheetCache = Just sheet
+          }
         , none
         )
+
+      GotCards sheet ->
+        ( { model
+            | page = CardsPage { showSpells = AllSpells } sheet
+            , sheetCache = Just sheet
+          }
+        , none
+        )
+
       GotCharacterOptions abilityTable optionsPerLevel traitsAndBonusesPerLevel ->
         let charLevel = Dict.keys optionsPerLevel |> List.maximum |> Maybe.withDefault 1
         in ( { model
@@ -336,40 +255,78 @@ choiceToString choice =
 ----------------------------------------------------------------------
 view : Model -> Unstyled.Html Msg
 view model =
-  -- Html.node
-    -- "link"
-    -- -- [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-    -- [ Html.Attributes.attribute "href" "https://fonts.googleapis.com/css2?family=Dosis:wght@400;700&display=swap"
-    -- --"https://fonts.googleapis.com/css2?family=Dosis&family=Epilogue:wght@300&family=Fira+Code&family=Quattrocento+Sans&family=Roboto:wght@300-800&display=swap"
-       --  
-    -- , Html.Attributes.attribute "rel" "stylesheet"
-    -- ]
-  -- []
-  -- :: Html.node
-  -- "link"
-  -- [ Html.Attributes.attribute "href" "css/printable-char-sheet.css"
-  -- , Html.Attributes.attribute "rel" "stylesheet"
-  -- ]
--- []
--- :: toUnstyled globalCss
-  -- ::
   Unstyled.div [] <|
-    List.map toUnstyled 
-      (case model.page of
-         Loading ->
-           [ text "Loading..." ]
-         Error msg -> 
-           [ text msg ]
-         PrintableCharSheetPage data ->
-           PSheet.view data
-         EditCharacterPage data ->
-           Edit.view model.focusedDropdownId data
-         CardsPage options data ->
-           Cards.view options data model.preparedSpells
-         EquipmentPage data ->
-           Equipment.view data
-      )
-  -- }
+    List.map toUnstyled
+      [ viewTabs model.page
+      , div [Attr.class "below-tabs"] <|
+          case model.page of
+            Loading ->
+              [ text "Loading..." ]
+            Error msg -> 
+              [ text msg ]
+            PrintableCharSheetPage data ->
+              PSheet.view data
+            EditCharacterPage data ->
+              Edit.view model.focusedDropdownId data
+            CardsPage options data ->
+              Cards.view options data model.preparedSpells
+            EquipmentPage data ->
+              Equipment.view data
+      ]
+      
+type alias TabCfg = { name : String
+                    , iconPath : String
+                    , msg : Msg
+                    , selected : Bool
+                    }
+
+viewTabs : Page -> Html Msg
+viewTabs page =
+  div
+    [Attr.class "tabs", Attr.class "dont-print", Attr.css [Css.zIndex (Css.int 2)]]
+    (List.map viewTab
+       [ { name = "Edit"
+         , iconPath = "edit.png"
+         , msg = GotoEditCharacter
+         , selected = case page of
+                        EditCharacterPage _ -> True
+                        _ -> False }
+       , { name =" Equipment" 
+         , iconPath = "equipment.png"
+         , msg = GotoEquipmentPage
+         , selected = case page of
+                        EquipmentPage _ -> True
+                        _ -> False
+         }
+       , { name = "Sheet"
+         , iconPath = "sheet.png"
+         , msg = GotoSheet
+         , selected = case page of
+                        PrintableCharSheetPage _ -> True
+                        _ -> False
+         }
+       , { name = "Cards"
+         , iconPath = "cards.png"
+         , msg = GotoCardsPage { showSpells = AllSpells }
+         , selected = case page of
+                        CardsPage _ _ -> True
+                        _ -> False
+         }
+       ])
+
+viewTab : TabCfg -> Html Msg
+viewTab { name, iconPath, msg, selected } =
+  button
+    [ onClick msg
+    , Attr.css [Css.color (Css.hex <| if selected then "#ffffff" else "#cccccc")]
+    ]
+    [ img [ Attr.css [ Css.width (Css.px 16) ]
+          , Attr.src ("/static/icons/" ++ iconPath)
+          , Attr.class (if selected then "full-invert" else "partial-invert")
+          ]
+        []
+    , text name
+    ]
 
 globalCss : Html msg
 globalCss =
@@ -405,14 +362,6 @@ globalCss =
 -- Shared
 textSingleton : String -> List (Html msg)
 textSingleton = List.singleton << text
-
-selectCharButton : (CharId, String) -> Html Msg
-selectCharButton (id, name) =
-  li []
-    [ button
-        ( onClick (SelectCharacter id) :: linkButtonStyle )
-        [ text name ]
-    ]
 
 linkButtonStyle : List (Attribute msg)
 linkButtonStyle =

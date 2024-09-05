@@ -13,7 +13,6 @@ import Http
 import Debug
 import Platform.Cmd as Cmd
 
-import Elements exposing (..)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Types.Ability exposing (..)
@@ -33,17 +32,7 @@ load charId =
 
 view : CharacterSheet -> List (Html Msg)
 view sheet =
-  [ div [ class "dont-print" ]
-    [ viewNavButtons [ viewGotoCardsButton sheet
-                     , viewEditCharacterButton
-                     , viewGotoEquipmentButton
-                     , viewSelectCharacterButton
-                     ]
-    ]
-    -- [ button [ E.onClick EditCharacter ]
-    --   [ text "edit" ]
-    -- ]
-  , div [ class "page" ]
+  [ div [ class "page" ]
     [ div [ class "abilities" ] (viewAbilities sheet.ability_table sheet.skill_table)
     , div [ class "main-body" ] (viewMainBody sheet)
     , div [ class "hit-dice-section" ] (viewHitDiceSection sheet.hit_dice)

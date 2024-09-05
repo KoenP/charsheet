@@ -16,6 +16,7 @@ import Platform.Cmd as Cmd
 import Tuple
 import Zipper exposing (Zipper(..))
 
+import Constants exposing (..)
 import Elements exposing (..)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
@@ -101,17 +102,17 @@ update msg model oldData =
       ) 
 
     LevelUpAs class ->
-      (model, Http.post
-         { url = characterRequestUrl model.charId ["gain_level"] [("class", class)]
-         , body = Http.emptyBody
-         , expect = Http.expectJson
-                    (mkHttpResponseMsg (\_ -> Update))
-                    (D.succeed ())
-         }
+      ( invalidateCaches model, Http.post
+          { url = characterRequestUrl model.charId ["gain_level"] [("class", class)]
+          , body = Http.emptyBody
+          , expect = Http.expectJson
+                     (mkHttpResponseMsg (\_ -> Update))
+                     (D.succeed ())
+          }
       )
 
     SetBaseAbilityScore ability newScore -> 
-      ( applyPageData model
+      ( applyPageData (invalidateCaches model)
           { oldData
           | setAbilitiesOnNextTick =
               Dict.insert ability newScore oldData.setAbilitiesOnNextTick
@@ -147,7 +148,7 @@ update msg model oldData =
     Retract retraction ->
       case retraction of
         RetractLevelUp level ->
-          ( model , Http.post
+          ( invalidateCaches model , Http.post
               { url = characterRequestUrl model.charId ["retract_gain_level"] [("level", String.fromInt level)]
               , body = Http.emptyBody
               , expect = Http.expectJson (mkHttpResponseMsg (\_ -> Update)) (D.succeed ())
@@ -155,7 +156,7 @@ update msg model oldData =
           )
 
         RetractChoice { origin, id } ->
-          ( model , Http.post
+          ( invalidateCaches model , Http.post
               { url = characterRequestUrl model.charId ["retract_choice"] [("source", origin), ("id", id)]
               , body = Http.emptyBody
               , expect = Http.expectJson (mkHttpResponseMsg (\_ -> Update)) (D.succeed ())
@@ -176,12 +177,7 @@ applyBaseAbilityChanges abilityTable setAbilitiesOnNextTick =
 --------------------------------------------------------------------------------
 view : Maybe String -> EditCharacterPageData -> List (Html Msg)
 view focusedDropdownId data =
-  [ Elements.viewNavButtons
-      [ Elements.viewGotoSheetButton
-      , Elements.viewGotoEquipmentButton
-      , Elements.viewSelectCharacterButton
-      ]
-  , viewSideNav data
+  [ viewSideNav data
   , viewMain focusedDropdownId data
   ]
 
@@ -363,6 +359,12 @@ viewEffectCategory (category, effects) =
     unwrap : Effect -> String
     unwrap = .effect >> defunctor >> List.map Util.showPrologTerm >> String.concat
 
+    showResistance : Effect -> String
+    showResistance { effect } =
+      case defunctor effect of
+        [Atomic element, Atomic amount] -> String.concat [element, " (", amount, ")"]
+        _ -> "showResistance ERROR"
+
     viewEffects : (Effect -> String) -> List Effect -> List (Html Msg)
     viewEffects showEffect
       = List.map
@@ -394,7 +396,7 @@ viewEffectCategory (category, effects) =
             <| commaSeparatedArgs unwrap effects
 
         "resistance" ->
-          formatCategory "Resistances" <| commaSeparatedArgs unwrap effects
+          formatCategory "Resistances" <| commaSeparatedArgs showResistance effects
         "saving_throw" ->
           formatCategory "Saving throws" <| commaSeparatedArgs unwrap effects
         "sense" ->
@@ -415,7 +417,7 @@ viewEffectCategory (category, effects) =
           formatCategory "Destroy undead" <| commaSeparatedArgs unwrap effects
         _ ->
           formatCategory (Util.formatSnakeCase category) <|
-            commaSeparatedArgs (.effect >> Util.showPrologTerm) effects
+            commaSeparatedArgs .pretty effects
             -- [ text <| String.concat <| List.intersperse ", "
             --     <| List.map (Util.showPrologTermAlt << .effect) effects ]
 
@@ -495,8 +497,8 @@ viewSpec ctx mkMsg isDisabled spec =
         ListSC selected options ->
           viewListSC ctx mkMsg selected isDisabled options
 
-        FromSC unique n subspecs ->
-          viewFromSC ctx unique n subspecs
+        FromSC unique limit subspecs ->
+          viewFromSC ctx unique limit subspecs
 
         OrSC dir left right ->
           viewOrSC ctx dir left right
@@ -520,8 +522,8 @@ viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } 
   in
     dropdown isDisabled dropdownId selected entries (focusedDropdownId == Just dropdownId)
 
-viewFromSC : ViewSpecContext -> Unique -> Int -> List SpecAndChoice -> Html Msg
-viewFromSC ctx unique n subspecs =
+viewFromSC : ViewSpecContext -> Unique -> Maybe Int -> List SpecAndChoice -> Html Msg
+viewFromSC ctx unique limit subspecs =
   let
     {origin, id} = ctx
 
@@ -550,8 +552,12 @@ viewFromSC ctx unique n subspecs =
         (\i -> viewSpec
            { ctx | disabledOptions = disabledOptions, dropdownIdSuffix = ctx.dropdownIdSuffix ++ "/" ++ String.fromInt i }
            (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
-        (List.range (k+1) n)
-        (List.isEmpty choicesList :: List.repeat n True)
+        (case limit of
+           Just n  -> List.range (k+1) n
+           Nothing -> [k+1])
+        (List.isEmpty choicesList :: case limit of
+                                       Just n  -> List.repeat n True
+                                       Nothing -> [True])
         (List.drop k subspecs)
 
 choiceEditFunctions : String -> String -> List String -> List (String -> Msg)
@@ -626,7 +632,7 @@ sideNavStyle =
   , Css.width (Css.px sideNavWidth)
   , Css.position Css.fixed
   , Css.zIndex (Css.int 1)
-  , Css.top Css.zero
+  , Css.top (Css.px tabBarHeight)
   , Css.left Css.zero
   , Css.backgroundColor (Css.hex "010101")
   , Css.overflowX Css.hidden
@@ -684,7 +690,7 @@ topBarStyle =
   , Css.zIndex (Css.int 2)
   , Css.backgroundColor (Css.hex "#ffffff")
   , Css.borderBottom3 (Css.px 2) (Css.solid) (Css.hex "#000000")
-  , Css.padding4 (Css.px 10) (Css.px 10) (Css.px 10) (Css.px 10)
+  , Css.padding4 Css.zero (Css.px 10) (Css.px 10) (Css.px 10)
   ]
 
 sideNavWidth : Float

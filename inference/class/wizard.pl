@@ -65,7 +65,7 @@ known_spell(wizard, int, always, [], no, Name) :-
     choice_member(Origin, cantrip, Name).
 known_spell(wizard, int, Availability, Resources, Ritual, Name) :-
     class_origin_to_class(Origin, wizard),
-    member(ChoiceID, [spell, 'free spell']),
+    member(ChoiceID, [spell, 'free spell', 'copy spells into spellbook']),
     choice_member(Origin, ChoiceID, Name),
     wizard_spell_resources(Name, Resources),
     wizard_spell_availability(Name, Availability),
@@ -73,6 +73,7 @@ known_spell(wizard, int, Availability, Resources, Ritual, Name) :-
 
 hide_known_class_spells(wizard >: _, cantrip, wizard).
 hide_known_class_spells(wizard >: _, 'free spell', wizard).
+hide_known_class_spells(wizard >: _, 'copy spells into spellbook', wizard).
 
 wizard_spell_resources(Spell, []) :-
     trait(spell_mastery(Spell)), !.
@@ -102,6 +103,14 @@ problem(selected_same_wizard_spell_more_than_once(Spell)) :-
     member(Id2, [spell, 'free spell']),
     choice_member(Origin2, Id2, Spell),
     Origin1 \= Origin2.
+
+% Copying into spellbook.
+% Wizards can learn an arbitrary number of spells at each level by copying
+% into their spellbook.
+options_source(wizard >: L, 'copy spells into spellbook',
+               unlimited unique_from learnable_proper_spell(wizard)) :-
+    between(1, 20, L).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Arcane tradition: school of evocation
@@ -145,6 +154,15 @@ apply_empowered_evocation(OldEffects, NewEffects) :-
 
 trait_source(wizard(evocation) >: 14, overchannel).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Arcane tradition: school of evocation
+subclass_option(wizard, divination).
+
+trait_source(wizard(divination) >: 2, 'divination savant').
+trait_source(wizard(divination) >: 2, portent).
+trait_source(wizard(divination) >: 6, 'expert divination').
+trait_source(wizard(divination) >: 10, 'the third eye').
+trait_source(wizard(divination) >: 14, 'greater portent').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -155,10 +173,14 @@ arcane_recovery(_) ?= "You have learned to regain some of your magical energy by
 For example, if you're a 4th-level wizard, you can recover up to two levels worth of spell slots. You can recover either a 2nd-level spell slot or two 1st-level spell slots.".
 
 spellbook ?= "The spells that you add to your spellbook as you gain levels reflect the arcane research you conduct on your own, as well as intellectual breakthroughs you have had about the nature of the multiverse. You might find other spells during your adventures. You could discover a spell recorded on a scroll in an evil wizard's chest, for example, or in a dusty tome in an ancient library.
-Copying a Spell into the Book. When you find a wizard spell of 1st level or higher, you can add it to your spellbook if it is of a spell level you can prepare and if you can spare the time to decipher and copy it. Copying that spell into your spellbook involves reproducing the basic form of the spell, then deciphering the unique system of notation used by the wizard who wrote it. You must practice the spell until you understand the sounds or gestures required, then transcribe it into your spellbook using your own notation.
+
+**Copying a Spell into the Book.** When you find a wizard spell of 1st level or higher, you can add it to your spellbook if it is of a spell level you can prepare and if you can spare the time to decipher and copy it. Copying that spell into your spellbook involves reproducing the basic form of the spell, then deciphering the unique system of notation used by the wizard who wrote it. You must practice the spell until you understand the sounds or gestures required, then transcribe it into your spellbook using your own notation.
 For each level of the spell, the process takes 2 hours and costs 50 gp. The cost represents material components you expend as you experiment with the spell to master it, as well as the fine inks you need to record it. Once you have spent this time and money, you can prepare the spell just like your other spells.
-Replacing the Book. You can copy a spell from your own spellbook into another book - for example, if you want to make a backup copy of your spellbook. This is just like copying a new spell into your spellbook, but faster and easier, since you understand your own notation and already know how to cast the spell. You need spend only 1 hour and 10 gp for each level of the copied spell.
-If you lose your spellbook, you can use the same procedure to transcribe the spells that you have prepared into a new spellbook. Filling out the remainder of your spellbook requires you to find new spells to do so, as normal. For this reason, many wizards keep backup spellbooks in a safe place. The Book's Appearance. Your spellbook is a unique compilation of spells, with its own decorative flourishes and margin notes. It might be a plain, functional leather volume that you received as a gift from your master, a finely bound gilt-edged tome you found in an ancient library, or even a loose collection of notes scrounged together after you lost your previous spellbook in a mishap.".
+
+**Replacing the Book.** You can copy a spell from your own spellbook into another book - for example, if you want to make a backup copy of your spellbook. This is just like copying a new spell into your spellbook, but faster and easier, since you understand your own notation and already know how to cast the spell. You need spend only 1 hour and 10 gp for each level of the copied spell.
+If you lose your spellbook, you can use the same procedure to transcribe the spells that you have prepared into a new spellbook. Filling out the remainder of your spellbook requires you to find new spells to do so, as normal. For this reason, many wizards keep backup spellbooks in a safe place.
+
+**The Book's Appearance.** Your spellbook is a unique compilation of spells, with its own decorative flourishes and margin notes. It might be a plain, functional leather volume that you received as a gift from your master, a finely bound gilt-edged tome you found in an ancient library, or even a loose collection of notes scrounged together after you lost your previous spellbook in a mishap.".
 
 spell_mastery(_) ?= "At 18th level, you have achieved such mastery over certain spells that you can cast them at will. Choose a 1st-level wizard spell and a 2nd-level wizard spell that are in your spellbook. You can cast those spells at their lowest level without expending a spell slot when you have them prepared. If you want to cast either spell at a higher level, you must expend a spell slot as normal.
 By spending 8 hours in study, you can exchange one or both of the spells you chose for different spells of the same levels.".

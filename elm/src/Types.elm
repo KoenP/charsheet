@@ -7,7 +7,6 @@ import Http
 import Platform.Cmd
 import Set exposing (Set)
 import Time exposing (Posix)
-import Url exposing (Url)
 
 import Types.Ability exposing (..)
 
@@ -193,11 +192,13 @@ type SpecAndChoice
     (String, SpecAndChoice)      -- Name and spec on the right side.
   | FromSC 
     Unique                       -- Whether this spec is a "from" or "unique_from" spec.
-    Int                          -- Number of choices `n` the user gets to make.
+    (Maybe Int)                  -- Number of choices `n` the user gets to make,
+                                 -- or `Nothing` if the user gets to make unlimited choices.
     (List SpecAndChoice)         -- `n` repetitions of the spec, each potentially with its own
                                  --   registered choice
 
 type alias Effect = { effect : PrologTerm
+                    , pretty : String
                     , origin : PrologTerm
                     , desc   : List String
                     }
@@ -219,6 +220,7 @@ type alias Model =
   , focusedDropdownId : Maybe String
   , lastTick : Posix
   , charId : CharId
+  , sheetCache : Maybe CharacterSheet
   }
 type Page
   = Loading
@@ -247,6 +249,10 @@ type alias EquipmentPageData =
 applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
 applyPage model ( page, cmd ) =
   ( { model | page = page }, cmd)
+
+invalidateCaches : Model -> Model
+invalidateCaches model =
+  { model | sheetCache = Nothing }
 
 errorPage : Model -> String -> (Model, Cmd Msg)
 errorPage model msg = ({ model | page = Error msg }, Cmd.none)
@@ -284,20 +290,16 @@ type alias Equipment = List String
 -- MSG
 type Msg
   = HttpResponse (Result Http.Error HttpResponseMsg)
-  | SelectCharacter CharId
-  | GotoSelectCharacterPage
-  | NewCharacterName String
-  | CreateNewCharacter
-  | EditCharacter
-  | UrlChanged Url
   | SetSpellPreparedness Origin SpellName Bool
   | SetShowOnlyPreparedSpells Bool
   | EditCharacterLevel Level
   | Choice String String Choice
   | OrSCChooseDir String String Dir
+  | GotoEditCharacter
   | GotoSheet
   | GotoLevelUp
-  | GotoCardsPage CardsPageOptions CharacterSheet
+  | GotoCardsPage CardsPageOptions
+  | GotoSelectCharacterPage
   | LevelUpAs String
   | SetEditCharacterPageDesc (Maybe (List String))
   | SelectDropdownOption String String
@@ -323,6 +325,7 @@ type HttpResponseMsg
   | NewCharacterCreated CharId
   | GotCharacterSheet CharacterSheet
   | GotPrintableCharSheet CharacterSheet
+  | GotCards CharacterSheet
   | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
   | GotEquipment (Result String Equipment)
   -- | ChoiceRegistered

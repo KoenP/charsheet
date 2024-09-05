@@ -3,7 +3,8 @@
 :- use_module(library(http/js_write)).
 
 character_editor_page(CharId) -->
-    page([title('test'),
+    {char_db:name(CharId, CharName)},
+    page([title(CharName),
           script([type='text/javascript', src='/static/js/charsheet.js'], []),
           link([rel=stylesheet, href='/static/css/printable-char-sheet.css'], []),
           link([rel=stylesheet, href='https://fonts.googleapis.com/css2?family=Dosis:wght@400;700&display=swap'], [])

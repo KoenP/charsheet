@@ -107,7 +107,8 @@ from(1, Spec, Choice) :-
     \+ is_list(Choice),
     from_(1, Spec, [Choice]).
 from(N, Spec, Choice) :-
-    from_(N, Spec, Choice).
+    (N = unlimited -> X = _ ; X = N),
+    from_(X, Spec, Choice).
 from_(N, List, Choices) :-
     is_list(List),
     !,
@@ -116,7 +117,7 @@ from_(N, List, Choices) :-
     subset(Choices, List).
 from_(N, Pred, Choices) :-
     is_list(Choices),
-    between(1, N, M), % TODO this is inefficient if M is known
+    (var(N) -> true ; between(1, N, M)), % TODO this is inefficient if M is known
     length(Choices, M),
     %M =< N,
     maplist(call(Pred), Choices).
@@ -247,6 +248,7 @@ spec_to_json(Origin, Id, Spec1 or Spec2,
     spec_to_json(Origin, Id, Spec2, SubSpec2),
     term_string(Spec1, LeftName),
     term_string(Spec2, RightName).
+
 % Case: any other predicate.
 spec_to_json(Origin, Id, Spec,
              _{spectype: list, list: List}) :-

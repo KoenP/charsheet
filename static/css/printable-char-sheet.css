@@ -567,3 +567,45 @@ input:checked {
 .resources h3 {
     font-size: 8pt;
 }
+
+.tabs {
+    overflow: hidden;
+    border: 1px solid #000;
+    background-color: #000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.tabs button {
+    background-color: inherit;
+    color: "#ffffff";
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 17px;
+    padding: 6pt 4pt 10pt 4pt;
+}
+
+.tabs button:hover {
+    color: "#ffffff";
+}
+
+.tabs button:hover > img {
+    filter: invert(100%);
+}
+
+.below-tabs {
+    margin-top: 44.5px;
+}
+
+.full-invert {
+    filter: invert(100%);
+}
+
+.partial-invert {
+    filter: invert(50%);
+}

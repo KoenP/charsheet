@@ -14,7 +14,6 @@
 :- use_module(library(http/http_server_files)).
 :- use_module(library(http/http_path)).
 :- use_module(library(http/http_error)).
-:- use_module(library(http/http_cors)).
 :- use_module(library(sgml)).
 :- use_module(library(settings)).
 :- use_module('inference/char_db').
@@ -26,8 +25,6 @@ user:file_search_path(js, 'client/dist/js').
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Handlers.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-:- set_setting(http:cors, [*]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Static files.
@@ -83,40 +80,33 @@ serve_page(Html, _Request) :-
 
 
 h_list_characters(_Request) :-
-    cors_enable,
     char_db:list_characters(Chars),
     reply_json_dict(Chars).
     
 h_new_character(Request) :-
-    cors_enable,
     http_parameters(Request, [name(Name,[])]),
     char_db:create_character(Name, Uuid),
     http_redirect(see_other, location_by_id(load_character_page(Uuid)), Request).
          
 h_get_sheet(_Request) :-
-    cors_enable,
     sheet_json_dict(Dict),
     reply_json_dict(Dict).
 
 h_get_options(_Request) :-
-    cors_enable,
     all_options_by_level_json(Json),
     reply_json_dict(Json).
 
 h_get_edit_character_page(_Request) :-
-    cors_enable,
     all_options_by_level_json(OptsJson),
     traits_and_bonuses_json(TBJson),
     ability_table_json_dict(AbiJson),
     reply_json_dict(_{options: OptsJson, ability_table: AbiJson, traits_and_bonuses: TBJson}).
 
 h_get_equipment(CharId, _Request) :-
-    cors_enable,
     char_db:show_inventory(CharId, Items),
     reply_json_dict(Items).
 
 h_post_choice(CharId, Request) :-
-    cors_enable,
     http_parameters(Request, [ source(SourceAtom,[]),
                                id(IdAtom,[]),
                                choice(ChoiceAtom,[])
@@ -130,7 +120,6 @@ h_post_choice(CharId, Request) :-
     reply_json_dict("Success!").
 
 h_post_retract_choice(CharId, Request) :-
-    cors_enable,
     http_parameters(Request, [ source(SourceAtom, []),
                                id(IdAtom, [])
                              ]),
@@ -141,7 +130,6 @@ h_post_retract_choice(CharId, Request) :-
     reply_json_dict("Success!").
 
 h_post_gain_level(CharId, Request) :-
-    cors_enable,
     http_parameters(Request, [class(Class,[])]),
     char_db:current_level(CharId, CurLevel),
     NewLevel is CurLevel + 1,
@@ -149,7 +137,6 @@ h_post_gain_level(CharId, Request) :-
     reply_json_dict("Success!").
 
 h_post_retract_gain_level(CharId, Request) :-
-    cors_enable,
     http_parameters(Request, [level(RetractedLevel, [integer])]),
 
     % Withdraw all levels starting from the retracted level.
@@ -162,7 +149,6 @@ h_post_retract_gain_level(CharId, Request) :-
     reply_json_dict("Success!").
 
 h_post_set_base_abilities(CharId, Request) :-
-    cors_enable,
     member(search(Params), Request),
     forall((member(Abi=ScoreStr,Params),
             read_term_from_atom(ScoreStr,Score,[]),
@@ -171,7 +157,6 @@ h_post_set_base_abilities(CharId, Request) :-
     reply_json_dict("success!").
 
 h_post_equip_item(CharId, Request) :-
-    cors_enable,
     http_parameters(Request, [item(ItemAtom,[])]),
     read_term_from_atom(ItemAtom, Item, []),
     (  equip_item_error(CharId, Item, Error)
@@ -187,7 +172,6 @@ equip_item_error(_, Item, "That item does not exist") :-
     \+ item_exists(Item).
 
 h_post_unequip_item(CharId, Request) :-
-    cors_enable,
     http_parameters(Request, [item(ItemAtom,[])]),
     read_term_from_atom(ItemAtom, Item, []),
     char_db:withdraw_has(CharId, Item),

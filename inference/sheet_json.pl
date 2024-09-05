@@ -49,10 +49,11 @@ traits_and_bonuses_json(Json) :-
     dict_pairs(Json, _, Pairs).
 
 traits_and_bonuses_at_level_json(Level, Json) :-
-    findall(_{origin: OriginJson, effect: EffectJson, desc: Desc},
+    findall(_{origin: OriginJson, effect: EffectJson, pretty: Pretty, desc: Desc},
             ( trait_from_level_reached(Level, Origin, Trait),
               term_to_json(Origin, OriginJson),
               term_to_json(Trait, EffectJson),
+              fmt(format_term(Trait), Pretty),
               (Trait ?= Desc -> true ; Desc = null)
             ),
             Json).

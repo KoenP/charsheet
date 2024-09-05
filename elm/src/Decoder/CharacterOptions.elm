@@ -24,6 +24,7 @@ traitOrBonusDec : Decoder Effect
 traitOrBonusDec =
   D.succeed Effect
     |> D.andMap (D.field "effect" prologTermDec)
+    |> D.andMap (D.field "pretty" D.string)
     |> D.andMap (D.field "origin" prologTermDec)
     |> D.andMap (D.field "desc"
                    (D.oneOf
@@ -95,10 +96,13 @@ addChoiceDec spec =
       D.field "choicetype" (Util.matchStringDec "or") |>
       D.andThen (\_ -> D.field "side" dirDec) |>
       D.andThen (addOrChoiceDec left right)
-    FromSC unique n (subspec :: _) ->
-      D.map (FromSC unique n) <|
+    FromSC unique limit (subspec :: _) ->
+      D.map (FromSC unique limit) <|
         D.lazy (\_ -> D.map
-                  (\specs -> specs ++ List.repeat (n - List.length specs) subspec)
+                  (\specs ->
+                     case limit of
+                       Just n -> specs ++ List.repeat (n - List.length specs) subspec
+                       Nothing -> specs ++ [subspec])
                   (D.list (addChoiceDec subspec)))
     _ -> D.fail "Page.EditCharacter.addChoiceDec: invalid match"
 
@@ -159,9 +163,12 @@ orSpecDec =
 
 fromSpecDec : Unique -> Decoder SpecAndChoice
 fromSpecDec unique =
-  D.field "num" D.int
+  D.field "num" (D.oneOf [D.map Just D.int, D.map (\_ -> Nothing) (Util.matchStringDec "unlimited")])
     |> D.andThen
-       (\n ->
+       (\limit ->
           D.map
-            (FromSC unique n)
-            (D.field "spec" (D.lazy (\_ -> D.map (List.repeat n) specDec))))
+            (FromSC unique limit)
+            (D.field "spec" (D.lazy (\_ ->
+                                       case limit of
+                                         Just n  -> D.map (List.repeat n) specDec
+                                         Nothing -> D.map List.singleton specDec))))

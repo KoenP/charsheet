@@ -44,14 +44,14 @@ update msg model oldData =
                                          }
                                , Cmd.none
                                )
-    EquipItem item -> ( model
+    EquipItem item -> ( invalidateCaches model
                       , Http.post
                           { url = characterRequestUrl model.charId ["equip_item"] [("item", item)]
                           , body = Http.emptyBody
                           , expect = expectGotEquipment
                           }
                       )
-    UnequipItem item -> ( model
+    UnequipItem item -> ( invalidateCaches model
                         , Http.post
                             { url = characterRequestUrl model.charId ["unequip_item"] [("item", item)]
                             , body = Http.emptyBody
@@ -86,13 +86,7 @@ update msg model oldData =
 
 view : EquipmentPageData -> List (Html Msg)
 view { equipment, inputFieldVal, error } =
-  [ div []
-      [ viewNavButtons [ viewEditCharacterButton
-                       , viewGotoSheetButton
-                       , viewSelectCharacterButton
-                       ]
-      ]
-  , table []
+  [ table []
       (List.map
          (\item -> tr [] [ td [] [button [E.onClick (UnequipItem item)] [text "x"]]
                          , simple td item
