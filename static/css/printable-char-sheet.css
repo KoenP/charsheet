@@ -568,38 +568,45 @@ input:checked {
     font-size: 8pt;
 }
 
-.tabs {
-    overflow: hidden;
-    border: 1px solid #000;
+.tab-bar {
+    display: flex;
+    justify-content: space-between;
     background-color: #000;
     position: fixed;
+    margin-bottom: 0;
     top: 0;
     left: 0;
     width: 100%;
+    overflow: hidden;
+    z-index: 2;
 }
 
-.tabs button {
+.tab {
     background-color: inherit;
     color: "#ffffff";
-    float: left;
+    margin-right: 10px;
     border: none;
     outline: none;
     cursor: pointer;
-    transition: 0.3s;
     font-size: 17px;
     padding: 6pt 4pt 10pt 4pt;
 }
 
-.tabs button:hover {
+.tab-bar button:hover {
     color: "#ffffff";
 }
 
-.tabs button:hover > img {
+.tab-bar button:hover > img {
     filter: invert(100%);
 }
 
+.tab-bar img {
+    width: 16px;
+    margin-right: 2pt; 
+}
+
 .below-tabs {
-    margin-top: 44.5px;
+    margin-top: 43px;
 }
 
 .full-invert {
@@ -608,4 +615,12 @@ input:checked {
 
 .partial-invert {
     filter: invert(50%);
+}
+
+.card-description ul {
+    padding-inline-start: 2.5mm;
+}
+
+.card-description ol {
+    padding-inline-start: 2.5mm;
 }

@@ -307,6 +307,9 @@ class_shorthand(sorcerer  , so).
 class_shorthand(warlock   , wl).
 class_shorthand(wizard    , wz).
 
+spell_origin_shorthand(Class, Shorthand) :-
+    class_shorthand(Class, Shorthand).
+
 %! class_skill_list(?Class, ?List)
 %
 %  List of skills you can typically pick from when you gain skills

@@ -40,12 +40,21 @@ weapon_attack(Weapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
     %weapon_base_damage_rolls(BaseWeapon, BaseDamageRolls),
     weapon_attack_ability_and_modifier(BaseWeapon, _, Mod),
     weapon_proficiency_bonus(BaseWeapon, ProfBon),
-    base_weapon_range(BaseWeapon, Range),
+    base_weapon_range_with_bonuses(BaseWeapon, Range),
     attack_notes(BaseWeapon, Notes),
     other_bonuses_to_hit(BaseWeapon, OtherBonuses),
     ToHit is Mod + ProfBon + OtherBonuses + Enchantment,
     weapon_damage_rolls(BaseWeapon, Mod, Enchantment, FinalDamageRolls).
     %add_bonus_to_first_die(Mod + Enchantment, BaseDamageRolls, FinalDamageRolls).
+
+base_weapon_range_with_bonuses(BaseWeapon, feet(Range)) :-
+    base_weapon_range(BaseWeapon, feet(BaseRange)),
+    !,
+    findall(B, bonus(range(BaseWeapon) + feet(B)), RangeBonuses),
+    sumlist([BaseRange|RangeBonuses], Range).
+base_weapon_range_with_bonuses(BaseWeapon, Range) :-
+    base_weapon_range(BaseWeapon, Range).
+    % TODO for now I haven't implemented range bonuses for ranged weapons with extended range
 
 %! weapon_variant_attack(?WeaponVariant, ?Range, ?ToHit, ?DamageRolls, ?Notes)
 %

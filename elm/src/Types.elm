@@ -81,6 +81,7 @@ type alias Attack =
 type alias SpellcastingSection =
   { max_prepared_spells : Maybe Int
   , origin : Origin
+  , origin_shorthand : String
   , spell_attack_mod : Int
   , spell_save_dc : Int
   , spellcasting_ability : String
@@ -137,17 +138,22 @@ type alias Resource =
   }
 
 type PrologTerm = Compound String (List PrologTerm)
+                | List (List PrologTerm)
                 | Atomic String
 
 foldPT :  (String -> List r -> r)
+       -> (List r -> r)
        -> (String -> r)
        -> PrologTerm
        -> r
-foldPT fCompound fAtomic t =
+foldPT fCompound fList fAtomic t =
   case t of
     Compound functor args ->
       fCompound functor
-        <| List.map (foldPT fCompound fAtomic) args
+        <| List.map (foldPT fCompound fList fAtomic) args
+    List xs ->
+      fList
+        <| List.map (foldPT fCompound fList fAtomic) xs
     Atomic atom ->
       fAtomic atom
 
@@ -155,12 +161,14 @@ mapPrologTermStrings : (String -> String) -> PrologTerm -> PrologTerm
 mapPrologTermStrings f =
   foldPT 
     (\functor args -> Compound (f functor) args)
+    (\xs -> List xs)
     (Atomic << f)
 
 defunctor : PrologTerm -> List PrologTerm
 defunctor tm =
   case tm of
-    Atomic atom -> [ Atomic atom ]
+    Atomic atom     -> [ Atomic atom ]
+    List xs         -> xs
     Compound _ args -> args
 
 ----------------------------------------------------------------------

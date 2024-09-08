@@ -118,4 +118,3 @@ add_to_multimap(Key, X, In, Out) :-
     !,
     put_dict(Key, In, [X|Entry], Out).
 add_to_multimap(Key, X, In, In.put(Key, [X])).
-    

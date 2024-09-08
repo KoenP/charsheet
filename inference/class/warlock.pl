@@ -339,10 +339,6 @@ eldritch_invocation_option('witch sight') :-
     warlock >: 15.
 trait_source(trait(eldritch_invocation('witch sight')), sense('witch sight')).
 
-
-eldritch_invocation_option('voice of the chain master').
-% TODO
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Patron: the fiend.
 subclass_option(warlock, fiend).

@@ -21,8 +21,11 @@ traits_from_source(race(elf('high elf')), [weapon(longsword),
                                            weapon(longbow)]).
 
 options_source(race(elf('high elf')), cantrip, class_cantrip(wizard)).
-known_spell(race(elf('high elf')), int, always, [], no, Cantrip) :-
+
+spellcasting_ability('high elf', int).
+known_spell('high elf', int, always, [], no, Cantrip) :-
     choice(race(elf('high elf')), cantrip, Cantrip).
+spell_origin_shorthand('high elf', elf).
 
 trait_options_source(race(elf('high elf')), language, wrap(language), language).
 

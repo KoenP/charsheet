@@ -194,11 +194,13 @@ viewSideNav { desc, optionsPerLevel, selectedLevel } =
           (p [ Attr.css (Css.fontSize (Css.px 12) :: descStyle) ] << List.singleton << text)
           paragraphs
       _ -> 
-        viewLevelUpButton selectedLevel 
-        ::
-        ( Dict.keys optionsPerLevel
-          |> List.reverse
-          |> List.map (viewSideNavLevelButton selectedLevel) )
+        [ table [] <|
+            (tr [] [viewLevelUpButton selectedLevel])
+            ::
+            ( Dict.keys optionsPerLevel
+              |> List.reverse
+              |> List.map (viewSideNavLevelButton selectedLevel) )
+        ]
 
 descStyle : List Style            
 descStyle =
@@ -208,20 +210,30 @@ descStyle =
 
 viewSideNavLevelButton : Maybe Level -> Level -> Html Msg
 viewSideNavLevelButton selectedLevel lvl =
-  div
-    [ Attr.css [ Css.displayFlex, Css.flexGrow (Css.int 1) ] ]
-    [ button
-        [ E.onClick (EditCharacterLevel lvl)
-        , Attr.css (sideNavButtonStyle (Just lvl == selectedLevel))
+  tr
+    []
+    [ td []
+        [ case lvl of
+            1 -> div [] []
+            _ -> button
+                   [ E.onClick (Retract (RetractLevelUp lvl))
+                   , Attr.css (sideNavButtonStyle False)
+                   ]
+                   [ text "x" ]
+                   -- [ img [ Attr.src "/static/icons/close.png"
+                   --       , Attr.css [ Css.width (Css.px 10) ]
+                   --       , Attr.class "full-invert"
+                   --       ]
+                   --     []
+                   -- ]
         ]
-        [ text ("Level " ++ String.fromInt lvl) ]
-    , case lvl of
-        1 -> div [] []
-        _ -> button
-               [ E.onClick (Retract (RetractLevelUp lvl))
-               , Attr.css (Css.textAlign Css.right :: sideNavButtonStyle False)
-               ]
-               [ text "x" ]
+    , td []
+        [ button
+            [ E.onClick (EditCharacterLevel lvl)
+            , Attr.css (sideNavButtonStyle (Just lvl == selectedLevel))
+            ]
+            [ text ("Level " ++ String.fromInt lvl) ]
+        ]
     ]
 
 viewLevelUpButton : Maybe Level -> Html Msg
@@ -379,7 +391,7 @@ viewEffectCategory (category, effects) =
 
     commaSeparatedArgs f = viewEffects f >> List.intersperse (text ", ")
 
-    showTool eff = let toolName = unwrap eff in toolName ++ "'s tools"
+    showTool eff = let toolName = unwrap eff in toolName
     id x = x
 
     formatCategory : String -> List (Html Msg) -> List (Html Msg)
@@ -691,6 +703,7 @@ topBarStyle =
   , Css.backgroundColor (Css.hex "#ffffff")
   , Css.borderBottom3 (Css.px 2) (Css.solid) (Css.hex "#000000")
   , Css.padding4 Css.zero (Css.px 10) (Css.px 10) (Css.px 10)
+  , Css.marginTop Css.zero
   ]
 
 sideNavWidth : Float

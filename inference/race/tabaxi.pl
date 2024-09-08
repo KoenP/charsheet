@@ -3,21 +3,11 @@ race_shorthand(tabaxi, tx).
 racial_speed(tabaxi, walking, 30).
 racial_speed(tabaxi, climbing, 30).
 
-bonus_options_source(race(tabaxi), 'ability + 2', id, ability_plus_n(2)).
-bonus_options_source(race(tabaxi), 'ability + 1', id, ability_plus_n(1)).
-hide_base_option(race(tabaxi), 'ability + 1', Abi+1) :-
-    bonus(choice(race(tabaxi), 'ability + 2'), Abi+2).
-hide_base_option(race(tabaxi), 'ability + 2', Abi+2) :-
-    bonus(choice(race(tabaxi), 'ability + 1'), Abi+1).
-problem(cant_stack_racial_asis(Abi)) :-
-    choice(race(tabaxi), 'ability + 2', Abi + 2),
-    choice(race(tabaxi), 'ability + 1', Abi + 1).
+grant_racial_asis_plus2_plus1(tabaxi).
 
 trait_source(race(tabaxi), sense(darkvision)).
 trait_source(race(tabaxi), 'feline agility').
 trait_source(race(tabaxi), 'cat\'s claws').
-
-meta_todo("tabaxi claws", "add tabaxi claws").
 
 % Tabaxi claws are a natural weapon, but it is explicitly stated that it can
 % be used for unarmed strikes. So any bonus to unarmed strikes should also apply

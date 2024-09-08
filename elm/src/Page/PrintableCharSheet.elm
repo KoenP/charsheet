@@ -268,7 +268,7 @@ viewSingleSectionSpellcastingTable section =
 viewMultiSectionSpellcastingTable : List SpellcastingSection -> List (Html Msg)
 viewMultiSectionSpellcastingTable sections =
   [ table [ class "spellcasting-table" ]
-    <| tr [] (simple td "" :: List.map (simple th << Util.classAbbrev << .origin) sections)
+    <| tr [] (simple td "" :: List.map (simple th << .origin_shorthand) sections)
       :: List.map
       (\(field, fn) -> tr [] (simple th field :: List.map (simple td << fn) sections))
       [ ("DC", String.fromInt << .spell_save_dc)

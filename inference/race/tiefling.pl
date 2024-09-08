@@ -6,20 +6,20 @@ bonus_source(race(tiefling), cha+2).
 
 traits_from_source(race(tiefling), [darkvision(60),
                                     resistance(fire, half),
-                                    trait('infernal legacy'),
+                                    'infernal legacy',
                                     language(common),
                                     language(infernal)]).
 
-known_spell(race(tiefling), cha, always, [], no, thaumaturgy) :-
+known_spell(tiefling, cha, always, [], no, thaumaturgy) :-
     race(tiefling).
-known_spell(race(tiefling), cha, always, [per_rest(1)], no, 'hellish rebuke') :-
+known_spell(tiefling, cha, always, [per_rest(1)], no, 'hellish rebuke') :-
     race(tiefling),
     match_level(3).
-known_spell(race(tiefling), cha, always, [per_rest(1)], no, darkness) :-
+known_spell(tiefling, cha, always, [per_rest(1)], no, darkness) :-
     race(tiefling),
     match_level(5).
-
-
+spellcasting_ability(tiefling, cha).
+spell_origin_shorthand(tiefling, tfl).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DESCRIPTIONS

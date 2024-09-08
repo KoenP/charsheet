@@ -4,7 +4,8 @@
        extend_class_spell_list/2,
        hide_known_class_spells/3,
        prepare_spell/2,
-       spell_origin/1.
+       spell_origin/1,
+       spell_origin_shorthand/2.
 :- dynamic prepare_spell/2.
 
 % :- table known_spell/6 as incremental.
@@ -287,15 +288,18 @@ class_cantrip(Class, Name) :-
 %! spell_origin(?Origin)
 %
 %  Origin is the origin of at least one known_spell/6.
+% TODO probably wrap all class origins in class(...).
 spell_origin(Origin) :-
     findall(O, known_spell(O,_), Origins),
     list_to_set(Origins, OriginsSet),
     member(Origin, OriginsSet).
 
 base_spell_origin(BaseOrigin) :-
-    findall(BO, (spell_origin(Origin), Origin =.. [BO|_]), BaseOrigins),
+    findall(BO, (spell_origin(Origin), Origin =.. [BO|_], BO \= race), BaseOrigins),
     list_to_set(BaseOrigins, BaseOriginsSet),
     member(BaseOrigin, BaseOriginsSet).
+
+spell_origin_shorthand(_Origin, _Abbrev) :- false.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Interacting with spell data.

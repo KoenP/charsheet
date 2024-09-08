@@ -99,6 +99,7 @@ spellcastingSectionDec =
   D.succeed SpellcastingSection
     |> D.andMap (D.field "max_prepared_spells" (D.nullable D.int))
     |> D.andMap (D.field "origin" D.string)
+    |> D.andMap (D.field "origin_shorthand" D.string)
     |> D.andMap (D.field "spell_attack_mod" D.int)
     |> D.andMap (D.field "spell_save_dc" D.int)
     |> D.andMap (D.field "spellcasting_ability" D.string)

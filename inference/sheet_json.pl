@@ -24,7 +24,7 @@ sheet_json_dict(_{name: Name,
     setof_or_empty(X, trait(language(X)), Languages),
     setof_or_empty(X, trait(weapon(X)), Weapons),
     setof_or_empty(X, trait(armor(X)), Armor),
-    setof_or_empty(X, trait(tools(X)), Tools),
+    setof_or_empty(X, trait(tool(X)), Tools),
     resistances_json_dict(Resistances),
     notable_traits_json_dict(NotableTraits),
     attack_table_json_dict(Attacks),
@@ -229,6 +229,7 @@ pact_magic_json_dict(null).
 
 spellcasting_section_json_dict(
     _{origin: BaseOrigin,
+      origin_shorthand: BaseOriginAbbrev,
       spellcasting_ability: Abi,
       spellcasting_ability_mod: AbiMod,
       spell_save_dc: DC,
@@ -236,6 +237,7 @@ spellcasting_section_json_dict(
       max_prepared_spells: Prep,
       spells: Spells}) :-
     base_spell_origin(BaseOrigin),
+    default_on_fail(null, spell_origin_shorthand(BaseOrigin), BaseOriginAbbrev),
     spellcasting_ability(BaseOrigin, Abi),
     ability_mod(Abi, AbiMod),
     %known_spell_origin_class(BaseBaseOrigin, Class),
@@ -273,7 +275,7 @@ spell_json_dict(BaseOrigin,
                   aoe: Aoe,
                   bonuses: Bonuses
                  }) :-
-    (Origin =.. [BaseOrigin,_] ; Origin = BaseOrigin),
+    ((atom(BaseOrigin), Origin =.. [BaseOrigin,_]) ; Origin = BaseOrigin),
     known_spell(Origin, _Ability, _, ResourcesVal, Ritual, Name),
     (known_spell_always_prepared(Origin, Name) -> Prepared=always; Prepared=maybe),
     known_spell_data(Origin, Name, Data),

@@ -131,7 +131,7 @@ getSpellDescriptionText spell =
 
 viewSpellDescription : List String -> Maybe String -> List SpellBonus -> List String -> Int -> Html Msg
 viewSpellDescription paragraphs higherLevel bonuses resources spellLevel =
-  div [ Attr.css (descriptionStyle (estimateSpellDescFontSize paragraphs higherLevel))
+  div [ Attr.css (descriptionStyle (estimateSpellDescFontSize paragraphs higherLevel bonuses))
       , Attr.class "card-description"
       ]
     <| (  paragraphs
@@ -315,15 +315,15 @@ descriptionStyle fontSize =
   , Css.backgroundColor (Css.hex "ffffff")
   , Css.property "print-color-adjust" "exact"
   , Css.borderRadius (px 8)
-  , Css.padding (mm 1)
+  , Css.padding4 Css.zero (mm 1) Css.zero (mm 1)
   , Css.marginBottom (mm 2)
   ]
 
-estimateSpellDescFontSize : List String -> Maybe String -> Float
-estimateSpellDescFontSize paragraphs higherLevel =
+estimateSpellDescFontSize : List String -> Maybe String -> List SpellBonus -> Float
+estimateSpellDescFontSize paragraphs higherLevel bonuses =
   if descriptionContainsTable paragraphs
   then 6
-  else estimateFontSize (spellDescriptionLength paragraphs higherLevel)
+  else estimateFontSize (spellDescriptionLength (paragraphs ++ List.map .bonus bonuses) higherLevel)
 
 estimateFontSize : Int -> Float
 estimateFontSize len =

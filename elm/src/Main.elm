@@ -76,6 +76,7 @@ init charId =
     , sheetCache = Nothing
     }
   , Edit.load (CharId charId)
+  -- , Cards.load (CharId charId)
   )
 
 parseCharId : Parser (CharId -> a) a
@@ -283,45 +284,56 @@ type alias TabCfg = { name : String
 viewTabs : Page -> Html Msg
 viewTabs page =
   div
-    [Attr.class "tabs", Attr.class "dont-print", Attr.css [Css.zIndex (Css.int 2)]]
-    (List.map viewTab
-       [ { name = "Edit"
-         , iconPath = "edit.png"
-         , msg = GotoEditCharacter
-         , selected = case page of
-                        EditCharacterPage _ -> True
-                        _ -> False }
-       , { name =" Equipment" 
-         , iconPath = "equipment.png"
-         , msg = GotoEquipmentPage
-         , selected = case page of
-                        EquipmentPage _ -> True
-                        _ -> False
-         }
-       , { name = "Sheet"
-         , iconPath = "sheet.png"
-         , msg = GotoSheet
-         , selected = case page of
-                        PrintableCharSheetPage _ -> True
-                        _ -> False
-         }
-       , { name = "Cards"
-         , iconPath = "cards.png"
-         , msg = GotoCardsPage { showSpells = AllSpells }
-         , selected = case page of
-                        CardsPage _ _ -> True
-                        _ -> False
-         }
-       ])
+    [Attr.class "tab-bar", Attr.class "dont-print"]
+    [ div []
+        (List.map viewTab
+           [ { name = "Edit"
+             , iconPath = "edit.png"
+             , msg = GotoEditCharacter
+             , selected = case page of
+                            EditCharacterPage _ -> True
+                            _ -> False }
+           , { name =" Equipment" 
+             , iconPath = "equipment.png"
+             , msg = GotoEquipmentPage
+             , selected = case page of
+                            EquipmentPage _ -> True
+                            _ -> False
+             }
+           , { name = "Sheet"
+             , iconPath = "sheet.png"
+             , msg = GotoSheet
+             , selected = case page of
+                            PrintableCharSheetPage _ -> True
+                            _ -> False
+             }
+           , { name = "Cards"
+             , iconPath = "cards.png"
+             , msg = GotoCardsPage { showSpells = AllSpells }
+             , selected = case page of
+                            CardsPage _ _ -> True
+                            _ -> False
+             }
+           ])
+    , div []
+      [ viewTab
+          { name = "Back to character selection"
+          , iconPath = "close.png"
+          , msg = GotoSelectCharacterPage
+          , selected = False
+          }
+      ]
+    ]
+    
 
 viewTab : TabCfg -> Html Msg
 viewTab { name, iconPath, msg, selected } =
   button
     [ onClick msg
     , Attr.css [Css.color (Css.hex <| if selected then "#ffffff" else "#cccccc")]
+    , Attr.class "tab"
     ]
-    [ img [ Attr.css [ Css.width (Css.px 16) ]
-          , Attr.src ("/static/icons/" ++ iconPath)
+    [ img [ Attr.src ("/static/icons/" ++ iconPath)
           , Attr.class (if selected then "full-invert" else "partial-invert")
           ]
         []

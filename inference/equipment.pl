@@ -95,9 +95,6 @@ weapon('light crossbow', simple, ranged(feet(80) / feet(320)),
 weapon(longbow, martial, ranged(feet(150) / feet(600)),
        [damage(piercing, 1 d 8)], [ammunition, heavy, twohanded]).
 
-weapon(javelin, simple, melee,
-       [damage(piercing, 1 d 6)], [thrown(feet(30) / feet(120))]).
-
 %! weapon_item(?Name, ?Category, ?Rangedness, ?DamageFormula, ?Notes)
 %
 %  Weapons that are also items (basically ignoring natural weapons).
@@ -137,6 +134,20 @@ custom_format(berserker_axe(BaseWeapon)) -->
     ["berserker "], [BaseWeapon].
 bonus_source(attuned(berserker_axe(_)), 'max hp' + Lvl) :-
     level(Lvl).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Musical instruments.
+musical_instrument(lute).
+musical_instrument(bagpipes).
+musical_instrument(drum).
+musical_instrument(dulcimer).
+musical_instrument(flute).
+musical_instrument(lute).
+musical_instrument(lyre).
+musical_instrument(horn).
+musical_instrument(pan).
+musical_instrument(shawm).
+musical_instrument(viol).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Equipment JSON 

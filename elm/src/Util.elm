@@ -111,6 +111,7 @@ showPrologTerm_ formatString openParen closeParen t =
         ++ closeParen
   in case t of
     Atomic atom -> formatString atom
+    List xs -> String.concat ["[", String.concat (List.intersperse ", " (List.map spt xs)), "]"]
     Compound "in" [s] ->
       "in " ++ spt s
     Compound "damage" [Atomic ty, damage] ->
@@ -153,6 +154,7 @@ prettyPrologTerm =
   Types.mapPrologTermStrings formatSnakeCase
     >> Types.foldPT
       (\f rs -> String.concat [f, " (", String.concat (List.intersperse ", " rs), ")"])
+      (\xs   -> String.concat ["[", String.concat (List.intersperse ", " xs), "]"])
       id
 
 ordinal : Int -> String

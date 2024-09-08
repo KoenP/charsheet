@@ -219,19 +219,19 @@ attack_variant(Name:shillelagh, Range, to_hit(ToHit), [damage(bludgeoning, 1 d 8
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 spell_short_desc(
     'prismatic wall',
-    ["Creates a multicolored, opaque wall up to 90 feet long, 30 feet high, and 1 inch thick, or a spherical wall up to 30 feet in diameter.",
-     "If the wall passes through a creature's space, the spell fails. Creatures designated by the caster can pass through without harm. Creatures within 20 feet of the wall at the start of their turn must make a Constitution saving throw or be blinded for 1 minute.",
-     "The wall sheds bright light for 100 feet and dim light for an additional 100 feet.",
-     "Consists of seven layers, each with a different color.",
-     "Red: Deals 10d6 fire damage. Nonmagical ranged attacks can't pass through.",
-     "Orange: Deals 10d6 acid damage. Magical ranged attacks can't pass through. Destroyed by strong wind.",
-     "Yellow: Deals 10d6 lightning damage. Can be destroyed by dealing 60 force damage.",
-     "Green: Deals 10d6 poison damage. Can be destroyed by a passwall spell or similar.",
-     "Blue: Deals 10d6 cold damage. Can be destroyed by dealing 25 fire damage.",
-     "Indigo: Restrains creatures; requires saving throws to avoid petrification. Spells can't pass through. Destroyed by bright light (e.g., daylight spell).",
-     "Violet: Blinds creatures, transports them to another plane on failed saves. Destroyed by dispel magic or similar spells.",
-     "Layers can be destroyed one at a time, from red to violet, by specific means outlined for each layer. Rod of cancellation destroys the entire wall. Antimagic field has no effect on the wall."
+    ["Creates a multicolored, opaque wall up to 90 feet long, 30 feet high, and 1 inch thick, or a spherical wall up to 30 feet in diameter. If the wall passes through a creature's space, the spell fails. Creatures designated by the caster can pass through without harm. Creatures within 20 feet of the wall at the start of their turn must make a Constitution saving throw or be blinded for 1 minute. The wall sheds bright light for 100 feet and dim light for an additional 100 feet. Consists of seven layers, each with a different color.
+
+1. **Red**: Deals 10d6 fire damage. Nonmagical ranged attacks can't pass through.
+2. **Orange**: Deals 10d6 acid damage. Magical ranged attacks can't pass through. Destroyed by strong wind.
+3. **Yellow**: Deals 10d6 lightning damage. Can be destroyed by dealing 60 force damage.
+4. **Green**: Deals 10d6 poison damage. Can be destroyed by a passwall spell or similar.
+5. **Blue**: Deals 10d6 cold damage. Can be destroyed by dealing 25 fire damage.
+6. **Indigo**: Restrains creatures; requires saving throws to avoid petrification. Spells can't pass through. Destroyed by bright light (e.g., daylight spell).
+7. **Violet**: Blinds creatures, transports them to another plane on failed saves. Destroyed by dispel magic or similar spells.
+
+Layers can be destroyed one at a time, from red to violet, by specific means outlined for each layer. Rod of cancellation destroys the entire wall. Antimagic field has no effect on the wall."
     ]).
+
 
 spell_short_desc(
     symbol,
