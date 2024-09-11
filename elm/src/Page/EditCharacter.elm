@@ -349,7 +349,7 @@ viewMainContents focusedDropdownId opts tbs selectedLevel =
           |> Maybe.withDefault []
           |> Util.multiDictFromList (\{display_origin_category, origin_category_index} ->
                                        (origin_category_index, display_origin_category))
-          |> Dict.map (viewOriginCategoryOptions focusedDropdownId)
+          |> Dict.map (viewOriginCategoryOptionsList focusedDropdownId)
           |> Dict.values)
 
       in
@@ -463,8 +463,8 @@ viewLevelUpPage =
           ["barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue", "sorcerer", "warlock", "wizard"])
   ]
 
-viewOriginCategoryOptions : Maybe String -> (Int, String) -> List Options -> Html Msg
-viewOriginCategoryOptions focusedDropdownId (_, category) optionsList =
+viewOriginCategoryOptionsList : Maybe String -> (Int, String) -> List Options -> Html Msg
+viewOriginCategoryOptionsList focusedDropdownId (_, category) optionsList =
   let
     headerMsg = case category of
                   "init" -> "Choose your background, class, and race:"
@@ -488,8 +488,14 @@ viewOptions focusedDropdownId {origin, spec, id, display_id} =
         , focusedDropdownId = focusedDropdownId
         , disabledOptions   = []
         }
-        (Choice origin id << SingletonChoice) False spec
+        (singletonChoiceMsg origin id) False spec
     ]
+
+singletonChoiceMsg : String -> String -> Maybe String -> Msg
+singletonChoiceMsg origin id choice =
+  case choice of
+    Just choice_ -> Choice origin id (SingletonChoice choice_)
+    Nothing -> Null
 
 type alias ViewSpecContext =
   { origin             : String
@@ -500,7 +506,7 @@ type alias ViewSpecContext =
   }
 
 viewSpec : ViewSpecContext
-         -> (String -> Msg) -> Bool -> SpecAndChoice
+         -> (Maybe String -> Msg) -> Bool -> SpecAndChoice
          -> Html Msg
 viewSpec ctx mkMsg isDisabled spec =
   div
@@ -517,7 +523,7 @@ viewSpec ctx mkMsg isDisabled spec =
     ]
 
 viewListSC :  ViewSpecContext
-           -> (String -> Msg)
+           -> (Maybe String -> Msg)
            -> Maybe String -> Bool -> List (String, List String)
            -> Html Msg
 viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } mkMsg selected isDisabled options =
@@ -528,11 +534,19 @@ viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } 
         (\(entry, desc) -> { entry = entry
                            , desc = entry :: desc
                            , enabled = not <| List.member entry disabledOptions
-                           , msg = mkMsg entry
+                           , msg = mkMsg (Just entry)
                            })
         options
+    withDeleteEntry =
+      case selected of
+        Just _ -> { entry = "-"
+                  , desc = ["Undo this choice"]
+                  , enabled = True
+                  , msg = mkMsg Nothing
+                  } :: entries
+        Nothing -> entries
   in
-    dropdown isDisabled dropdownId selected entries (focusedDropdownId == Just dropdownId)
+    dropdown isDisabled dropdownId selected withDeleteEntry (focusedDropdownId == Just dropdownId)
 
 viewFromSC : ViewSpecContext -> Unique -> Maybe Int -> List SpecAndChoice -> Html Msg
 viewFromSC ctx unique limit subspecs =
@@ -542,13 +556,14 @@ viewFromSC ctx unique limit subspecs =
     choicesList : List String
     choicesList = List.concatMap extractChoicesList subspecs
 
-    editFunctions : List (String -> Msg)
+    editFunctions : List (Maybe String -> Msg)
     editFunctions = choiceEditFunctions origin id choicesList
 
     disabledOptions = if unique then choicesList else []
     k = List.length editFunctions
   in 
     div [] <|
+      -- Already something selected.
       List.map4
         (\i -> viewSpec
            { ctx
@@ -560,10 +575,13 @@ viewFromSC ctx unique limit subspecs =
         (List.repeat k False)
         subspecs
       ++
+
+      -- Nothing selected yet.
       List.map3
         (\i -> viewSpec
            { ctx | disabledOptions = disabledOptions, dropdownIdSuffix = ctx.dropdownIdSuffix ++ "/" ++ String.fromInt i }
-           (\opt -> Choice origin id <| ListChoice <| choicesList ++ [opt]))
+           (\opt -> Maybe.map (\x -> Choice origin id <| ListChoice <| choicesList ++ [x]) opt
+                    |> Maybe.withDefault Null))
         (case limit of
            Just n  -> List.range (k+1) n
            Nothing -> [k+1])
@@ -572,20 +590,23 @@ viewFromSC ctx unique limit subspecs =
                                        Nothing -> [True])
         (List.drop k subspecs)
 
-choiceEditFunctions : String -> String -> List String -> List (String -> Msg)
+choiceEditFunctions : String -> String -> List String -> List (Maybe String -> Msg)
 choiceEditFunctions origin id choices =
   case choices of
     [] ->
-      [ Choice origin id << ListChoice << List.singleton ]
+      [ Choice origin id << ListChoice << List.singleton << Maybe.withDefault "" ] -- TODO better error handling (this case should never occur though)
     c :: cs ->
       let
         zipper = Zipper [] c cs
 
-        overwriteFocused : Zipper String -> (String -> Msg)
-        overwriteFocused (Zipper pre _ post) =
-          \x -> Zipper pre x post |> Zipper.toList |> ListChoice |> Choice origin id
+        overwriteOrDeleteFocused : Zipper String -> (Maybe String -> Msg)
+        overwriteOrDeleteFocused (Zipper pre _ post) newChoice =
+          Choice origin id <| ListChoice <| 
+            case newChoice of
+              Just x -> Zipper.toList (Zipper pre x post)
+              Nothing -> pre ++ post 
       in 
-        Zipper.toList (Zipper.extend overwriteFocused zipper)
+        Zipper.toList (Zipper.extend overwriteOrDeleteFocused zipper)
 
 viewOrSC :  ViewSpecContext
          -> Maybe Dir -> (String, SpecAndChoice) -> (String, SpecAndChoice)
@@ -616,11 +637,11 @@ viewOrSC ctx dir (lname, lspec) (rname, rspec) =
           case dir of
             Nothing   -> []
             Just dir_ -> [ viewSpec ctx
-                             (Choice origin id << SingletonChoice)
+                             (singletonChoiceMsg origin id)
                              False
                              (case dir_ of
                                 L -> lspec
-                                R -> Debug.log "" rspec)
+                                R -> rspec)
                          ]
       ]
 

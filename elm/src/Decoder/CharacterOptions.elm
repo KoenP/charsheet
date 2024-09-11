@@ -7,6 +7,7 @@ import Dict exposing (Dict)
 import Types exposing (..)
 import Types.Ability exposing (..)
 import Decoder.AbilityTable exposing (abilityTableDec)
+import Decoder.PrologTerm exposing (prologTermDec)
 import Util
 
 gotCharacterOptionsDec : Decoder (AbilityTable, Dict Level (List Options), Dict Level (List Effect))
@@ -32,17 +33,6 @@ traitOrBonusDec =
                       , D.list D.string
                       , D.null []
                       ]))
-
-prologTermDec : Decoder PrologTerm
-prologTermDec =
-  D.oneOf
-    [ D.map Atomic D.string
-    , D.map List (D.list (D.lazy (\_ -> prologTermDec)))
-    , D.succeed Compound
-        |> D.andMap (D.field "functor" D.string)
-        |> D.andMap (D.field "args" (D.list (D.lazy (\_ -> prologTermDec))))
-    
-    ]
 
 optionsDictDec : Decoder (Dict Level (List Options))
 optionsDictDec =

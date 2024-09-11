@@ -60,8 +60,9 @@
 %    example, the eldritch invocation `'bewitching whispers'` lets the
 %    character cast the spell `compulsion` using a warlock spell slot,
 %    but not more than once per long rest. In that case,
-%    `Resources = ['pact slot', per_rest(long, 1)]`. TODO: I'm not
-%    sure yet what the best way is to automate this bit.
+%    `Resources = ['pact slot', per_rest(long, 1)]`.
+%    So lists represent logical "and"; logical "or" is represented
+%    with arbitrary arity functor `or`.
 %  * Ritual indicates whether the spell can be cast as a ritual
 %    (`always`, `'when prepared'` or `no`), or in some cases, _only_ as
 %    a ritual (`only`).
@@ -300,6 +301,18 @@ base_spell_origin(BaseOrigin) :-
     member(BaseOrigin, BaseOriginsSet).
 
 spell_origin_shorthand(_Origin, _Abbrev) :- false.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Spells that can be cast limited number of times per rest
+% (for example eldritch invocations).
+res(Origin: Spell, Num) :-
+    known_spell(FullOrigin, _, _, Resources, _, Spell),
+    member(per_rest(_, Num), Resources),
+    fully_unwrap(FullOrigin, Origin).
+on_rest(Duration, Origin: Spell, 'full restore') :-
+    known_spell(FullOrigin, _, _, Resources, _, Spell),
+    member(per_rest(Duration, _), Resources),
+    fully_unwrap(FullOrigin, Origin).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Interacting with spell data.

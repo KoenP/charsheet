@@ -86,7 +86,10 @@ update msg model oldData =
 
 view : EquipmentPageData -> List (Html Msg)
 view { equipment, inputFieldVal, error } =
-  [ table []
+  [ p [] [ text "This page is a placeholder. You can only add armor and weapons by typing the exact name. If the name of an item consists of more than one word, surround it with single quotes ('). You can add enchantment by adding for example \"+1\"." ]
+  , p [] [ text "The equipment page is not intended as a full inventory; only those items that affect your character sheet (such as weapons and armor) are listed here." ]
+  , p [] [ text "For example, type ",  b [] [text "'light crossbow' + 1" ]]
+  , table []
       (List.map
          (\item -> tr [] [ td [] [button [E.onClick (UnequipItem item)] [text "x"]]
                          , simple td item

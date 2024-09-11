@@ -329,7 +329,7 @@ viewResource { name , number , short_rest , long_rest } =
 viewResourceSlots : Int -> List (Html Msg)
 viewResourceSlots num =
   if num <= 8
-  then List.repeat num (input [ type_ "checkbox" ] [])
+  then List.repeat num viewSlot
   else [ div [ class "row" ]
          [ viewSmallBlank, text (nbsp ++ "/" ++ nbsp ++ String.fromInt num) ]
        ]
@@ -342,7 +342,6 @@ viewResourceRestoreInfo maybeShortRest maybeLongRest =
          [ Maybe.map (viewResourceRestoreInfoLine "short rest") maybeShortRest
          , Maybe.map (viewResourceRestoreInfoLine "long rest") maybeLongRest
          ]
-
   ]
 
 viewResourceRestoreInfoLine : String -> String -> Html Msg
@@ -374,7 +373,7 @@ viewFilledIn value =
   div [ class "filled-in" ] [ text (String.fromInt value) ]
 
 viewSlot : Html Msg
-viewSlot = input [ type_ "checkbox" ] []
+viewSlot = input [ type_ "checkbox", class "spell-slot" ] []
 
 viewBlank : Html Msg
 viewBlank = div [ class "blank" ] []

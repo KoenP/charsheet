@@ -129,7 +129,7 @@ getSpellDescriptionText : Spell -> List String
 getSpellDescriptionText spell =
   Maybe.withDefault spell.description <| Maybe.map (\d -> "(Summary:)" :: d) spell.shortdesc
 
-viewSpellDescription : List String -> Maybe String -> List SpellBonus -> List String -> Int -> Html Msg
+viewSpellDescription : List String -> Maybe String -> List SpellBonus -> List PrologTerm -> Int -> Html Msg
 viewSpellDescription paragraphs higherLevel bonuses resources spellLevel =
   div [ Attr.css (descriptionStyle (estimateSpellDescFontSize paragraphs higherLevel bonuses))
       , Attr.class "card-description"
@@ -187,14 +187,47 @@ formatSpellBonus : SpellBonus -> String
 formatSpellBonus { origin, bonus } =
   bonus ++ " (from " ++ origin ++ ")"
 
-viewSpellResources : List String -> Int -> List (Html Msg)
+viewSpellResources : List PrologTerm -> Int -> List (Html Msg)
 viewSpellResources resources spellLevel =
   case (spellLevel, resources) of
     -- Cantrips are always at will, no need to mention it.
-    (0, _ ) -> []
+    (0, _               ) -> []
     -- If a non-cantrip spell requires no resources, specify that it can be cast at will.
-    (_, []) -> [ p [] [ b [] [ text "Cast at will." ] ]]
-    (_, _ ) -> []
+    (_, []              ) -> [ p [] [ b [] [ text "Cast at will." ] ]]
+    -- We don't explicitly mention that regular spells need spell slots.
+    (_, [Atomic "slot"] ) -> []
+    (_, conjunction     ) -> [ p [] ( text "Use "
+                                    :: showSpellResourcesList ", " conjunction ++ [text "."] )
+                             ]
+
+showSpellResource : PrologTerm -> List (Html Msg)
+showSpellResource term =
+  case term of
+    Atomic "slot"       -> [ b [] [text "spell slot"] ]
+    Atomic res          -> [ b [] [text res] ]
+    List terms          -> showSpellResourcesList ", " terms
+    Compound "per_rest" [Atomic longOrShort, Atomic num]
+      -- -> case String.toInt num of
+      --      Just n -> List.repeat n viewCheckbox ++ [text <| " / " ++ longOrShort ++ " rest"]
+      --      Nothing -> [ text "ERROR (showSpellResource expecting num)" ]
+      -> [ b [] [text <| String.concat [num, "x per ", longOrShort, " rest"] ] ]
+    Compound "or" terms -> showSpellResourcesList " or " terms
+    _                   -> [ text "ERROR" ]
+
+viewCheckbox : Html Msg
+viewCheckbox = input [ Attr.type_ "checkbox"
+                     , Attr.class "spell-slot"
+                     , Attr.css [ Css.width (Css.em 0.8)
+                                , Css.height (Css.em 0.8)
+                                ] ]
+               []
+
+showSpellResourcesList : String -> List PrologTerm -> List (Html Msg)
+showSpellResourcesList op resources =
+  List.map showSpellResource resources
+    |> List.intersperse [text op]
+    |> List.concat
+  
 
 cardSubtitle : Spell -> String
 cardSubtitle spell =

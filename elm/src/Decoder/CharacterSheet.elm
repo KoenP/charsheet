@@ -7,6 +7,7 @@ import Json.Decode.Extra as D
 import Types exposing (..)
 import Util exposing (exactMatchDec)
 import Decoder.AbilityTable exposing (abilityTableDec, skillTableDec)
+import Decoder.PrologTerm exposing (prologTermDec)
 --------------------------------------------------------------------------------
 
 sheetDec : Decoder CharacterSheet
@@ -122,7 +123,7 @@ spellDec =
     |> D.andMap (D.field "name" D.string)
     |> D.andMap (D.field "prepared" preparedDec)
     |> D.andMap (D.field "range" D.string)
-    |> D.andMap (D.field "resources" (D.list D.string))
+    |> D.andMap (D.field "resources" (D.list prologTermDec))
     |> D.andMap (D.field "ritual" ritualDec)
     |> D.andMap (D.field "school" D.string)
     |> D.andMap (D.field "shortdesc" (D.nullable (D.list D.string)))

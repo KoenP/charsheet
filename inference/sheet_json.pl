@@ -270,7 +270,7 @@ spell_json_dict(BaseOrigin,
                   summary: Summary,
                   shortdesc: Shortdesc,
                   ritual: Ritual,
-                  resources: ResourcesStrs,
+                  resources: ResourcesJson,
                   rolls: Rolls,
                   aoe: Aoe,
                   bonuses: Bonuses
@@ -290,7 +290,7 @@ spell_json_dict(BaseOrigin,
     term_to_json(Data.components, Components),
     Duration      = Data.duration,
     Concentration = Data.concentration,
-    maplist(term_string, ResourcesVal, ResourcesStrs),
+    term_to_json(ResourcesVal, ResourcesJson),
     display_spell_effects(Data, Summary),
     default_on_fail(null, spell_short_desc(Name), Shortdesc),
     default_on_fail(null, known_spell_to_hit(BaseOrigin:_,Name), ToHit),
@@ -333,10 +333,11 @@ resource_json(_{name: FeatureName,
                 short_rest: ShortRest,
                 long_rest: LongRest
                }) :-
-    res(FeatureName, Num),
-    FeatureName \= 'pact magic', % this is a special case
-    rest_description(short, FeatureName, ShortRest),
-    rest_description(long, FeatureName, LongRest).
+    res(FeatureNameVal, Num),
+    fmt(format_term(FeatureNameVal), FeatureName),
+    FeatureNameVal \= 'pact magic', % this is a special case
+    rest_description(short, FeatureNameVal, ShortRest),
+    rest_description(long, FeatureNameVal, LongRest).
 
 rest_description(Type, Name, DescStr) :-
     on_rest(Type, Name, Desc),

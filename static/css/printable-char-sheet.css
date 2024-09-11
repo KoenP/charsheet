@@ -507,7 +507,7 @@
     text-align: right;
 }
 
-.spell-slots input {
+.spell-slot {
     width: 1.2em;
     height: 1.2em;
     background-color: white;

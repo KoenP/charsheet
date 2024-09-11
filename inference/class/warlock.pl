@@ -59,7 +59,7 @@ pact_magic_slot_level(N) :-
 known_spell(warlock, cha, always, [], no, Name) :-
     class_origin_to_class(Origin, warlock),
     choice_member(Origin, cantrip, Name).
-known_spell(warlock, cha, always, ['pact slot'], Ritual, Name) :-
+known_spell(warlock, cha, always, [slot], Ritual, Name) :-
     class_level(warlock:L),
     selected_at_class_level(warlock:L, spell, Name),
     spell_property(Name, ritual, Ritual). % TODO this might be wrong.
@@ -133,6 +133,8 @@ replaceable_class_options(warlock:L, 'eldritch invocation',
     member(L, [5,7,9,12,15,18]).
 replace_at_class_level(warlock:L, 'eldritch invocation', 1, eldritch_invocation_option) :-
     between(3, 20, L).
+custom_format(eldritch_invocation(Inv)) -->
+    ['eldritch invocation: '], [Inv].
 
 % Shorthands.
 eldinv(Inv) :- trait(eldritch_invocation(Inv)).
