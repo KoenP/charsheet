@@ -99,10 +99,10 @@ view { equipment, inputFieldVal, error } =
           , Attr.placeholder "Item name"
           , Attr.value inputFieldVal
           , E.onInput AddItemInput
-          , onReturnPressed (EquipItem inputFieldVal)
+          , onReturnPressed (if String.isEmpty inputFieldVal then Null else EquipItem inputFieldVal)
           ] []
   , button
-      [ E.onClick (EquipItem inputFieldVal)
+      [ E.onClick (if String.isEmpty inputFieldVal then Null else EquipItem inputFieldVal)
       ]
       [ text "Add item" ]
   ]

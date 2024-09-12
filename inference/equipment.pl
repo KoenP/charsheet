@@ -150,6 +150,33 @@ musical_instrument(shawm).
 musical_instrument(viol).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Gaming sets.
+gaming_set('dice set').
+gaming_set('dragonchess set').
+gaming_set('playing card set').
+gaming_set('three-dragon ante set').
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Artisan's tools.
+artisans_tools('alchemist\'s supplies').
+artisans_tools('brewer\'s supplies').
+artisans_tools('calligrapher\'s supplies').
+artisans_tools('carpenter\'s tools').
+artisans_tools('cartographer\'s tools').
+artisans_tools('cobbler\'s tools').
+artisans_tools('cook\'s utensils').
+artisans_tools('glassblower\'s tools').
+artisans_tools('jeweler\'s tools').
+artisans_tools('leatherworker\'s tools').
+artisans_tools('mason\'s tools').
+artisans_tools('painter\'s supplies').
+artisans_tools('potter\'s tools').
+artisans_tools('smith\'s tools').
+artisans_tools('tinker\'s tools').
+artisans_tools('weaver\'s tools').
+artisans_tools('woodcarver\'s tools').
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Equipment JSON 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 equipment_json_dict(_{ weapons: Weapons,

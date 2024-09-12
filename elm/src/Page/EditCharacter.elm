@@ -381,7 +381,7 @@ viewEffectCategory (category, effects) =
     viewEffects showEffect
       = List.map
           (\effect ->
-             let _ = Debug.log "effect desc" effect.desc in case effect.desc of
+             case effect.desc of
                  [] -> 
                    text (showEffect effect)
                  desc -> 
