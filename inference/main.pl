@@ -8,7 +8,7 @@
 
 :- multifile
        (?=)/2,
-       on_rest/3,
+       restore_res/3,
        todo/1,
        meta_todo/2,
        problem/1,
@@ -204,35 +204,19 @@ problem('pick a name!') :- \+ name(_).
 %! res(?Name, ?Max)
 res(_,_) :- false.
 
-%! on_rest(?Duration, ?ResourceName, ?Goal)
+%! restore_res(?Trigger, ?ResourceName, ?Amount)
 %
-%  Documents the effects of long and short rests on resources.
-%  Duration is either `short` or `long`.
-%  ResourceName is the name of a resource such that resource(_,
-%  ResourceName, _) is true.
-%  Goal is a trinary predicate such that call(Goal, Max, Cur, New) is true when
-%  Cur is the current value of a resource before resting (TODO:
-%  current values aren't implemented right now), and New is the value
-%  after resting.
-on_rest(_,_,_) :- false.
+%  Documents how resources are restored (for example, through long or short rests).
+%  Typical values for Trigger are `'long rest'`, `'short rest'`, or `'at dawn'`.
+%  ResourceName is the name of a resource such that
+%  `res(_, ResourceName, _)` is true.
+%  Amount documents by how much the resource is restored.
+%  This can be the atom `'full restore'`, or a term of the form `restore(F)` 
+%  where F is a dice formula such as `2` or `1 d 6 + 2`.
+restore_res(_,_,_) :- false.
 meta_todo(res(Resource), 'rest for nonexistant resource') :-
-    on_rest(_, Resource, _),
+    restore_res(_, Resource, _),
     \+ res(Resource, _).
-
-%! full_restore(?Max, ?Cur, ?New)
-%
-%  Helper predicate to fully restore a resource. Usually used as third
-%  argument to on_rest/3.
-full_restore(Max, _, Max).
-
-%! restore(?Max, ?Cur, ?New)
-%
-%  Helper predicate to partially restore a resource. Usually used as third
-%  argument to on_rest/3, by partially applying the first argument
-%  (for instance, writing restore(4) to restore a resource by 4
-%  points).
-restore(N, Max, Cur, New) :-
-    New is min(Cur+N, Max).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Shorthands.

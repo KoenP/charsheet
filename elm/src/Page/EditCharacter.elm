@@ -460,7 +460,7 @@ viewLevelUpPage =
        List.map
           (\x -> option [] [text x])
           -- TODO: fetch this from the server
-          ["barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue", "sorcerer", "warlock", "wizard"])
+          ["artificer", "barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue", "sorcerer", "warlock", "wizard"])
   ]
 
 viewOriginCategoryOptionsList : Maybe String -> (Int, String) -> List Options -> Html Msg

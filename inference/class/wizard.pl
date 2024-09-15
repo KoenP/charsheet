@@ -35,7 +35,7 @@ trait_source(wizard >: 1, arcane_recovery(N)) :-
     N is ceil(L/2).
 res('arcane recovery', N) :-
     trait(arcane_recovery(N)).
-on_rest(long, 'arcane recovery', 'full restore') :-
+restore_res('long rest', 'arcane recovery', 'full restore') :-
     trait(arcane_recovery(_)).
 
 % Spell mastery.

@@ -59,7 +59,7 @@ traits_from_source(monk >: 2, [ki_feature('flurry of blows'),
                                ki_feature('step of the wind')]).
 res('ki points', N) :-
     trait(ki(N, _)).
-on_rest(short, 'ki points', 'full restore').
+restore_res('short rest', 'ki points', 'full restore').
 
 custom_format(ki(N, dc(DC))) -->
     ["ki: "], [N], [" points, "], [DC], [" save DC"].
@@ -122,7 +122,7 @@ trait_source(monk('open hand') >: 6, wholeness_of_body(hp(HP))) :-
     HP is L*3.
 res('wholeness of body', 1) :-
     trait(wholeness_of_body(_)).
-on_rest(long, 'wholeness of body', 'full restore').
+restore_res('long rest', 'wholeness of body', 'full restore').
 
 trait_source(monk('open hand') >: 11, tranquility(dc(DC))) :-
     add_ability_mod_and_profbon(8, wis, DC).

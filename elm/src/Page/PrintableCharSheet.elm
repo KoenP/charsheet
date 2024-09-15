@@ -319,11 +319,11 @@ viewResources resources =
     _  -> [ viewBadgeDiv "resources" "resources spell-slots" (List.map viewResource resources) ]
 
 viewResource : Resource -> Html Msg
-viewResource { name , number , short_rest , long_rest } =
+viewResource { name , number , restore } =
   div []
   [ simple h3 name
   , div [ class "resource-details" ]
-    (viewResourceSlots number ++ viewResourceRestoreInfo short_rest long_rest)
+    (viewResourceSlots number ++ viewResourceRestoreInfo restore)
   ]
 
 viewResourceSlots : Int -> List (Html Msg)
@@ -334,18 +334,15 @@ viewResourceSlots num =
          [ viewSmallBlank, text (nbsp ++ "/" ++ nbsp ++ String.fromInt num) ]
        ]
 
-viewResourceRestoreInfo : Maybe String -> Maybe String -> List (Html Msg)
-viewResourceRestoreInfo maybeShortRest maybeLongRest =
+viewResourceRestoreInfo : Dict String String -> List (Html Msg)
+viewResourceRestoreInfo restoreDict =
   [ table []
-      <| List.concat
-      <| List.map Util.maybeToList
-         [ Maybe.map (viewResourceRestoreInfoLine "short rest") maybeShortRest
-         , Maybe.map (viewResourceRestoreInfoLine "long rest") maybeLongRest
-         ]
+      <| List.map viewResourceRestoreInfoLine
+      <| Dict.toList restoreDict
   ]
 
-viewResourceRestoreInfoLine : String -> String -> Html Msg
-viewResourceRestoreInfoLine restType restoreInfo =
+viewResourceRestoreInfoLine : (String, String) -> Html Msg
+viewResourceRestoreInfoLine (restType, restoreInfo) =
   tr [] [ simple td (restType ++ ":"), simple td restoreInfo ]
   
 

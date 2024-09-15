@@ -309,7 +309,7 @@ res(Origin: Spell, Num) :-
     known_spell(FullOrigin, _, _, Resources, _, Spell),
     member(per_rest(_, Num), Resources),
     fully_unwrap(FullOrigin, Origin).
-on_rest(Duration, Origin: Spell, 'full restore') :-
+restore_res(Duration, Origin: Spell, 'full restore') :-
     known_spell(FullOrigin, _, _, Resources, _, Spell),
     member(per_rest(Duration, _), Resources),
     fully_unwrap(FullOrigin, Origin).
@@ -502,6 +502,13 @@ add_damage(Bonus, damage(Element,Roll1), damage(Element,Roll2)) :-
     simplify_dice_sum(Roll1+Bonus, Roll2).
 
 const(X,_,X).
+
+contains_multiple_healing_rolls(Effects) :-
+    findall(H, subterm_member(heal(H), Effects), [_,_|_]).
+contains_multiple_healing_rolls(Effects) :-
+    member(N*SubEffects, Effects),
+    N > 1,
+    subterm_member(heal(_), SubEffects).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- multifile

@@ -45,7 +45,7 @@ wild_shape_constraint(8, 'no flying speed').
 res('wild shape', 2) :-
     trait(wild_shape(_)),
     \+ trait(archdruid).
-on_rest(short, 'wild shape', 'full restore').
+restore_res('short rest', 'wild shape', 'full restore').
 
 trait_source(druid >: 18, 'timeless body').
 trait_source(druid >: 18, 'beast spells').
@@ -109,7 +109,7 @@ trait_source(druid(land) >: 2, natural_recovery(Total)) :-
     Total is ceiling(L / 2).
 res('natural recovery', Slots) :-
     trait(natural_recovery(Slots)).
-on_rest(long, 'natural recovery', 'full restore').
+restore_res('long rest', 'natural recovery', 'full restore').
 
 trait_options_source(
     druid(land) >: 3,
@@ -215,7 +215,7 @@ res('fungal infestation', Uses) :-
     trait('fungal infestation'),
     ability_mod(wis, WisMod),
     Uses is max(WisMod, 1).
-on_rest(long, 'fungal infestation', 'full restore').
+restore_res('long rest', 'fungal infestation', 'full restore').
 
 trait_source(druid(spores) >: 10, 'spreading spores').
 

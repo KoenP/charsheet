@@ -177,5 +177,4 @@ resourceDec =
   D.succeed Resource
     |> D.andMap (D.field "name" D.string)
     |> D.andMap (D.field "number" D.int)
-    |> D.andMap (D.field "short_rest" (D.nullable D.string))
-    |> D.andMap (D.field "long_rest" (D.nullable D.string))
+    |> D.andMap (D.field "restore" (D.dict D.string))

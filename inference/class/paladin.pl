@@ -31,13 +31,13 @@ traits_from_source(paladin >: 1,
 trait_source(paladin >: 1, 'divine sense').
 res('divine sense', N) :-
     trait('divine sense'), ability_mod(cha, Mod), N is max(0, Mod+1).
-on_rest(long, 'divine sense', 'full restore').
+restore_res('long rest', 'divine sense', 'full restore').
 
 % Lay on hands.
 trait_source(paladin >: 1, 'lay on hands').
 res('lay on hands', HP) :-
     class_level(paladin:L), HP is 5*L.
-on_rest(long, 'lay on hands', 'full restore').
+restore_res('long rest', 'lay on hands', 'full restore').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features gained from leveling up.
@@ -67,7 +67,7 @@ trait_source(paladin >: 13, 'cleansing touch').
 res('cleansing touch', N) :-
     trait('cleansing touch'),
     ability_mod(cha, Mod), N is max(1, Mod).
-on_rest(long, 'cleansing touch', 'full restore').
+restore_res('long rest', 'cleansing touch', 'full restore').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Spellcasting.
@@ -120,7 +120,7 @@ trait_source(paladin(devotion) >: 15, 'purity of spirit').
 trait_source(paladin(devotion) >: 20, 'holy nimbus').
 res('holy nimbus', 1) :-
     trait('holy nimbus').
-on_rest(long, 'holy nimbus', 'full restore').
+restore_res('long rest', 'holy nimbus', 'full restore').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -92,7 +92,7 @@ trait(feat('metamagic adept'), metamagic(MetaMagic)) :-
 % sorcery points.
 res('metamagic adept sorcery point', 2) :-
     feat('metamagic adept').
-on_rest(long, 'metamagic adept sorcery point', 'full restore').
+restore_res('long rest', 'metamagic adept sorcery point', 'full restore').
 
 % Documentation.
 feat('metamagic adept') ?= "You’ve learned how to exert your will on your spells to alter how they function:

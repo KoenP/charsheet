@@ -14,7 +14,7 @@ known_spell(firbolg, Abi, always, ['firbolg spell slot' or slot], no, Spell) :-
     (Spell = 'detect magic' ; Spell = 'disguise self').
 res('firbolg spell slot', 1) :-
     race(firbolg).
-on_rest(long, 'firbolg spell slot', 'full restore').
+restore_res('long rest', 'firbolg spell slot', 'full restore').
 bonus_source(race(firbolg), modify_spell(firbolg, 'disguise self', Goal)) :-
     Goal = add_spell_effects(["You can appear up to 3 ft shorter or taller"]).
 
@@ -27,7 +27,7 @@ trait_source(race(firbolg), 'hidden step').
 res('hidden step', ProfBon) :-
     race(firbolg),
     proficiency_bonus(ProfBon).
-on_rest(long, 'hidden step', 'full restore').
+restore_res('long rest', 'hidden step', 'full restore').
 
 % Other features.
 traits_from_source(race(firbolg), ['powerful build', 'speech of beast and leaf']).

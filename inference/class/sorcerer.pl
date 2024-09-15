@@ -55,8 +55,8 @@ metamagic_option('twinned spell').
 res('sorcery points', Max) :-
     sorcerer >: 3,
     class_level(sorcerer:Max).
-on_rest(long, 'sorcery points', 'full restore') :- sorcerer >: 3.
-on_rest(short, 'sorcery points', restore(4)) :- trait('sorcerous restoration').
+restore_res('long rest', 'sorcery points', 'full restore') :- sorcerer >: 3.
+restore_res('short rest', 'sorcery points', restore(4)) :- trait('sorcerous restoration').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Learning new sorcerer spells.

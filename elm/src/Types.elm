@@ -133,8 +133,7 @@ type alias PactMagic =
 type alias Resource =
   { name : String
   , number : Int
-  , short_rest : Maybe String
-  , long_rest : Maybe String
+  , restore : Dict String String
   }
 
 type PrologTerm = Compound String (List PrologTerm)

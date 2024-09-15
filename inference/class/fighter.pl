@@ -29,7 +29,7 @@ trait_source(fighter >: 1, second_wind(1 d 10 + L)) :-
     class_level(fighter:L).
 res('second wind', 1) :-
     trait(second_wind(_)).
-on_rest(short, 'second wind', 'full restore') :-
+restore_res('short rest', 'second wind', 'full restore') :-
     trait(second_wind(_)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,7 +38,7 @@ trait_source(fighter >: 2, 'action surge').
 res('action surge', N) :-
     class_level(fighter:L),
     ordered_lookup_largest_leq([2 -> 1, 17 -> 2], L, N).
-on_rest(short, 'action surge', 'full restore').
+restore_res('short rest', 'action surge', 'full restore').
 
 multiclass_trait_source(fighter >: 5, extra_attack(N)) :-
     class_level(fighter:L),

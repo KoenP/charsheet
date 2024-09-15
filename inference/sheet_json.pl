@@ -116,10 +116,12 @@ ac_formula_shield_value(ACOptions, ShieldAC) :-
 ac_formula_shield_value(ACOptions, null) :-
     \+ member(shield(_):_, ACOptions).
 
-get_formula_name(armor(Armor), Armor) :- atom(Armor), !.
 get_formula_name(armor(Armor + N), Str) :-
     !,
     atomics_to_string([Armor, " + ", N], Str).
+get_formula_name(armor(Armor), Str) :-
+    fmt(format_term(Armor), Str),
+    !.
 get_formula_name(Other, Str) :-
     fmt(format_term(Other), Str).
     
@@ -330,21 +332,18 @@ resources_json(List) :-
     findall(R, resource_json(R), List).
 resource_json(_{name: FeatureName,
                 number: Num,
-                short_rest: ShortRest,
-                long_rest: LongRest
+                restore: RestoreDict
                }) :-
     res(FeatureNameVal, Num),
     fmt(format_term(FeatureNameVal), FeatureName),
     FeatureNameVal \= 'pact magic', % this is a special case
-    rest_description(short, FeatureNameVal, ShortRest),
-    rest_description(long, FeatureNameVal, LongRest).
+    findall(Trigger-Restore, rest_description(Trigger, FeatureNameVal, Restore), Pairs),
+    dict_pairs(RestoreDict, _, Pairs).
 
-rest_description(Type, Name, DescStr) :-
-    on_rest(Type, Name, Desc),
-    !,
+rest_description(Trigger, Name, DescStr) :-
+    restore_res(Trigger, Name, Desc),
     fmt(format_term(Desc), DescStr).
-rest_description(_, _, null).
-custom_format(restore(N)) --> ["+"], format_number(N).
+custom_format(restore(N)) --> ["+"], format_dice_sum(N).
     
 %! term_to_json(+List, -Json)
 %

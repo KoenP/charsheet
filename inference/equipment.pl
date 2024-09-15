@@ -1,8 +1,9 @@
 :- multifile weapon/5.
+:- multifile body_armor_variant/2.
 :- multifile has/1.
+:- discontiguous body_armor/3.
 :- dynamic has/1.
 :- dynamic weapons_equipped/1.
-:- dynamic attuned/1.
 
 weapons_equipped(_) :- false.
 
@@ -28,8 +29,6 @@ weapon_index(Index, Weapon) :-
     findall(W, has_weapon(W), Weapons),
     length(Prefix, Index),
     append(Prefix, [Weapon|_], Weapons).
-
-attuned(_) :- false.
 
 expand_to_sum(Item    , Item + 0) :- Item \= _+_.
 expand_to_sum(Item + N, Item + N).
@@ -132,8 +131,14 @@ weapon_variant(berserker_axe(BaseWeapon), BaseWeapon + 1, [], [attunement, curse
     member(BaseWeapon, [handaxe, battleaxe, greataxe]).
 custom_format(berserker_axe(BaseWeapon)) -->
     ["berserker "], [BaseWeapon].
-bonus_source(attuned(berserker_axe(_)), 'max hp' + Lvl) :-
+bonus_source(has(berserker_axe(_)), 'max hp' + Lvl) :-
     level(Lvl).
+
+%! body_armor_variant(?NamedArmor, ?BaseArmor)
+body_armor_variant(_, _) :- false.
+body_armor(Variant, Category, AC) :-
+    body_armor_variant(Variant, BaseArmor),
+    body_armor(BaseArmor, Category, AC).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Musical instruments.
