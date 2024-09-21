@@ -5,8 +5,7 @@ import Types exposing (CharId(..))
 
 requestUrl : List String -> List (String, String) -> String
 requestUrl path params =
-  Url.crossOrigin
-    "http://localhost:8000"
+  Url.absolute
     ("api" :: path)
     (List.map (\(k,v) -> Url.string k v) params)
 

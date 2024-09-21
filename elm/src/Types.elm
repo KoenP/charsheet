@@ -25,7 +25,7 @@ type alias CharacterSheet =
   , languages : List String
   , weapons : List String
   , armor : List String
-  , tools : List String
+  , tools : List Tool
   , resistances : List Resistance
   , notable_traits : List NotableTraitCategory
   , attacks : List Attack
@@ -53,6 +53,8 @@ type alias CharacterSummary =
   }
 
 type alias Speed = { mode: String, speed: Int }
+
+type alias Tool = { tool: String, expertise: Bool }
 
 type alias Resistance = { damage_type: String, resistance: String }
 

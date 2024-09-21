@@ -24,7 +24,7 @@ sheet_json_dict(_{name: Name,
     setof_or_empty(X, trait(language(X)), Languages),
     setof_or_empty(X, trait(weapon(X)), Weapons),
     setof_or_empty(X, trait(armor(X)), Armor),
-    setof_or_empty(X, trait(tool(X)), Tools),
+    tools_json_dict(Tools),
     resistances_json_dict(Resistances),
     notable_traits_json_dict(NotableTraits),
     attack_table_json_dict(Attacks),
@@ -163,6 +163,12 @@ skill_table_json_dict(Dict) :-
             ),
             Pairs),
     dict_pairs(Dict, _, Pairs).
+
+% Proficiency and expertise with tools.
+tools_json_dict(Entries) :-
+    findall(_{tool: Tool, expertise: Expertise},
+            (trait(tool(Tool)), (trait(expertise(tool(Tool))) -> Expertise = true ; Expertise = false)),
+            Entries).
 
 % Resistances and immunities.
 best_resistance_for_damage_type(DamageType, full) :-

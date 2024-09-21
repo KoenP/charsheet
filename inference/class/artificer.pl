@@ -27,8 +27,8 @@ trait_source(artificer >: 1, 'magical tinkering').
 % Features gained from leveling up.
 trait_source(artificer >: 3, 'the right tool for the job').
 
-trait_source(artificer >: 6, 'tool expertise', expertise(tool(Tool))) :-
-    trait(skill(Tool)). % TODO does this terminate?
+trait_source(artificer >: 6, expertise(tool(Tool))) :-
+    trait(tool(Tool)). % TODO does this terminate?
 
 trait_source(artificer >: 7, 'flash of genius').
 res('flash of genius', N) :-

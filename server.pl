@@ -14,6 +14,7 @@
 :- use_module(library(http/http_server_files)).
 :- use_module(library(http/http_path)).
 :- use_module(library(http/http_error)).
+:- use_module(library(http/http_unix_daemon)).
 :- use_module(library(sgml)).
 :- use_module(library(settings)).
 :- use_module('inference/char_db').
@@ -237,10 +238,10 @@ load_by_name(Name) :-
 %   - =|/request/choice?source=_&id=_&choice=_|=: Register the given
 %      choice for the character. This is immediately committed to permanent
 %      storage.
-:- initialization(run_server).
+:- initialization(http_daemon, main).
 
-run_server :-
-    http_server(http_dispatch, [port(8000)]).
+http_unix_daemon:http_server_hook(Options) :-
+    http_server(http_dispatch, Options).
 
 remote_query(Request) :-
     member(path_info(PathInfo), Request),

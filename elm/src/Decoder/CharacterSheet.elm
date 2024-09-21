@@ -22,7 +22,7 @@ sheetDec =
     |> D.andMap (D.field "languages" (D.list D.string))
     |> D.andMap (D.field "weapons" (D.list D.string))
     |> D.andMap (D.field "armor" (D.list D.string))
-    |> D.andMap (D.field "tools" (D.list D.string))
+    |> D.andMap (D.field "tools" (D.list toolDec))
     |> D.andMap (D.field "resistances" (D.list resistanceDec))
     |> D.andMap (D.field "notable_traits" notableTraitsDec)
     |> D.andMap (D.field "attacks" (D.list attackDec))
@@ -63,6 +63,12 @@ hitDiceDec =
   D.succeed HitDice
     |> D.andMap (D.field "n" D.int)
     |> D.andMap (D.field "d" D.int)
+
+toolDec : Decoder Tool
+toolDec =
+  D.succeed Tool
+    |> D.andMap (D.field "tool" D.string)
+    |> D.andMap (D.field "expertise" D.bool)
 
 resistanceDec : Decoder Resistance
 resistanceDec =

@@ -221,7 +221,7 @@ viewNotableTraitCategory { category, traits } =
     <| traits
   ]
   
-viewOtherProficiencies :  List String -> List String -> List String -> List String -> List Resistance
+viewOtherProficiencies :  List String -> List String -> List String -> List Tool -> List Resistance
                        -> List (Html Msg)
 viewOtherProficiencies weapons armor languages tools resistances =
   [ viewBadgeDiv "other proficiencies" "other-proficiencies"
@@ -234,10 +234,13 @@ viewOtherProficiencies weapons armor languages tools resistances =
          [ ("weapons", defaultWhenEmpty "-" weapons)
          , ("armor", defaultWhenEmpty "-" armor)
          , ("languages", defaultWhenEmpty "-" languages)
-         , ("tools", defaultWhenEmpty "-" tools)
+         , ("tools", defaultWhenEmpty "-" (List.map showTool tools))
          , ("resistances", defaultWhenEmpty "-" (List.map showResistance resistances))
          ]
   ]
+
+showTool : Tool -> String
+showTool { tool, expertise } = tool ++ if expertise then " (expertise)" else ""
 
 showResistance : Resistance -> String
 showResistance { damage_type, resistance } =

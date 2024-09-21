@@ -13,7 +13,8 @@ bonus_source(race(gnome('rock gnome')), con+1).
 trait_source(race(gnome('rock gnome')), 'artificer\'s lore').
 trait_source(race(gnome('rock gnome')), 'tinker').
 trait_options_source(race(gnome('rock gnome')), tool, wrap(tool),
-                     from_list([smith, brewer, mason, alchemist])).
+                     from_list(['smith\'s tools', 'brewer\'s tools',
+                                'mason\'s tools', 'alchemist\'s tools'])).
 traits_from_source(race(gnome('rock gnome')),
                    [language(common), language(gnomish)]).
 

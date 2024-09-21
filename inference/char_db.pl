@@ -27,7 +27,7 @@
      gain_level(char_id:any, level:positive_integer, class:atom, hp_mode:atom),
      has(char_id:any, item:any).
 
-:- db_attach('db.pl', []).
+:- db_attach('/home/koen/charsheet/db.pl', []).
 
 name(_,_) :- false.
 base_ability(_,_,_) :- false.
