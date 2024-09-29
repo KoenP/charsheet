@@ -47,6 +47,7 @@ serve_page(Html, _Request) :-
 % Character management.
 :- http_handler(root(api / list_characters), h_list_characters, [method(get)]).
 :- http_handler(root(api / new_character), h_new_character, [method(post)]).
+:- http_handler(root(api / create_character), h_create_character, [method(post)]).
 
 % Single-character queries.
 :- http_handler(root(api / character / CharId / sheet),
@@ -88,6 +89,12 @@ h_new_character(Request) :-
     http_parameters(Request, [name(Name,[])]),
     char_db:create_character(Name, Uuid),
     http_redirect(see_other, location_by_id(load_character_page(Uuid)), Request).
+
+h_create_character(Request) :-
+    http_parameters(Request, [name(Name,[])]),
+    char_db:create_character(Name, Uuid),
+    reply_json_dict(Uuid).
+         
          
 h_get_sheet(_Request) :-
     sheet_json_dict(Dict),
