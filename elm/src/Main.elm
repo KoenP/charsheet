@@ -284,46 +284,50 @@ type alias TabCfg = { name : String
 viewTabs : Page -> Html Msg
 viewTabs page =
   div
-    [Attr.class "tab-bar", Attr.class "dont-print"]
-    [ div []
-        (List.map viewTab
-           [ { name = "Edit"
-             , iconPath = "edit.png"
-             , msg = GotoEditCharacter
-             , selected = case page of
-                            EditCharacterPage _ -> True
-                            _ -> False }
-           , { name =" Equipment" 
-             , iconPath = "equipment.png"
-             , msg = GotoEquipmentPage
-             , selected = case page of
-                            EquipmentPage _ -> True
-                            _ -> False
-             }
-           , { name = "Sheet"
-             , iconPath = "sheet.png"
-             , msg = GotoSheet
-             , selected = case page of
-                            PrintableCharSheetPage _ -> True
-                            _ -> False
-             }
-           , { name = "Cards"
-             , iconPath = "cards.png"
-             , msg = GotoCardsPage { showSpells = AllSpells }
-             , selected = case page of
-                            CardsPage _ _ -> True
-                            _ -> False
-             }
-           ])
-    , div []
-      [ viewTab
-          { name = "Back to character selection"
-          , iconPath = "close.png"
-          , msg = GotoSelectCharacterPage
-          , selected = False
-          }
-      ]
+    [ Attr.class "dont-print"]
+    [ div
+        [ Attr.class "tab-bar" ]
+        [ div []
+            (List.map viewTab
+               [ { name = "Edit"
+                 , iconPath = "edit.png"
+                 , msg = GotoEditCharacter
+                 , selected = case page of
+                                EditCharacterPage _ -> True
+                                _ -> False }
+               , { name =" Equipment" 
+                 , iconPath = "equipment.png"
+                 , msg = GotoEquipmentPage
+                 , selected = case page of
+                                EquipmentPage _ -> True
+                                _ -> False
+                 }
+               , { name = "Sheet"
+                 , iconPath = "sheet.png"
+                 , msg = GotoSheet
+                 , selected = case page of
+                                PrintableCharSheetPage _ -> True
+                                _ -> False
+                 }
+               , { name = "Cards"
+                 , iconPath = "cards.png"
+                 , msg = GotoCardsPage { showSpells = AllSpells }
+                 , selected = case page of
+                                CardsPage _ _ -> True
+                                _ -> False
+                 }
+               ])
+        , div []
+          [ viewTab
+              { name = "Back to character selection"
+              , iconPath = "close.png"
+              , msg = GotoSelectCharacterPage
+              , selected = False
+              }
+          ]
+        ]
     ]
+    
     
 
 viewTab : TabCfg -> Html Msg
