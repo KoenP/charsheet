@@ -1,3 +1,5 @@
+:- multifile suppress_unarmored_ac_formula/0.
+
 ac(AC) :- ac(_, AC, _).
 
 ac(Origin, AC, Options) :-
@@ -21,7 +23,8 @@ ac_formula(armor(Armor), AC + Enchantment + dex + shield) :-
     body_armor(BaseArmor, light, ac(AC)).
 ac_formula(Origin, Formula) :-
     bonus(Origin, ac_formula(Formula)).
-ac_formula(unarmored, 10 + dex + shield).
+ac_formula(unarmored, 10 + dex + shield) :-
+    \+ suppress_unarmored_ac_formula.
 
 %! eval_ac_formula(?Formula, ?AC:int, ?Options)
 %
@@ -63,3 +66,5 @@ unarmored_defense_formula(Origin, Formula) :-
     sort(1, @<, Olofs, [_ - (Origin>:_) - Formula | _]).
 bonus(unarmored_defense(Origin), ac_formula(Formula)) :-
     unarmored_defense_formula(Origin, Formula).
+
+suppress_unarmored_ac_formula :- trait(unarmored_defense(_)).

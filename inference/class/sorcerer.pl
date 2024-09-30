@@ -114,6 +114,7 @@ trait_source(sorcerer('draconic bloodline') >: 1, 'draconic resilience').
 bonus_source(trait('draconic resilience'), 'max hp'+Level) :-
     class_level(sorcerer:Level).
 bonus_source(trait('draconic resilience'), ac_formula(13 + dex + shield)).
+suppress_unarmored_ac_formula :- trait('draconic resilience').
 
 % Elemental affinity.
 trait_source(sorcerer('draconic bloodline') >: 6,
@@ -127,19 +128,21 @@ bonus_source(trait(elemental_affinity(Element)),
     known_spell(_, Name),
     spell_property(Name, effects, Effects),
     subterm_member(damage(Element,_), Effects),
-    Goal = modify_spell_field(effects, apply_elemental_affinity).
+    ability_mod(cha, Bonus),
+    Goal = modify_spell_field(effects, apply_elemental_affinity(Bonus)).
 
-apply_elemental_affinity(OldEffects, NewEffects) :-
+apply_elemental_affinity(Bonus, OldEffects, NewEffects) :-
     \+ contains_multiple_damage_rolls(OldEffects),
     draconic_bloodline_element(Element),
-    ability_mod(cha, Bonus),
     select_subterm(damage(Element,Dice), OldEffects, damage(Element,NewDice), NewEffects),
     simplify_dice_sum(Dice + Bonus, NewDice).
-apply_elemental_affinity(OldEffects, NewEffects) :-
+apply_elemental_affinity(Bonus, OldEffects, NewEffects) :-
     contains_multiple_damage_rolls(OldEffects),
-    ability_mod(cha, Bonus),
     atomics_to_string(["add +", Bonus, " to one damage roll"], New),
     append(OldEffects, [New], NewEffects).
+
+custom_format(modify_spell_field(effects, apply_elemental_affinity(Bonus))) -->
+    ["Add +"], [Bonus], [" damage to one damage roll."].
 
 % Dragon wings.
 trait_source(sorcerer('draconic bloodline') >: 14, 'dragon wings').

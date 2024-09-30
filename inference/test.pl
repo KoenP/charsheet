@@ -20,8 +20,10 @@ test_character(Name) :-
             UnsortedScenario),
     sort(1, @<, UnsortedScenario, TestScenario),
     forall(member(Level-Facts-Expectations, TestScenario),
-           test_character_level(Name, Level, Facts, Expectations)).
+           test_character_level(Name, Level, Facts, Expectations)),
+    abolish_all_tables.
 test_character_level(Name, Level, Facts, Expectations) :-
+    abolish_all_tables,
     write("# "), write(Name), write(" lvl "), writeln(Level),
     forall(member(Fact,Facts), assert(Fact)),
     forall(member(E,Expectations), test_expectation(E)),

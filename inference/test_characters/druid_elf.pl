@@ -46,7 +46,7 @@ test_char_level(
                     [damage(bludgeoning, 1 d 8)], []),
      attack(quarterstaff, feet(5), to_hit(2), [damage(bludgeoning, 1 d 6)], _),
 
-     known_spell(race(elf('high elf')), int, always, [], no, 'fire bolt'),
+     known_spell('high elf', int, always, [], no, 'fire bolt'),
      known_spell(druid, wis, always, [], no, shillelagh),
      known_spell(druid, wis, always, [], no, druidcraft),
 
@@ -68,8 +68,8 @@ test_char_level(
     ],
     [max_hp(17), % 8 (base) + 1*5 (levelup) + 2*2 (con mod)
 
-     resource('natural recovery', 'spell slot total', 1),
-     resource('wild shape', 'wild shape', 2),
+     res('natural recovery', 1),
+     res('wild shape', 2),
      trait(wild_shape([cr(1/4),hours(1),'no swimming speed','no flying speed'])),
 
      known_spell(druid, wis, always, [], no, guidance),
@@ -84,14 +84,26 @@ test_char_level(
     3,
     [gain_level(3, druid, hp_avg),
      choice(druid(land) >: 3,'circle spells',forest)
-
     ],
-    [resource('natural recovery', 'spell slot total', 2),
-     resource('wild shape', 'wild shape', 2),
+    [res('natural recovery', 2),
+     res('wild shape', 2),
      trait(wild_shape([cr(1/4),hours(1),'no swimming speed','no flying speed'])),
 
      % know only forest circle spells
      known_spell(druid, wis, always, [slot], no, barkskin),
      \+ known_spell(druid, wis, always, [slot], no, 'mirror image'),
      \+ known_spell(druid, wis, always, [slot], no, 'hold person')
+    ]).
+
+test_char_level(drelf, L, [gain_level(L, druid, hp_avg)], []) :-
+    between(4, 19, L).
+
+test_char_level(
+    drelf,
+    20,
+    [gain_level(20, druid, hp_avg)],
+    [ forall(known_spell(druid, Spell),
+             (known_spell_property(druid, Spell, components, Cs),
+              (Cs = [] ; Cs = [m(M)], sub_string(M, _, _, _, "gp"))
+             ))
     ]).

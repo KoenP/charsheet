@@ -133,6 +133,8 @@ apply_potent_cantrip(OldEffects, NewEffects) :-
                    OldEffects,
                    saving_throw(Abi):(damage(Element,Dice) else 'half damage'),
                    NewEffects).
+custom_format(modify_spell_field(effects, apply_potent_cantrip)) -->
+    ["If target saves, you deal half damage."].
     
 trait_source(wizard(evocation) >: 10, 'empowered evocation').
 bonus_source(trait('empowered evocation'),
@@ -141,18 +143,20 @@ bonus_source(trait('empowered evocation'),
     spell_data(Spell, Data),
     Data.school = evocation,
     subterm_member(damage(_,_), Data.effects), 
-    Goal = modify_spell_field(effects, apply_empowered_evocation).
-apply_empowered_evocation(OldEffects, NewEffects) :-
-    \+ contains_multiple_damage_rolls(OldEffects),
     ability_mod(int, Bonus),
+    Goal = modify_spell_field(effects, apply_empowered_evocation(Bonus)).
+apply_empowered_evocation(Bonus, OldEffects, NewEffects) :-
+    \+ contains_multiple_damage_rolls(OldEffects),
     select_subterm(damage(Element, Dice), OldEffects,
                    damage(Element, NewDice), NewEffects),
     simplify_dice_sum(Dice + Bonus, NewDice).
-apply_empowered_evocation(OldEffects, NewEffects) :-
+apply_empowered_evocation(Bonus, OldEffects, NewEffects) :-
     contains_multiple_damage_rolls(OldEffects),
-    ability_mod(int, Bonus),
     atomics_to_string(["add +", Bonus, " to one damage roll"], New),
     append(OldEffects, [New], NewEffects).
+
+custom_format(modify_spell_field(effects, apply_empowered_evocation(Bonus))) -->
+    ["Add +"], [Bonus], [" damage to one damage roll."].
 
 trait_source(wizard(evocation) >: 14, overchannel).
 
