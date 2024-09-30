@@ -11,12 +11,18 @@ attack(Weapon, Range, ToHit, DamageRolls, Notes) :-
     (has(Weapon) ; has_unarmed(Weapon)),
     ( weapon_attack(Weapon, Range, ToHit, DamageRolls, Notes)
     ; weapon_variant_attack(Weapon, Range, ToHit, DamageRolls, Notes)).
-attack(Cantrip, Range, to_hit(ToHit), [DamageDice], []) :-
+attack(Cantrip, Range, to_hit(ToHit), [DamageDice], Notes) :-
     known_spell_to_hit(Origin, Cantrip, ToHit),
     known_spell_data(Origin, Cantrip, Data),
     Data.level = 0,
     Data.range = Range,
-    unique_subterm_member(spell_attack_roll(_):DamageDice, Data.effects).
+    unique_subterm_member(spell_attack_roll(_):DamageDice, Data.effects),
+    (  unique_subterm_member(N*(spell_attack_roll(_):_), Data.effects)
+    -> Notes = [Str],
+       format(string(Str), "attack ~wx", N)
+    ;  Notes = []
+    ).
+
 attack(Cantrip, Range, saving_throw(DC, Abi), [DamageDice], Notes) :-
     known_spell_saving_throw(Origin, Cantrip, DC, Abi),
     known_spell_data(Origin, Cantrip, Data),

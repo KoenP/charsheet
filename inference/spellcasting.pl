@@ -463,6 +463,8 @@ increase_all_spell_damage_rolls(Bonus, Old, New) :-
                           OldEffects,
                           NewEffects),
     New = Old.put(effects, NewEffects).
+custom_format(increase_all_spell_damage_rolls(Bonus)) -->
+    ["all damage rolls +"], [Bonus].
 
 %! increase_all_spell_healing_rolls(-Bonus, -Old, +New)
 %
@@ -509,6 +511,9 @@ contains_multiple_healing_rolls(Effects) :-
     member(N*SubEffects, Effects),
     N > 1,
     subterm_member(heal(_), SubEffects).
+
+custom_format(modify_spell_field(Field, const(Value))) -->
+    ["set "], format_term(Field), [" to "], format_term(Value).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- multifile
