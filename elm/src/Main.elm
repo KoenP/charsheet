@@ -106,7 +106,7 @@ update msg model =
       ( { model | page = Loading }, Edit.load model.charId )
 
     GotoSelectCharacterPage ->
-      ( model, Nav.load "/" )
+      ( model, Nav.load "/select" )
 
     GotoCardsPage options ->
       case model.sheetCache of

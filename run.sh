@@ -1,4 +1,4 @@
 #!/bin/bash
 
 clear
-(cd elm && elm make src/Main.elm --output ../static/js/charsheet.js) && swipl server.pl
+(cd elm && elm make src/Main.elm --output ../static/js/charsheet.js) && swipl run_server.pl

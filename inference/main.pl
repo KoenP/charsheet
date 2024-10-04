@@ -58,7 +58,7 @@
 :- [fighting_style].
 :- [languages].
 :- [html].
-:- [character_file].
+%:- [character_file].
 :- [sheet_json].
 :- [grants].
 :- [test].
@@ -290,45 +290,3 @@ qq(Pred) :-
     call(Functor),
     forall(member(Arg,Args), writeln(Arg)).
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Persistency test (TODO delete)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-store_monk :-
-    char_db:record_name(monk, 'monk 5 fighter 11'),
-    char_db:record_base_ability(monk, str,14),
-    char_db:record_base_ability(monk, dex,18),
-    char_db:record_base_ability(monk, con,12),
-    char_db:record_base_ability(monk, int,10),
-    char_db:record_base_ability(monk, wis,16),
-    char_db:record_base_ability(monk, cha,8),
-    char_db:record_gain_level(monk, 2,monk,hp_avg),
-    char_db:record_gain_level(monk, 3,monk,hp_avg),
-    char_db:record_gain_level(monk, 4,monk,hp_avg),
-    char_db:record_gain_level(monk, 5,monk,hp_avg),
-    char_db:record_gain_level(monk, 6,fighter,hp_avg),
-    char_db:record_gain_level(monk, 7,fighter,hp_avg),
-    char_db:record_gain_level(monk, 8,fighter,hp_avg),
-    char_db:record_gain_level(monk, 9,fighter,hp_avg),
-    char_db:record_gain_level(monk, 10,fighter,hp_avg),
-    char_db:record_gain_level(monk, 11,fighter,hp_avg),
-    char_db:record_gain_level(monk, 12,fighter,hp_avg),
-    char_db:record_gain_level(monk, 13,fighter,hp_avg),
-    char_db:record_gain_level(monk, 14,fighter,hp_avg),
-    char_db:record_gain_level(monk, 15,fighter,hp_avg),
-    char_db:record_gain_level(monk, 16,fighter,hp_avg),
-    char_db:record_choice(monk, init,'base race',human),
-    char_db:record_choice(monk, init,'initial class',monk),
-    char_db:record_choice(monk, ^monk,skill,[acrobatics,insight]),
-    char_db:record_choice(monk, race(human),subrace,standard),
-    char_db:record_choice(monk, race(human),language,dwarvish),
-    char_db:record_choice(monk, init,background,archaeologist),
-    char_db:record_choice(monk, background(archaeologist),language,goblin).
-
-store_current_character_as(CharId) :-
-    forall(name(Name), char_db:record_name(CharId, Name)),
-    forall(base_ability(Ability, Score), char_db:record_base_ability(CharId, Ability, Score)),
-    forall(gain_level(Level, Class, HpMode), char_db:record_gain_level(CharId, Level, Class, HpMode)),
-    forall(choice(Origin, Id, Choice), char_db:record_choice(CharId, Origin, Id, Choice)).
-    

@@ -13,6 +13,7 @@
 % test_char_level(?Name, ?Level, ?Facts, ?Expectations)
 test_char_level(_,_,_,_) :- false.
 
+% TODO rework tests to use snapshots.
 test_character(Name) :-
     unload_current_character,
     findall(Level-Facts-Expectations,
