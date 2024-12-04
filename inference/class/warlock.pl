@@ -394,3 +394,13 @@ eldritch_invocation('gaze of two minds') ?= "You can use your action to touch a 
 
 (eldritch_invocation('witch sight') ?= Desc) :- (sense('witch sight') ?= Desc).
 sense('witch sight') ?= "You can see the true form of any shapechanger or creature concealed by illusion or transmutation magic while the creature is within 30 feet of you and within line of sight.".
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+'mystic arcanum'@=phb('108').
+'eldritch master'@=phb('108').
+'pact magic'@=phb('107').
+'dark one\'s blessing'@=phb('109').
+'dark one\'s own luck'@=phb('109').
+'fiendish resilience'@=phb('10').
+'hurl through hell'@=phb('109').

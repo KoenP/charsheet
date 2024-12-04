@@ -61,7 +61,6 @@ trait_source(fighter(champion) >: 3, 'improved critical') :-
     class_level(fighter(champion):CurLevel),
     between(3, 14, CurLevel). % Overridden by superior critical. TODO this is ad-hoc, perhaps nice to have a systematic way of overriding traits.
 
-trait_source(fighter(champion) >: 3, 'improved critical').
 trait_source(fighter(champion) >: 7, 'remarkable athlete').
 trait_options_source(fighter(champion) >: 10, 'fighting style',
                      wrap(fighting_style), fighting_style).
@@ -146,7 +145,7 @@ learnable_eldritch_knight_spell('abjuration or evocation', Spell) :-
 
 second_wind(_) ?= "You have a limited well of stamina that you can draw on to protect yourself from harm. On your turn, you can use a bonus action to regain hit points equal to 1d10 + your fighter level. Once you use this feature, you must finish a short or long rest before you can use it again.".
 
-"action surge" ?= "Starting at 2nd level, you can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action on top of your regular action and a possible bonus action. Once you use this feature, you must finish a short or long rest before you can use it again. Starting at 17th level, you can use it twice before a rest, but only once on the same turn.".
+'action surge' ?= "Starting at 2nd level, you can push yourself beyond your normal limits for a moment. On your turn, you can take one additional action on top of your regular action and a possible bonus action. Once you use this feature, you must finish a short or long rest before you can use it again. Starting at 17th level, you can use it twice before a rest, but only once on the same turn.".
 
 indomitable ?= "Beginning at 9th level, you can reroll a saving throw that you fail. If you do so, you must use the new roll, and you can’t use this feature again until you finish a long rest. You can use this feature twice between long rests starting at 13th level and three times between long rests starting at 17th level.".
 
@@ -175,3 +174,16 @@ At 10th level, you learn how to make your weapon strikes undercut a creature's r
 'arcane charge' ?= " At 15th level, you gain the ability to teleport up to 30 feet to an unoccupied space you can see when you use your Action Surge. You can teleport before or after the additional action.".
 
 'improved war magic' ?= "Starting at 18th level, when you use your action to cast a spell, you can make one weapon attack as a bonus action.".
+
+second_wind(_)@=phb('72').
+'action surge'@=phb('72').
+indomitable@=phb('72').
+'improved critical'@=phb('72').
+'remarkable athlete'@=phb('72').
+'superior critical'@=phb('73').
+survivor(_)@=phb('73').
+'weapon bond'@=phb('75').
+'war magic'@=phb('75').
+'eldritch strike'@=phb('75').
+'arcane charge'@=phb('75').
+'improved war magic'@=phb('75').

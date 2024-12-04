@@ -8,8 +8,6 @@ import Html.Styled.Attributes as Attr
 import Html.Styled.Events as E
 import Http
 import List
--- import Markdown.Option as Md
--- import Markdown.Render as Md
 import Markdown
 import Platform.Cmd as Cmd
 import Set exposing (Set)
@@ -18,7 +16,7 @@ import String
 import Decoder.CharacterSheet exposing (sheetDec)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
-import Util exposing (simple)
+import Util exposing (simple, applyIfPresent)
 
 load : CharId -> Cmd Msg
 load charId =
@@ -53,11 +51,11 @@ viewNotableTraitCategory options { category, traits } =
     |> List.map (viewNotableTrait options category)
 
 viewNotableTrait : CardsPageOptions -> String -> Trait -> Html Msg    
-viewNotableTrait options category { name, desc } =
+viewNotableTrait options category { name, desc, ref } =
   div
     [ Attr.css cardStyle ]
     [ div [ Attr.css cardTitleSectionStyle ]
-        [ div [ Attr.css cardTitleStyle ] [ text name ] ]
+        [ div [ Attr.css cardTitleStyle ] (viewCardTitle name ref) ]
     , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
     , div [ Attr.css (descriptionStyle
                         (Maybe.withDefault 0
@@ -78,6 +76,16 @@ viewNotableTrait options category { name, desc } =
     , div [ Attr.css cardTypeStyle ] [ text (category ++ " feature") ]
       -- TODO: will show feats as class traits, which is a bit weird
     ]
+
+viewCardTitle : String -> Maybe String -> List (Html Msg)
+viewCardTitle title mref =
+  applyIfPresent
+    mref
+    (\ref html -> html ++ [sub
+                             [Attr.css [Css.fontSize (Css.pt 5.5), Css.fontWeight Css.bold]]
+                             [text ref]
+                          ])
+    [text title]
 
 viewSpellcastingSection :  CardsPageOptions -> Dict Origin (Set SpellName) -> SpellcastingSection
                         -> List (Html Msg)

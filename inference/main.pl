@@ -7,6 +7,7 @@
 :- portray_text(true).
 
 :- multifile
+       (@=)/2,
        (?=)/2,
        restore_res/3,
        todo/1,
@@ -24,6 +25,7 @@
 :- op(650, xfx, unique_from).
 :- op(650, xfx, at).
 :- op(1000, xfx, ?=).
+:- op(1000, xfx, @=).
 :- op(650, xfx, ft).
 :- op(700, xfx, by).
 :- op(100, xf, pct).
@@ -73,6 +75,8 @@ meta_todo(_,_) :- false.
 
 %! content_source(Content, Source).
 content_source(_,_) :- false.
+
+custom_format(phb(Page)) --> ["PHB "], [Page].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

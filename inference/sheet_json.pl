@@ -199,10 +199,11 @@ trait_category_string(Compound, Atom) :-
 trait_category_string(Cat, Str) :-
     fmt(format_term(Cat), Str).
 
-trait_json_dict(TraitVal, _{name: Trait, desc: Desc}) :-
+trait_json_dict(TraitVal, _{name: Trait, desc: Desc, ref: Ref}) :-
     %\+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_), skill(_)]),
     fmt(format_trait(TraitVal), Trait),
-    default_on_fail(null, ?=(TraitVal), Desc).
+    default_on_fail(null, ?=(TraitVal), Desc),
+    default_on_fail(null, ([Ref]>>((TraitVal @= RefVal), fmt(format_term(RefVal), Ref))), Ref).
 
 % Attack table.
 attack_table_json_dict(List) :-

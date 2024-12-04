@@ -59,7 +59,11 @@ type alias Tool = { tool: String, expertise: Bool }
 type alias Resistance = { damage_type: String, resistance: String }
 
 type alias NotableTraitCategory = { category: String, traits: List Trait }
-type alias Trait = { name: String, desc: Maybe String }
+type alias Trait =
+  { name : String
+  , desc : Maybe String
+  , ref  : Maybe String
+  }
 
 type alias AcFormula =
   { name : String

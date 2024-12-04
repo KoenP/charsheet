@@ -91,6 +91,7 @@ traitDec =
   D.succeed Trait
     |> D.andMap (D.field "name" D.string)
     |> D.andMap (D.field "desc" (D.nullable D.string))
+    |> D.andMap (D.field "ref" (D.nullable D.string))
 
 attackDec : Decoder Attack
 attackDec =

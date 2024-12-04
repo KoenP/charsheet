@@ -198,14 +198,12 @@ viewNotableTraitCategory { category, traits } =
   [ h4 [] [ text ("From " ++ category ++ ":") ]
   , ul [] (List.map (li [] << List.singleton << viewTrait) traits)
   ]
-    
+
 viewTrait : Trait -> Html msg
-viewTrait { name, desc } =
-  case desc of
-    Nothing ->
-      text name
-    Just actualDesc ->
-      tooltip tooltipSize Right (text name) (text actualDesc)
+viewTrait { name, mdesc, mref } =
+  let addDesc = applyIfPresent mdesc (\desc -> \content -> tooltip tooltipSize Right content (text desc))
+      addRef  = applyIfPresent mref (\ref -> \content -> content ++ " " ++ ref)
+  in text "lol" -- addDesc <| text (addRef name)
 
 viewAttacks : List Attack -> Html msg
 viewAttacks attacks =

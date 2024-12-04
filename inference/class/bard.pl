@@ -132,3 +132,11 @@ The extra hit points increase when you reach certain levels in this class: to 1d
 'countercharm' ?= "At 6th level, you gain the ability to use musical notes or words of power to disrupt mind-influencing effects. As an action, you can start a performance that lasts until the end of your next turn. During that time, you and any friendly creatures within 30 feet of you have advantage on saving throws against being frightened or charmed. A creature must be able to hear you to gain this benefit. The performance ends early if you are incapacitated or silenced or if you voluntarily end it (no action required).".
 
 'superior inspiration' ?= "At 20th level, when you roll initiative and have no uses of Bardic Inspiration left, you regain one use.".
+
+'bardic inspiration'@=phb('53-54').
+'jack of all trades'@=phb('54').
+song_of_rest(1 d _)@=phb('54').
+'font of inspiration'@=phb('54').
+countercharm@=phb('54').
+'superior inspiration'@=phb('54').
+'peerless skill'@=phb('55').

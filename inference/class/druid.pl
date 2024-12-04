@@ -288,3 +288,13 @@ Whenever a creature moves into the cube or starts its turn there, that creature 
 While the cube of spores persists, you can’t use your Halo of Spores reaction.".
 
 'fungal body' ?= "The fungal spores in your body alter you: you can’t be blinded, deafened, frightened, or poisoned, and any critical hit against you counts as a normal hit instead, unless you’re incapacitated.".
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+wild_shape(_)@=phb('66-67').
+'beast spells'@=phb('67').
+archdruid@=phb('67-68').
+natural_recovery(_)@=phb('68').
+'nature\'s ward'@=phb('69').
+'nature\'s sanctuary'@=phb('69').
+circle_spells(spores)@=phb('68').

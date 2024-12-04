@@ -1,0 +1,361 @@
+acid splash, 211
+aid, 211
+alarm ritual, 211
+alter self, 211
+animal friendship, 212
+animal messenger ritual, 212
+animal shapes, 212
+animate dead, 212
+animate objects, 213
+antilife shell, 213
+antimagic field, 213
+antipathy/sympathy, 214
+arcane eye, 214
+arcane gate, 214
+arcane lock, 215
+armor of agathys, 215
+arms of hadar, 215
+astral projection, 215
+augury ritual, 215
+aura of life, 216
+aura of purity, 216
+aura of vitality, 216
+awaken, 216
+bane, 216
+banishing smite, 216
+banishment, 217
+barkskin, 217
+beacon of hope, 217
+beast sense ritual, 217
+bestow curse, 218
+bigby's hand, 218
+blade barrier, 218
+blade ward, 218
+bless, 219
+blight, 219
+blinding smite, 219
+blindness/deafness, 219
+blink, 219
+blur, 219
+branding smite, 219
+burning hands, 220
+call lightning, 220
+calm emotions, 221
+chain lightning, 221
+charm person, 221
+chill touch, 221
+chromatic orb, 221
+circle of death, 221
+circle of power, 221
+clairvoyance, 222
+clone, 222
+cloud of daggers, 222
+cloudkill, 222
+color spray, 222
+command, 223
+commune ritual, 223
+commune with nature ritual, 224
+compelled duel, 224
+comprehend languages ritual, 224
+compulsion, 224
+cone of cold, 224
+confusion, 224
+conjure animals, 225
+conjure barrage, 225
+conjure celestial, 225
+conjure elemental, 225
+conjure fey, 226
+conjure minor elementals, 226
+conjure volley, 226
+conjure woodland beings, 226
+contact other plane ritual, 226
+contagion, 227
+contingency, 227
+continual flame, 227
+control water, 227
+control weather, 228
+cordon of arrows, 228
+counterspell, 228
+create food and water, 229
+create or destroy water, 229
+create undead, 229
+creation, 229
+crown of madness, 229
+crusader's mantle, 230
+cure wounds, 230
+dancing lights, 230
+darkness, 230
+darkvision, 230
+daylight, 230
+death ward, 230
+delayed blast fireball, 230
+demiplane, 231
+destructive smite, 231
+detect evil and good, 231
+detect magic ritual, 231
+detect poison and disease ritual, 231
+detect thoughts, 231
+dimension door, 233
+disguise self, 233
+disintegrate, 233
+dispel evil and good, 233
+dispel magic, 234
+dissonant whispers, 234
+divination ritual, 234
+divine favor, 234
+divine word, 234
+dominate beast, 234
+dominate monster, 235
+dominate person, 235
+drawmij's instant summons ritual, 235
+dream, 236
+druidcraft, 236
+earthquake, 236
+eldritch blast, 237
+elemental weapon, 237
+enhance ability, 237
+enlarge/reduce, 237
+ensnaring strike, 237
+entangle, 238
+enthrall, 238
+etherealness, 238
+evard's black tentacles, 238
+expeditious retreat, 238
+eyebite, 238
+fabricate, 239
+faerie fire, 239
+false life, 239
+fear, 239
+feather fall, 239
+feeblemind, 239
+feign death ritual, 240
+find familiar ritual, 240
+find steed, 240
+find the path, 240
+find traps, 241
+finger of death, 241
+fire bolt, 242
+fire shield, 242
+fire storm, 242
+fireball, 241
+flame blade, 242
+flame strike, 242
+flaming sphere, 242
+flesh to stone, 243
+fly, 243
+fog cloud, 243
+forbiddance ritual, 243
+forcecage, 243
+foresight, 244
+freedom of movement, 244
+friends, 244
+gaseous form, 244
+gate, 244
+geas, 244
+gentle repose ritual, 245
+giant insect, 245
+glibness, 245
+globe of invulnerability, 245
+glyph of warding, 245
+goodberry, 246
+grasping vines, 246
+grease, 246
+greater invisibility, 246
+greater restoration, 246
+guardians of faith, 246
+guards and wards, 248
+guidance, 248
+guiding bolt, 248
+gust of wind, 248
+hail of thorns, 249
+hallow, 249
+hallucinatory terrain, 249
+harm, 249
+haste, 250
+heal, 250
+healing word, 250
+heat metal, 250
+hellish rebuke, 250
+heroes' feast, 250
+heroism, 250
+hex, 251
+hold monster, 251
+hold person, 251
+holy aura, 251
+hunger of hadar, 251
+hunter's mark, 251
+hypnotic pattern, 252
+ice storm, 252
+identify ritual, 252
+illusory script ritual, 252
+imprisonment, 252
+incendiary cloud, 253
+inflict wounds, 253
+insect plague, 254
+invisibility, 254
+jump, 254
+knock, 254
+legend lore, 254
+leomund's secret chest, 254
+leomund's tiny hut ritual, 255
+lesser restoration, 255
+levitate, 255
+light, 255
+lightning arrow, 255
+lightning bolt, 255
+locate animals or plants ritual, 256
+locate creature, 256
+locate object, 256
+longstrider, 256
+mage armor, 256
+mage hand, 256
+magic circle, 256
+magic jar, 257
+magic missile, 257
+magic mouth ritual, 257
+magic weapon, 257
+major image, 258
+mass cure wounds, 258
+mass heal, 258
+mass healing ward, 258
+mass suggestion, 258
+maze, 258
+meld into stone ritual, 259
+melf's acid arrow, 259
+mending, 259
+message, 259
+meteor swarm, 259
+mind blank, 259
+minor illusion, 260
+mirage arcane, 260
+mirror image, 260
+mislead, 260
+misty step, 260
+modify memory, 261
+moonbeam, 261
+mordenkainen's faithful hound, 261
+mordenkainen's magnificent mansion, 261
+mordenkainen's private sanctum, 262
+mordenkainen's sword, 262
+move earth, 263
+nondetection, 263
+nystul's magic aura, 263
+otiluke's freezing sphere, 263
+otiluke's resilient sphere, 264
+otto's irresistible dance, 264
+pass without trace, 264
+passwall, 264
+phantasmal force, 264
+phantasmal killer, 265
+phantom steed ritual, 265
+planar ally, 265
+planar binding, 265
+plane shift, 266
+plant growth, 266
+poison spray, 266
+polymorph, 266
+power word heal, 266
+power word kill, 266
+power word stun, 267
+prayer of healing, 267
+prestidigitation, 267
+prismatic spray, 267
+prismatic wall, 267
+produce flame, 269
+programmed illusion, 269
+project image, 270
+protection from energy, 270
+protection from evil and good, 270
+protection from poison, 270
+purify food and drink ritual, 270
+raise dead, 270
+rary's telepathic bond ritual, 270
+ray of enfeeblement, 271
+ray of frost, 271
+ray of sickness, 271
+regenerate, 271
+reincarnate, 271
+remove curse, 271
+resistance, 272
+resurrection, 272
+reverse gravity, 272
+revivify, 272
+rope trick, 272
+sacred flame, 272
+sanctuary, 272
+scorching ray, 273
+scrying, 273
+searing flame, 274
+see invisibility, 274
+seeming, 274
+sending, 274
+sequester, 274
+shapechange, 274
+shatter, 275
+shield, 275
+shield of faith, 275
+shillelagh, 275
+shocking grasp, 275
+silence ritual, 275
+silent image, 276
+simulacrum, 276
+sleep, 276
+sleet storm, 276
+slow, 277
+spare the dying, 277
+speak with animals ritual, 277
+speak with dead, 277
+speak with plants, 277
+spider climb, 277
+spike growth, 277
+spirit guardians, 278
+spiritual weapon, 278
+staggering smite, 278
+stinking cloud, 278
+stone shape, 278
+stoneskin, 278
+storm of vengeance, 279
+suggestion, 279
+sunbeam, 279
+sunburst, 279
+swift quiver, 279
+symbol, 280
+tasha's hideous laughter, 280
+telekinesis, 280
+telepathy, 281
+teleport, 281
+teleportation circle, 282
+tenser's floating disk ritual, 282
+thaumaturgy, 282
+thorn whip, 282
+thunderous smite, 282
+thunderwave, 282
+time stop, 283
+tongues, 283
+transport via plants, 283
+tree stride, 283
+true polymorph, 283
+true resurrection, 284
+true seeing, 284
+true strike, 284
+tsunami, 284
+unseen servant ritual, 284
+vampiric touch, 285
+vicious mockery, 285
+wall of fire, 285
+wall of force, 285
+wall of ice, 285
+wall of stone, 287
+wall of thorns, 287
+warding bond, 287
+water breathing ritual, 287
+water walk ritual, 287
+web, 287
+weird, 288
+wind walk, 288
+wind wall, 288
+wish, 288
+witch bolt, 289
+word of recall, 289
+wrathful smite, 289
+zone of truth, 289

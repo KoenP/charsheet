@@ -5,11 +5,15 @@ import Html.Styled.Attributes exposing (..)
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra as D
 import Dict exposing (Dict)
+import Maybe exposing (Maybe)
 import Set exposing (Set)
 import Debug
 import Types exposing (..)
 
 id x = x
+
+applyIfPresent : Maybe a -> (a -> b -> b) -> b -> b
+applyIfPresent mx f = Maybe.withDefault id (Maybe.map f mx)
 
 simple :  (List (Attribute msg) -> List (Html msg) -> Html msg)
        -> String

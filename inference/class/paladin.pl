@@ -164,3 +164,17 @@ At 18th level, the range of this aura increases to 30 feet.".
 Whenever an enemy creature starts its turn in the bright light, the creature takes 10 radiant damage.
 In addition, for the duration, you have advantage on saving throws against spells cast by fiends or undead.
 Once you use this feature, you can't use it again until you finish a long rest.".
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+'divine sense'@=phb('84').
+'lay on hands'@=phb('84').
+'divine smite'@=phb('85').
+'divine health'@=phb('85').
+'aura of protection'@=phb('85').
+'aura of courage'@=phb('85').
+'improved divine smite'@=phb('85').
+'cleansing touch'@=phb('85').
+aura_of_devotion(_)@=phb('86').
+'purity of spirit'@=phb('86').
+'holy nimbus'@=phb('86').

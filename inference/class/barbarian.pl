@@ -119,3 +119,18 @@ frenzy ?= "Starting when you choose this path at 3rd level, you can go into a fr
 If the creature succeeds on its saving throw, you can't use this feature on that creature again for 24 hours. ".
 
 retaliation ?= "Starting at 14th level, when you take damage from a creature that is within 5 feet of you, you can use your reaction to make a melee weapon attack against that creature.".
+
+rage(_)@=phb('48').
+'reckless attack'@=phb('48').
+'danger sense'@=phb('48').
+'fast movement'@=phb('49').
+'feral instinct'@=phb('49').
+brutal_critical(_)@=phb('49').
+'relentless rage'@=phb('49').
+'persistent rage'@=phb('49').
+'indomitable might'@=phb('49').
+'primal champion'@=phb('49').
+frenzy@=phb('49').
+'mindless rage'@=phb('49').
+'intimidating presence'@=phb('49-50').
+retaliation@=phb('50').

@@ -208,3 +208,14 @@ If the beast has died within the last hour, you can use your action to touch it 
 
 **Maul**. Melee Weapon Attack: ~w to hit, reach 5 ft., one target. Hit: 1d8 + ~w slashing damage.",
         [AC,HP,ProfBon,ToHit,DamageBonus]).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+'primeval awareness'@=phb('92').
+'hide in plain sight'@=phb('92').
+vanish@=phb('92').
+'feral senses'@=phb('92').
+'foe slayer'@=phb('92').
+'exceptional training'@=phb('93').
+'bestial fury'@=phb('93').
+'share spells'@=phb('93').

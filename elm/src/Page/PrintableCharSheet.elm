@@ -16,7 +16,7 @@ import Platform.Cmd as Cmd
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Types.Ability exposing (..)
-import Util exposing (simple, formatModifier)
+import Util exposing (simple, formatModifier, applyIfPresent)
 import Decoder.CharacterSheet exposing (sheetDec)
 
 load : CharId -> Cmd Msg
@@ -217,9 +217,19 @@ viewNotableTraitCategory : NotableTraitCategory -> List (Html Msg)
 viewNotableTraitCategory { category, traits } =
   [ h3 [] [ text category ]
   , ul []
-    <| List.map (li [] << List.singleton << text << .name )
+    <| List.map (li [] << viewTrait)
     <| traits
   ]
+
+viewTrait : Trait -> List (Html Msg)
+viewTrait { name, ref } =
+  applyIfPresent ref (\refVal html -> html
+                        ++ [ sub
+                             [css [Css.fontSize (Css.pt 5.5), Css.fontWeight Css.bold]]
+                             [text (String.concat [" ", refVal])]
+                           ]
+                     )
+    [text name]
   
 viewOtherProficiencies :  List String -> List String -> List String -> List Tool -> List Resistance
                        -> List (Html Msg)

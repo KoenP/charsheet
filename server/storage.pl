@@ -30,7 +30,7 @@ with_new_character(CharName, Cont) :-
     \+ exists_file(Path),
     snapshot(
         (initialize_new_character(CharName),
-         user_dir_path(DirPath),
+         character_dir_path(DirPath),
          make_directory_path(DirPath),
          (rewrite_character_file(Path), call(Cont)))).
 
@@ -70,7 +70,6 @@ withdraw_character_fact(CharName, Fact) :-
 resolve_ineligible_choices(CharId) :-
     abolish_private_tables,
     findall(Origin-Id, problem(not_eligible(Origin, Id, _)), ChoicesToUndo),
-    abolish_private_tables,
     forall(member(Origin-Id, ChoicesToUndo), retractall(choice(Origin, Id, _))),
     (ChoicesToUndo \= [] -> resolve_ineligible_choices(CharId) ; true).
 
@@ -80,7 +79,7 @@ record_character_fact(CharName, Fact) :-
 
 list_characters(Names) :-
     hashed_user_name(UserNameHash),
-    format(string(Pattern), 'storage/~w/*.pl', [UserNameHash]),
+    format(string(Pattern), 'storage/~w/characters/*.pl', [UserNameHash]),
     expand_file_name(Pattern, FilePaths),
     findall(Name,
             (member(Path, FilePaths), character_file_peek_name(Path, Name)),
@@ -96,6 +95,7 @@ character_file_peek_name(Path, Name) :-
     ground(Name).
 
 load_character_file(Path) :-
+    abolish_private_tables,
     open(Path, read, In),
     repeat,
     read_term(In, Term, []),
@@ -119,10 +119,25 @@ append_to_character_file(Path, Fact) :-
     close(Out).
 
 character_file_path(CharName, Path) :-
-    user_dir_path(DirPath),
+    character_dir_path(DirPath),
     hash_name(CharName, CharNameHash),
     format(string(Path), '~w/~w.pl', [DirPath, CharNameHash]).
+
+character_dir_path(Path) :-
+    user_dir_path(UserPath),
+    format(string(Path), '~w/characters', [UserPath]).
 
 user_dir_path(Path) :-
     hashed_user_name(UserNameHash),
     format(string(Path), 'storage/~w', [UserNameHash]).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% For easy testing and debugging.
+
+:- op(1200, xfx, ::).
+
+(CharName :: Goal) :-
+    hash_name(koen, UserNameHash),
+    hash_name(CharName, CharNameHash),
+    format(string(Path), 'storage/~w/characters/~w.pl', [UserNameHash, CharNameHash]),
+    snapshot((load_character_file(Path), call(Goal))).

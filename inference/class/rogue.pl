@@ -169,3 +169,16 @@ elusive ?= "Beginning at 18th level, you are so evasive that attackers rarely ga
 'versatile trickster' ?= "At 13th level, you gain the ability to distract targets with your Mage Hand. As a bonus action on your turn, you can designate a creature within 5 feet of the spectral hand created by the spell. Doing so gives you advantage on attack rolls against that creature until the end of the turn.".
 
 'spell thief' ?= "At 17th level, you gain the ability to magically steal the knowledge of how to cast a spell from another spellcaster. Immediately after a creature casts a spell that targets you or includes you in its area of effect, you can use your reaction to force the creature to make a saving throw with its spellcasting ability modifier. The DC equals your spell save DC. On a failed save, you negate the spell's effect against you, and you steal the knowledge of the spell if it is at least 1st level and of a level you can cast (it doesn't need to be a wizard spell). For the next 8 hours, you know the spell and can cast it using your spell slots. The creature can't cast that spell until the 8 hours have passed. Once you use this feature, you can't use it again until you finish a long rest.".
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+sneak_attack(_)@=phb('96').
+'cunning action'@=phb('96').
+'reliable talent'@=phb('96').
+'slippery mind'@=phb('96').
+elusive@=phb('96').
+'stroke of luck'@=phb('96').
+'mage hand legerdemain'@=phb('98').
+'magical ambush'@=phb('98').
+'versatile trickster'@=phb('98').
+'spell thief'@=phb('98').
