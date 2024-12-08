@@ -282,7 +282,8 @@ spell_json_dict(BaseOrigin,
                   resources: ResourcesJson,
                   rolls: Rolls,
                   aoe: Aoe,
-                  bonuses: Bonuses
+                  bonuses: Bonuses,
+                  ref: Ref
                  }) :-
     ((atom(BaseOrigin), Origin =.. [BaseOrigin,_]) ; Origin = BaseOrigin),
     known_spell(Origin, _Ability, _, ResourcesVal, Ritual, Name),
@@ -306,7 +307,8 @@ spell_json_dict(BaseOrigin,
     known_spell_saving_throw_or_null(Origin, Name, DC, DCAbi),
     known_spell_dice_formula_or_null(Origin, Name, Rolls),
     known_spell_aoe_or_null(Origin, Name, Aoe),
-    findall(Bonus, spell_bonus_json(Origin, Name, Bonus), Bonuses).
+    findall(Bonus, spell_bonus_json(Origin, Name, Bonus), Bonuses),
+    default_on_fail(null, ([Ref]>>((Name @= RefVal), fmt(format_term(RefVal), Ref))), Ref).
 
 known_spell_saving_throw_or_null(Origin, Name, DC, Abi) :-
     known_spell_saving_throw(Origin, Name, DC, Abi),
