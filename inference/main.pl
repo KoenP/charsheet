@@ -2,7 +2,7 @@
 :- use_module(library(yall)).
 :- use_module(library(pairs)).
 
-%:- doc_server(4000).
+:- doc_server(4000).
 :- set_prolog_flag(toplevel_print_anon, false).
 :- portray_text(true).
 
@@ -63,6 +63,7 @@
 %:- [character_file].
 :- [sheet_json].
 :- [grants].
+:- [data/humanoid_race].
 :- [test].
 
 %! meta_todo(Source, Todo)

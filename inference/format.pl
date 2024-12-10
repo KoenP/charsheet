@@ -1,4 +1,5 @@
 :- multifile custom_format//1.
+:- multifile special_plural//1.
 
 fmt(Spec, Out) :-
     phrase(Spec, Phrase),
@@ -172,3 +173,7 @@ seq_atom(Atom) --> {atom_chars(Atom, Chars)}, seq(Chars).
     
 maybe(_) --> [].
 maybe(X) --> [X].
+
+to_plural(Noun)   --> special_plural(Noun), {!}.
+to_plural(Noun)   --> {atom(Noun)}, format_atom(Noun), ['s'].
+to_plural(GiveUp) --> [GiveUp].

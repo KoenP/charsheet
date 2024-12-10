@@ -12,7 +12,8 @@ character_definition_predicates(
       base_ability/2 ,
       gain_level/3   ,
       choice/3       ,
-      has/1     ]).
+      has/1
+    ]).
 
 %! write_character_file
 %

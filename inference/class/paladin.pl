@@ -167,14 +167,14 @@ Once you use this feature, you can't use it again until you finish a long rest."
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-'divine sense'@=phb('84').
-'lay on hands'@=phb('84').
-'divine smite'@=phb('85').
-'divine health'@=phb('85').
-'aura of protection'@=phb('85').
-'aura of courage'@=phb('85').
-'improved divine smite'@=phb('85').
-'cleansing touch'@=phb('85').
-aura_of_devotion(_)@=phb('86').
-'purity of spirit'@=phb('86').
-'holy nimbus'@=phb('86').
+'divine sense'@=srd('84').
+'lay on hands'@=srd('84').
+'divine smite'@=srd('85').
+'divine health'@=srd('85').
+'aura of protection'@=srd('85').
+'aura of courage'@=srd('85').
+'improved divine smite'@=srd('85').
+'cleansing touch'@=srd('85').
+aura_of_devotion(_)@=srd('86').
+'purity of spirit'@=srd('86').
+'holy nimbus'@=srd('86').

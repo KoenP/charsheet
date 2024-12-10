@@ -224,8 +224,6 @@ trait_source(druid(spores) >: 14, 'fungal body').
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-'no metal armor' ?= "Druids will not wear armor or use shields made of metal.".
 language(druidic) ?= "You know Druidic, the secret language of druids. You can speak the language and use it to leave hidden messages. You and others who know this language automatically spot such a message. Others spot the message's presence with a successful DC 15 Wisdom (Perception) check but can't decipher it without magic.".
 
 wild_shape(_) ?= "Starting at 2nd level, you can use your action to magically assume the shape of a beast that you have seen before. You can use this feature twice. You regain expended uses when you finish a short or long rest.
@@ -291,10 +289,11 @@ While the cube of spores persists, you can’t use your Halo of Spores reaction.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-wild_shape(_)@=phb('66-67').
-'beast spells'@=phb('67').
-archdruid@=phb('67-68').
-natural_recovery(_)@=phb('68').
-'nature\'s ward'@=phb('69').
-'nature\'s sanctuary'@=phb('69').
+language(druidic)@=srd(66).
+wild_shape(_)@=srd('66-67').
+'beast spells'@=srd('67').
+archdruid@=srd('67-68').
+natural_recovery(_)@=srd('68').
+'nature\'s ward'@=srd('69').
+'nature\'s sanctuary'@=srd('69').
 circle_spells(spores)@=phb('68').

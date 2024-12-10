@@ -132,10 +132,6 @@ heal_roll_max(heal(Formula), heal(NewFormula)) :-
     map_matching_subterms(roll_max, Formula, MaxedRolls),
     simplify_dice_sum(MaxedRolls, NewFormula).
 
-'disciple of life' ?= "Starting at 1st level, your healing spells are more effective. Whenever you use a spell of 1st level or higher to restore hit points to a creature, the creature regains additional hit points equal to 2 + the spell's level.".
-'blessed healer' ?= "Beginning at 6th level, the healing spells you cast on others heal you as well. When you cast a spell of 1st level or higher that restores hit points to a creature other than you, you regain hit points equal to 2 + the spell's level.".
-'divine strike' ?= "At 8th level, you gain the ability to infuse your weapon strikes with divine energy. Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 radiant damage to the target. When you reach 14th level, the extra damage increases to 2d8.".
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Knowledge domain.
@@ -196,12 +192,23 @@ destroy_undead(_) ?= "Starting at 5th level, when an undead fails its saving thr
 
 divine_intervention(_) ?= "Beginning at 10th level, you can call on your deity to intervene on your behalf when your need is great. Imploring your deity's aid requires you to use your action. Describe the assistance you seek, and roll percentile dice. If you roll a number equal to or lower than your cleric level, your deity intervenes. The GM chooses the nature of the intervention; the effect of any cleric spell or cleric domain spell would be appropriate. If your deity intervenes, you can't use this feature again for 7 days. Otherwise, you can use it again after you finish a long rest. At 20th level, your call for intervention succeeds automatically, no roll required.".
 
+'disciple of life' ?= "Starting at 1st level, your healing spells are more effective. Whenever you use a spell of 1st level or higher to restore hit points to a creature, the creature regains additional hit points equal to 2 + the spell's level.".
+
+'blessed healer' ?= "Beginning at 6th level, the healing spells you cast on others heal you as well. When you cast a spell of 1st level or higher that restores hit points to a creature other than you, you regain hit points equal to 2 + the spell's level.".
+
+'divine strike' ?= "At 8th level, you gain the ability to infuse your weapon strikes with divine energy. Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 radiant damage to the target. When you reach 14th level, the extra damage increases to 2d8.".
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-divine_intervention(_)@=phb('59').
-'disciple of life'@=phb('60').
-'blessed healer'@=phb('60').
-divine_strike(_)@=phb(null).
-'supreme healing'@=phb('60').
+'channel divinity (cleric)' @= srd('164').
+channel_divinity('turn undead') @= srd('59').
+channel_divinity('read thoughts') @= srd('59-60').
+destroy_undead(_) @= srd('59').
+
+divine_intervention(_)@=srd('59').
+'disciple of life'@=srd('60').
+'blessed healer'@=srd('60').
+divine_strike(_)@=srd(null).
+'supreme healing'@=srd('60').
 'blessings of knowledge'@=phb('59').
 

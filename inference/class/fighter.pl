@@ -53,7 +53,7 @@ res(indomitable, N) :-
 % MARTIAL ARCHETYPES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Champion
+% Champion (SRD)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subclass_option(fighter, champion).
 
@@ -175,13 +175,13 @@ At 10th level, you learn how to make your weapon strikes undercut a creature's r
 
 'improved war magic' ?= "Starting at 18th level, when you use your action to cast a spell, you can make one weapon attack as a bonus action.".
 
-second_wind(_)@=phb('72').
-'action surge'@=phb('72').
-indomitable@=phb('72').
-'improved critical'@=phb('72').
-'remarkable athlete'@=phb('72').
-'superior critical'@=phb('73').
-survivor(_)@=phb('73').
+second_wind(_)@=srd('72').
+'action surge'@=srd('72').
+indomitable@=srd('72').
+'improved critical'@=srd('72').
+'remarkable athlete'@=srd('72').
+'superior critical'@=srd('73').
+survivor(_)@=srd('73').
 'weapon bond'@=phb('75').
 'war magic'@=phb('75').
 'eldritch strike'@=phb('75').

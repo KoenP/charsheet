@@ -142,18 +142,18 @@ If you reduce the damage to 0, you can catch the missile if it is small enough f
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-martial_arts(_)@=phb('78').
-ki(_,_)@=phb('78').
-unarmored_movement(_)@=phb('78').
-deflect_missiles(_)@=phb('78').
-slow_fall(_)@=phb('78').
-'ki-empowered strikes'@=phb('79').
-'stillness of mind'@=phb('79').
-'purity of body'@=phb('79').
-'tongue of the sun and moon'@=phb('79').
-'diamond soul'@=phb('79').
-'perfect self'@=phb('79').
-'open hand technique'@=phb('79').
-wholeness_of_body(_)@=phb('79-80').
-tranquility(_)@=phb('80').
-'quivering palm'@=phb('80').
+martial_arts(_)@=srd('78').
+ki(_,_)@=srd('78').
+unarmored_movement(_)@=srd('78').
+deflect_missiles(_)@=srd('78').
+slow_fall(_)@=srd('78').
+'ki-empowered strikes'@=srd('79').
+'stillness of mind'@=srd('79').
+'purity of body'@=srd('79').
+'tongue of the sun and moon'@=srd('79').
+'diamond soul'@=srd('79').
+'perfect self'@=srd('79').
+'open hand technique'@=srd('79').
+wholeness_of_body(_)@=srd('79-80').
+tranquility(_)@=srd('80').
+'quivering palm'@=srd('80').

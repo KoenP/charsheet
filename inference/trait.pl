@@ -4,7 +4,8 @@
        trait_options/4,
        trait_options_source/4,
        traits_from_source/2,
-       choice_member_to_trait/3.
+       choice_member_to_trait/3,
+       trait_from_accumulated_choices/3.
 
 % :- table trait/2 as incremental.
 
@@ -145,3 +146,54 @@ trait_from_level_reached(Level, Origin, Trait) :-
     trait(Origin, Trait),
     Origin \= choice(_,_),
     origin_level(Origin, Level).
+
+
+%! trait_from_accumulated_choices(?Origins, ?Id, ?Spec)
+%
+%  Some character features (for example, the ranger's "natural
+%  explorer" feature) allow the user to select additional options at
+%  later levels.
+%  However, there is only one description for the entire feature, as
+%  opposed to a description per option.
+%  Consequently, we want to generate one card for the whole feature,
+%  with the title containing the options chosen by the user (for
+%  example, "Natural Explorer (Arctic, Grassland)").
+%
+%  `trait_from_accumulated_choices(Origins, Id, Spec)`
+%  generates an `options(Origin, Id, Spec)` for each
+%  `Origin` in `Origins` such that `call(Origin)` is true.
+%  The resulting choices are then accumulated into a trait.
+%  For example, if the user picked `arctic` and `mountains`
+%  for the `'natural explorer'` trait, the resulting trait will be
+%  `trait(ranger >: 1, [arctic, mountains])`.
+trait_from_accumulated_choices(_,_,_) :- false.
+
+% Generate options.
+options_source(Origin, Id, Spec) :-
+    trait_from_accumulated_choices(Origins, Id, Spec),
+    member(Origin, Origins).
+
+% Don't allow repeated choices.
+hide_base_option(Origin, Id, Choice) :-
+    trait_from_accumulated_choices(Origins, Id, _),
+    member(Origin, Origins),
+    member(ChoiceOrigin, Origins),
+    choice(ChoiceOrigin, Id, Choice).
+
+% Generate the trait if at least one choice has been made.
+trait_source(FirstOrigin, Trait) :-
+    trait_from_accumulated_choices(Origins, Id, _),
+    Origins = [FirstOrigin | _],
+    findall(Choice, (member(Origin,Origins), choice(Origin, Id, Choice)), Choices),
+    Choices = [_|_],
+    flatten(Choices, FlatChoices),
+    Trait =.. [Id, FlatChoices].
+
+% Custom doc lookup rule (ignoring the selected option,
+% as the doc is identical for all options).
+lookup_option_doc(Origin, Id, _, Doc) :-
+    trait_from_accumulated_choices(Origins, Id, _),
+    member(Origin, Origins),
+    DocTm =.. [Id, _],
+    (DocTm ?= Doc),
+    !.

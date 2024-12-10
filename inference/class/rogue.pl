@@ -172,12 +172,13 @@ elusive ?= "Beginning at 18th level, you are so evasive that attackers rarely ga
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-sneak_attack(_)@=phb('96').
-'cunning action'@=phb('96').
-'reliable talent'@=phb('96').
-'slippery mind'@=phb('96').
-elusive@=phb('96').
-'stroke of luck'@=phb('96').
+sneak_attack(_)@=srd('96').
+'cunning action'@=srd('96').
+'reliable talent'@=srd('96').
+'slippery mind'@=srd('96').
+elusive@=srd('96').
+'stroke of luck'@=srd('96').
+
 'mage hand legerdemain'@=phb('98').
 'magical ambush'@=phb('98').
 'versatile trickster'@=phb('98').

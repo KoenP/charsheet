@@ -133,10 +133,10 @@ The extra hit points increase when you reach certain levels in this class: to 1d
 
 'superior inspiration' ?= "At 20th level, when you roll initiative and have no uses of Bardic Inspiration left, you regain one use.".
 
-'bardic inspiration'@=phb('53-54').
-'jack of all trades'@=phb('54').
-song_of_rest(1 d _)@=phb('54').
-'font of inspiration'@=phb('54').
-countercharm@=phb('54').
-'superior inspiration'@=phb('54').
-'peerless skill'@=phb('55').
+'bardic inspiration'@=srd('53-54').
+'jack of all trades'@=srd('54').
+song_of_rest(1 d _)@=srd('54').
+'font of inspiration'@=srd('54').
+countercharm@=srd('54').
+'superior inspiration'@=srd('54').
+'peerless skill'@=srd('55').

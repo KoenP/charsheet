@@ -127,6 +127,9 @@ from_(N, Pred, Choices) :-
 unique_from(N, Pred, Choices) :-
     from(N, Pred, Choices),
     (is_set(Choices) ; N = 1).
+
+custom_format(N unique_from Spec) -->
+    [N], [" unique "], to_plural(Spec).
          
 %! from_list(?List, ?Elem)
 %  Like member/2, but with the arguments flipped.

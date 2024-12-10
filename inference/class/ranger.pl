@@ -25,24 +25,26 @@ traits_from_source(ranger >: 1,
                     armor(light), armor(medium), armor(shield)]).
 trait_options_source(ranger >: 1, skill, wrap(skill),
                      class_skill(ranger)).
-trait_options_source(ranger >: 1, 'favored enemy',
-                     wrap(favored_enemy),
-                     from_list(
-                         [aberration, beast, celestial, construct,
-                          dragon, elemental, fey, fiend, giant,
-                          monstrosity, ooze, plant, undead
-                         ])).
-meta_todo('favored enemy', "select two races as favored enemies").
+
+trait_from_accumulated_choices(
+    [ranger >: 1, ranger >: 6, ranger >: 14],
+    'favored enemy',
+    nonhumanoid or (2 unique_from 'humanoid race')).
+
+nonhumanoid(Type) :-
+    member(Type, [aberration, beast, celestial, construct,
+                  dragon, elemental, fey, fiend, giant,
+                  monstrosity, ooze, plant, undead]).
+
+% Natural explorer.
+trait_from_accumulated_choices(
+    [ranger >: 1, ranger >: 6, ranger >: 10],
+    'natural explorer',
+    from_list([arctic, coast, desert, forest, grassland, mountain, swamp])).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Features from leveling up.
-trait_options_source(ranger >: L, 'natural explorer',
-                     wrap(natural_explorer),
-                     from_list(
-                         [arctic, coast, desert, forest, grassland,
-                          mountain, swamp
-                         ])) :-
-    member(L, [1, 6, 10]).
 trait_options_source(ranger >: 2, 'fighting style',
                      wrap(fighting_style),
                      from_list([archery, defense, dueling,
@@ -125,21 +127,21 @@ trait_source(ranger('beast master') >: 15, 'share spells').
 % DESCRIPTIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-favored_enemy(_) ?= "Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy.
+'favored enemy'(_) ?= "Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy.
 Choose a type of favored enemy: aberrations, beasts, celestials, constructs, dragons, elementals, fey, fiends, giants, monstrosities, oozes, plants, or undead. Alternatively, you can select two races of humanoid (such as gnolls and orcs) as favored enemies.
 You have advantage on Wisdom (Survival) checks to track your favored enemies, as well as on Intelligence checks to recall information about them.
 When you gain this feature, you also learn one language of your choice that is spoken by your favored enemies, if they speak one at all.
 You choose one additional favored enemy, as well as an associated language, at 6th and 14th level. As you gain levels, your choices should reflect the types of monsters you have encountered on your adventures.".
 
-natural_explorer(_) ?= "You are particularly familiar with one type of natural environment and are adept at traveling and surviving in such regions. Choose one type of favored terrain: arctic, coast, desert, forest, grassland, mountain, or swamp. When you make an Intelligence or Wisdom check related to your favored terrain, your proficiency bonus is doubled if you are using a skill that you're proficient in.
+'natural explorer'(_) ?= "You are particularly familiar with one type of natural environment and are adept at traveling and surviving in such regions. Choose one type of favored terrain: arctic, coast, desert, forest, grassland, mountain, or swamp. When you make an Intelligence or Wisdom check related to your favored terrain, your proficiency bonus is doubled if you are using a skill that you're proficient in.
 While traveling for an hour or more in your favored terrain, you gain the following benefits:
 
-    Difficult terrain doesn't slow your group's travel.
-    Your group can't become lost except by magical means.
-    Even when you are engaged in another activity while traveling (such as foraging, navigating, or tracking), you remain alert to danger.
-    If you are traveling alone, you can move stealthily at a normal pace.
-    When you forage, you find twice as much food as you normally would.
-    While tracking other creatures, you also learn their exact number, their sizes, and how long ago they passed through the area.
+- Difficult terrain doesn't slow your group's travel.
+- Your group can't become lost except by magical means.
+- Even when you are engaged in another activity while traveling (such as foraging, navigating, or tracking), you remain alert to danger.
+- If you are traveling alone, you can move stealthily at a normal pace.
+- When you forage, you find twice as much food as you normally would.
+- While tracking other creatures, you also learn their exact number, their sizes, and how long ago they passed through the area.
 
 You choose additional favored terrain types at 6th and 10th level.".
 
@@ -181,6 +183,7 @@ you are incapacitated, the beast can take any action of its choice, not just Dod
 
 If the beast has died within the last hour, you can use your action to touch it and expend a spell slot of 1st level or higher. The beast returns to life after 1 minute with all its hit points restored. When you finish a long rest, you can summon a different primal beast. The new beast appears in an unoccupied space within 5 feet of you, and you choose its stat block and appearance. If you already have a beast from this feature, it vanishes when the new beast appears. The beast also vanishes if you die.".
 
+% Fully custom description for beast of the land (TODO, other beasts).
 (beast_of_the_land(ac(AC), hp(HP), pb(ProfBon), to_hit(ToHit), damage(1 d 8 + DamageBonus)) ?= Str) :-
     format(
         string(Str),
@@ -211,11 +214,21 @@ If the beast has died within the last hour, you can use your action to touch it 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-'primeval awareness'@=phb('92').
-'hide in plain sight'@=phb('92').
-vanish@=phb('92').
-'feral senses'@=phb('92').
-'foe slayer'@=phb('92').
+'natural explorer'(_) @= srd('91').
+'favored enemy'(_) @= srd('91').
+'primeval awareness'@=srd('92').
+'land\'s stride' @= srd('92').
+'hide in plain sight'@=srd('92').
+vanish@=srd('92').
+'feral senses'@=srd('92').
+'foe slayer'@=srd('92').
+
+hunters_prey(_) @= srd('93').
+defensive_tactics(_) @= srd('93').
+multiattack(_) @= srd('93').
+superior_hunters_defense(_) @= srd('93').
+
 'exceptional training'@=phb('93').
 'bestial fury'@=phb('93').
 'share spells'@=phb('93').
+
