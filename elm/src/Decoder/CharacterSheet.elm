@@ -131,6 +131,7 @@ spellDec =
     |> D.andMap (D.field "prepared" preparedDec)
     |> D.andMap (D.field "range" D.string)
     |> D.andMap (D.field "resources" (D.list prologTermDec))
+    |> D.andMap (D.field "ref" (D.nullable D.string))
     |> D.andMap (D.field "ritual" ritualDec)
     |> D.andMap (D.field "school" D.string)
     |> D.andMap (D.field "shortdesc" (D.nullable (D.list D.string)))

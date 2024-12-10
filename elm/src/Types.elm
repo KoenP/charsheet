@@ -111,6 +111,7 @@ type alias Spell =
   , prepared : AlwaysPrepared
   , range : String
   , resources : List PrologTerm
+  , ref : Maybe String
   , ritual : Ritual
   , school : String
   , shortdesc : Maybe (List String)

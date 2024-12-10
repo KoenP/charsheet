@@ -203,7 +203,7 @@ trait_json_dict(TraitVal, _{name: Trait, desc: Desc, ref: Ref}) :-
     %\+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_), skill(_)]),
     fmt(format_trait(TraitVal), Trait),
     default_on_fail(null, ?=(TraitVal), Desc),
-    default_on_fail(null, ([Ref]>>((TraitVal @= RefVal), fmt(format_term(RefVal), Ref))), Ref).
+    default_on_fail(null, ([Ref]>>((TraitVal @= RefVal), fmt(format_ref(RefVal), Ref))), Ref).
 
 % Attack table.
 attack_table_json_dict(List) :-
@@ -308,7 +308,7 @@ spell_json_dict(BaseOrigin,
     known_spell_dice_formula_or_null(Origin, Name, Rolls),
     known_spell_aoe_or_null(Origin, Name, Aoe),
     findall(Bonus, spell_bonus_json(Origin, Name, Bonus), Bonuses),
-    default_on_fail(null, ([Ref]>>((Name @= RefVal), fmt(format_term(RefVal), Ref))), Ref).
+    default_on_fail(null, ([Ref]>>((spell_property(Name, ref, RefVal)), fmt(format_ref(RefVal), Ref))), Ref).
 
 known_spell_saving_throw_or_null(Origin, Name, DC, Abi) :-
     known_spell_saving_throw(Origin, Name, DC, Abi),

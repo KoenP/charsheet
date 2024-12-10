@@ -146,6 +146,9 @@ format_effect(E) -->
 format_area(N ft Shape) --> [N], [" ft "], [Shape].
 format_area(N by M ft Shape) --> [N], ["×"], [M], [" ft "], [Shape].
 
+format_ref(srd(Page)) --> format_term(phb(Page)).
+format_ref(T) --> format_term(T).
+
 % Replace underscores by spaces.
 us_to_space([ X |Xs]) --> {X \= '_'}, [X], us_to_space(Xs).
 us_to_space(['_'|Xs]) --> [' '], us_to_space(Xs).

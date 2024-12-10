@@ -54,8 +54,7 @@ viewNotableTrait : CardsPageOptions -> String -> Trait -> Html Msg
 viewNotableTrait options category { name, desc, ref } =
   div
     [ Attr.css cardStyle ]
-    [ div [ Attr.css cardTitleSectionStyle ]
-        [ div [ Attr.css cardTitleStyle ] (viewCardTitle name ref) ]
+    [ div [ Attr.css cardTitleSectionStyle ] (viewCardTitle name ref)
     , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
     , div [ Attr.css (descriptionStyle
                         (Maybe.withDefault 0
@@ -81,11 +80,11 @@ viewCardTitle : String -> Maybe String -> List (Html Msg)
 viewCardTitle title mref =
   applyIfPresent
     mref
-    (\ref html -> html ++ [sub
-                             [Attr.css [Css.fontSize (Css.pt 5.5), Css.fontWeight Css.bold]]
-                             [text ref]
+    (\ref html -> html ++ [ div
+                              [ Attr.css cardSubtitleStyle ]
+                              [ text ref ]
                           ])
-    [text title]
+    [ div [ Attr.css cardTitleStyle ] [ text title ] ]
 
 viewSpellcastingSection :  CardsPageOptions -> Dict Origin (Set SpellName) -> SpellcastingSection
                         -> List (Html Msg)
@@ -108,7 +107,10 @@ viewSpellCard origin spell =
   div [ Attr.css cardStyle ] <|
     [ div [ Attr.css cardTitleSectionStyle ]
         [ div [ Attr.css cardTitleStyle ] [text spell.name]
-        , div [ Attr.css cardSubtitleStyle ] [ text (cardSubtitle spell) ]
+        , div [ Attr.css cardSubtitleStyle ]
+              [ text (cardSubtitle spell
+                        ++ Maybe.withDefault ""
+                            (Maybe.map (\r -> " · " ++ r) spell.ref)) ]
         ]
     , div [ Attr.css cardBoxesSectionStyle ]
         [ cardBox "action-cost" spell.casting_time
