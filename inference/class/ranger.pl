@@ -90,27 +90,28 @@ options(ranger >: L, replacing(spell, Name),
 % Hunter
 subclass_option(ranger, hunter).
 trait_options_source(ranger(hunter) >: 3, 'hunter\'s prey',
-                     wrap(hunters_prey),
+                     wrap('hunter\'s prey'),
                      from_list(['colossus slayer', 'giant killer',
                                 'horde breaker'])).
 trait_options_source(ranger(hunter) >: 7, 'defensive tactics',
-                     wrap(defensive_tactics),
-                     ['escape the horde', 'multiattack defense', 'steel will']).
+                     wrap('defensive tactics'),
+                     from_list(['escape the horde', 'multiattack defense', 'steel will'])).
 trait_options_source(ranger(hunter) >: 11, multiattack,
-                     wrap(multiattack), [volley, 'whirlwind attack']).
+                     wrap(multiattack), from_list([volley, 'whirlwind attack'])).
 trait_options_source(ranger(hunter) >: 15,
-                     'hunter\s superior defense',
-                     wrap(hunters_superior_defense),
-                     [evasion, 'stand against the tide', 'uncanny dodge']).
+                     'superior hunter\'s defense',
+                     wrap('superior hunter\'s defense'),
+                     from_list([evasion, 'stand against the tide', 'uncanny dodge'])).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Beast master
 meta_todo(ranger('beast master'), "currently only have primal companion").
 subclass_option(ranger, 'beast master').
 
+meta_todo(ranger('beast master'), "Primal companion: other beasts").
 trait_source(ranger('beast master') >: 3, 'primal companion').
 trait_source(trait('primal companion'),
-             beast_of_the_land(ac(AC), hp(HP), pb(ProfBon), to_hit(ToHit),
+             'beast of the land'(ac(AC), hp(HP), pb(ProfBon), to_hit(ToHit),
                                damage(1 d 8 + DamageBonus))) :-
     proficiency_bonus(ProfBon),
     class_level(ranger:RangerLevel),
@@ -161,20 +162,20 @@ vanish ?= "Starting at 14th level, you can use the Hide action as a bonus action
 
 'foe slayer' ?= "At 20th level, you become an unparalleled hunter of your enemies. Once on each of your turns, you can add your Wisdom modifier to the attack roll or the damage roll of an attack you make against one of your favored enemies. You can choose to use this feature before or after the roll, but before any effects of the roll are applied.".
 
-hunters_prey('colossus slayer') ?= "Your tenacity can wear down the most potent foes. When you hit a creature with a weapon attack, the creature takes an extra 1d8 damage if it's below its hit point maximum. You can deal this extra damage only once per turn.".
-hunters_prey('giant killer') ?= " When a Large or larger creature within 5 feet of you hits or misses you with an attack, you can use your reaction to attack that creature immediately after its attack, provided that you can see the creature.".
-hunters_prey('horde breaker') ?= " Once on each of your turns when you make a weapon attack, you can make another attack with the same weapon against a different creature that is within 5 feet of the original target and within range of your weapon. ".
+'hunter\'s prey'('colossus slayer') ?= "Your tenacity can wear down the most potent foes. When you hit a creature with a weapon attack, the creature takes an extra 1d8 damage if it's below its hit point maximum. You can deal this extra damage only once per turn.".
+'hunter\'s prey'('giant killer') ?= " When a Large or larger creature within 5 feet of you hits or misses you with an attack, you can use your reaction to attack that creature immediately after its attack, provided that you can see the creature.".
+'hunter\'s prey'('horde breaker') ?= " Once on each of your turns when you make a weapon attack, you can make another attack with the same weapon against a different creature that is within 5 feet of the original target and within range of your weapon. ".
 
-defensive_tactics('escape the horde') ?= "Opportunity attacks against you are made with disadvantage.".
-defensive_tactics('multiattack defense') ?= "When a creature hits you with an attack, you gain a +4 bonus to AC against all subsequent attacks made by that creature for the rest of the turn.".
-defensive_tactics('steel will') ?= "You have advantage on saving throws against being frightened. ".
+'defensive tactics'('escape the horde') ?= "Opportunity attacks against you are made with disadvantage.".
+'defensive tactics'('multiattack defense') ?= "When a creature hits you with an attack, you gain a +4 bonus to AC against all subsequent attacks made by that creature for the rest of the turn.".
+'defensive tactics'('steel will') ?= "You have advantage on saving throws against being frightened. ".
 
 multiattack('volley') ?= "You can use your action to make a ranged attack against any number of creatures within 10 feet of a point you can see within your weapon's range. You must have ammunition for each target, as normal, and you make a separate attack roll for each target.".
 multiattack('whirlwind attack') ?= "You can use your action to make a melee attack against any number of creatures within 5 feet of you, with a separate attack roll for each target. ".
 
-superior_hunters_defense('evasion') ?= "When you are subjected to an effect, such as a red dragon's fiery breath or a lightning bolt spell, that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail.".
-superior_hunters_defense('stand against the tide') ?= "When a hostile creature misses you with a melee attack, you can use your reaction to force that creature to repeat the same attack against another creature (other than itself) of your choice.".
-superior_hunters_defense('uncanny dodge') ?= "When an attacker that you can see hits you with an attack, you can use your reaction to halve the attack's damage against you.".
+'superior hunter\'s defense'('evasion') ?= "When you are subjected to an effect, such as a red dragon's fiery breath or a lightning bolt spell, that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on the saving throw, and only half damage if you fail.".
+'superior hunter\'s defense'('stand against the tide') ?= "When a hostile creature misses you with a melee attack, you can use your reaction to force that creature to repeat the same attack against another creature (other than itself) of your choice.".
+'superior hunter\'s defense'('uncanny dodge') ?= "When an attacker that you can see hits you with an attack, you can use your reaction to halve the attack's damage against you.".
 
 'primal companion' ?= "You magically summon a primal beast, which draws strength from your bond with nature. The beast is friendly to you and your companions and obeys your commands. Choose its stat block-Beast of the Land, Beast of the Sea, or Beast of the Sky-which uses your proficiency bonus (PB) in several places. You also determine the kind of animal the beast is, choosing a kind appropriate for the stat block. Whatever kind you choose, the beast bears primal markings, indicating its mystical origin.
 
@@ -184,7 +185,7 @@ you are incapacitated, the beast can take any action of its choice, not just Dod
 If the beast has died within the last hour, you can use your action to touch it and expend a spell slot of 1st level or higher. The beast returns to life after 1 minute with all its hit points restored. When you finish a long rest, you can summon a different primal beast. The new beast appears in an unoccupied space within 5 feet of you, and you choose its stat block and appearance. If you already have a beast from this feature, it vanishes when the new beast appears. The beast also vanishes if you die.".
 
 % Fully custom description for beast of the land (TODO, other beasts).
-(beast_of_the_land(ac(AC), hp(HP), pb(ProfBon), to_hit(ToHit), damage(1 d 8 + DamageBonus)) ?= Str) :-
+('beast of the land'(ac(AC), hp(HP), pb(ProfBon), to_hit(ToHit), damage(1 d 8 + DamageBonus)) ?= Str) :-
     format(
         string(Str),
 "Medium beast
@@ -223,10 +224,10 @@ vanish@=srd('92').
 'feral senses'@=srd('92').
 'foe slayer'@=srd('92').
 
-hunters_prey(_) @= srd('93').
-defensive_tactics(_) @= srd('93').
+'hunter\'s prey'(_) @= srd('93').
+'defensive tactics'(_) @= srd('93').
 multiattack(_) @= srd('93').
-superior_hunters_defense(_) @= srd('93').
+'superior hunter\s defense'(_) @= srd('93').
 
 'exceptional training'@=phb('93').
 'bestial fury'@=phb('93').

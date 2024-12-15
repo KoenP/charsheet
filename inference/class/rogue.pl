@@ -54,6 +54,16 @@ trait_source(rogue >: 18, elusive).
 trait_source(rogue >: 20, 'stroke of luck').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Roguish archetype: thief.
+subclass_option(rogue, thief).
+
+trait_source(rogue(thief) >: 3, 'fast hands').
+trait_source(rogue(thief) >: 3, 'second-story work').
+trait_source(rogue(thief) >: 9, 'supreme sneak').
+trait_source(rogue(thief) >: 13, 'use magic device').
+trait_source(rogue(thief) >: 17, 'thief\'s reflexes').
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Roguish archetype: arcane trickster.
 subclass_option(rogue, 'arcane trickster').
 caster(rogue, 1/3) :- subclass(rogue('arcane trickster')).
@@ -162,6 +172,17 @@ elusive ?= "Beginning at 18th level, you are so evasive that attackers rarely ga
 
 'stroke of luck' ?= "At 20th level, you have an uncanny knack for succeeding when you need to. If your attack misses a target within range, you can turn the miss into a hit. Alternatively, if you fail an ability check, you can treat the d20 roll as a 20.Once you use this feature, you can't use it again until you finish a short or long rest.".
 
+'fast hands' ?= "Starting at 3rd level, you can use the bonus action granted by your Cunning Action to make a Dexterity (Sleight of Hand) check, use your thieves' tools to disarm a trap or open a lock, or take the Use an Object action.".
+
+'second-story work' ?= "When you choose this archetype at 3rd level, you gain the ability to climb faster than normal; climbing no longer costs you extra movement.
+In addition, when you make a running jump, the distance you cover increases by a number of feet equal to your Dexterity modifier.".
+
+'supreme sneak' ?= "Starting at 9th level, you have advantage on a Dexterity (Stealth) check if you move no more than half your speed on the same turn.".
+
+'use magic device' ?= "By 13th level, you have learned enough about the workings of magic that you can improvise the use of items even when they are not intended for you. You ignore all class, race, and level requirements on the use of magic items. ".
+
+'thief\'s reflexes' ?= "When you reach 17th level, you have become adept at laying ambushes and quickly escaping danger. You can take two turns during the first round of any combat. You take your first turn at your normal initiative and your second turn at your initiative minus 10. You can't use this feature when you are surprised.".
+
 'mage hand legerdemain' ?= "Starting at 3rd level, when you cast Mage Hand, you can make the spectral hand invisible, and you can perform the following additional tasks with it >:  You can stow one object the hand is holding in a container worn or carried by another creature. You can retrieve an object in a container worn or carried by another creature. You can use thieves' tools to pick locks and disarm traps at range. You can perform one of these tasks without being noticed by a creature if you succeed on a Dexterity (Sleight of Hand check contested by the creature's Wisdom (Perception) check. In addition, you can use the bonus action granted by your Cunning Action to control the hand.".
 
 'magical ambush' ?= "Starting at 9th level, if you are hidden from a creature when you cast a spell on it, the creature has disadvantage on any saving throw it makes against the spell this turn.".
@@ -178,6 +199,12 @@ sneak_attack(_)@=srd('96').
 'slippery mind'@=srd('96').
 elusive@=srd('96').
 'stroke of luck'@=srd('96').
+
+'fast hands'@=srd('97').
+'second-story work'@=srd('97').
+'supreme sneak'@=srd('97').
+'use magic device'@=srd('97').
+'thief\'s reflexes'@=srd('97').
 
 'mage hand legerdemain'@=phb('98').
 'magical ambush'@=phb('98').

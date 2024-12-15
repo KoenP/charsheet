@@ -154,6 +154,8 @@ trait_source(sorcerer('draconic bloodline') >: 18, 'draconic presence').
 % DESCRIPTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+'sorcerous restoration' ?= "At 20th level, you regain 4 expended sorcery points whenever you finish a short rest.".
+
 metamagic('careful spell') ?=
   "When you cast a spell that forces other creatures to make a saving throw, you can protect some of those creatures from the spell's full force. To do so, you spend 1 sorcery point and choose a number of those creatures up to your Charisma modifier (minimum of one creature). A chosen creature automatically succeeds on its saving throw against the spell.".
 metamagic('distant spell') ?=
@@ -175,7 +177,8 @@ metamagic('twinned spell') ?=
 To be eligible, a spell must be incapable of targeting more than one creature at the spell's current level. For example, magic missile and scorching ray aren't eligible, but ray of frost and chromatic orb are. ".
 
 'font of magic' ?= "At 2nd level, you tap into a deep wellspring of magic within yourself. This wellspring is represented by sorcery points, which allow you to create a variety of magical effects.
-Sorcery Points
+
+### Sorcery Points
 
 You have 2 sorcery points, and you gain more as you reach higher levels, as shown in the Sorcery Points column of the Sorcerer table. You can never have more sorcery points than shown on the table for your level. You regain all spent sorcery points when you finish a long rest.
 Flexible Casting
@@ -183,12 +186,14 @@ Flexible Casting
 You can use your sorcery points to gain additional spell slots, or sacrifice spell slots to gain additional sorcery points. You learn other ways to use your sorcery points as you reach higher levels.
 Creating Spell Slots. You can transform unexpended sorcery points into one spell slot as a bonus action on your turn. The Creating Spell Slots table shows the cost of creating a spell slot of a given level. You can create spell slots no higher in level than 5th.
 Any spell slot you create with this feature vanishes when you finish a long rest.
-Spell Points
-1st      2
-2nd      3
-3rd      5
-4th      6
-5th      7
+
+| Slot level | Sorcery points |
+|------------|----------------|
+| 1st        | 2              |
+| 2nd        | 3              |
+| 3rd        | 5              |
+| 4th        | 6              |
+| 5th        | 7              |
 
 Converting a Spell Slot to Sorcery Points. As a bonus action on your turn, you can expend one spell slot and gain a number of sorcery points equal to the slot's level.".
 
@@ -211,8 +216,9 @@ You can't manifest your wings while wearing armor unless the armor is made to ac
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-'font of magic'@=phb('101').
-'draconic resilience'@=phb('102').
-elemental_affinity(_)@=phb('103').
-'dragon wings'@=phb('103').
-'draconic presence'@=phb('102').
+'font of magic'@=srd('101').
+'sorcerous restoration'@=srd('101').
+'draconic resilience'@=srd('102').
+elemental_affinity(_)@=srd('103').
+'dragon wings'@=srd('103').
+'draconic presence'@=srd('102').

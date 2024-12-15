@@ -29,14 +29,14 @@ trait_options_source(^wizard, skill, wrap(skill),
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 trait_source(wizard >: 1, spellbook).
 trait_source(wizard >: 1, spellcasting_focus(arcane)).
-trait_source(wizard >: 1, ritual_casting(wizard)).
-trait_source(wizard >: 1, arcane_recovery(N)) :-
+trait_source(wizard >: 1, 'ritual casting'(wizard)).
+trait_source(wizard >: 1, 'arcane recovery'(N)) :-
     class_level(wizard:L),
     N is ceil(L/2).
 res('arcane recovery', N) :-
-    trait(arcane_recovery(N)).
+    trait('arcane recovery'(N)).
 restore_res('long rest', 'arcane recovery', 'full restore') :-
-    trait(arcane_recovery(_)).
+    trait('arcane recovery'(_)).
 
 % Spell mastery.
 spell_mastery_candidate(Level, Spell) :-
@@ -173,9 +173,9 @@ trait_source(wizard(divination) >: 14, 'greater portent').
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ritual_casting(wizard) ?= "You can cast a wizard spell as a ritual if that spell has the ritual tag and you have the spell in your spellbook. You don't need to have the spell prepared.".
+'ritual casting'(wizard) ?= "You can cast a wizard spell as a ritual if that spell has the ritual tag and you have the spell in your spellbook. You don't need to have the spell prepared.".
 
-arcane_recovery(_) ?= "You have learned to regain some of your magical energy by studying your spellbook. Once per day when you finish a short rest, you can choose expended spell slots to recover. The spell slots can have a combined level that is equal to or less than half your wizard level (rounded up), and none of the slots can be 6th level or higher.
+'arcane recovery'(_) ?= "You have learned to regain some of your magical energy by studying your spellbook. Once per day when you finish a short rest, you can choose expended spell slots to recover. The spell slots can have a combined level that is equal to or less than half your wizard level (rounded up), and none of the slots can be 6th level or higher.
 For example, if you're a 4th-level wizard, you can recover up to two levels worth of spell slots. You can recover either a 2nd-level spell slot or two 1st-level spell slots.".
 
 spellbook ?= "The spells that you add to your spellbook as you gain levels reflect the arcane research you conduct on your own, as well as intellectual breakthroughs you have had about the nature of the multiverse. You might find other spells during your adventures. You could discover a spell recorded on a scroll in an evil wizard's chest, for example, or in a dusty tome in an ancient library.
@@ -207,13 +207,16 @@ The first time you do so, you suffer no adverse effect. If you use this feature 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-spellbook@=phb('114').
-arcane_recovery(_)@=phb('115').
-'evocation savant'@=phb('117').
-'sculpt spells'@=phb('117').
-'potent cantrip'@=phb('117').
-'empowered evocation'@=phb('117').
-overchannel@=phb('118').
+spellbook@=srd('114').
+'ritual casting'(wizard)@=srd('114').
+'arcane recovery'(_)@=srd('115').
+
+'evocation savant'@=srd('117').
+'sculpt spells'@=srd('117').
+'potent cantrip'@=srd('117').
+'empowered evocation'@=srd('117').
+overchannel@=srd('118').
+
 'divination savant'@=phb('116').
 portent@=phb('116').
 'expert divination'@=phb('116').

@@ -70,9 +70,6 @@ hide_known_class_spells(warlock >: _, spell, warlock).
 options_source(warlock >: 1, cantrip, 2 unique_from class_cantrip(warlock)).
 options_source(warlock >: L, cantrip, class_cantrip(warlock)) :-
     L = 4; L = 10.
-%hide_base_option(warlock >: _, cantrip, Cantrip) :-
-%    known_spell(Origin, Cantrip),
-%    Origin =.. [warlock|_].
 
 % Learn proper spells.
 options_source(warlock >: 1, spell,
@@ -80,9 +77,6 @@ options_source(warlock >: 1, spell,
 options_source(warlock >: L, spell,
                learnable_proper_spell(warlock)) :-
     between(2, 9, L) ; member(L, [11,13,15,17,19]).
-%hide_base_option(warlock >: _, spell, Spell) :-
-%    known_spell(Origin, Spell),
-%    Origin =.. [warlock|_].
 
 % Replace proper spells.
 options_source(warlock >: L, replace(spell),
@@ -92,21 +86,18 @@ options_source(warlock >: L, replace(spell),
 options(warlock >: L, replacing(spell, Name),
         learnable_proper_spell(warlock)) :-
     choice_member(warlock >: L, replace(spell), Name).
-%hide_base_option(warlock >: _, replacing(spell,Old), Spell) :-
-%    (known_spell(Origin, Spell),Origin =.. [warlock|_])
-%    ; Spell = Old.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Pact boons.
 trait_options_source(warlock >: 3,
                      'pact boon',
-                     wrap(pact_boon),
+                     wrap('pact boon'),
                      from_list([chain, blade, tome])).
 
 % Pact of the chain.
 known_spell(warlock, cha, always, [], only, 'find familiar') :-
-    trait(pact_boon(chain)).
-bonus_source(trait(pact_boon(chain)),
+    trait('pact boon'(chain)).
+bonus_source(trait('pact boon'(chain)),
              modify_spell(warlock, 'find familiar', Goal)) :-
     ExtraForms = "extra warlock forms: imp, pseudodragon, quasit, sprite",
     Goal = modify_spell_field(effects, [Es1,Es2]>>append(Es1,[ExtraForms],Es2)).
@@ -119,9 +110,9 @@ custom_format(modify_spell_field(effects, [_,_]>>append(_, ["extra warlock forms
 % TODO
 
 % Pact of the tome.
-options_source(trait(pact_boon(tome)), 'book of shadows', 3 unique_from cantrip).
+options_source(trait('pact boon'(tome)), 'book of shadows', 3 unique_from cantrip).
 known_spell(warlock, cha, always, [], no, Cantrip) :-
-    choice_member(trait(pact_boon(tome)), 'book of shadows', Cantrip).
+    choice_member(trait('pact boon'(tome)), 'book of shadows', Cantrip).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Eldritch invocations.
@@ -133,95 +124,95 @@ replaceable_class_options(warlock:L, 'eldritch invocation',
     member(L, [5,7,9,12,15,18]).
 replace_at_class_level(warlock:L, 'eldritch invocation', 1, eldritch_invocation_option) :-
     between(3, 20, L).
-custom_format(eldritch_invocation(Inv)) -->
+custom_format('eldritch invocation'(Inv)) -->
     ['eldritch invocation: '], [Inv].
 
 % Shorthands.
-eldinv(Inv) :- trait(eldritch_invocation(Inv)).
+eldinv(Inv) :- trait('eldritch invocation'(Inv)).
 
 :- discontiguous eldinv_deletes_spell_component/2.
-delete_component_source(trait(eldritch_invocation(Inv)),
-                        warlock:eldritch_invocation(Inv),
+delete_component_source(trait('eldritch invocation'(Inv)),
+                        warlock:'eldritch invocation'(Inv),
                         _,
                         Component) :-
     eldinv_deletes_spell_component(Inv, Component).
 
 :- discontiguous eldinv_spell/3.
-known_spell(warlock(eldritch_invocation(Inv)),
+known_spell(warlock('eldritch invocation'(Inv)),
             cha, always, Resources, Ritual, Name) :-
     eldinv_spell(Inv, Resources, Name),
-    trait(eldritch_invocation(Inv)),
+    trait('eldritch invocation'(Inv)),
     spell_property(Name, ritual, Ritual).
 
 
 % Actually add the selected invocations as traits.
-trait_source(warlock >: Level, eldritch_invocation(Inv)) :-
+trait_source(warlock >: Level, 'eldritch invocation'(Inv)) :-
     find_choice_level(warlock:Level, 'eldritch invocation', Inv).
 
 % Need a manual rule to lookup the doc for each invocation.
 lookup_option_doc(warlock >: _, 'eldritch invocation', Inv, Doc) :-
-    (eldritch_invocation(Inv) ?= Doc).
+    ('eldritch invocation'(Inv) ?= Doc).
 
 % Eldritch invocation options and effects.
 
 eldritch_invocation_option('agonizing blast') :-
     known_spell(warlock, 'eldritch blast').
-bonus_source(trait(eldritch_invocation('agonizing blast')),
+bonus_source(trait('eldritch invocation'('agonizing blast')),
              modify_spell(_, 'eldritch blast', increase_all_spell_damage_rolls(Mod))) :-
     ability_mod(cha, Mod).
 
 eldritch_invocation_option('armor of shadows').
-known_spell(warlock(eldritch_invocation('armor of shadows')), cha, always, [], no, 'mage armor') :-
-    trait(eldritch_invocation('armor of shadows')).
-custom_format(known_spell(warlock(eldritch_invocation('armor of shadows')), 'mage armor')) -->
+known_spell(warlock('eldritch invocation'('armor of shadows')), cha, always, [], no, 'mage armor') :-
+    trait('eldritch invocation'('armor of shadows')).
+custom_format(known_spell(warlock('eldritch invocation'('armor of shadows')), 'mage armor')) -->
     ['armor of shadows'].
 
 
 eldritch_invocation_option('ascendant step') :-
     warlock >: 9.
-known_spell(warlock(eldritch_invocation('ascendant step')),
+known_spell(warlock('eldritch invocation'('ascendant step')),
             cha, always, [], no, levitate) :-
-    trait(eldritch_invocation('ascendant step')).
+    trait('eldritch invocation'('ascendant step')).
 
 eldritch_invocation_option('beast speech').
-known_spell(warlock(eldritch_invocation('beast speech')),
+known_spell(warlock('eldritch invocation'('beast speech')),
             cha, always, [], no, 'speak with animals') :-
-    trait(eldritch_invocation('beast speech')).
+    trait('eldritch invocation'('beast speech')).
 
 eldritch_invocation_option('beguiling influence').
-traits_from_source(trait(eldritch_invocation('beguiling influence')),
+traits_from_source(trait('eldritch invocation'('beguiling influence')),
                    [skill(deception), skill(persuasion)]).
 
 eldritch_invocation_option('bewitching whispers') :-
     warlock >: 7.
-known_spell(warlock(eldritch_invocation('bewitching whispers')),
+known_spell(warlock('eldritch invocation'('bewitching whispers')),
             cha, always, ['pact slot', per_rest(long, 1)], no, compulsion) :-
-    trait(eldritch_invocation('bewitching whispers')).
+    trait('eldritch invocation'('bewitching whispers')).
 
 eldritch_invocation_option('book of ancient secrets') :-
-    trait(pact_boon(tome)).
-options_source(trait(eldritch_invocation('book of ancient secrets')),
+    trait('pact boon'(tome)).
+options_source(trait('eldritch invocation'('book of ancient secrets')),
                ritual,
                2 unique_from ancient_secret_ritual).
 ancient_secret_ritual(Ritual) :-
     spell_data(Ritual, Data),
     Data.level = 1,
     Data.ritual = yes. 
-known_spell(warlock(eldritch_invocation('book of ancient secrets')),
+known_spell(warlock('eldritch invocation'('book of ancient secrets')),
             cha, always, [], only, Ritual) :-
-    choice_member(trait(eldritch_invocation('book of ancient secrets')),
+    choice_member(trait('eldritch invocation'('book of ancient secrets')),
                   ritual,
                   Ritual).
 % TODO: add transcribe option
 
 eldritch_invocation_option('chains of carceri') :-
     warlock >: 15,
-    trait(pact_boon(chain)).
-known_spell(warlock(eldritch_invocation('chains of carceri')),
+    trait('pact boon'(chain)).
+known_spell(warlock('eldritch invocation'('chains of carceri')),
             cha, always, [], no, 'hold monster') :-
-    trait(eldritch_invocation('chains of carceri')).
-bonus_source(trait(eldritch_invocation('chains of carceri')),
-             modify_spell(warlock:eldritch_invocation('chains of carceri'),
+    trait('eldritch invocation'('chains of carceri')).
+bonus_source(trait('eldritch invocation'('chains of carceri')),
+             modify_spell(warlock:'eldritch invocation'('chains of carceri'),
                           'hold monster',
                           chains_of_carceri_spell_mod)).
 chains_of_carceri_spell_mod(OldData, NewData) :-
@@ -234,23 +225,23 @@ chains_of_carceri_spell_mod(OldData, NewData) :-
                      .put(effects, NewEffects).
 
 eldritch_invocation_option('devil\'s sight').
-trait_source(trait(eldritch_invocation('devil\'s sight')),
+trait_source(trait('eldritch invocation'('devil\'s sight')),
              sense('devil\'s sight')).
 
 eldritch_invocation_option('dreadful word') :-
     warlock >: 7.
-known_spell(warlock(eldritch_invocation('dreadful word')),
+known_spell(warlock('eldritch invocation'('dreadful word')),
             cha, always, ['pact slot', per_rest(long,1)], no, confusion) :-
     eldinv('dreadful word').
 
 eldritch_invocation_option('eldritch sight').
-known_spell(warlock(eldritch_invocation('eldritch sight')),
+known_spell(warlock('eldritch invocation'('eldritch sight')),
             cha, always, [], no, 'detect magic') :-
     eldinv('eldritch sight').
 
 eldritch_invocation_option('eldritch spear') :-
     known_spell(warlock, 'eldritch blast').
-bonus_source(trait(eldritch_invocation('eldritch spear')),
+bonus_source(trait('eldritch invocation'('eldritch spear')),
              modify_spell(_, 'eldritch blast',
                           modify_spell_field(range, const(feet(300))))).
 
@@ -260,17 +251,17 @@ eldritch_invocation_option('gaze of two minds').
 
 eldritch_invocation_option(lifedrinker) :-
     warlock >: 12,
-    trait(pact_boon(blade)).
+    trait('pact boon'(blade)).
 % TODO: lifedrinker damage bonus
 
 eldritch_invocation_option('mask of many faces').
-known_spell(warlock(eldritch_invocation('mask of many faces')),
+known_spell(warlock('eldritch invocation'('mask of many faces')),
             cha, always, [], no, 'disguise self') :-
     eldinv('mask of many faces').
 
 eldritch_invocation_option('master of myriad forms') :-
     warlock >: 15.
-known_spell(warlock(eldritch_invocation('master of myriad forms')),
+known_spell(warlock('eldritch invocation'('master of myriad forms')),
             cha, always, [], no, 'alter self') :-
     eldinv('master of myriad forms').
 
@@ -280,7 +271,7 @@ eldinv_spell('minions of chaos', ['pact slot', per_rest(long,1)], 'conjure eleme
 
 eldritch_invocation_option('mire the mind') :-
     warlock >: 5.
-known_spell(warlock(eldritch_invocation('mire the mind')),
+known_spell(warlock('eldritch invocation'('mire the mind')),
             cha, always, ['pact slot', per_rest(long,1)], no, slow) :-
     eldinv('mire the mind').
 
@@ -298,7 +289,7 @@ eldinv_deletes_spell_component('otherworldly leap', m(_)).
 
 eldritch_invocation_option('repelling blast') :-
     known_spell(_, 'eldritch blast').
-bonus_source(trait(eldritch_invocation('repelling blast')),
+bonus_source(trait('eldritch invocation'('repelling blast')),
              modify_spell(_, 'eldritch blast', Goal)) :-
     Goal = modify_spell_field(effects, apply_repelling_blast).
 apply_repelling_blast(OldEffects, NewEffects) :-
@@ -322,7 +313,7 @@ eldinv_spell('thief of five fates', ['pact slot', per_rest(long,1)], bane).
 
 eldritch_invocation_option('thirsting blade') :-
     warlock >: 5,
-    trait(pact_boon(blade)).
+    trait('pact boon'(blade)).
 % TODO
 
 eldritch_invocation_option('visions of distant realms') :-
@@ -330,7 +321,7 @@ eldritch_invocation_option('visions of distant realms') :-
 eldinv_spell('visions of distant realms', [], 'arcane eye').
 
 eldritch_invocation_option('voice of the chain master') :-
-    trait(pact_boon(chain)).
+    trait('pact boon'(chain)).
 % TODO
 
 eldritch_invocation_option('whispers of the grave') :-
@@ -339,7 +330,7 @@ eldinv_spell('whispers of the grave', [], 'speak with dead').
 
 eldritch_invocation_option('witch sight') :-
     warlock >: 15.
-trait_source(trait(eldritch_invocation('witch sight')), sense('witch sight')).
+trait_source(trait('eldritch invocation'('witch sight')), sense('witch sight')).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Patron: the fiend.
@@ -362,15 +353,15 @@ trait_source(warlock(fiend) >: 14, 'hurl through hell').
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-pact_boon(chain) ?= "You learn the find familiar spell and can cast it as a ritual. The spell doesn't count against your number of spells known.
+'pact boon'(chain) ?= "You learn the find familiar spell and can cast it as a ritual. The spell doesn't count against your number of spells known.
 When you cast the spell, you can choose one of the normal forms for your familiar or one of the following special forms: imp, pseudodragon, quasit, or sprite.
 Additionally, when you take the Attack action, you can forgo one of your own attacks to allow your familiar to make one attack of its own with its reaction.".
 
-pact_boon(blade) ?= "You can use your action to create a pact weapon in your empty hand. You can choose the form that this melee weapon takes each time you create it. You are proficient with it while you wield it. This weapon counts as magical for the purpose of overcoming resistance and immunity to nonmagical attacks and damage.
+'pact boon'(blade) ?= "You can use your action to create a pact weapon in your empty hand. You can choose the form that this melee weapon takes each time you create it. You are proficient with it while you wield it. This weapon counts as magical for the purpose of overcoming resistance and immunity to nonmagical attacks and damage.
 Your pact weapon disappears if it is more than 5 feet away from you for 1 minute or more. It also disappears if you use this feature again, if you dismiss the weapon (no action required), or if you die.
 You can transform one magic weapon into your pact weapon by performing a special ritual while you hold the weapon. You perform the ritual over the course of 1 hour, which can be done during a short rest. You can then dismiss the weapon, shunting it into an extradimensional space, and it appears whenever you create your pact weapon thereafter. You can't affect an artifact or a sentient weapon in this way. The weapon ceases being your pact weapon if you die, if you perform the 1-hour ritual on a different weapon, or if you use a 1-hour ritual to break your bond to it. The weapon appears at your feet if it is in the extradimensional space when the bond breaks.".
 
-pact_boon(tome) ?= "Your patron gives you a grimoire called a Book of Shadows. When you gain this feature, choose three cantrips from any class's spell list (the three needn't be from the same list). While the book is on your person, you can cast those cantrips at will. They don't count against your number of cantrips known. If they don't appear on the warlock spell list, they are nonetheless warlock spells for you.
+'pact boon'(tome) ?= "Your patron gives you a grimoire called a Book of Shadows. When you gain this feature, choose three cantrips from any class's spell list (the three needn't be from the same list). While the book is on your person, you can cast those cantrips at will. They don't count against your number of cantrips known. If they don't appear on the warlock spell list, they are nonetheless warlock spells for you.
 If you lose your Book of Shadows, you can perform a 1-hour ceremony to receive a replacement from your patron. This ceremony can be performed during a short or long rest, and it destroys the previous book. The book turns to ash when you die.".
 
 'eldritch master' ?= "At 20th level, you can draw on your inner reserve of mystical power while entreating your patron to regain expended spell slots. You can spend 1 minute entreating your patron for aid to regain all your expended spell slots from your Pact Magic feature. Once you regain spell slots with this feature, you must finish a long rest before you can do so again.".
@@ -388,19 +379,19 @@ Once you use this feature, you can't use it again until you finish a long rest. 
 
 sense('devil\'s sight') ?= "You can see normally in darkness, both magical and nonmagical, to a distance of 120 feet.".
 
-eldritch_invocation('eyes of the rune keeper') ?= "You can read all writing.".
+'eldritch invocation'('eyes of the rune keeper') ?= "You can read all writing.".
 
-eldritch_invocation('gaze of two minds') ?= "You can use your action to touch a willing humanoid and perceive through its senses until the end of your next turn. As long as the creature is on the same plane of existence as you, you can use your action on subsequent turns to maintain this connection, extending the duration until the end of your next turn. While perceiving through the other creature's senses, you benefit from any special senses possessed by that creature, and you are blinded and deafened to your own surroundings.".
+'eldritch invocation'('gaze of two minds') ?= "You can use your action to touch a willing humanoid and perceive through its senses until the end of your next turn. As long as the creature is on the same plane of existence as you, you can use your action on subsequent turns to maintain this connection, extending the duration until the end of your next turn. While perceiving through the other creature's senses, you benefit from any special senses possessed by that creature, and you are blinded and deafened to your own surroundings.".
 
-(eldritch_invocation('witch sight') ?= Desc) :- (sense('witch sight') ?= Desc).
+('eldritch invocation'('witch sight') ?= Desc) :- (sense('witch sight') ?= Desc).
 sense('witch sight') ?= "You can see the true form of any shapechanger or creature concealed by illusion or transmutation magic while the creature is within 30 feet of you and within line of sight.".
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-'mystic arcanum'@=phb('108').
-'eldritch master'@=phb('108').
-'pact magic'@=phb('107').
-'dark one\'s blessing'@=phb('109').
-'dark one\'s own luck'@=phb('109').
-'fiendish resilience'@=phb('10').
-'hurl through hell'@=phb('109').
+'mystic arcanum'@=srd('108').
+'eldritch master'@=srd('108').
+'pact magic'@=srd('107').
+'dark one\'s blessing'@=srd('109').
+'dark one\'s own luck'@=srd('109').
+'fiendish resilience'@=srd('10').
+'hurl through hell'@=srd('109').
