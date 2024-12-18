@@ -22,9 +22,12 @@ bonus_source(trait('dwarven toughness'), 'max hp'+Lvl) :-
     level(Lvl).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-'dwarven toughness' ?= "Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.".
-
 'dwarven resilience' ?=
   "Advantage on saving throws against poison and resistance against poison damage".
 
 stonecunning ?= "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check, instead of your normal proficiency bonus.".
+
+'dwarven toughness' ?= "Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.".
+
+
+%forall((BaseRace = dwarf, (Race = BaseRace ; Race =.. [BaseRace, _]), trait_source(race(Race), Trait), (Trait ?= _), atom(Trait), fully_unwrap(Race, MostSpecificRace), find_phb_index(MostSpecificRace, Trait, Ix)), write_term(Trait @= phb(Ix), [nl=true,fullstop=true,quoted=true])).
