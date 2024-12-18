@@ -1,6 +1,17 @@
 % Player handbook index from https://github.com/copperdogma/dnd-phb-5e-index/blob/master/PHB%20Index%20Improved.json
 % Plus some janky automation.
 
+
+write_racial_trait_index(BaseRace) :-
+    forall(((Race = BaseRace ; Race =.. [BaseRace, _]),
+            trait_source(race(Race), Trait),
+            atom(Trait),
+            (Trait ?= _),
+            fully_unwrap(Race, MostSpecificRace),
+            find_phb_index(MostSpecificRace, Trait, Ix)
+           ),
+           write_term(Trait @= srd(Ix), [nl=true,fullstop=true,quoted=true])).
+
 write_class_trait_index(Class) :-
     forall((index_trait_by_class(Class, Trait, Pages),
             map_matching_subterms(override_variable(New), Trait, Simplified)),
@@ -12,6 +23,9 @@ override_variable(X, Y, X) :- var(Y).
 format_feature_and_category(Category, Item) -->
     seq(Item), " (", seq(Category), ")".
 
+find_phb_index(_, Feature, PagesAtom) :-
+    phb_index(Feature, Pages),
+    term_to_atom(Pages, PagesAtom).
 find_phb_index(Category, Feature, PagesAtom) :-
     phb_index(IndexAtom, Pages),
     atom_codes(IndexAtom, IndexCodes),

@@ -22,3 +22,7 @@ brave ?= "You have advantage on saving throws against being frightened.".
 'halfling nimbleness' ?= "You can move through the space of any creature that is of a size larger than yours.".
 
 'naturally stealthy' ?= "You can attempt to hide even when you are obscured only by a creature that is at least one size larger than you.".
+
+lucky@=srd('28').
+brave@=srd('28').
+'halfling nimbleness'@=srd('28').
