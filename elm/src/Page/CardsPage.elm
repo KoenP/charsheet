@@ -38,6 +38,8 @@ update msg model sheet = (model, Cmd.none)
 ----------------------------------------------------------------------
 view : CardsPageOptions -> CharacterSheet -> Dict Origin (Set SpellName) -> List (Html Msg)
 view options sheet preparedSpells =
+  button [ E.onClick (GotoCardSelectPage sheet) ] [text "select"]
+  ::
   (List.map (div [ Attr.css cardsStyle ])
    <| Util.chunks 8 
    <| List.concatMap (viewSpellcastingSection options preparedSpells) sheet.spellcasting_sections

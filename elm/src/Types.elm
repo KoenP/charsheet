@@ -230,6 +230,7 @@ extractChoicesList spec =
 type alias Model =
   { preparedSpells : Dict Origin (Set SpellName)
   , showOnlyPreparedSpells : Bool
+  , cardExclusionConfig : CardExclusionConfig
   , page : Page
   , focusedDropdownId : Maybe String
   , lastTick : Posix
@@ -242,6 +243,7 @@ type Page
   | PrintableCharSheetPage CharacterSheet
   | EditCharacterPage EditCharacterPageData
   | CardsPage CardsPageOptions CharacterSheet
+  | CardSelectPage CharacterSheet
   | EquipmentPage EquipmentPageData
 
 type alias EditCharacterPageData = 
@@ -300,6 +302,13 @@ type alias Equipment = List String
 --    , notes : String
 --    }
 
+type alias Category = String
+type alias CardExclusionConfig = 
+  { explicitlyExcludedTraits : Dict Category (Set String)
+  }
+emptyCardExclusionConfig : CardExclusionConfig
+emptyCardExclusionConfig = { explicitlyExcludedTraits = Dict.empty }
+
 ----------------------------------------------------------------------
 -- MSG
 type Msg
@@ -313,6 +322,7 @@ type Msg
   | GotoSheet
   | GotoLevelUp
   | GotoCardsPage CardsPageOptions
+  | GotoCardSelectPage CharacterSheet
   | GotoSelectCharacterPage
   | LevelUpAs String
   | SetEditCharacterPageDesc (Maybe (List String))
@@ -342,6 +352,7 @@ type HttpResponseMsg
   | GotCards CharacterSheet
   | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
   | GotEquipment (Result String Equipment)
+  | ToCardSelectionPage CharacterSheet -- TODO rename all of these to "ToXPage"
   -- | ChoiceRegistered
   -- | LeveledUp
   -- | UpdatedBaseAbilityScores

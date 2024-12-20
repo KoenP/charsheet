@@ -29,6 +29,7 @@ import Constants exposing (..)
 import Page.PrintableCharSheet as PSheet
 import Page.EditCharacter as Edit
 import Page.CardsPage as Cards
+import Page.CardSelectPage as CardSelectPage
 import Page.Equipment as Equipment
 import Request exposing (requestUrl)
 import Types exposing (..)
@@ -69,6 +70,7 @@ init : String -> (Model, Cmd Msg)
 init charId =
   ( { preparedSpells = Dict.empty
     , showOnlyPreparedSpells = False
+    , cardExclusionConfig = emptyCardExclusionConfig
     , page = Loading
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
@@ -113,6 +115,9 @@ update msg model =
         Just cachedSheet -> applyPage model (CardsPage options cachedSheet, Cmd.none)
         Nothing          -> applyPage model (Loading, Cards.load model.charId)
 
+    GotoCardSelectPage sheet ->
+      applyPage model (CardSelectPage sheet, Cmd.none)
+
     GotoSheet ->
       case model.sheetCache of
         Just cachedSheet -> applyPage model (PrintableCharSheetPage cachedSheet, Cmd.none)
@@ -147,6 +152,8 @@ update msg model =
           Edit.update msg model data
         CardsPage options data ->
           Cards.update msg model data
+        CardSelectPage data ->
+          CardSelectPage.update msg model
         EquipmentPage data ->
           Equipment.update msg model data
         Loading ->
@@ -273,6 +280,8 @@ view model =
               Cards.view options data model.preparedSpells
             EquipmentPage data ->
               Equipment.view data
+            CardSelectPage data ->
+              CardSelectPage.view model.cardExclusionConfig data
       ]
       
 type alias TabCfg = { name : String
