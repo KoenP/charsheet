@@ -86,6 +86,12 @@ guardM errMsg predDec valDec =
          (\bool ->
             if bool then D.succeed val else D.fail errMsg))
 
+guardList : Bool -> List a -> List a
+guardList b l = if b then l else []
+
+guardListLazy : Bool -> (() -> List a) -> List a
+guardListLazy b l = if b then l () else []
+
 formatModifier : Int -> String
 formatModifier mod =
   case compare mod 0 of

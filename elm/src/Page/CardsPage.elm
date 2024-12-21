@@ -1,4 +1,5 @@
 module Page.CardsPage exposing (..)
+-- TODO should be Page.Cards
 
 import Css exposing (Style, px, mm)
 import Css.Media
@@ -16,7 +17,7 @@ import String
 import Decoder.CharacterSheet exposing (sheetDec)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
-import Util exposing (simple, applyIfPresent)
+import Util exposing (simple, applyIfPresent, guardListLazy)
 
 load : CharId -> Cmd Msg
 load charId =
@@ -44,10 +45,17 @@ view exclusionConfig options sheet preparedSpells =
    <| Util.chunks 8 
    <| List.concatMap
         (viewSpellcastingSection exclusionConfig options preparedSpells)
-        sheet.spellcasting_sections
+        (guardListLazy exclusionConfig.showSpells
+           <| \() -> List.filter
+                     (\{origin} -> not (Set.member origin exclusionConfig.excludedCategories))
+                     sheet.spellcasting_sections)
       ++ List.concatMap
          (viewNotableTraitCategory options)
-         (excludeTraits exclusionConfig sheet.notable_traits)
+         (excludeTraits exclusionConfig <|
+            guardListLazy exclusionConfig.showTraits <|
+            \() -> List.filter
+                   (\{category} -> not (Set.member category exclusionConfig.excludedCategories))
+                   sheet.notable_traits)
   )
 
 viewNotableTraitCategory : CardsPageOptions -> NotableTraitCategory -> List (Html Msg)
@@ -105,7 +113,7 @@ viewSpellcastingSection exclusionConfig options preparedSpells section =
 -- TODO I'm not sure CardsPageOptions is still relevant
 shouldIncludeSpell : CardExclusionConfig -> CardsPageOptions -> Origin -> Set SpellName -> Spell -> Bool
 shouldIncludeSpell { explicitlyExcludedSpells } { showSpells } origin preparedSpells { name, prepared } =
-  not <| Set.member (origin,name) explicitlyExcludedSpells
+  not <| Set.member (origin, name) explicitlyExcludedSpells
   -- case showSpells of
   --   AllSpells -> True
   --   OnlyPreparedSpells -> prepared || Set.member name preparedSpells

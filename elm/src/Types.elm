@@ -307,11 +307,18 @@ type alias TraitName = String
 type alias CardExclusionConfig = 
   { explicitlyExcludedTraits : Set (Category, TraitName)
   , explicitlyExcludedSpells : Set (Origin, SpellName) -- TODO not sure if this 100% uniquely identifies a spell (maybe there's some weird stuff where you can have the same spell twice as warlock for example, once as a regular spell and once as an eldritch invocation)
+  , excludedCategories       : Set Category
+  , showSpells               : Bool
+  , showTraits               : Bool
   }
 emptyCardExclusionConfig : CardExclusionConfig
-emptyCardExclusionConfig = { explicitlyExcludedTraits = Set.empty
-                           , explicitlyExcludedSpells = Set.empty
-                           }
+emptyCardExclusionConfig =
+  { explicitlyExcludedTraits = Set.empty
+  , explicitlyExcludedSpells = Set.empty
+  , excludedCategories       = Set.empty
+  , showSpells               = True
+  , showTraits               = True
+  }
 
 ----------------------------------------------------------------------
 -- MSG
@@ -342,7 +349,7 @@ type Msg
   | UnequipItem String
   | Retract Retraction
   | AddItemInput String
-  | ModifyCardExclusionConfig (CardExclusionConfig -> CardExclusionConfig)
+  | SetCardExclusionConfig CardExclusionConfig
 
 type Retraction = RetractLevelUp Int
                 | RetractChoice { origin : String, id : String }
