@@ -36,14 +36,18 @@ update msg model sheet = (model, Cmd.none)
 ----------------------------------------------------------------------
 -- VIEW
 ----------------------------------------------------------------------
-view : CardsPageOptions -> CharacterSheet -> Dict Origin (Set SpellName) -> List (Html Msg)
-view options sheet preparedSpells =
+view : CardExclusionConfig -> CardsPageOptions -> CharacterSheet -> Dict Origin (Set SpellName) -> List (Html Msg)
+view exclusionConfig options sheet preparedSpells =
   button [ E.onClick (GotoCardSelectPage sheet) ] [text "select"]
   ::
   (List.map (div [ Attr.css cardsStyle ])
    <| Util.chunks 8 
-   <| List.concatMap (viewSpellcastingSection options preparedSpells) sheet.spellcasting_sections
-      ++ List.concatMap (viewNotableTraitCategory options) sheet.notable_traits
+   <| List.concatMap
+        (viewSpellcastingSection exclusionConfig options preparedSpells)
+        sheet.spellcasting_sections
+      ++ List.concatMap
+         (viewNotableTraitCategory options)
+         (excludeTraits exclusionConfig sheet.notable_traits)
   )
 
 viewNotableTraitCategory : CardsPageOptions -> NotableTraitCategory -> List (Html Msg)
@@ -88,21 +92,24 @@ viewCardTitle title mref =
                           ])
     [ div [ Attr.css cardTitleStyle ] [ text title ] ]
 
-viewSpellcastingSection :  CardsPageOptions -> Dict Origin (Set SpellName) -> SpellcastingSection
+viewSpellcastingSection :  CardExclusionConfig -> CardsPageOptions -> Dict Origin (Set SpellName)
+                        -> SpellcastingSection
                         -> List (Html Msg)
-viewSpellcastingSection options preparedSpells section =
+viewSpellcastingSection exclusionConfig options preparedSpells section =
   List.map (viewSpellCard section.origin)
     <| List.filter
-         (shouldIncludeSpell options
+         (shouldIncludeSpell exclusionConfig options section.origin
             (Maybe.withDefault Set.empty <| Dict.get section.origin preparedSpells))
     <| section.spells
 
-shouldIncludeSpell : CardsPageOptions -> Set SpellName -> Spell -> Bool
-shouldIncludeSpell { showSpells } preparedSpells { name, prepared } =
-  case showSpells of
-    AllSpells -> True
-    OnlyPreparedSpells -> prepared || Set.member name preparedSpells
-    NoSpells -> False
+-- TODO I'm not sure CardsPageOptions is still relevant
+shouldIncludeSpell : CardExclusionConfig -> CardsPageOptions -> Origin -> Set SpellName -> Spell -> Bool
+shouldIncludeSpell { explicitlyExcludedSpells } { showSpells } origin preparedSpells { name, prepared } =
+  not <| Set.member (origin,name) explicitlyExcludedSpells
+  -- case showSpells of
+  --   AllSpells -> True
+  --   OnlyPreparedSpells -> prepared || Set.member name preparedSpells
+  --   NoSpells -> False
 
 viewSpellCard : Origin -> Spell -> Html Msg
 viewSpellCard origin spell =
@@ -273,6 +280,19 @@ showComponent c =
     S   -> "S"
     M _ -> "M"
                   
+excludeTraits : CardExclusionConfig -> List NotableTraitCategory -> List NotableTraitCategory
+excludeTraits config categories =
+  List.map (excludeTraitsFromCategory config) categories
+
+excludeTraitsFromCategory : CardExclusionConfig -> NotableTraitCategory -> NotableTraitCategory
+excludeTraitsFromCategory config { category, traits } =
+  { category = category
+  , traits   = List.filter (not << isTraitExcluded config category) traits
+  }
+
+isTraitExcluded : CardExclusionConfig -> Category -> Trait -> Bool
+isTraitExcluded { explicitlyExcludedTraits } category { name } =
+  Set.member (category, name) explicitlyExcludedTraits
 
 ----------------------------------------------------------------------
 -- STYLE
