@@ -77,6 +77,9 @@ h_logout(Request) :-
 :- http_handler(root(api / character / CharId / sheet),
                 handle_with_char_snapshot(h_get_sheet, CharId),
                 [method(get)]).
+:- http_handler(root(api / character / CharId / prev_level_sheet),
+                handle_with_char_snapshot(h_get_prev_level_sheet, CharId),
+                [method(get)]).
 :- http_handler(root(api / character / CharId / options),
                 handle_with_char_snapshot(h_get_options, CharId),
                 [method(get)]).
@@ -120,6 +123,14 @@ h_create_character(Request) :-
     reply_json_dict(Name).
          
 h_get_sheet(_Request) :-
+    sheet_json_dict(Dict),
+    reply_json_dict(Dict).
+
+h_get_prev_level_sheet(_Request) :-
+    % Level down without saving.
+    level(CurLevel),
+    retractall(gain_level(CurLevel, _, _)),
+    resolve_ineligible_choices,
     sheet_json_dict(Dict),
     reply_json_dict(Dict).
 
@@ -172,7 +183,7 @@ h_post_gain_level(CharId, Request) :-
 h_post_retract_gain_level(CharId, Request) :-
     http_parameters(Request, [level(RetractedLevel, [integer])]),
     withdraw_gain_level(CharId, RetractedLevel),
-    resolve_ineligible_choices(CharId),
+    resolve_ineligible_choices,
     reply_json_dict("Success!").
 
 h_post_set_base_abilities(CharId, Request) :-

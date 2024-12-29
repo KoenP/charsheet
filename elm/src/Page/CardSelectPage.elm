@@ -5,14 +5,32 @@ import Css exposing (Style)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr
 import Html.Styled.Events as E
+import Http
 import List
 import Maybe
 import Set exposing (Set)
 import Tuple
 
+import Decoder.CharacterSheet exposing (sheetDec)
+import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Util exposing (..)
 
+----------------------------------------------------------------------
+-- INIT
+----------------------------------------------------------------------
+load : CharId -> CharacterSheet -> Cmd Msg
+load charId curSheet =
+  Http.get
+    { url = characterRequestUrl charId ["prev_level_sheet"] []
+    , expect = Http.expectJson
+               (mkHttpResponseMsg (GotPrevLevelSheet curSheet))
+               sheetDec
+    }
+
+----------------------------------------------------------------------
+-- UPDATE
+----------------------------------------------------------------------
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -28,13 +46,22 @@ update msg model =
 ----------------------------------------------------------------------
 -- VIEW
 ----------------------------------------------------------------------
-view : CardExclusionConfig -> CharacterSheet -> List (Html Msg)
-view config sheet =
-  viewGlobalConfig config
-  ::
-  List.concatMap
-    (viewCategory config)
-    (mergeTraitAndSpellCategories sheet.notable_traits sheet.spellcasting_sections)
+view :  CardExclusionConfig
+     -> { curSheet : CharacterSheet , prevSheet : CharacterSheet}
+     -> List (Html Msg)
+view config { curSheet , prevSheet } =
+  let ( notableTraits , spellcastingSections ) =
+        if config.onlyShowChanges
+        then ( diffTraitCategories prevSheet.notable_traits curSheet.notable_traits
+             , diffSpellcastingSections prevSheet.spellcasting_sections curSheet.spellcasting_sections
+             )
+        else ( curSheet.notable_traits , curSheet.spellcasting_sections )
+  in 
+    viewGlobalConfig config
+    ::
+    List.concatMap
+      (viewCategory config)
+      (mergeTraitAndSpellCategories notableTraits spellcastingSections)
 
 viewGlobalConfig : CardExclusionConfig -> Html Msg
 viewGlobalConfig config =
@@ -46,31 +73,10 @@ viewGlobalConfig config =
     viewCheckbox "showSpellsCheckbox" config.showSpells
       (SetCardExclusionConfig { config | showSpells = not config.showSpells })
       "Include spells"
-
-    
-
-mergeTraitAndSpellCategories :  List NotableTraitCategory -> List SpellcastingSection
-                             -> List (Category, List Trait, List Spell)
-mergeTraitAndSpellCategories traitCategories spellcastingSections =
-  mergeCategories
-    (List.map (\{category, traits} -> (category, traits)) traitCategories)
-    (List.map (\{origin  , spells} -> (origin  , spells)) spellcastingSections)
-
-mergeCategories :  List (comparable, List a) -> List (comparable, List b)
-                -> List (comparable, List a, List b)
-mergeCategories left right =
-  let go l r =
-        case (l, r) of
-          ((xcat,xs) :: lrem , (ycat,ys) :: rrem) ->
-            case compare xcat ycat of
-              EQ -> ( xcat , xs , ys ) :: go lrem rrem
-              LT -> ( xcat , xs , [] ) :: go lrem r
-              GT -> ( ycat , [] , ys ) :: go l    rrem
-          (_  , []) ->
-            List.map (\(xcat , xs) -> (xcat , xs , [])) l
-          ([] , _ ) ->
-            List.map (\(ycat , ys) -> (ycat , [] , ys)) r
-  in go (List.sortBy Tuple.first left) (List.sortBy Tuple.first right)
+    ++
+    viewCheckbox "onlyShowChanges" config.onlyShowChanges
+      (SetCardExclusionConfig { config | onlyShowChanges = not config.onlyShowChanges })
+      "Only show changes w.r.t. previous level"
 
 viewCategory : CardExclusionConfig -> (Category , List Trait , List Spell) -> List (Html Msg)
 viewCategory config (category , traits , spells) =
@@ -157,3 +163,105 @@ omittedStyle =
   [ Css.color (Css.hex "#aaaaaa")
   , Css.textDecoration Css.lineThrough
   ]
+
+--------------------------------------------------------------------------------
+-- UTIL
+--------------------------------------------------------------------------------
+
+-- Keep only those traits are new or that have changed relative to the old
+-- character sheet.
+diffTraitCategories :  List NotableTraitCategory
+                    -> List NotableTraitCategory
+                    -> List NotableTraitCategory
+diffTraitCategories old new =
+  let go sortedOld sortedNew =
+        case ( sortedOld , sortedNew ) of
+          ( o :: os , n :: ns) ->
+            case compare o.category n.category of
+              -- The category occurs in both the old and new sheet,
+              -- so we diff the traits themselves.
+              EQ -> { category = o.category , traits = diffTraits o.traits n.traits } :: go os ns
+
+              -- Old category does not occur in new sheet, so we drop it.
+              LT -> go os (n :: ns)
+
+              -- New category does not occur in old sheet, so we keep it.
+              GT -> n :: go (o :: os) ns
+
+          ( _ , ns ) -> ns
+                                 
+  in go (List.sortBy .category old) (List.sortBy .category new)
+
+diffTraits : List Trait -> List Trait -> List Trait
+diffTraits old new =
+  let go sortedOld sortedNew =
+        case ( sortedOld , sortedNew ) of
+          ( o :: os , n :: ns ) ->
+            case compare (o.name , Maybe.withDefault "" o.desc) (n.name , Maybe.withDefault "" n.desc) of
+              -- Traits are equal, so we can drop this one (on both sides).
+              EQ -> go os ns
+
+              -- Old trait does not occur in list of new traits, so we advance
+              -- the list of old traits.
+              LT -> go os (n :: ns)
+
+              -- New trait does not occur in list of old traits, so we keep
+              -- the new trait.
+              GT -> n :: go (o :: os) ns
+
+          ( _ , ns ) -> ns
+
+  in go (List.sortBy .name old) (List.sortBy .name new)
+
+diffSpellcastingSections :  List SpellcastingSection
+                         -> List SpellcastingSection
+                         -> List SpellcastingSection
+diffSpellcastingSections old new =
+  let go sortedOld sortedNew =
+        case ( sortedOld , sortedNew ) of
+          ( o :: os , n :: ns ) ->
+            case compare o.origin n.origin of
+              EQ -> { n | spells = diffSpells o.spells n.spells } :: go os ns
+              LT -> go os (n :: ns)
+              GT -> n :: go (o :: os) ns
+          ( _ , ns ) -> ns
+  in go (List.sortBy .origin old) (List.sortBy .origin new)
+
+diffSpells : List Spell -> List Spell -> List Spell
+diffSpells old new =
+  let go sortedOld sortedNew =
+        case ( sortedOld , sortedNew ) of
+          ( o :: os , n :: ns ) ->
+            let _ = if o.name == "burning hands" && n.name == o.name
+                    then let _ = Debug.log "o" o
+                         in Debug.log "n" n
+                    else n
+            in case compare o.name n.name of
+              EQ -> if o /= n then n :: go os ns else go os ns
+              LT -> go os (n :: ns)
+              GT -> n :: go (o :: os) ns
+          ( _ , ns ) -> ns
+  in go (List.sortBy .name old) (List.sortBy .name new)
+
+mergeTraitAndSpellCategories :  List NotableTraitCategory -> List SpellcastingSection
+                             -> List (Category, List Trait, List Spell)
+mergeTraitAndSpellCategories traitCategories spellcastingSections =
+  mergeCategories
+    (List.map (\{category, traits} -> (category, traits)) traitCategories)
+    (List.map (\{origin  , spells} -> (origin  , spells)) spellcastingSections)
+
+mergeCategories :  List (comparable, List a) -> List (comparable, List b)
+                -> List (comparable, List a, List b)
+mergeCategories left right =
+  let go l r =
+        case (l, r) of
+          ((xcat,xs) :: lrem , (ycat,ys) :: rrem) ->
+            case compare xcat ycat of
+              EQ -> ( xcat , xs , ys ) :: go lrem rrem
+              LT -> ( xcat , xs , [] ) :: go lrem r
+              GT -> ( ycat , [] , ys ) :: go l    rrem
+          (_  , []) ->
+            List.map (\(xcat , xs) -> (xcat , xs , [])) l
+          ([] , _ ) ->
+            List.map (\(ycat , ys) -> (ycat , [] , ys)) r
+  in go (List.sortBy Tuple.first left) (List.sortBy Tuple.first right)

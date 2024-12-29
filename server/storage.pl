@@ -56,7 +56,7 @@ withdraw_gain_level(CharName, RetractedLevel) :-
         (load_character_file(Path),
          level(CurLevel),
          forall(between(RetractedLevel, CurLevel, L), retractall(gain_level(L, _, _))),
-         resolve_ineligible_choices(CharName),
+         resolve_ineligible_choices,
          rewrite_character_file(Path))).
 withdraw_character_fact(CharName, Fact) :-
     character_file_path(CharName, Path),
@@ -64,14 +64,14 @@ withdraw_character_fact(CharName, Fact) :-
         (load_character_file(Path),
          ( retract(Fact),
            retractall(Fact),
-           resolve_ineligible_choices(CharName),
+           resolve_ineligible_choices,
            rewrite_character_file(Path)
          ; true))).
-resolve_ineligible_choices(CharId) :-
+resolve_ineligible_choices :-
     abolish_private_tables,
     findall(Origin-Id, problem(not_eligible(Origin, Id, _)), ChoicesToUndo),
     forall(member(Origin-Id, ChoicesToUndo), retractall(choice(Origin, Id, _))),
-    (ChoicesToUndo \= [] -> resolve_ineligible_choices(CharId) ; true).
+    (ChoicesToUndo \= [] -> resolve_ineligible_choices ; true).
 
 record_character_fact(CharName, Fact) :-
     character_file_path(CharName, Path),

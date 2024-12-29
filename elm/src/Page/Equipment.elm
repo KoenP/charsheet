@@ -44,14 +44,14 @@ update msg model oldData =
                                          }
                                , Cmd.none
                                )
-    EquipItem item -> ( invalidateCaches model
+    EquipItem item -> ( invalidateAllSheetCaches model
                       , Http.post
                           { url = characterRequestUrl model.charId ["equip_item"] [("item", item)]
                           , body = Http.emptyBody
                           , expect = expectGotEquipment
                           }
                       )
-    UnequipItem item -> ( invalidateCaches model
+    UnequipItem item -> ( invalidateAllSheetCaches model
                         , Http.post
                             { url = characterRequestUrl model.charId ["unequip_item"] [("item", item)]
                             , body = Http.emptyBody

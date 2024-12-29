@@ -24,12 +24,20 @@ traits_from_source(ranger >: 1,
                    [weapon(simple), weapon(martial),
                     armor(light), armor(medium), armor(shield)]).
 trait_options_source(ranger >: 1, skill, wrap(skill),
-                     class_skill(ranger)).
+                     class_skill(ranger)) :-
+    \+ (^ranger).
+
+% TODO think about how to properly implement alternative features
+options_source(ranger >: 1, 'favored enemy or favored foe', from_list(['favored enemy', 'favored foe'])).
+
+trait_source(ranger >: 1, 'favored foe') :-
+    choice(ranger >: 1,  'favored enemy or favored foe', 'favored foe').
 
 trait_from_accumulated_choices(
     [ranger >: 1, ranger >: 6, ranger >: 14],
     'favored enemy',
-    nonhumanoid or (2 unique_from 'humanoid race')).
+    nonhumanoid or (2 unique_from 'humanoid race')) :-
+    choice(ranger >: 1,  'favored enemy or favored foe', 'favored enemy').
 
 nonhumanoid(Type) :-
     member(Type, [aberration, beast, celestial, construct,
@@ -212,6 +220,14 @@ If the beast has died within the last hour, you can use your action to touch it 
 
 **Maul**. Melee Weapon Attack: ~w to hit, reach 5 ft., one target. Hit: 1d8 + ~w slashing damage.",
         [AC,HP,ProfBon,ToHit,DamageBonus]).
+
+'favored foe' ?= "When you hit a creature with an attack roll, you can call on your mystical bond with nature to mark the target as your favored enemy for 1 minute or until you lose your concentration (as if you were concentrating on a spell).
+
+The first time on each of your turns that you hit the favored enemy and deal damage to it, including when you mark it, you increase that damage by 1d4.
+
+You can use this feature to mark a favored enemy a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.
+
+This feature's extra damage increases when you reach certain levels in this class: to 1d6 at 6th level and to 1d8 at 14th level.".
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

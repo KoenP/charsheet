@@ -34,10 +34,6 @@ type alias CharacterSheet =
   , spell_slots : List Int
   , resources : List Resource
   }
-{-
-NotableTraits = [( Category, List Trait )]
-Trait = [(Desc, Name)]
--}
 
 type alias CharacterSummary =
   { ac : Int
@@ -236,6 +232,7 @@ type alias Model =
   , lastTick : Posix
   , charId : CharId
   , sheetCache : Maybe CharacterSheet
+  , prevSheetCache : Maybe CharacterSheet
   }
 type Page
   = Loading
@@ -243,7 +240,7 @@ type Page
   | PrintableCharSheetPage CharacterSheet
   | EditCharacterPage EditCharacterPageData
   | CardsPage CardsPageOptions CharacterSheet
-  | CardSelectPage CharacterSheet
+  | CardSelectPage { curSheet : CharacterSheet , prevSheet : CharacterSheet }
   | EquipmentPage EquipmentPageData
 
 type alias EditCharacterPageData = 
@@ -266,9 +263,17 @@ applyPage : Model -> (Page, Cmd Msg) -> (Model, Cmd Msg)
 applyPage model ( page, cmd ) =
   ( { model | page = page }, cmd)
 
-invalidateCaches : Model -> Model
-invalidateCaches model =
+invalidateAllSheetCaches : Model -> Model
+invalidateAllSheetCaches model =
+  { model | sheetCache = Nothing , prevSheetCache = Nothing }
+
+invalidateSheetCache : Model -> Model
+invalidateSheetCache model =
   { model | sheetCache = Nothing }
+
+transferSheetCache : Model -> Model
+transferSheetCache model =
+  { model | sheetCache = Nothing , prevSheetCache = model.sheetCache }
 
 errorPage : Model -> String -> (Model, Cmd Msg)
 errorPage model msg = ({ model | page = Error msg }, Cmd.none)
@@ -310,6 +315,7 @@ type alias CardExclusionConfig =
   , excludedCategories       : Set Category
   , showSpells               : Bool
   , showTraits               : Bool
+  , onlyShowChanges          : Bool
   }
 emptyCardExclusionConfig : CardExclusionConfig
 emptyCardExclusionConfig =
@@ -318,6 +324,7 @@ emptyCardExclusionConfig =
   , excludedCategories       = Set.empty
   , showSpells               = True
   , showTraits               = True
+  , onlyShowChanges          = False
   }
 
 ----------------------------------------------------------------------
@@ -361,6 +368,7 @@ type HttpResponseMsg
   | NewCharacterCreated CharId
   | GotCharacterSheet CharacterSheet
   | GotPrintableCharSheet CharacterSheet
+  | GotPrevLevelSheet CharacterSheet CharacterSheet
   | GotCards CharacterSheet
   | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
   | GotEquipment (Result String Equipment)

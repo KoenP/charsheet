@@ -134,8 +134,11 @@ viewSpellCard origin spell =
         , cardBox "components" (showComponents spell.components)
         , cardBox "rolls" (Maybe.withDefault "-" spell.rolls)
         , cardBox "hourglass" spell.duration
-        , cardBox "range" spell.range
-        , cardBox "aoe" (Maybe.withDefault "-" spell.aoe)
+        , cardBox "range" (spell.range ++ Maybe.withDefault "" (Maybe.map (\aoe -> ", " ++ aoe) spell.aoe))
+        , case (spell.to_hit, spell.dc, spell.dc_abi) of
+            (Just toHit, _         , _       ) -> cardBox "to-hit" ("+" ++ String.fromInt toHit)
+            (_         , Just toHit, Just abi) -> div [] []
+            _                                  -> div [] []
         ]
     , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
     , viewSpellDescription (getSpellDescriptionText spell) spell.higher_level spell.bonuses spell.resources spell.level

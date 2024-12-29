@@ -102,7 +102,7 @@ update msg model oldData =
       ) 
 
     LevelUpAs class ->
-      ( invalidateCaches model, Http.post
+      ( transferSheetCache model, Http.post
           { url = characterRequestUrl model.charId ["gain_level"] [("class", class)]
           , body = Http.emptyBody
           , expect = Http.expectJson
@@ -112,7 +112,7 @@ update msg model oldData =
       )
 
     SetBaseAbilityScore ability newScore -> 
-      ( applyPageData (invalidateCaches model)
+      ( applyPageData (invalidateAllSheetCaches model)
           { oldData
           | setAbilitiesOnNextTick =
               Dict.insert ability newScore oldData.setAbilitiesOnNextTick
@@ -148,7 +148,7 @@ update msg model oldData =
     Retract retraction ->
       case retraction of
         RetractLevelUp level ->
-          ( invalidateCaches model , Http.post
+          ( invalidateAllSheetCaches model , Http.post
               { url = characterRequestUrl model.charId ["retract_gain_level"] [("level", String.fromInt level)]
               , body = Http.emptyBody
               , expect = Http.expectJson (mkHttpResponseMsg (\_ -> Update)) (D.succeed ())
@@ -156,7 +156,7 @@ update msg model oldData =
           )
 
         RetractChoice { origin, id } ->
-          ( invalidateCaches model , Http.post
+          ( invalidateAllSheetCaches model , Http.post
               { url = characterRequestUrl model.charId ["retract_choice"] [("source", origin), ("id", id)]
               , body = Http.emptyBody
               , expect = Http.expectJson (mkHttpResponseMsg (\_ -> Update)) (D.succeed ())

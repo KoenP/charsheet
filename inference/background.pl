@@ -194,3 +194,12 @@ traits_from_source(background(archaeologist),
 trait_options_source(background(archaeologist), language, wrap(language), language).
 
 'historical knowledge' ?= "Can determine purpose and origin of ruin or dungeon. Can determine value of old objects.".
+
+
+
+background_option('clan crafter').
+traits_from_source(background('clan crafter'),
+                   [skill(history), skill(insight), language(dwarvish),
+                    tool('artisan\'s'), % TODO wrong
+                    'respect of the stout folk']).
+'respect of the stout folk' ?= "As well respected as clan crafters are among outsiders, no one esteems them quite so highly as dwarves do. You always have free room and board in any place where shield dwarves or gold dwarves dwell, and the individuals in such a settlement might vie among themselves to determine who can offer you (and possibly your compatriots) the finest accommodations and assistance.".

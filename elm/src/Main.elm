@@ -76,6 +76,7 @@ init charId =
     , lastTick = Time.millisToPosix 0
     , charId = CharId charId
     , sheetCache = Nothing
+    , prevSheetCache = Nothing
     }
   , Edit.load (CharId charId)
   -- , Cards.load (CharId charId)
@@ -116,7 +117,14 @@ update msg model =
         Nothing          -> applyPage model (Loading, Cards.load model.charId)
 
     GotoCardSelectPage sheet ->
-      applyPage model (CardSelectPage sheet, Cmd.none)
+      case model.prevSheetCache of
+        Just cachedPrevSheet ->
+          applyPage model (CardSelectPage { curSheet  = sheet
+                                          , prevSheet = cachedPrevSheet
+                                          }
+                          , Cmd.none
+                          )
+        Nothing              -> applyPage model (Loading, CardSelectPage.load model.charId sheet)
 
     GotoSheet ->
       case model.sheetCache of
@@ -127,7 +135,7 @@ update msg model =
       applyPage model (Loading, Equipment.load model.charId)
 
     Choice origin id choice ->
-      ( invalidateCaches { model | focusedDropdownId = Nothing }
+      ( invalidateSheetCache { model | focusedDropdownId = Nothing }
       , registerChoice model.charId origin id choice
       )
 
@@ -183,6 +191,14 @@ handleHttpResponseMsg msg model =
         ( { model
             | page = PrintableCharSheetPage sheet
             , sheetCache = Just sheet
+          }
+        , none
+        )
+
+      GotPrevLevelSheet curSheet prevLevelSheet ->
+        ( { model
+            | page = CardSelectPage { curSheet = curSheet , prevSheet = prevLevelSheet }
+            , prevSheetCache = Just prevLevelSheet
           }
         , none
         )
