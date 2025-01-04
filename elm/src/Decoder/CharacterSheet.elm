@@ -121,8 +121,6 @@ spellDec =
     |> D.andMap (D.field "casting_time" D.string)
     |> D.andMap (D.field "components" (D.list componentDec))
     |> D.andMap (D.field "concentration" Util.yesNoDec)
-    |> D.andMap (D.field "dc" (D.nullable D.int))
-    |> D.andMap (D.field "dc_abi" (D.nullable D.string))
     |> D.andMap (D.field "description" (D.list D.string))
     |> D.andMap (D.field "higher_level" (D.nullable D.string))
     |> D.andMap (D.field "duration" D.string)

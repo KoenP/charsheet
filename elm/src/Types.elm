@@ -97,8 +97,6 @@ type alias Spell =
   , casting_time : String
   , components : List Component
   , concentration : Bool
-  , dc : Maybe Int
-  , dc_abi : Maybe String
   , description : List String
   , higher_level : Maybe String
   , duration : String

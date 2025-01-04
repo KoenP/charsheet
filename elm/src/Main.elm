@@ -293,7 +293,7 @@ view model =
             EditCharacterPage data ->
               Edit.view model.focusedDropdownId data
             CardsPage options data ->
-              Cards.view model.cardExclusionConfig options data model.preparedSpells
+              Cards.view model.cardExclusionConfig model.prevSheetCache data
             EquipmentPage data ->
               Equipment.view data
             CardSelectPage data ->
