@@ -91,17 +91,16 @@ format_effects([E|Es]) -->
     ["; "],
     format_effects(Es).
 
-format_effect(Damage) -->
-    {Damage = damage(_,_), !},
-    format_damage_roll(Damage).
 format_effect(spell_attack_roll(_):Effects) -->
     {is_list(Effects), !},
-    ["["],
-    format_effects(Effects),
-    ["] on hit"].
+    ["on hit: "],
+    format_effects(Effects).
 format_effect(spell_attack_roll(_):Effect) -->
     format_effect(Effect),
     [" on hit"].
+format_effect(custom_attack_roll(ToHit):Effect) -->
+    ["make attack roll with "], format_bonus(ToHit), [" to hit"],
+    format_effect(Effect).
 format_effect(in(Area):Effect) -->
     ["in "],
     format_area(Area),
@@ -114,12 +113,16 @@ format_effect(N*Es) -->
     [N],
     [" times "],
     format_effect(Es).
+format_effect(push(Dist)) -->
+    {!},
+    ["push "],
+    format_term(Dist).
 format_effect(saving_throw(dc(Abi,DC)):(E1 else E2)) -->
     {!},
     [Abi],
     [" saving throw (DC "],
     format_number(DC),
-    [") -> "],
+    [") → "],
     format_effect(E1),
     [" on fail, else "],
     format_effect(E2).
@@ -127,7 +130,7 @@ format_effect(saving_throw(Abi):(E1 else E2)) -->
     {!},
     ["saving throw ("],
     [Abi],
-    [") -> "],
+    [") → "],
     format_effect(E1),
     [" on fail, else "],
     format_effect(E2).
@@ -140,7 +143,12 @@ format_effect(saving_throw(Abi):Effect) -->
     [" on fail"].
 format_effect(damage(Type,Roll)) -->
     {!},
-    format_damage_roll(damage(Type,Roll)).
+    ["deal "],
+    format_damage_roll(damage(Type,Roll)),
+    [" damage"].
+format_effect(List) -->
+    {is_list(List), !},
+    format_effects(List).
 format_effect(E) -->
     format_term(E).
     
