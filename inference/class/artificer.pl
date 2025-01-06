@@ -257,6 +257,8 @@ artificer_specialization_spell(artillerist, 'wall of force').
 
 % Eldritch cannon.
 trait_source(artificer(artillerist) >: 3, 'eldritch cannon').
+trait_source(artificer(artillerist) >: 9, 'explosive cannon').
+trait_source(artificer(artillerist) >: 15, 'fortified position').
 
 eldritch_cannon_type(flamethrower).
 eldritch_cannon_type('force ballista').
@@ -265,40 +267,51 @@ trait_source(trait('eldritch cannon'), 'eldritch cannon'(Type)) :-
     eldritch_cannon_type(Type).
 custom_format('eldritch cannon'(Type)) --> ["eldritch cannon: "], [Type].
 
-trait_source(artificer(artillerist) >: 9, 'explosive cannon').
-
 res('free eldritch cannon', 1) :- trait('eldritch cannon').
 restore_res('long rest', 'free eldritch cannon', 'full restore').
 res('eldritch cannon hp', HP) :-
     trait('eldritch cannon'),
     eldritch_cannon_hp(HP).
+
 eldritch_cannon_hp(HP) :-
     class_level(artificer:L),
     HP is L*5.
 eldritch_cannon_damage_dice(2) :- \+ trait('explosive cannon').
 eldritch_cannon_damage_dice(3) :- trait('explosive cannon').
-eldritch_cannon_action(flamethrower,
-                       'Activate',
-                       "bonus action within 60 ft of cannon",
-                       in(15 ft cone):[saving_throw(dex):(damage(fire, N d 8) else half),
-                                       "ignite flammable objects"
-                                      ]) :-
-    eldritch_cannon_damage_dice(N).
-eldritch_cannon_action('force ballista',
-                       'Activate',
-                       "bonus action within 60 ft of cannon",
-                       in(feet(120)):custom_attack_roll(ToHit):[damage(force, N d 8), push(feet(5))]) :-
-    eldritch_cannon_damage_dice(N),
-    spell_attack_modifier(artificer, ToHit).
-eldritch_cannon_action(protector,
-                       'Activate',
-                       "bonus action within 60 ft of cannon",
-                       in(10 ft sphere):'temp hp' + (1 d 8 + Bonus)) :-
-    ability_mod(int, Mod),
-    Bonus is max(1, Mod).
 
-%eldritch_cannon_action(_, detonate, ) :-
-%    trait('explosive cannon').
+eldritch_cannon_note(flamethrower, Desc) :-
+    spell_save_dc(artificer, DC),
+    eldritch_cannon_damage_dice(N),
+    format(string(Desc),
+           "**Activate.** Use a bonus action when you are within 60 ft. of cannon. In 15 ft. cone centered on the cannon, all creatures make DC ~w DEX saving throw; on failure, take ~wd8 fire damage, else take half. Ignites flammable objects in the area of effect.\n\n",
+           [DC, N]).
+
+eldritch_cannon_note('force ballista', Desc) :-
+    spell_attack_modifier(artificer, AttackMod),
+    fmt(format_bonus(AttackMod), AttackModStr),
+    eldritch_cannon_damage_dice(N),
+    format(string(Desc),
+           "**Activate.** Use a bonus action when you are within 60 ft. of cannon. Make a spell attack roll (~w to hit) against a target within 120 ft. of cannon. On hit, deal ~wd8 force damage and push target 5 ft. back.\n\n",
+           [AttackModStr, N]).
+eldritch_cannon_note(protector, Desc) :-
+    ability_mod(int, Mod),
+    Bonus is max(1, Mod),
+    format(string(Desc),
+           "**Activate.** Use a bonus action when you are within 60 ft. of cannon. In 10 ft. sphere centered on cannon, all allies (including cannon) gain 1d8 + ~w temporary hit points.\n\n",
+           [Bonus]).
+
+eldritch_cannon_note(_, Desc) :-
+    trait('explosive cannon'),
+    spell_save_dc(artificer, DC),
+    format(string(Desc),
+           "**Detonate.** Use an action when you are within 60 ft. of cannon. Destroys cannon; every creature within 20 ft. must make DC ~w DEX saving throw; on failure, they take 3d8 force damage, else half.\n\n",
+           [DC]).
+
+eldritch_cannon_note(_, Desc) :-
+    trait('fortified position'),
+    Desc = "**Fortified Position.** You and allies within 10 ft. of cannon have half cover.\n\n".
+
+eldritch_cannon_note(_, "**Repairable.** If mending spell is cast on it, cannon is healed for 2d6 HP."). 
     
 % Other artillerist features.
 trait_source(artificer(artillerist) >: 5, 'arcane firearm').
@@ -311,15 +324,13 @@ bonus_source(trait('arcane firearm'),
 apply_arcane_firearm(OldEffects, NewEffects) :-
     \+ contains_multiple_damage_rolls(OldEffects),
     select_subterm(damage(Element, Dice), OldEffects,
-                   damage(Element, NewDice), NewEffects),
-    simplify_dice_sum(Dice + 1 d 8, NewDice).
+                   damage(Element, Dice + in_parens(1 d 8)), NewEffects).
 apply_arcane_firearm(OldEffects, NewEffects) :-
     contains_multiple_damage_rolls(OldEffects),
-    atomics_to_string(["add +1d8 to one damage roll"], New),
+    atomics_to_string(["+1d8 to one damage roll"], New),
     append(OldEffects, [New], NewEffects).
-% TODO: at the moment it's not clear when this has been applied to the dice roll displayed on the card vs when it has not been applied yet.
 custom_format(modify_spell_field(effects, apply_arcane_firearm)) -->
-    ["Add +1d8 to one damage roll."].
+    ["+1d8 to one damage roll."].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -351,19 +362,30 @@ eldritch_cannon_stat_block(Str) :-
 |----|----|--------|------------------|
 | ~w | 18 | +0     | 15 ft. (if legs) |
 
-**Damage Immunities**: poison, psychic
+**Damage Immunities:** poison, psychic
 
 ",
         [HP]).
 
-format_eldritch_cannon_action(Type, Action, Condition) -->
-    {eldritch_cannon_action(Type, Action, Condition, Desc)},
-    ["\n\n**"], [Action], ["**"],
-    ["("], [Condition], ["): "],
-    format_effect(Desc).
-
 ('eldritch cannon'(Type) ?= Str) :-
     eldritch_cannon_stat_block(StatBlock),
     eldritch_cannon_type(Type), % ground Type
-    findall(Desc, fmt(format_eldritch_cannon_action(Type, _, _), Desc), Descs),
+    findall(Desc, eldritch_cannon_note(Type, Desc), Descs),
     atomics_to_string([StatBlock|Descs], Str).
+
+'arcane firearm' ?= "At 5th level, You know how to turn a wand, staff, or rod into an arcane firearm, a conduit for your destructive spells. When you finish a long rest, you can use woodcarver's tools to carve special sigils into a wand, staff, or rod and thereby turn it into your arcane firearm. The sigils disappear from the object if you later carve them on a different item. The sigils otherwise last indefinitely.
+
+You can use your arcane firearm as a spellcasting focus for your artificer spells. When you cast an artificer spell through the firearm, roll a d8, and you gain a bonus to one of the spell's damage rolls equal to the number rolled.".
+
+'explosive cannon' ?= "Starting at 9th level, every eldritch cannon you create is more destructive:
+
+- The cannon's damage rolls all increase by 1d8.
+
+- As an action, you can command the cannon to detonate if you are within 60 feet of it. Doing so destroys the cannon and forces each creature within 20 feet of it to make a Dexterity saving throw against your spell save DC, taking 3d8 force damage on a failed save or half as much damage on a successful one.".
+
+'fortified position' ?= "By 15th level, you’re a master at forming well-defended emplacements using Eldritch Cannon:
+
+- You and your allies have half cover while within 10 feet of a cannon you create with Eldritch Cannon, as a result of a shimmering field of magical protection that the cannon emits.
+
+- You can now have two cannons at the same time. You can create two with the same action (but not the same spell slot), and you can activate both of them with the same bonus action. You determine whether the cannons are identical to each other or different. You can't create a third cannon while you have two.".
+

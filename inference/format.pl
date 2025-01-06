@@ -64,9 +64,15 @@ format_range(miles(X)) --> {!}, [X], [" mi"].
 format_range(Short/Long) --> {!}, format_range(Short), ['/'], format_range(Long).
 format_range(X) --> [X].
 
+
 format_dice_sum(Ds + K) --> {number(K), K \= 0, !}, format_dice_sum(Ds), ['+'], [K].
+format_dice_sum(Ds + in_parens(Ds2)) -->
+    format_dice_sum(Ds),
+    ['(+'],
+    format_dice_sum(Ds2),
+    [')'].
 format_dice_sum(Ds + 0) --> {!}, format_dice_sum(Ds).
-format_dice_sum(Ds + D) --> {!}, format_dice_sum(Ds), [' + '], format_dice(D).
+format_dice_sum(Ds + D) --> {!}, format_dice_sum(Ds), ['+'], format_dice(D).
 format_dice_sum(Ds) --> format_dice(Ds).
 format_dice(N d X) --> seq([N, 'd', X]).
 format_dice(N) --> {number(N)}, [N].

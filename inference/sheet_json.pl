@@ -314,7 +314,7 @@ known_spell_saving_throw_or_null(_, _, null, null).
 
 known_spell_dice_formula_or_null(Origin, Name, RollsStr) :-
     known_spell_dice_formula(Origin, Name, Rolls),
-    term_string(Rolls, RollsStr),
+    fmt(format_dice_sum(Rolls), RollsStr),
     !.
 known_spell_dice_formula_or_null(_, _, null).
 
