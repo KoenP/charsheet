@@ -38,7 +38,7 @@ update msg model sheet = (model, Cmd.none)
 ----------------------------------------------------------------------
 -- VIEW
 ----------------------------------------------------------------------
-view : CardExclusionConfig -> Maybe CharacterSheet -> CharacterSheet -> List (Html Msg)
+view : CardConfig -> Maybe CharacterSheet -> CharacterSheet -> List (Html Msg)
 view exclusionConfig maybeOldSheet sheet =
   let
     ( notableTraitCategories , spellcastingSections ) =
@@ -69,17 +69,17 @@ view exclusionConfig maybeOldSheet sheet =
                      notableTraitCategories)
     )
 
-excludeTraits : CardExclusionConfig -> List NotableTraitCategory -> List NotableTraitCategory
+excludeTraits : CardConfig -> List NotableTraitCategory -> List NotableTraitCategory
 excludeTraits config categories =
   List.map (excludeTraitsFromCategory config) categories
 
-excludeTraitsFromCategory : CardExclusionConfig -> NotableTraitCategory -> NotableTraitCategory
+excludeTraitsFromCategory : CardConfig -> NotableTraitCategory -> NotableTraitCategory
 excludeTraitsFromCategory config { category, traits } =
   { category = category
   , traits   = List.filter (not << isTraitExcluded config category) traits
   }
 
-isTraitExcluded : CardExclusionConfig -> Category -> Trait -> Bool
+isTraitExcluded : CardConfig -> Category -> Trait -> Bool
 isTraitExcluded { explicitlyExcludedTraits } category { name } =
   Set.member (category, name) explicitlyExcludedTraits
 
@@ -90,14 +90,14 @@ viewNotableTraitCategory { category, traits } =
     |> List.filter (\trait -> trait.desc /= Nothing)
     |> List.map (viewNotableTraitCard category)
 
-viewSpellcastingSection :  CardExclusionConfig -> SpellcastingSection -> List (Html Msg)
+viewSpellcastingSection :  CardConfig -> SpellcastingSection -> List (Html Msg)
 viewSpellcastingSection exclusionConfig section =
   List.map (viewSpellCard section.origin)
     <| List.filter (shouldIncludeSpell exclusionConfig section.origin)
     <| section.spells
 
 -- TODO I'm not sure CardsPageOptions is still relevant
-shouldIncludeSpell : CardExclusionConfig -> Origin -> Spell -> Bool
+shouldIncludeSpell : CardConfig -> Origin -> Spell -> Bool
 shouldIncludeSpell { explicitlyExcludedSpells } origin { name, prepared } =
   not <| Set.member (origin, name) explicitlyExcludedSpells
   -- case showSpells of

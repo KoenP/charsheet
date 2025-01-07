@@ -70,7 +70,7 @@ init : String -> (Model, Cmd Msg)
 init charId =
   ( { preparedSpells = Dict.empty
     , showOnlyPreparedSpells = False
-    , cardExclusionConfig = emptyCardExclusionConfig
+    , cardConfig = emptyCardConfig
     , page = Loading
     , focusedDropdownId = Nothing
     , lastTick = Time.millisToPosix 0
@@ -293,11 +293,11 @@ view model =
             EditCharacterPage data ->
               Edit.view model.focusedDropdownId data
             CardsPage options data ->
-              Cards.view model.cardExclusionConfig model.prevSheetCache data
+              Cards.view model.cardConfig model.prevSheetCache data
             EquipmentPage data ->
               Equipment.view data
             CardSelectPage data ->
-              CardSelectPage.view model.cardExclusionConfig data
+              CardSelectPage.view model.cardConfig data
       ]
       
 type alias TabCfg = { name : String

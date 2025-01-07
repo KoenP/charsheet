@@ -35,8 +35,8 @@ load charId curSheet =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    SetCardExclusionConfig newConfig ->
-      ( { model | cardExclusionConfig = newConfig }
+    SetCardConfig newConfig ->
+      ( { model | cardConfig = newConfig }
       , Cmd.none
       )
     _ ->
@@ -47,7 +47,7 @@ update msg model =
 ----------------------------------------------------------------------
 -- VIEW
 ----------------------------------------------------------------------
-view :  CardExclusionConfig
+view :  CardConfig
      -> { curSheet : CharacterSheet , prevSheet : CharacterSheet}
      -> List (Html Msg)
 view config { curSheet , prevSheet } =
@@ -64,22 +64,22 @@ view config { curSheet , prevSheet } =
       (viewCategory config)
       (mergeTraitAndSpellCategories notableTraits spellcastingSections)
 
-viewGlobalConfig : CardExclusionConfig -> Html Msg
+viewGlobalConfig : CardConfig -> Html Msg
 viewGlobalConfig config =
   div [] <|
     viewCheckbox "showTraitsCheckbox" config.showTraits 
-      (SetCardExclusionConfig { config | showTraits = not config.showTraits })
+      (SetCardConfig { config | showTraits = not config.showTraits })
       "Include features"
     ++
     viewCheckbox "showSpellsCheckbox" config.showSpells
-      (SetCardExclusionConfig { config | showSpells = not config.showSpells })
+      (SetCardConfig { config | showSpells = not config.showSpells })
       "Include spells"
     ++
     viewCheckbox "onlyShowChanges" config.onlyShowChanges
-      (SetCardExclusionConfig { config | onlyShowChanges = not config.onlyShowChanges })
+      (SetCardConfig { config | onlyShowChanges = not config.onlyShowChanges })
       "Only show changes w.r.t. previous level"
 
-viewCategory : CardExclusionConfig -> (Category , List Trait , List Spell) -> List (Html Msg)
+viewCategory : CardConfig -> (Category , List Trait , List Spell) -> List (Html Msg)
 viewCategory config (category , traits , spells) =
   let
     categoryIncluded = not <| Set.member category config.excludedCategories
@@ -88,7 +88,7 @@ viewCategory config (category , traits , spells) =
                      <| viewCheckbox
                         ("show_category_" ++ category)
                         categoryIncluded
-                        (SetCardExclusionConfig
+                        (SetCardConfig
                            { config
                            | excludedCategories = toggleCategory config.excludedCategories
                            })
@@ -114,7 +114,7 @@ viewCategory config (category , traits , spells) =
     else
       [ categoryHeader ]
       
-viewTrait : CardExclusionConfig -> Category -> Trait -> Html Msg
+viewTrait : CardConfig -> Category -> Trait -> Html Msg
 viewTrait config category { name } =
   let included = not (Set.member (category, name) config.explicitlyExcludedTraits)
       updateFn = if included then Set.insert (category, name) else Set.remove (category, name)
@@ -124,7 +124,7 @@ viewTrait config category { name } =
   in viewListItem newConfig included category name
 
 -- TODO code duplication with viewTrait
-viewSpell : CardExclusionConfig -> Category -> Spell -> Html Msg
+viewSpell : CardConfig -> Category -> Spell -> Html Msg
 viewSpell config category { name } =
   let included = not (Set.member (category, name) config.explicitlyExcludedSpells)
       updateFn = if included then Set.insert (category, name) else Set.remove (category, name)
@@ -133,13 +133,13 @@ viewSpell config category { name } =
                   }
   in viewListItem newConfig included category name
 
-viewListItem : CardExclusionConfig -> Bool -> Category -> String -> Html Msg
+viewListItem : CardConfig -> Bool -> Category -> String -> Html Msg
 viewListItem newConfig included category name =
   li (guardList (not included) [ Attr.css omittedStyle ]) <|
     viewCheckbox 
       (category ++ "_" ++ name ++ "_checkbox")
       included
-      (SetCardExclusionConfig newConfig)
+      (SetCardConfig newConfig)
       name
 
 viewCheckbox : String -> Bool -> Msg -> String -> List (Html Msg)

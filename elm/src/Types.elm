@@ -224,7 +224,7 @@ extractChoicesList spec =
 type alias Model =
   { preparedSpells : Dict Origin (Set SpellName)
   , showOnlyPreparedSpells : Bool
-  , cardExclusionConfig : CardExclusionConfig
+  , cardConfig : CardConfig
   , page : Page
   , focusedDropdownId : Maybe String
   , lastTick : Posix
@@ -307,7 +307,7 @@ type alias Equipment = List String
 
 type alias Category = String
 type alias TraitName = String
-type alias CardExclusionConfig = 
+type alias CardConfig = 
   { explicitlyExcludedTraits : Set (Category, TraitName)
   , explicitlyExcludedSpells : Set (Origin, SpellName) -- TODO not sure if this 100% uniquely identifies a spell (maybe there's some weird stuff where you can have the same spell twice as warlock for example, once as a regular spell and once as an eldritch invocation)
   , excludedCategories       : Set Category
@@ -315,8 +315,8 @@ type alias CardExclusionConfig =
   , showTraits               : Bool
   , onlyShowChanges          : Bool
   }
-emptyCardExclusionConfig : CardExclusionConfig
-emptyCardExclusionConfig =
+emptyCardConfig : CardConfig
+emptyCardConfig =
   { explicitlyExcludedTraits = Set.empty
   , explicitlyExcludedSpells = Set.empty
   , excludedCategories       = Set.empty
@@ -354,7 +354,7 @@ type Msg
   | UnequipItem String
   | Retract Retraction
   | AddItemInput String
-  | SetCardExclusionConfig CardExclusionConfig
+  | SetCardConfig CardConfig
 
 type Retraction = RetractLevelUp Int
                 | RetractChoice { origin : String, id : String }
