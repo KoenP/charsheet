@@ -1,3 +1,5 @@
+:- [artificer/infusions].
+
 class_option(artificer).
 hd_per_level(artificer, 1 d 8).
 initial_class_base_hp(artificer, 8).
@@ -102,47 +104,6 @@ custom_format(infusion(Inf)) --> ['infusion: '], [Inf].
 
 trait_source(artificer >: L, infusion(Inf)) :-
     find_choice_level(artificer:L, 'infusion', Inf).
-
-:- discontiguous infusion_option/1.
-infusion_option(_) :- false.
-
-% TODO: desctiptions, specializations, infusions
-
-% Infusion: Arcane propulsion armor.
-infusion_option('arcane propulsion armor') :- artificer >: 14.
-infusion('arcane propulsion armor') ?= "The wearer of this armor gains these benefits:
-
-- The wearer’s walking speed increases by 5 feet.
-- The armor includes gauntlets, each of which is a magic melee weapon that can be wielded only when the hand is holding nothing. The wearer is proficient with the gauntlets, and each one deals 1d8 force damage on a hit and has the thrown property, with a normal range of 20 feet and a long range of 60 feet. When thrown, the gauntlet detaches and flies at the attack’s target, then immediately returns to the wearer and reattaches.
-- The armor can’t be removed against the wearer’s will.
-- If the wearer is missing any limbs, the armor replaces those limbs—hands, arms, feet, legs, or similar appendages. The replacements function identically to the body parts they replace.".
-body_armor_variant('arcane propulsion armor'(BaseArmor), BaseArmor).
-bonus_source(has('arcane propulsion armor'(_)), speed + 5).
-attack('arcane propulsion gauntlet', melee, to_hit(ToHit), [damage(force, 1 d 8)],
-       [thrown(feet(20) / feet(60)), 'returns after throw']) :-
-    has('arcane propulsion armor'(_)),
-    ability_mod(str, Mod),
-    proficiency_bonus(ProfBon),
-    ToHit is Mod + ProfBon.
-custom_format('arcane propulsion armor'(BaseArmor)) -->
-    ['arcane propulsion '], format_term(BaseArmor).
-
-% Infusion: Armor of magical strength
-infusion_option('armor of magical strength').
-infusion('armor of magical strength') ?= "This armor has 6 charges. The wearer can expend the armor’s charges in the following ways:
-
-- When the wearer makes a Strength check or a Strength saving throw, it can expend 1 charge to add a bonus to the roll equal to its Intelligence modifier.
-- If the creature would be knocked prone, it can use its reaction to expend 1 charge to avoid being knocked prone.
-
-The armor regains 1d6 expended charges daily at dawn.".
-body_armor_variant('armor of magical strength'(BaseArmor), BaseArmor).
-res('armor of magical strength', 6) :-
-    has('armor of magical strength'(_)).
-restore_res('at dawn', 'armor of magical strength', restore(1 d 6)).
-custom_format('armor of magical strength'(BaseArmor)) -->
-    format_term(BaseArmor), [' of magical strength'].
-
-% TODO more infusions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Artificer specialist: alchemist
@@ -271,6 +232,9 @@ res('free eldritch cannon', 1) :- trait('eldritch cannon').
 restore_res('long rest', 'free eldritch cannon', 'full restore').
 res('eldritch cannon hp', HP) :-
     trait('eldritch cannon'),
+    eldritch_cannon_hp(HP).
+res('second eldritch cannon hp', HP) :-
+    trait('fortified position'),
     eldritch_cannon_hp(HP).
 
 eldritch_cannon_hp(HP) :-

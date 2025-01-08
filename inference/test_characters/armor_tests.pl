@@ -14,9 +14,7 @@ test_char_level(
 
      choice(init, 'initial class', monk)
     ],
-    [ac_formula(unarmored, 10 + dex + shield),
-     ac_formula(unarmored_defense(monk), 10 + dex + wis),
-     ac(unarmored, 13, []),
+    [ac_formula(unarmored_defense(monk), 10 + dex + wis),
      ac(unarmored_defense(monk), 18, [])
     ]).
 
@@ -24,10 +22,8 @@ test_char_level(
     monkbarb,
     2,
     [gain_level(2, barbarian, hp_avg)],
-    [ac_formula(unarmored, 10 + dex + shield),
-     ac_formula(unarmored_defense(monk), 10 + dex + wis),
+    [ac_formula(unarmored_defense(monk), 10 + dex + wis),
      %ac_formula(unarmored_defense(barbarian), 10 + dex + con + shield),
-     ac(unarmored, 13, [shield(shield+1) : 3]),
      ac(unarmored_defense(monk), 18, [])
      %ac(unarmored_defense(barbarian), 20) % 10 + 3 + 4 + 3
     ]).
@@ -57,11 +53,7 @@ test_char_level(
     barbmonk,
     2,
     [gain_level(2, monk, hp_avg)],
-    [ac_formula(unarmored, 10 + dex + shield),
-     %ac_formula(unarmored_defense(monk), 10 + dex + wis),
-     ac_formula(unarmored_defense(barbarian), 10 + dex + con + shield),
-     ac(unarmored, 13, [shield(shield+1) : 3]),
-     %ac(unarmored_defense(monk), 18, [])
+    [ac_formula(unarmored_defense(barbarian), 10 + dex + con + shield),
      ac(unarmored_defense(barbarian), 17, [shield(shield+1) : 3]) % 10 + 3 + 4
     ]).
 

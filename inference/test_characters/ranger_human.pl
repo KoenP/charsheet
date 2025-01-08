@@ -24,8 +24,8 @@ test_char_level(
      ability(wis,16),
      ability(cha,8),
      \+ spell_slots(_,_),
-     known_spell(feat('fey touched'), sleep),
-     known_spell(feat('fey touched'), 'misty step')]
+     known_spell('fey touched', sleep),
+     known_spell('fey touched', 'misty step')]
 ).
 
 test_char_level(

@@ -32,7 +32,7 @@ test_char_level(
      selected_at_character_level(feat('metamagic adept'), 4, metamagic, 'distant spell'),
      trait(feat('metamagic adept'), metamagic('careful spell')),
      trait(feat('metamagic adept'), metamagic('distant spell')),
-     resource(metamagic, 'adept sorcery point', 2)]
+     res('metamagic adept sorcery point', 2)]
 ).
 
 test_char_level(mmadept, L, [gain_level(L, wizard, hp_avg)], []) :-

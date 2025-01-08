@@ -174,7 +174,9 @@ spell_attack_modifier(Class, AttackMod) :-
     spellcasting_ability(Class, Abi),
     ability_mod(Abi, AbiMod),
     proficiency_bonus(ProfBon),
-    AttackMod is ProfBon + AbiMod.
+    findall(B, bonus('spell attack rolls' + B), Bonuses),
+    sum_list(Bonuses, Bonus),
+    AttackMod is ProfBon + AbiMod + Bonus.
 
 spell_save_dc(Class, DC) :-
     spellcasting_ability(Class, Abi),

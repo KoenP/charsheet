@@ -1,6 +1,7 @@
 :- multifile weapon/5.
 :- multifile body_armor_variant/2.
 :- multifile has/1.
+:- multifile magic_item/1.
 :- discontiguous body_armor/3.
 :- dynamic has/1.
 :- dynamic weapons_equipped/1.
@@ -14,7 +15,8 @@ item_exists(BodyArmor) :-
 item_exists(Weapon) :-
     weapon_option(W, _, _, _, _),
     (Weapon = W ; Weapon = W + _).
-    
+item_exists(MagicItem) :-
+    magic_item(MagicItem).
 
 has(Weapon) :-
     weapons_equipped(Weapons),

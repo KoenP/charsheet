@@ -17,11 +17,7 @@ attack(Cantrip, Range, to_hit(ToHit), [DamageDice], Notes) :-
     Data.level = 0,
     Data.range = Range,
     unique_subterm_member(spell_attack_roll(_):DamageDice, Data.effects),
-    (  unique_subterm_member(N*(spell_attack_roll(_):_), Data.effects)
-    -> Notes = [Str],
-       format(string(Str), "attack ~wx", N)
-    ;  Notes = []
-    ).
+    findall(Note, cantrip_attack_note(Data, Note), Notes).
 
 attack(Cantrip, Range, saving_throw(DC, Abi), [DamageDice], Notes) :-
     known_spell_saving_throw(Origin, Cantrip, DC, Abi),
@@ -29,11 +25,21 @@ attack(Cantrip, Range, saving_throw(DC, Abi), [DamageDice], Notes) :-
     Data.level = 0,
     Data.range = Range,
     unique_subterm_member(saving_throw(_):Effect, Data.effects),
-    ( (Effect = damage(_,_), Effect = DamageDice, Notes = [])
-    ; (Effect = (DamageDice else Alt),
-       DamageDice = damage(_,_)),
-       Notes = [Str],
-       format(string(Str), "on save: ~w", Alt)).
+    ( (Effect = damage(_,_), Effect = DamageDice)
+    ; (Effect = (DamageDice else _), DamageDice = damage(_,_))
+    ),
+    findall(Note, cantrip_attack_note(Data, Note), Notes).
+
+cantrip_attack_note(CantripData, Note) :-
+    member(Note, CantripData.effects),
+    string(Note).
+cantrip_attack_note(CantripData, Note) :-
+    unique_subterm_member(N*(spell_attack_roll(_):_), CantripData.effects),
+    format(string(Note), "attack ~wx", N).
+cantrip_attack_note(CantripData, Note) :-
+    unique_subterm_member(saving_throw(_):(_ else Alt), CantripData.effects),
+    format(string(Note), "on save: ~w", Alt).
+
 
 %! weapon_attack(?Weapon, ?Range, ?ToHit, ?DamageRolls, ?Notes)
 %

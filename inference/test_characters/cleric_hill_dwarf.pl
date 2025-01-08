@@ -70,7 +70,7 @@ test_char_level(
     [max_hp(21), % = 8 (base) + 1*5 (lvlup) + 2*3 (con) + 2 (dwarven toughness)
      ac(armor('half plate' + 1), 16, [shield(shield):2]), % = 15 (half plate) + 1 (half plate enchantment) + 2 (shield) + 0 (dex)
      findall(L-N, spell_slots(L,N), [1-3]),
-     resource('channel divinity', 'channel divinity', 1),
+     res('channel divinity', 1),
      max_prepared_spells(cleric, 5), % = 3 (wis) + 2 (cleric level)
      trait(channel_divinity('turn undead'))
     ]).
