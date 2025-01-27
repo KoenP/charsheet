@@ -14,7 +14,7 @@ import Set exposing (Set)
 import String
 
 import Decoder.CharacterSheet exposing (sheetDec)
-import Element.Card exposing (viewSpellCard, viewNotableTraitCard)
+import Element.Card exposing (defaultColorScheme, viewSpellCard, viewNotableTraitCard)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Util exposing (simple, applyIfPresent, guardListLazy)
@@ -39,10 +39,10 @@ update msg model sheet = (model, Cmd.none)
 -- VIEW
 ----------------------------------------------------------------------
 view : CardConfig -> Maybe CharacterSheet -> CharacterSheet -> List (Html Msg)
-view exclusionConfig maybeOldSheet sheet =
+view cardConfig maybeOldSheet sheet =
   let
     ( notableTraitCategories , spellcastingSections ) =
-      case (maybeOldSheet , exclusionConfig.onlyShowChanges) of
+      case (maybeOldSheet , cardConfig.onlyShowChanges) of
           ( Just oldSheet , True ) ->
             ( diffTraitCategories oldSheet.notable_traits sheet.notable_traits
             , diffSpellcastingSections oldSheet.spellcasting_sections sheet.spellcasting_sections
@@ -55,17 +55,17 @@ view exclusionConfig maybeOldSheet sheet =
     (List.map (div [ Attr.css cardsStyle ])
      <| Util.chunks 8 
      <| List.concatMap
-          (viewSpellcastingSection exclusionConfig)
-          (guardListLazy exclusionConfig.showSpells
+          (viewSpellcastingSection cardConfig)
+          (guardListLazy cardConfig.showSpells
              <| \() -> List.filter
-                       (\{origin} -> not (Set.member origin exclusionConfig.excludedCategories))
+                       (\{origin} -> not (Set.member origin cardConfig.excludedCategories))
                        spellcastingSections)
         ++ List.concatMap
-           viewNotableTraitCategory
-           (excludeTraits exclusionConfig <|
-              guardListLazy exclusionConfig.showTraits <|
+           (viewNotableTraitCategory cardConfig defaultColorScheme) -- TODO
+           (excludeTraits cardConfig <|
+              guardListLazy cardConfig.showTraits <|
               \() -> List.filter
-                     (\{category} -> not (Set.member category exclusionConfig.excludedCategories))
+                     (\{category} -> not (Set.member category cardConfig.excludedCategories))
                      notableTraitCategories)
     )
 
@@ -83,18 +83,21 @@ isTraitExcluded : CardConfig -> Category -> Trait -> Bool
 isTraitExcluded { explicitlyExcludedTraits } category { name } =
   Set.member (category, name) explicitlyExcludedTraits
 
-
-viewNotableTraitCategory : NotableTraitCategory -> List (Html Msg)
-viewNotableTraitCategory { category, traits } =
-  traits
-    |> List.filter (\trait -> trait.desc /= Nothing)
-    |> List.map (viewNotableTraitCard category)
+viewNotableTraitCategory : CardConfig -> ColorScheme -> NotableTraitCategory -> List (Html Msg)
+viewNotableTraitCategory config ambientColorScheme { category, traits } =
+  let colorScheme = Dict.get category config.traitCategoryColorSchemes
+        |> Maybe.withDefault ambientColorScheme 
+  in traits
+       |> List.filter (\trait -> trait.desc /= Nothing)
+       |> List.map (viewNotableTraitCard config colorScheme category)
 
 viewSpellcastingSection :  CardConfig -> SpellcastingSection -> List (Html Msg)
-viewSpellcastingSection exclusionConfig section =
-  List.map (viewSpellCard section.origin)
-    <| List.filter (shouldIncludeSpell exclusionConfig section.origin)
-    <| section.spells
+viewSpellcastingSection cardConfig section =
+  let colorScheme = Dict.get section.origin cardConfig.spellcastingSectionColorSchemes
+                    |> Maybe.withDefault defaultColorScheme
+  in List.map (viewSpellCard cardConfig colorScheme section.origin)
+       <| List.filter (shouldIncludeSpell cardConfig section.origin)
+       <| section.spells
 
 -- TODO I'm not sure CardsPageOptions is still relevant
 shouldIncludeSpell : CardConfig -> Origin -> Spell -> Bool

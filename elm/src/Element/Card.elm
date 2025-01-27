@@ -1,6 +1,6 @@
-module Element.Card exposing (viewSpellCard , viewNotableTraitCard)
+module Element.Card exposing (viewSpellCard , viewNotableTraitCard , colorSchemes , defaultColorScheme)
 
-import Css exposing (Style, px, mm)
+import Css exposing (Color, Style, px, mm)
 import Css.Media
 import Dict exposing (Dict)
 import Html.Styled exposing (..)
@@ -17,32 +17,45 @@ import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Util exposing (simple, applyIfPresent, guardListLazy)
 
+defaultColorScheme : ColorScheme
+defaultColorScheme = { name = "greyscale" , bg = Css.hex "e8e8e8" , fg = Css.hex "000000" }
 
-viewNotableTraitCard : String -> Trait -> Html Msg    
-viewNotableTraitCard category { name, desc, ref } =
-  div
-    [ Attr.css cardStyle ]
-    [ div [ Attr.css cardTitleSectionStyle ] (viewCardTitle name ref)
-    , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
-    , div [ Attr.css (descriptionStyle
-                        (Maybe.withDefault 0
-                           (Maybe.map (estimateFontSize << String.length) desc)))
-          , Attr.class "card-description"
-          ]
-        [  Maybe.withDefault "" desc
-           |> Markdown.toHtmlWith
-                { githubFlavored = Just { tables = True, breaks = False }
-                , defaultHighlighting = Nothing
-                , sanitize = False
-                , smartypants = True
-                }
-                []
-           |> fromUnstyled
-        ]
+colorSchemes : List ColorScheme
+colorSchemes =
+  let mk name bg fg = { name = name , bg = Css.hex bg , fg = Css.hex fg }
+  in [ mk "blue" "aee0ff" "003396"
+     , mk "red" "ffe0ae" "963300"
+     , defaultColorScheme
+     ]
 
-    , div [ Attr.css cardTypeStyle ] [ text (category ++ " feature") ]
-      -- TODO: will show feats as class traits, which is a bit weird
-    ]
+viewNotableTraitCard : CardConfig -> ColorScheme -> String -> Trait -> Html Msg    
+viewNotableTraitCard config ambientColorScheme category { name, desc, ref } =
+  let colorScheme = Dict.get ( category , name ) config.traitColorSchemes
+        |> Maybe.withDefault ambientColorScheme 
+  in div
+       [ Attr.css (cardStyle colorScheme) ]
+       [ div [ Attr.css (cardTitleSectionStyle colorScheme) ] (viewCardTitle name ref)
+       , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
+       , div [ Attr.css (descriptionStyle
+                           colorScheme
+                           (Maybe.withDefault 0
+                              (Maybe.map (estimateFontSize << String.length) desc)))
+             , Attr.class "card-description"
+             ]
+           [  Maybe.withDefault "" desc
+              |> Markdown.toHtmlWith
+                   { githubFlavored = Just { tables = True, breaks = False }
+                   , defaultHighlighting = Nothing
+                   , sanitize = False
+                   , smartypants = True
+                   }
+                   []
+              |> fromUnstyled
+           ]
+
+       , div [ Attr.css (cardTypeStyle colorScheme) ] [ text (category ++ " feature") ]
+         -- TODO: will show feats as class traits, which is a bit weird
+       ]
 
 viewCardTitle : String -> Maybe String -> List (Html Msg)
 viewCardTitle title mref =
@@ -54,46 +67,48 @@ viewCardTitle title mref =
                           ])
     [ div [ Attr.css cardTitleStyle ] [ text title ] ]
 
-viewSpellCard : Origin -> Spell -> Html Msg
-viewSpellCard origin spell =
-  div [ Attr.css cardStyle ] <|
-    [ div [ Attr.css cardTitleSectionStyle ]
-        [ div [ Attr.css cardTitleStyle ] [text spell.name]
-        , div [ Attr.css cardSubtitleStyle ]
-              [ text (cardSubtitle spell
-                        ++ Maybe.withDefault ""
-                            (Maybe.map (\r -> " · " ++ r) spell.ref)) ]
-        ]
-    , div [ Attr.css cardBoxesSectionStyle ]
-        [ cardBox "action-cost" spell.casting_time
-        , cardBox "components" (showComponents spell.components)
-        , cardBox "rolls" (Maybe.withDefault "-" spell.rolls)
-        , cardBox "hourglass" spell.duration
-        , cardBox "range" spell.range
-        , cardBox "aoe" (Maybe.withDefault "-" spell.aoe)
-        ]
-    , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
-    , viewSpellDescription (getSpellDescriptionText spell) spell.higher_level spell.bonuses spell.resources spell.level
-    ]
-    ++
-    viewConcentrationBadge spell.concentration
-    ++ 
-    [ div [ Attr.css cardTypeStyle ]
-      [ text (origin 
-                ++ case (spell.level, spell.prepared)
-                   of (0, _    ) -> " cantrip"
-                      (_, False) -> " spell"
-                      (_, True ) -> " spell - always prepared")
-      ]
-    ]
+viewSpellCard : CardConfig -> ColorScheme -> Origin -> Spell -> Html Msg
+viewSpellCard cardConfig ambientColorScheme origin spell =
+  let colorScheme = Dict.get (origin, spell.name) cardConfig.spellColorSchemes
+                    |> Maybe.withDefault ambientColorScheme
+  in div [ Attr.css (cardStyle colorScheme) ] <|
+       [ div [ Attr.css (cardTitleSectionStyle colorScheme) ]
+           [ div [ Attr.css cardTitleStyle ] [text spell.name]
+           , div [ Attr.css cardSubtitleStyle ]
+                 [ text (cardSubtitle spell
+                           ++ Maybe.withDefault ""
+                               (Maybe.map (\r -> " · " ++ r) spell.ref)) ]
+           ]
+       , div [ Attr.css cardBoxesSectionStyle ]
+           [ cardBox colorScheme "action-cost" spell.casting_time
+           , cardBox colorScheme "components" (showComponents spell.components)
+           , cardBox colorScheme "rolls" (Maybe.withDefault "-" spell.rolls)
+           , cardBox colorScheme "hourglass" spell.duration
+           , cardBox colorScheme "range" spell.range
+           , cardBox colorScheme "aoe" (Maybe.withDefault "-" spell.aoe)
+           ]
+       , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
+       , viewSpellDescription colorScheme (getSpellDescriptionText spell) spell.higher_level spell.bonuses spell.resources spell.level
+       ]
+       ++
+       viewConcentrationBadge colorScheme spell.concentration
+       ++ 
+       [ div [ Attr.css (cardTypeStyle colorScheme) ]
+         [ text (origin 
+                   ++ case (spell.level, spell.prepared)
+                      of (0, _    ) -> " cantrip"
+                         (_, False) -> " spell"
+                         (_, True ) -> " spell - always prepared")
+         ]
+       ]
 
 getSpellDescriptionText : Spell -> List String
 getSpellDescriptionText spell =
   Maybe.withDefault spell.description <| Maybe.map (\d -> "(Summary:)" :: d) spell.shortdesc
 
-viewSpellDescription : List String -> Maybe String -> List SpellBonus -> List PrologTerm -> Int -> Html Msg
-viewSpellDescription paragraphs higherLevel bonuses resources spellLevel =
-  div [ Attr.css (descriptionStyle (estimateSpellDescFontSize paragraphs higherLevel bonuses))
+viewSpellDescription : ColorScheme -> List String -> Maybe String -> List SpellBonus -> List PrologTerm -> Int -> Html Msg
+viewSpellDescription colorScheme paragraphs higherLevel bonuses resources spellLevel =
+  div [ Attr.css (descriptionStyle colorScheme (estimateSpellDescFontSize paragraphs higherLevel bonuses))
       , Attr.class "card-description"
       ]
     <| (  paragraphs
@@ -119,10 +134,10 @@ viewSpellDescription paragraphs higherLevel bonuses resources spellLevel =
        ++
        viewSpellResources resources spellLevel
 
-viewConcentrationBadge : Bool -> List (Html Msg)
-viewConcentrationBadge concentration =
+viewConcentrationBadge : ColorScheme -> Bool -> List (Html Msg)
+viewConcentrationBadge colorScheme concentration =
   if concentration
-  then [ div [Attr.css concentrationBadgeStyle] [text "concentration"] ]
+  then [ div [Attr.css (concentrationBadgeStyle colorScheme)] [text "concentration"] ]
   else []
 
 viewHigherLevelP : Maybe String -> List (Html Msg)
@@ -201,9 +216,9 @@ cardSubtitle spell =
        Ritual -> levelAndSchool ++ " (ritual)"
        OnlyRitual -> levelAndSchool ++ " (only ritual)"
 
-cardBox : String -> String -> Html Msg
-cardBox iconName value =
-  div [ Attr.css cardBoxStyle ] [ icon iconName, text value ]
+cardBox : ColorScheme -> String -> String -> Html Msg
+cardBox colorScheme iconName value =
+  div [ Attr.css (cardBoxStyle colorScheme) ] [ icon iconName, text value ]
 
 icon : String -> Html Msg
 icon iconName =
@@ -226,8 +241,8 @@ showComponent c =
 ----------------------------------------------------------------------
 -- STYLE
 ----------------------------------------------------------------------
-cardStyle : List Style
-cardStyle =
+cardStyle : ColorScheme -> List Style
+cardStyle colScheme =
   [ Css.position Css.relative
   , Css.border3 (px 1) Css.solid (Css.rgb 0 0 0)
 
@@ -239,7 +254,9 @@ cardStyle =
 
   , Css.boxSizing Css.borderBox
 
-  , Css.backgroundColor (Css.hex "e8e8e8") |> Css.important
+  -- , Css.backgroundColor (Css.hex "e8e8e8") |> Css.important
+  , Css.backgroundColor colScheme.bg |> Css.important
+  , Css.borderColor colScheme.fg |> Css.important
   , Css.property "print-color-adjust" "exact"
   , Css.fontFamilies ["Verdana", "Dosis"]
   , Css.padding (px 4)
@@ -248,11 +265,13 @@ cardStyle =
   , Css.flexDirection Css.column
   ]
 
-cardTitleSectionStyle : List Style
-cardTitleSectionStyle =
+cardTitleSectionStyle : ColorScheme -> List Style
+cardTitleSectionStyle colScheme =
   [ Css.textAlign Css.center
   , Css.backgroundColor (Css.hex "ffffff") |> Css.important
+  , Css.color colScheme.fg |> Css.important
   , Css.property "print-color-adjust" "exact"
+  , Css.borderColor colScheme.fg |> Css.important
   , Css.borderRadius (px 8)
   , Css.border3 (px 2) Css.solid (Css.rgb 0 0 0)
   , Css.displayFlex
@@ -280,9 +299,10 @@ cardBoxesSectionStyle =
   , Css.property "gap" "0.6mm"
   ]
 
-cardBoxStyle : List Style
-cardBoxStyle =
+cardBoxStyle : ColorScheme -> List Style
+cardBoxStyle colScheme =
   [ Css.backgroundColor (Css.hex "ffffff") |> Css.important
+  , Css.color colScheme.fg |> Css.important
   , Css.property "print-color-adjust" "exact"
   , Css.borderRadius (px 6)
   , Css.fontSize (px 8)
@@ -291,18 +311,24 @@ cardBoxStyle =
   , Css.property "display" "grid"
   , Css.property "grid-template-columns" "1fr 5fr"
   , Css.padding (mm 0.7)
+  , Css.borderColor colScheme.fg
+  , Css.borderStyle Css.solid
+  , Css.borderWidth (Css.px 1)
   ]
 
-descriptionStyle : Float -> List Style
-descriptionStyle fontSize =
+descriptionStyle : ColorScheme -> Float -> List Style
+descriptionStyle colScheme fontSize =
   [ Css.fontSize <| px fontSize
   , Css.lineHeight <| px fontSize
   , Css.textAlign Css.justify
   , Css.backgroundColor (Css.hex "ffffff")
+  , Css.color colScheme.fg
   , Css.property "print-color-adjust" "exact"
   , Css.borderRadius (px 8)
   , Css.padding4 Css.zero (mm 1) Css.zero (mm 1)
   , Css.marginBottom (mm 2)
+  , Css.borderStyle Css.solid
+  , Css.borderWidth (Css.px 2)
   ]
 
 estimateSpellDescFontSize : List String -> Maybe String -> List SpellBonus -> Float
@@ -343,14 +369,14 @@ descriptionContainsTable : List String -> Bool
 descriptionContainsTable = List.any (String.contains "|---|")
 
 
-cardTypeStyle : List Style
-cardTypeStyle =
+cardTypeStyle : ColorScheme -> List Style
+cardTypeStyle colScheme =
   [ Css.position Css.absolute
   , Css.right Css.zero
   , Css.bottom Css.zero
   , Css.fontSize (px 6)
   , Css.textTransform Css.uppercase
-  , Css.backgroundColor (Css.hex "000000")
+  , Css.backgroundColor colScheme.fg
   , Css.color (Css.hex "ffffff")
   , Css.borderRadius4 (mm 1) Css.zero Css.zero Css.zero
   , Css.paddingLeft (mm 0.4)
@@ -358,14 +384,14 @@ cardTypeStyle =
   , Css.fontWeight (Css.int 900)
   ]
 
-concentrationBadgeStyle : List Style
-concentrationBadgeStyle =
+concentrationBadgeStyle : ColorScheme -> List Style
+concentrationBadgeStyle colScheme =
   [ Css.position Css.absolute
   , Css.left Css.zero
   , Css.bottom Css.zero
   , Css.fontSize (px 6)
   , Css.textTransform Css.uppercase
-  , Css.backgroundColor (Css.hex "000000")
+  , Css.backgroundColor colScheme.fg
   , Css.color (Css.hex "ffffff")
   , Css.borderRadius4 Css.zero (mm 1) Css.zero Css.zero
   , Css.paddingRight (mm 0.4)

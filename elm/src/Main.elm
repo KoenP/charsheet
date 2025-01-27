@@ -119,9 +119,9 @@ update msg model =
     GotoCardSelectPage sheet ->
       case model.prevSheetCache of
         Just cachedPrevSheet ->
-          applyPage model (CardSelectPage { curSheet  = sheet
-                                          , prevSheet = cachedPrevSheet
-                                          }
+          applyPage model ( CardSelectPage { curSheet  = sheet
+                                           , prevSheet = cachedPrevSheet
+                                           }
                           , Cmd.none
                           )
         Nothing              -> applyPage model (Loading, CardSelectPage.load model.charId sheet)
@@ -297,7 +297,7 @@ view model =
             EquipmentPage data ->
               Equipment.view data
             CardSelectPage data ->
-              CardSelectPage.view model.cardConfig data
+              CardSelectPage.view model.cardConfig model.focusedDropdownId data
       ]
       
 type alias TabCfg = { name : String

@@ -23,7 +23,7 @@ import Types exposing (..)
 import Types.Ability exposing (..)
 import Decoder.AbilityTable exposing (abilityTableDec)
 import Util exposing (simple)
-import Dropdown exposing (dropdown)
+import Element.Dropdown exposing (dropdown)
 import Decoder.CharacterOptions exposing (gotCharacterOptionsDec)
 
 --------------------------------------------------------------------------------
@@ -535,6 +535,7 @@ viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } 
                            , desc = entry :: desc
                            , enabled = not <| List.member entry disabledOptions
                            , msg = mkMsg (Just entry)
+                           , style = []
                            })
         options
     withDeleteEntry =
@@ -543,6 +544,7 @@ viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } 
                   , desc = ["Undo this choice"]
                   , enabled = True
                   , msg = mkMsg Nothing
+                  , style = []
                   } :: entries
         Nothing -> entries
   in

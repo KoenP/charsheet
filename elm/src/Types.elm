@@ -2,6 +2,7 @@ module Types exposing (..)
 
 import Browser
 import Browser.Navigation as Nav
+import Css exposing (Color)
 import Dict exposing (Dict)
 import Http
 import Platform.Cmd
@@ -308,22 +309,36 @@ type alias Equipment = List String
 type alias Category = String
 type alias TraitName = String
 type alias CardConfig = 
-  { explicitlyExcludedTraits : Set (Category, TraitName)
-  , explicitlyExcludedSpells : Set (Origin, SpellName) -- TODO not sure if this 100% uniquely identifies a spell (maybe there's some weird stuff where you can have the same spell twice as warlock for example, once as a regular spell and once as an eldritch invocation)
-  , excludedCategories       : Set Category
-  , showSpells               : Bool
-  , showTraits               : Bool
-  , onlyShowChanges          : Bool
+  { explicitlyExcludedTraits        : Set (Category, TraitName)
+  , explicitlyExcludedSpells        : Set (Category, SpellName) -- TODO not sure if this 100% uniquely identifies a spell (maybe there's some weird stuff where you can have the same spell twice as warlock for example, once as a regular spell and once as an eldritch invocation)
+  , excludedCategories              : Set Category
+  , showSpells                      : Bool
+  , showTraits                      : Bool
+  , onlyShowChanges                 : Bool
+  , spellcastingSectionColorSchemes : Dict Category ColorScheme
+  , spellColorSchemes               : Dict (Category, SpellName) ColorScheme
+  , traitCategoryColorSchemes       : Dict Category ColorScheme
+  , traitColorSchemes               : Dict (Category, TraitName) ColorScheme
+  , categoryColorSchemes            : Dict Category ColorScheme
   }
 emptyCardConfig : CardConfig
 emptyCardConfig =
-  { explicitlyExcludedTraits = Set.empty
-  , explicitlyExcludedSpells = Set.empty
-  , excludedCategories       = Set.empty
-  , showSpells               = True
-  , showTraits               = True
-  , onlyShowChanges          = False
+  { explicitlyExcludedTraits        = Set.empty
+  , explicitlyExcludedSpells        = Set.empty
+  , excludedCategories              = Set.empty
+  , showSpells                      = True
+  , showTraits                      = True
+  , onlyShowChanges                 = False
+  , spellcastingSectionColorSchemes = Dict.empty
+  , spellColorSchemes               = Dict.empty
+  , traitCategoryColorSchemes       = Dict.empty
+  , traitColorSchemes               = Dict.empty
+  , categoryColorSchemes            = Dict.empty
   }
+type alias ColorScheme = { bg   : Color
+                         , fg   : Color
+                         , name : String
+                         }
 
 ----------------------------------------------------------------------
 -- MSG

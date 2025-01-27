@@ -2,6 +2,7 @@ module Page.CardSelectPage exposing (..)
 
 import Debug
 import Css exposing (Style)
+import Dict
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr
 import Html.Styled.Events as E
@@ -12,6 +13,8 @@ import Set exposing (Set)
 import Tuple
 
 import Decoder.CharacterSheet exposing (sheetDec)
+import Element.Card exposing (colorSchemes)
+import Element.Dropdown exposing (dropdown, DropdownOption)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Util exposing (..)
@@ -36,9 +39,10 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     SetCardConfig newConfig ->
-      ( { model | cardConfig = newConfig }
+      ( { model | cardConfig = newConfig , focusedDropdownId = Nothing }
       , Cmd.none
       )
+    SetEditCharacterPageDesc _ -> ( model , Cmd.none )
     _ ->
       let _ = Debug.log "" msg
       in errorPage model ("Page.CardSelectPage.update called with "
@@ -47,10 +51,24 @@ update msg model =
 ----------------------------------------------------------------------
 -- VIEW
 ----------------------------------------------------------------------
+type Card = SpellCard Spell | TraitCard Trait
+cardName : Card -> String
+cardName card =
+  case card of
+      SpellCard spell -> spell.name
+      TraitCard trait -> trait.name
+
+cardId : Category -> Card -> String
+cardId category card =
+  case card of
+      SpellCard spell -> category ++ "-spell-" ++ spell.name
+      TraitCard trait -> category ++ "-trait-" ++ trait.name
+
 view :  CardConfig
+     -> Maybe String
      -> { curSheet : CharacterSheet , prevSheet : CharacterSheet}
      -> List (Html Msg)
-view config { curSheet , prevSheet } =
+view config focusedDropdownId { curSheet , prevSheet } =
   let ( notableTraits , spellcastingSections ) =
         if config.onlyShowChanges
         then ( diffTraitCategories prevSheet.notable_traits curSheet.notable_traits
@@ -61,7 +79,7 @@ view config { curSheet , prevSheet } =
     viewGlobalConfig config
     ::
     List.concatMap
-      (viewCategory config)
+      (viewCategory config focusedDropdownId)
       (mergeTraitAndSpellCategories notableTraits spellcastingSections)
 
 viewGlobalConfig : CardConfig -> Html Msg
@@ -79,8 +97,8 @@ viewGlobalConfig config =
       (SetCardConfig { config | onlyShowChanges = not config.onlyShowChanges })
       "Only show changes w.r.t. previous level"
 
-viewCategory : CardConfig -> (Category , List Trait , List Spell) -> List (Html Msg)
-viewCategory config (category , traits , spells) =
+viewCategory : CardConfig -> Maybe String -> (Category , List Trait , List Spell) -> List (Html Msg)
+viewCategory config focusedDropdownId (category , traits , spells) =
   let
     categoryIncluded = not <| Set.member category config.excludedCategories
     toggleCategory = if categoryIncluded then Set.insert category else Set.remove category
@@ -92,8 +110,25 @@ viewCategory config (category , traits , spells) =
                            { config
                            | excludedCategories = toggleCategory config.excludedCategories
                            })
-                        ("From " ++ category ++ ":" )
-  in 
+                        ("From " ++ category ++ ":")
+    mkTraitCategoryMsg mScheme =
+      SetCardConfig
+      { config
+      | traitCategoryColorSchemes =
+          case mScheme of
+              Nothing     -> Dict.remove category config.traitCategoryColorSchemes
+              Just scheme -> Dict.insert category scheme config.traitCategoryColorSchemes
+      }
+
+    mkSpellSectionMsg mScheme =
+      SetCardConfig
+      { config
+      | spellcastingSectionColorSchemes =
+          case mScheme of
+              Nothing     -> Dict.remove category config.spellcastingSectionColorSchemes
+              Just scheme -> Dict.insert category scheme config.spellcastingSectionColorSchemes
+      }
+  in
     if categoryIncluded
     then
       onlyIfPopulated
@@ -101,46 +136,124 @@ viewCategory config (category , traits , spells) =
         (div [])
         <| guardListLazy config.showTraits
              (\() -> onlyIfPopulated
-                (simple h4 "Features")
+                (h4 [] (  text "Features"
+                       :: viewColorSchemePicker
+                          config
+                          mkTraitCategoryMsg
+                          (Dict.get category config.traitCategoryColorSchemes)
+                          focusedDropdownId
+                          (category ++ "-traits")))
                 (ul [])
                 (traits |> List.filter (\{desc} -> desc /= Nothing)
-                        |> List.map (viewTrait config category)))
+                        |> List.map (viewTrait config focusedDropdownId category)))
            ++
            guardListLazy config.showSpells
              (\() -> onlyIfPopulated
-               (simple h4 "Spells")
+               (h4 [] (  text "Spells"
+                      :: viewColorSchemePicker
+                         config
+                         mkSpellSectionMsg
+                         (Dict.get category config.spellcastingSectionColorSchemes)
+                         focusedDropdownId
+                         (category ++ "-spells")
+                      ))
                (ul [])
-               (spells |> List.map (viewSpell config category)))
+               (spells |> List.map (viewSpell config focusedDropdownId category)))
     else
       [ categoryHeader ]
       
-viewTrait : CardConfig -> Category -> Trait -> Html Msg
-viewTrait config category { name } =
-  let included = not (Set.member (category, name) config.explicitlyExcludedTraits)
-      updateFn = if included then Set.insert (category, name) else Set.remove (category, name)
-      newConfig = { config
-                  | explicitlyExcludedTraits = updateFn config.explicitlyExcludedTraits
-                  }
-  in viewListItem newConfig included category name
+viewTrait : CardConfig -> Maybe String -> Category -> Trait -> Html Msg
+viewTrait config focusedDropdownId category trait =
+  let included = not (Set.member (category, trait.name) config.explicitlyExcludedTraits)
+      updateFn = if included then Set.insert (category, trait.name) else Set.remove (category, trait.name)
+      msgs =
+        { toggleCardExclusionMsg =
+            SetCardConfig
+            { config
+            | explicitlyExcludedTraits = updateFn config.explicitlyExcludedTraits
+            }
+        , selectCardColor = \maybeColor ->
+            SetCardConfig
+            { config
+            | traitColorSchemes =
+                case maybeColor of
+                    Nothing  -> Dict.remove (category, trait.name) config.traitColorSchemes
+                    Just col -> Dict.insert (category, trait.name) col config.traitColorSchemes
+            }
+        }
+      currentlySelectedScheme = Dict.get (category, trait.name) config.traitColorSchemes
+  in viewListItem config msgs currentlySelectedScheme focusedDropdownId included category (TraitCard trait)
 
--- TODO code duplication with viewTrait
-viewSpell : CardConfig -> Category -> Spell -> Html Msg
-viewSpell config category { name } =
-  let included = not (Set.member (category, name) config.explicitlyExcludedSpells)
-      updateFn = if included then Set.insert (category, name) else Set.remove (category, name)
-      newConfig = { config
-                  | explicitlyExcludedSpells = updateFn config.explicitlyExcludedSpells
-                  }
-  in viewListItem newConfig included category name
+viewSpell : CardConfig -> Maybe String -> Category -> Spell -> Html Msg
+viewSpell config focusedDropdownId category spell =
+  let included = not (Set.member (category, spell.name) config.explicitlyExcludedSpells)
+      updateFn = if included then Set.insert (category, spell.name) else Set.remove (category, spell.name)
+      msgs = 
+        { toggleCardExclusionMsg = 
+            SetCardConfig { config | explicitlyExcludedSpells = updateFn config.explicitlyExcludedSpells }
+        , selectCardColor = \maybeColor ->
+            SetCardConfig
+            { config
+            | spellColorSchemes =
+                case maybeColor of
+                    Nothing  -> Dict.remove (category, spell.name) config.spellColorSchemes
+                    Just col -> Dict.insert (category, spell.name) col config.spellColorSchemes
+            }
+        }
+      currentlySelectedScheme = Dict.get (category, spell.name) config.spellColorSchemes
+  in viewListItem config msgs currentlySelectedScheme focusedDropdownId included category (SpellCard spell)
 
-viewListItem : CardConfig -> Bool -> Category -> String -> Html Msg
-viewListItem newConfig included category name =
+type alias CardConfigMsgs =
+  { toggleCardExclusionMsg : Msg
+  , selectCardColor : Maybe ColorScheme -> Msg
+  }
+
+viewListItem :  CardConfig
+             -> CardConfigMsgs
+             -> Maybe ColorScheme
+             -> Maybe String
+             -> Bool
+             -> Category
+             -> Card
+             -> Html Msg
+viewListItem config msgs currentlySelectedScheme focusedDropdownId included category card =
   li (guardList (not included) [ Attr.css omittedStyle ]) <|
     viewCheckbox 
-      (category ++ "_" ++ name ++ "_checkbox")
+      (category ++ "_" ++ cardName card ++ "_checkbox")
       included
-      (SetCardConfig newConfig)
-      name
+      msgs.toggleCardExclusionMsg
+      (cardName card)
+    ++
+    viewColorSchemePicker config msgs.selectCardColor currentlySelectedScheme focusedDropdownId (cardId category card)
+
+viewColorSchemePicker :  CardConfig
+                      -> (Maybe ColorScheme -> Msg)
+                      -> Maybe ColorScheme
+                      -> Maybe String
+                      -> String
+                      -> List (Html Msg)
+viewColorSchemePicker config mkSelectMsg currentlySelectedScheme focusedDropdownId dropdownId =
+  let
+    mkOption scheme =
+      { entry = scheme.name
+      , desc = []
+      , enabled = True
+      , msg = mkSelectMsg (Just scheme)
+      , style = [Css.color scheme.fg]
+      }
+  in [ dropdown
+         False
+         dropdownId
+         (Maybe.map .name currentlySelectedScheme)
+         (List.map mkOption colorSchemes)
+         (Just dropdownId == focusedDropdownId)
+     ]
+
+viewColorSchemeOption : CardConfig -> Card -> ColorScheme -> Html Msg
+viewColorSchemeOption config card scheme =
+  option
+    []
+    [ div [ Attr.css [ Css.backgroundColor scheme.fg ] ] [ text <| "■" ++ scheme.name ] ]
 
 viewCheckbox : String -> Bool -> Msg -> String -> List (Html Msg)
 viewCheckbox identifier isChecked msg checkboxLabel =

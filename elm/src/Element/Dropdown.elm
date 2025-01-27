@@ -1,4 +1,4 @@
-module Dropdown exposing (..)
+module Element.Dropdown exposing (..)
 
 import Css exposing (..)
 import Html.Styled exposing (..)
@@ -16,6 +16,7 @@ type alias DropdownOption =
   , desc    : List String
   , enabled : Bool
   , msg     : Msg
+  , style   : List Style
   }
 
 dropdown : Bool -> String -> Maybe String -> List DropdownOption -> Bool -> Html Msg
@@ -37,8 +38,8 @@ dropdown isDisabled id currentlySelected entries open =
           [ css <| (if open then visibility visible else visibility hidden) :: contentStyle ]
 
           (List.map
-             (\{ entry, desc, enabled, msg } -> button
-                (css (hrefStyle enabled)
+             (\{ entry, desc, enabled, msg, style } -> button
+                (css (hrefStyle enabled ++ style)
                  :: E.onMouseEnter (SetEditCharacterPageDesc (Just desc))
                  :: E.onMouseLeave (SetEditCharacterPageDesc Nothing)
                  :: if enabled then [ E.onClick msg ] else [])
@@ -60,7 +61,7 @@ buttonStyle : Bool -> Bool -> Bool -> List Style
 buttonStyle isDisabled optionSelected open =
   [ backgroundColor <| buttonColor isDisabled optionSelected open
   , color (hex "ffffff")
-  , padding4 (px 4) (px 8) (px 4) (px 8) -- top right bot left
+  , padding4 (px 0) (px 8) (px 0) (px 8) -- top right bot left
   , fontSize (px 16)
   , border zero
   , cursor pointer
@@ -92,7 +93,7 @@ contentStyle =
 hrefStyle : Bool -> List Style
 hrefStyle enabled =
   [ color (if enabled then rgb 0 0 0 else rgb 150 150 150)
-  , padding2 (px 12) (px 16)
+  --, padding2 (px 12) (px 16)
   , textDecoration none
   , display block
   , border zero
