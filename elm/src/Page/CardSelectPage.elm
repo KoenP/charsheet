@@ -13,8 +13,8 @@ import Set exposing (Set)
 import Tuple
 
 import Decoder.CharacterSheet exposing (sheetDec)
-import Element.Card exposing (colorSchemes)
-import Element.Dropdown exposing (dropdown, DropdownOption)
+import Element.Card exposing (colorSchemes, defaultColorScheme)
+import Element.Dropdown exposing (customStyleDropdown, defaultDropdownStyle, DropdownOption, DropdownStyle)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Util exposing (..)
@@ -241,7 +241,14 @@ viewColorSchemePicker config mkSelectMsg currentlySelectedScheme focusedDropdown
       , msg = mkSelectMsg (Just scheme)
       , style = [Css.color scheme.fg]
       }
-  in [ dropdown
+    buttonScheme = Maybe.withDefault defaultColorScheme currentlySelectedScheme
+  in [ customStyleDropdown
+         { defaultDropdownStyle
+         | buttonStyle = \isDisabled optionSelected isOpen ->
+             [ Css.color buttonScheme.fg
+             , Css.backgroundColor buttonScheme.bg
+             ]
+         }
          False
          dropdownId
          (Maybe.map .name currentlySelectedScheme)

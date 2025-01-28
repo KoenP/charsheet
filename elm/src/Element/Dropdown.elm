@@ -19,27 +19,49 @@ type alias DropdownOption =
   , style   : List Style
   }
 
+type alias Disabled = Bool
+type alias OptionSelected = Bool
+type alias Open = Bool
+type alias DropdownStyle =
+  { buttonStyle : Disabled -> OptionSelected -> Open -> List Style
+  , dropdownStyle : List Style
+  , contentStyle : List Style
+  , hrefStyle : Bool -> List Style 
+  }
+
+defaultDropdownStyle : DropdownStyle
+defaultDropdownStyle =
+  { buttonStyle = buttonStyle
+  , dropdownStyle = dropdownStyle
+  , contentStyle = contentStyle
+  , hrefStyle = hrefStyle
+  }
+
 dropdown : Bool -> String -> Maybe String -> List DropdownOption -> Bool -> Html Msg
-dropdown isDisabled id currentlySelected entries open =
+dropdown = customStyleDropdown defaultDropdownStyle
+
+
+customStyleDropdown : DropdownStyle -> Bool -> String -> Maybe String -> List DropdownOption -> Bool -> Html Msg
+customStyleDropdown customStyle isDisabled id currentlySelected entries open =
   let
     filterEntries = case currentlySelected of
                       Nothing -> (\x -> x)
                       Just selected -> List.filter (\ddopt -> ddopt.entry /= selected)
   in 
     div
-      [ css dropdownStyle
+      [ css customStyle.dropdownStyle
       , E.stopPropagationOn "click" (D.succeed (Null, True))
       ]
       [ button
-          ( css (buttonStyle isDisabled (currentlySelected /= Nothing) open)
+          ( css (customStyle.buttonStyle isDisabled (currentlySelected /= Nothing) open)
             :: if isDisabled then [] else [ E.onClick (ToggleDropdown id) ])
           [ text (Maybe.withDefault "..." currentlySelected)]
       , div
-          [ css <| (if open then visibility visible else visibility hidden) :: contentStyle ]
+          [ css <| (if open then visibility visible else visibility hidden) :: customStyle.contentStyle ]
 
           (List.map
              (\{ entry, desc, enabled, msg, style } -> button
-                (css (hrefStyle enabled ++ style)
+                (css (customStyle.hrefStyle enabled ++ style)
                  :: E.onMouseEnter (SetEditCharacterPageDesc (Just desc))
                  :: E.onMouseLeave (SetEditCharacterPageDesc Nothing)
                  :: if enabled then [ E.onClick msg ] else [])
