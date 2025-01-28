@@ -10,12 +10,18 @@ import Decoder.AbilityTable exposing (abilityTableDec)
 import Decoder.PrologTerm exposing (prologTermDec)
 import Util
 
-gotCharacterOptionsDec : Decoder (AbilityTable, Dict Level (List Options), Dict Level (List Effect))
+gotCharacterOptionsDec : Decoder CharacterOptions
 gotCharacterOptionsDec =
-  D.succeed (\x y z -> (x,y,z))
+  D.succeed (\ability_table options traits_and_bonuses char_level ->
+            { ability_table = ability_table
+            , options = options
+            , traits_and_bonuses = traits_and_bonuses
+            , char_level = char_level
+            })
     |> D.andMap (D.field "ability_table" abilityTableDec)
     |> D.andMap (D.field "options" optionsDictDec)
     |> D.andMap (D.field "traits_and_bonuses" traitsAndBonusesDictDec)
+    |> D.andMap (D.field "char_level" D.int)
 
 traitsAndBonusesDictDec : Decoder (Dict Level (List Effect))
 traitsAndBonusesDictDec =

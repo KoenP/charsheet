@@ -144,6 +144,38 @@ match_level(Level) :-
     level(CurLevel),
     between(1, CurLevel, Level).
 
+% Level up to level L+1.
+options(level(L), 'as class', class_option) :-
+    level(CurLevel),
+    CurLevel < 20,
+    NextLevel is CurLevel + 1,
+    between(2, NextLevel, L).
+
+options(level(L), 'max hp roll'(con(Mod), avg(Avg)), max_hp_increment(Class)) :-
+    choice(level(L), 'as class', Class),
+    ability_mod(con, Mod),
+    max_hp_per_level(Class, Roll),
+    roll_avg(Roll, Avg).
+max_hp_increment(Class, Roll) :-
+    max_hp_per_level(Class, 1 d N),
+    between(1, N, Roll).
+custom_format('max hp roll'(con(Mod), avg(Avg))) -->
+    ["max hit point roll ("], format_bonus(Mod), [" from CON; average is "], format_number(Avg) , [")"].
+% TODO this doesn't seem to work yet.
+lookup_option_doc(level(L), 'max hp roll'(_,_), _, Doc) :-
+    choice(level(L), 'as class', Class),
+    max_hp_per_level(Class, 1 d N),
+    ability_mod(con, Mod),
+    fmt(format_bonus(Mod), ModStr),
+    format(
+        string(Doc),
+        "Select the outcome of rolling a d~w to increase your max HP. Alternatively, choose the average value. Your CON modifier (~w) is added to the result.",
+        [N, ModStr]).
+
+gain_level(L, Class, hp_rolled(Roll)) :-
+    choice(level(L), 'as class', Class),
+    choice(level(L), 'max hp roll'(_,_), Roll).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Character initialization.
 

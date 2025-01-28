@@ -55,7 +55,7 @@ withdraw_gain_level(CharName, RetractedLevel) :-
     snapshot(
         (load_character_file(Path),
          level(CurLevel),
-         forall(between(RetractedLevel, CurLevel, L), retractall(gain_level(L, _, _))),
+         forall(between(RetractedLevel, CurLevel, L), retractall(choice(level(L),_,_))),
          resolve_ineligible_choices,
          rewrite_character_file(Path))).
 withdraw_character_fact(CharName, Fact) :-

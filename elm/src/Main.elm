@@ -211,21 +211,21 @@ handleHttpResponseMsg msg model =
         , none
         )
 
-      GotCharacterOptions abilityTable optionsPerLevel traitsAndBonusesPerLevel ->
-        let charLevel = Dict.keys optionsPerLevel |> List.maximum |> Maybe.withDefault 1
-        in ( { model
-               | page = EditCharacterPage
-                        { abilityTable = abilityTable
-                        , optionsPerLevel = optionsPerLevel
-                        , traitsAndBonusesPerLevel = traitsAndBonusesPerLevel 
-                        , charLevel = charLevel
-                        , selectedLevel = Just charLevel
-                        , desc = Nothing
-                        , setAbilitiesOnNextTick = Dict.empty
-                        }
-             }
-           , none
-           )
+      GotCharacterOptions { ability_table, options, traits_and_bonuses, char_level } ->
+        -- TODO duplicate with EditCharacter Page?
+        ( { model
+            | page = EditCharacterPage
+                     { abilityTable = ability_table
+                     , optionsPerLevel = options
+                     , traitsAndBonusesPerLevel = traits_and_bonuses 
+                     , charLevel = char_level
+                     , selectedLevel = Just char_level
+                     , desc = Nothing
+                     , setAbilitiesOnNextTick = Dict.empty
+                     }
+          }
+        , none
+        )
       GotEquipment (Ok equipment) ->
         ( { model | page = EquipmentPage { equipment = equipment
                                          , inputFieldVal = ""

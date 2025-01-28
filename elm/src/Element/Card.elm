@@ -254,7 +254,6 @@ cardStyle colScheme =
 
   , Css.boxSizing Css.borderBox
 
-  -- , Css.backgroundColor (Css.hex "e8e8e8") |> Css.important
   , Css.backgroundColor colScheme.bg |> Css.important
   , Css.borderColor colScheme.fg |> Css.important
   , Css.property "print-color-adjust" "exact"

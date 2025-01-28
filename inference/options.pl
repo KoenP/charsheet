@@ -184,6 +184,8 @@ options_todo(Origin, Id, Spec) :-
     options(Origin, Id, Spec),
     \+ choice(Origin, Id, _).
 
+% TODO move json generation to a separate file.
+
 %! options_by_level_json(?Opts)
 all_options_by_level_json(Out) :-
     findall(Json,
@@ -200,6 +202,7 @@ all_options_by_level_json(Out) :-
 
 dict_get_pred(Dict, Field, Val) :-
     Dict.get(Field) = Val.
+
 
 %! options_json(?Origin, ?Id, ?Json)
 options_json(Origin, Id, _{origin: OriginStr,

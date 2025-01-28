@@ -142,7 +142,8 @@ h_get_edit_character_page(_Request) :-
     all_options_by_level_json(OptsJson),
     traits_and_bonuses_json(TBJson),
     ability_table_json_dict(AbiJson),
-    reply_json_dict(_{options: OptsJson, ability_table: AbiJson, traits_and_bonuses: TBJson}).
+    level(Level),
+    reply_json_dict(_{options: OptsJson, ability_table: AbiJson, traits_and_bonuses: TBJson, char_level: Level}).
 
 h_get_equipment(CharId, _Request) :-
     with_loaded_character(

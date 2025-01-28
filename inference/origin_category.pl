@@ -1,4 +1,5 @@
 origin_category(init, init).
+origin_category('level up', level(_)).
 origin_category(class(Class), Origin) :-
     class_option(Class),
     class_origin_to_class(Origin, Class).
@@ -14,6 +15,7 @@ origin_category(Category, trait(Trait)) :-
 origin_category(Category, choice(Origin, _)) :-
     origin_category(Category, Origin).
 
+origin_category_canonical_order('level up', 0) :- !.
 origin_category_canonical_order(init, 0) :- !.
 origin_category_canonical_order(race(_), 1) :- !.
 origin_category_canonical_order(background(_), 2) :- !.
@@ -35,6 +37,7 @@ origin_category_or_uncategorized(uncategorized, _).
 %! origin_level(?Origin, ?Level)
 %
 %  Determine what Level your character obtained a given Origin qualification.
+origin_level(level(L), L) :- !.
 origin_level(init, 1) :- !.
 origin_level(^_, 1) :- !.
 origin_level(initial_class(_), 1) :- !.

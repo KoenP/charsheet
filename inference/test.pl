@@ -84,3 +84,9 @@ unload_char :-
             Term =.. [Pred | Args]),
            retractall(Term)),
     abolish_all_tables.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+attack_with_sorted_notes(Name, Range, ToHitOrDC, DamageRolls, SortedNotes) :-
+    attack(Name, Range, ToHitOrDC, DamageRolls, Notes),
+    sort(Notes, SortedNotes).

@@ -34,7 +34,7 @@ load charId =
   Http.get
     { url = characterRequestUrl charId ["edit_character_page"] []
     , expect = Http.expectJson
-               (mkHttpResponseMsg (\(x,y,z) -> GotCharacterOptions x y z))
+               (mkHttpResponseMsg GotCharacterOptions)
                gotCharacterOptionsDec
     }
 
@@ -44,28 +44,25 @@ load charId =
 update : Msg -> Model -> EditCharacterPageData -> (Model, Cmd Msg)
 update msg model oldData =
   case msg of
-    HttpResponse (Ok (GotCharacterOptions newAbilityTable newOptions newTraitsAndBonuses)) ->
-      let
-        charLevel = newOptions |> Dict.keys |> List.maximum |> Maybe.withDefault 1
-      in
-        applyPage
-          model
-          ( EditCharacterPage
-              { abilityTable             = newAbilityTable
-              , optionsPerLevel          = newOptions
-              , traitsAndBonusesPerLevel = newTraitsAndBonuses
-              , charLevel                = charLevel
-              , selectedLevel            = Just <| Maybe.withDefault charLevel oldData.selectedLevel
-              , desc                     = Nothing
-              , setAbilitiesOnNextTick   =
-                  let newBaseAbilities = Dict.map (\_ v -> v.base) newAbilityTable 
-                      changedAbilities = Dict.intersect newBaseAbilities oldData.setAbilitiesOnNextTick
-                  in if changedAbilities == oldData.setAbilitiesOnNextTick
-                     then Dict.empty
-                     else oldData.setAbilitiesOnNextTick
-              }
-          , Cmd.none
-          )
+    HttpResponse (Ok (GotCharacterOptions { ability_table, options, traits_and_bonuses, char_level })) ->
+      applyPage
+        model
+        ( EditCharacterPage
+            { abilityTable             = ability_table
+            , optionsPerLevel          = options
+            , traitsAndBonusesPerLevel = traits_and_bonuses
+            , charLevel                = char_level
+            , selectedLevel            = Just <| Maybe.withDefault char_level oldData.selectedLevel
+            , desc                     = Nothing
+            , setAbilitiesOnNextTick   =
+                let newBaseAbilities = Dict.map (\_ v -> v.base) ability_table 
+                    changedAbilities = Dict.intersect newBaseAbilities oldData.setAbilitiesOnNextTick
+                in if changedAbilities == oldData.setAbilitiesOnNextTick
+                   then Dict.empty
+                   else oldData.setAbilitiesOnNextTick
+            }
+        , Cmd.none
+        )
 
     HttpResponse (Ok Update) ->
       (model, load model.charId)
@@ -184,7 +181,7 @@ view focusedDropdownId data =
 tooltipSize = 80
 
 viewSideNav : EditCharacterPageData -> Html Msg
-viewSideNav { desc, optionsPerLevel, selectedLevel } =
+viewSideNav { desc, optionsPerLevel, selectedLevel, charLevel } =
   div [ Attr.css sideNavStyle ] <|
     case desc of
       Just (title :: paragraphs) ->
@@ -195,10 +192,12 @@ viewSideNav { desc, optionsPerLevel, selectedLevel } =
           paragraphs
       _ -> 
         [ table [] <|
-            (tr [] [viewLevelUpButton selectedLevel])
+            (tr [] [viewLevelUpButton charLevel selectedLevel])
             ::
-            ( Dict.keys optionsPerLevel
+            ( optionsPerLevel
+              |> Dict.keys 
               |> List.reverse
+              |> List.filter (\lvl -> lvl <= charLevel)
               |> List.map (viewSideNavLevelButton selectedLevel) )
         ]
 
@@ -236,10 +235,12 @@ viewSideNavLevelButton selectedLevel lvl =
         ]
     ]
 
-viewLevelUpButton : Maybe Level -> Html Msg
-viewLevelUpButton selectedLevel =
+viewLevelUpButton : Level -> Maybe Level -> Html Msg
+viewLevelUpButton charLevel selectedLevel =
   button
-    [ Attr.css (sideNavButtonStyle (selectedLevel == Nothing)), E.onClick GotoLevelUp ]
+    [ Attr.css (sideNavButtonStyle (selectedLevel == Just (charLevel + 1)))
+    , E.onClick (EditCharacterLevel (charLevel + 1))
+    ]
     [ text "+" ]
 
 viewMain : Maybe String -> EditCharacterPageData -> Html Msg
@@ -357,7 +358,7 @@ viewMainContents focusedDropdownId opts tbs selectedLevel =
           (h1 [] [text "You gained:"] :: tbsHtml)
         ++
         List.filter (\_ -> not (List.isEmpty optsHtml)) -- not (Dict.isEmpty (Dict.get level opts)))
-          (h1 [] [text "You need to make the following choices:"] :: optsHtml)
+          (h1 [] [text "You have the following options:"] :: optsHtml)
           
       
     Nothing ->
@@ -467,8 +468,9 @@ viewOriginCategoryOptionsList : Maybe String -> (Int, String) -> List Options ->
 viewOriginCategoryOptionsList focusedDropdownId (_, category) optionsList =
   let
     headerMsg = case category of
-                  "init" -> "Choose your background, class, and race:"
-                  _      -> "From " ++ category ++ ":"
+                  "init"     -> "Choose your background, class, and race:"
+                  "level up" -> "Level up:"
+                  _          -> "From " ++ category ++ ":"
   in 
     div
       [ Attr.css originCategoryStyle ]

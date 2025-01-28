@@ -379,6 +379,12 @@ type Retraction = RetractLevelUp Int
 
 type Choice = ListChoice (List String) | SingletonChoice String
 
+type alias CharacterOptions = { ability_table      : AbilityTable
+                              , options            : Dict Level (List Options)
+                              , traits_and_bonuses : Dict Level (List Effect)
+                              , char_level         : Level
+                              }
+
 type HttpResponseMsg
   = GotCharacterList (List (CharId, String))
   | NewCharacterCreated CharId
@@ -386,7 +392,7 @@ type HttpResponseMsg
   | GotPrintableCharSheet CharacterSheet
   | GotPrevLevelSheet CharacterSheet CharacterSheet
   | GotCards CharacterSheet
-  | GotCharacterOptions AbilityTable (Dict Level (List Options)) (Dict Level (List Effect))
+  | GotCharacterOptions CharacterOptions
   | GotEquipment (Result String Equipment)
   | ToCardSelectionPage CharacterSheet -- TODO rename all of these to "ToXPage"
   -- | ChoiceRegistered
