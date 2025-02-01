@@ -32,6 +32,7 @@
 :- op(1000, xf, qq).
 :- op(500, xfx, >:).
 :- op(500, fx, ^).
+:- op(500, yfx, +?)
 
 :- [dragon_ancestry].
 :- [util].

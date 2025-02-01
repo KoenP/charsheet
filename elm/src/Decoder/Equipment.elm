@@ -7,7 +7,15 @@ import Json.Decode.Extra as D
 import Types exposing (..)
 --------------------------------------------------------------------------------
 
-foo = 0
+equipmentDec : Decoder Equipment
+equipmentDec =
+  D.list itemDec
+
+itemDec : Decoder Item
+itemDec =
+  D.succeed Item
+    |> D.andMap (D.field "name" D.string)
+    |> D.andMap (D.field "inferred" D.bool)
 
 -- gotEquipmentDec : Decoder Equipment
 -- gotEquipmentDec =

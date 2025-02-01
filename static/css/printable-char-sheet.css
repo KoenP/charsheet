@@ -264,6 +264,7 @@
     background-color: white !important;
     print-color-adjust: exact;
     border-radius: 4pt;
+    max-width: 40mm;
 
     border: 2pt solid lightgrey;
 }

@@ -147,7 +147,7 @@ h_get_edit_character_page(_Request) :-
 h_get_equipment(CharId, _Request) :-
     with_loaded_character(
         CharId,
-        (findall(I, (has(Tm), term_string(Tm, I)), Items),
+        (equipment_json_dict(Items),
          reply_json_dict(Items))).
 
 h_post_choice(CharId, Request) :-
@@ -203,7 +203,7 @@ h_post_equip_item(CharId, Request) :-
         -> reply_json_dict(Error)
         ;  record_character_fact(CharId, has(Item)),
            assert(has(Item)),
-           findall(I, (has(Tm), term_string(Tm, I)), Items),
+           equipment_json_dict(Items),
            reply_json_dict(Items))).
 
 equip_item_error(Item, "You already have that item equipped.") :-
@@ -215,13 +215,8 @@ equip_item_error(Item, "That item does not exist") :-
 h_post_unequip_item(CharId, Request) :-
     http_parameters(Request, [item(ItemAtom,[])]),
     read_term_from_atom(ItemAtom, Item, []),
-    with_loaded_character(
-        CharId,
-        ( retractall(has(Item)),
-          character_file_path(CharId, Path),
-          rewrite_character_file(Path),
-          findall(I, (has(Tm), term_string(Tm, I)), Items),
-          reply_json_dict(Items))).
+    withdraw_character_fact(CharId, has(Item)),
+    with_loaded_character(CharId, (equipment_json_dict(Items), reply_json_dict(Items))).
 
 handle_with_char_snapshot(Handler, CharId, Request) :-
     with_loaded_character(CharId, (call(Handler, Request), abolish_private_tables)).

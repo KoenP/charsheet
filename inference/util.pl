@@ -121,3 +121,10 @@ add_to_multimap(Key, X, In, In.put(Key, [X])).
 
 as_boolean(Goal, Bool) :-
     call(Goal) -> Bool = true ; Bool = false.
+
+toggle(yes).
+
+id(X,X).
+const(X, _, X).
+is_true(Goal, true) :- call(Goal), !.
+is_true(Goal, false) :- !.

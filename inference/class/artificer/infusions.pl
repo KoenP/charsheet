@@ -20,6 +20,11 @@ attack('arcane propulsion gauntlet', melee, to_hit(ToHit), [damage(force, 1 d 8)
 custom_format('arcane propulsion armor'(BaseArmor)) -->
     ['arcane propulsion '], format_term(BaseArmor).
 
+inferred_has_options_source(trait(infusion('arcane propulsion armor')),
+                            'equip arcane propulsion armor',
+                            wrap('arcane propulsion armor'),
+                            base_body_armor).
+
 % Infusion: Armor of magical strength
 infusion_option('armor of magical strength').
 infusion('armor of magical strength') ?= "This armor has 6 charges. The wearer can expend the armor’s charges in the following ways:
@@ -34,6 +39,11 @@ res('armor of magical strength', 6) :-
 restore_res('at dawn', 'armor of magical strength', restore(1 d 6)).
 custom_format('armor of magical strength'(BaseArmor)) -->
     format_term(BaseArmor), [' of magical strength'].
+
+inferred_has_options_source(trait(infusion('armor of magical strength')),
+                            'equip armor of magical strength',
+                            wrap('armor of magical strength'),
+                            base_body_armor).
 
 % Infusion: Boots of the Winding Path
 % TODO
@@ -52,6 +62,11 @@ bonus_source(has('enhanced arcane focus'), modify_spell(_, Spell, Goal)) :-
     spell_property(Spell, effects, Effects),
     subterm_member(spell_attack_roll(_), Effects),
     Goal = add_spell_effects(["ignore half cover"]).
+
+inferred_has_options_source(trait(infusion('enhanced arcane focus')),
+                            'equip enhanced arcane focus',
+                            const('enhanced arcane focus'),
+                            toggle).
 
 % Infusion: Enhanced Defense
 infusion_option('enhanced defense').

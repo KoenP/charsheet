@@ -84,8 +84,6 @@ sum_bonuses(Stat, Total) :-
 choice_member_to_bonus(Source, Id, ToBonus) :-
     bonus_options(Source, Id, ToBonus, _).
 
-id(X,X).
-
 %! bonus_from_level_reached(Level:int, ?Origin, ?Trait)
 %
 %  True iff Bonus was gained at the given Level automatically upon

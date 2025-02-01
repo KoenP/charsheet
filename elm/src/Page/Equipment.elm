@@ -11,6 +11,7 @@ import Json.Decode as D exposing (Decoder)
 import List
 import String
 
+import Decoder.Equipment exposing (..)
 import Elements exposing (..)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
@@ -30,7 +31,7 @@ load charId =
 expectGotEquipment : Expect Msg
 expectGotEquipment = Http.expectJson
                      (mkHttpResponseMsg GotEquipment)
-                     (D.oneOf [ D.list D.string |> D.map Ok
+                     (D.oneOf [ equipmentDec |> D.map Ok
                               , D.string |> D.map Err
                               ])
 
@@ -91,9 +92,13 @@ view { equipment, inputFieldVal, error } =
   , p [] [ text "For example, type ",  b [] [text "'light crossbow' + 1" ]]
   , table []
       (List.map
-         (\item -> tr [] [ td [] [button [E.onClick (UnequipItem item)] [text "x"]]
-                         , simple td item
-                         ])
+         (\{ name , inferred } ->
+            tr [] [ td [] [ button [ E.onClick (UnequipItem name)
+                                   , Attr.disabled inferred
+                                   ]
+                          [ text "x" ]]
+                  , simple td name
+                  ])
          equipment)
   , input [ Attr.type_ "text"
           , Attr.placeholder "Item name"

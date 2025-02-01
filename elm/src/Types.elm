@@ -293,7 +293,10 @@ setSpellPreparedness origin spell prepared old =
                               True  -> Set.insert spell set)
       old
 
-type alias Equipment = List String
+type alias Equipment = List Item
+type alias Item = { name : String
+                  , inferred : Bool
+                  }
 
 -- TODO delete ?
 --  type alias Weapon =
