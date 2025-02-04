@@ -50,6 +50,7 @@ eval_ac_formula(shield, 0, []) :-
 
 % TODO user should select a single shield they like to not explode the
 % options for calculating AC
+shield_ac(Shield ^ _, AC) :- shield_ac(Shield, AC).
 shield_ac(shield + N, AC) :- has(shield + N), AC is 2 + N.
 shield_ac(shield, 2) :- has(shield).
 

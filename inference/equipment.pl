@@ -1,5 +1,4 @@
 :- multifile weapon/5.
-:- multifile body_armor_variant/2.
 :- multifile has/1.
 :- multifile inferred_has/3.
 :- multifile inferred_has_options_source/4.
@@ -54,8 +53,12 @@ weapon_index(Index, Weapon) :-
 expand_to_sum(Item    , Item + 0) :- Item \= _+_.
 expand_to_sum(Item + N, Item + N).
 
+%! shield_variant(?NamedShield)
+shield_variant(_) :- false.
+
 is_shield(shield).
 is_shield(Shield + _) :- is_shield(Shield).
+is_shield(Shield ^ _) :- is_shield(Shield).
 is_shield(ShieldF) :- ShieldF =.. [shield|_].
 
 shield_or_base_body_armor(shield).
@@ -79,6 +82,8 @@ base_body_armor(splint, heavy, ac(17)).
 base_body_armor(plate, heavy, ac(18)).
 
 body_armor(Base, Weight, AC) :- base_body_armor(Base, Weight, AC).
+body_armor(Armor ^ _Variation, Weight, AC) :-
+    body_armor(Armor, Weight, AC).
 body_armor(Armor+N, Weight, ac(AC)) :-
     body_armor(Armor, Weight, ac(BaseAC)),
     AC is BaseAC + N.
@@ -160,12 +165,6 @@ custom_format(berserker_axe(BaseWeapon)) -->
     ["berserker "], [BaseWeapon].
 bonus_source(has(berserker_axe(_)), 'max hp' + Lvl) :-
     level(Lvl).
-
-%! body_armor_variant(?NamedArmor, ?BaseArmor)
-body_armor_variant(_,_) :- false.
-body_armor(Variant, Category, AC) :-
-    body_armor_variant(Variant, BaseArmor),
-    body_armor(BaseArmor, Category, AC).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Musical instruments.

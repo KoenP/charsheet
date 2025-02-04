@@ -125,6 +125,5 @@ as_boolean(Goal, Bool) :-
 toggle(yes).
 
 id(X,X).
-const(X, _, X).
 is_true(Goal, true) :- call(Goal), !.
-is_true(Goal, false) :- !.
+is_true(_, false) :- !.
