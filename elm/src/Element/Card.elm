@@ -23,8 +23,10 @@ defaultColorScheme = { name = "greyscale" , bg = Css.hex "e8e8e8" , fg = Css.hex
 colorSchemes : List ColorScheme
 colorSchemes =
   let mk name bg fg = { name = name , bg = Css.hex bg , fg = Css.hex fg }
-  in [ mk "blue" "aee0ff" "003396"
-     , mk "red" "ffe0ae" "963300"
+  in [ mk "blue" "ddddff" "000096"
+     , mk "red" "ffdddd" "960000"
+     , mk "green" "ddffdd" "009600"
+     , mk "yellow" "eeeedd" "909000"
      , defaultColorScheme
      ]
 
@@ -80,12 +82,12 @@ viewSpellCard cardConfig ambientColorScheme origin spell =
                                (Maybe.map (\r -> " · " ++ r) spell.ref)) ]
            ]
        , div [ Attr.css cardBoxesSectionStyle ]
-           [ cardBox colorScheme "action-cost" spell.casting_time
-           , cardBox colorScheme "components" (showComponents spell.components)
-           , cardBox colorScheme "rolls" (Maybe.withDefault "-" spell.rolls)
-           , cardBox colorScheme "hourglass" spell.duration
-           , cardBox colorScheme "range" spell.range
-           , cardBox colorScheme "aoe" (Maybe.withDefault "-" spell.aoe)
+           [ cardBox colorScheme "action-cost-inverted" spell.casting_time
+           , cardBox colorScheme "components-inverted" (showComponents spell.components)
+           , cardBox colorScheme "rolls-inverted" (Maybe.withDefault "-" spell.rolls)
+           , cardBox colorScheme "hourglass-inverted" spell.duration
+           , cardBox colorScheme "range-inverted" spell.range
+           , cardBox colorScheme "aoe-inverted" (Maybe.withDefault "-" spell.aoe)
            ]
        , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
        , viewSpellDescription colorScheme (getSpellDescriptionText spell) spell.higher_level spell.bonuses spell.resources spell.level
@@ -218,13 +220,13 @@ cardSubtitle spell =
 
 cardBox : ColorScheme -> String -> String -> Html Msg
 cardBox colorScheme iconName value =
-  div [ Attr.css (cardBoxStyle colorScheme) ] [ icon iconName, text value ]
+  div [ Attr.css (cardBoxStyle colorScheme) ] [ icon colorScheme iconName , text value ]
 
-icon : String -> Html Msg
-icon iconName =
+icon : ColorScheme -> String -> Html Msg
+icon colorScheme iconName =
   img
     [ Attr.src ("/static/icons/" ++ iconName ++ ".png")
-    , Attr.css [ Css.width (px 10), Css.paddingLeft (mm 1) ]
+    , Attr.css [ Css.width (px 10) , Css.marginLeft (mm 1) , Css.backgroundColor colorScheme.fg ]
     ]
     []
 

@@ -241,6 +241,12 @@ viewColorSchemePicker config mkSelectMsg currentlySelectedScheme focusedDropdown
       , msg = mkSelectMsg (Just scheme)
       , style = [Css.color scheme.fg]
       }
+    deselect = { entry = "-"
+               , desc = []
+               , enabled = True
+               , msg = mkSelectMsg Nothing
+               , style = [Css.color defaultColorScheme.fg]
+               }
     buttonScheme = Maybe.withDefault defaultColorScheme currentlySelectedScheme
   in [ customStyleDropdown
          { defaultDropdownStyle
@@ -252,7 +258,7 @@ viewColorSchemePicker config mkSelectMsg currentlySelectedScheme focusedDropdown
          False
          dropdownId
          (Maybe.map .name currentlySelectedScheme)
-         (List.map mkOption colorSchemes)
+         (deselect :: List.map mkOption colorSchemes)
          (Just dropdownId == focusedDropdownId)
      ]
 
