@@ -48,7 +48,8 @@ inferred_has_options_source(trait(infusion('armor of magical strength')),
                             base_body_armor).
 
 % Infusion: Boots of the Winding Path
-% TODO
+infusion_option('boots of the winding path') :- artificer >: 6.
+infusion('boots of the winding path') ?= "While wearing these boots, a creature can teleport up to 15 feet as a bonus action to an unoccupied space the creature can see. The creature must have occupied that space at some point during the current turn.".
 
 % Infusion: Enhanced Arcane Focus
 infusion_option('enhanced arcane focus').
@@ -89,6 +90,20 @@ inferred_has_options_source(trait(infusion('enhanced defense')),
     (L < 10 -> N = 1 ; N = 2).
 make_enhanced_defense_armor(N, Armor, (Armor + N) ^ 'enhanced defense').
 
-% TODO
-%bonus_source(has('enhanced defense'(Armor)), ac + N) :-
-%    (artificer >: 10 -> N = 2 ; N = 1).
+% Infusion: Enhanced weapon
+infusion_option('enhanced weapon').
+infusion('enhanced weapon') ?= "This magic weapon grants a +1 bonus to attack and damage rolls made with it.
+The bonus increases to +2 when you reach 10th level in this class.".
+custom_format((_ + N) ^ 'enhanced weapon') -->
+    ["enhanced "], format_term(BaseWeapon).
+inferred_has_options_source(trait(infusion('enhanced weapon')),
+                            'equip enhanced weapon',
+                            make_enhanced_weapon(N),
+                            simple_or_martial_weapon_option) :-
+    class_level(artificer:L),
+    (L < 10 -> N = 1 ; N = 2).
+make_enhanced_weapon(N, BaseWeapon, (BaseWeapon + N) ^ 'enhanced weapon').
+
+simple_or_martial_weapon_option(Weapon) :-
+    weapon(Weapon, Category, _, _, _),
+    (Category = simple ; Category = martial).
