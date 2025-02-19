@@ -1,3 +1,5 @@
+add_bonus(Bonus, Tm, Tm + Bonus).
+
 sumall(X, Pred, Sum) :-
     findall(X, Pred, Xs),
     sum_list(Xs, Sum).
@@ -48,9 +50,9 @@ sequence([], X, X).
 sequence([Pred|Preds], X, Z) :-
     call(Pred, X, Y),
     sequence(Preds, Y, Z).
-    
+
 %! ordered_lookup_largest_leq(+KVTable, +Key, -ValueFound)
-% 
+%
 %  Look up the value associated with the largest key smaller than or
 %  equal to the parameter key, in the provided table.
 ordered_lookup_largest_leq([Key -> Value|Table], KeyToLookup, ValueFound) :-
@@ -124,6 +126,30 @@ as_boolean(Goal, Bool) :-
 
 toggle(yes).
 
+% Weird convenience predicate for infusions.
+affirmative(X, yes, X).
+
 id(X,X).
 is_true(Goal, true) :- call(Goal), !.
 is_true(_, false) :- !.
+
+%! \/(Goal1, Goal2, Arg)
+%
+%  Second-order disjunction.
+\/(Goal1, Goal2, Arg) :-
+    call(Goal1, Arg) ; call(Goal2, Arg).
+
+%! <<(G, F, X, Z)
+%
+%  Functional composition of two binary predicates F and G.
+%  If we were to use functional notation for F and G: `Z = G(F(X))`.
+<<(G, F, X, Z) :-
+    call(F, X, Y),
+    call(G, Y, Z).
+
+
+%! /\(Goal1, Goal2, Arg)
+%
+%  Second-order conjunction.
+/\(Goal1, Goal2, Arg) :-
+    call(Goal1, Arg), call(Goal2, Arg).

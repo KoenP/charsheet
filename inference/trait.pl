@@ -51,7 +51,7 @@ trait_source(Source, Trait) :-
 traits_from_source(_,_) :- false.
 
 %! trait_options_source(?Source, ?Id, ?ToTrait, ?Spec)
-%  
+%
 %  Each trait_options_source/4 clause gives rise to a corresponding
 %  trait_options/4 clause, *if* call(Source) is true.
 trait_options_source(_,_,_,_) :- false.

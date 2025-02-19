@@ -7,13 +7,12 @@
        gain_level/3,
        choice/3.
 
-:- dynamic name/1, base_ability/2, gain_level/3, choice/3.
+:- dynamic name/1, base_ability/2, choice/3, asserted_has/1.
 
 character_definition_predicate(name/1).
 character_definition_predicate(base_ability/2).
-character_definition_predicate(gain_level/3).
 character_definition_predicate(choice/3).
-character_definition_predicate(has/1).
+character_definition_predicate(asserted_has/1).
 
 % Hashing predicates.
 hashed_user_name(Hash) :-
@@ -73,6 +72,15 @@ resolve_ineligible_choices :-
     forall(member(Origin-Id, ChoicesToUndo), retractall(choice(Origin, Id, _))),
     (ChoicesToUndo \= [] -> resolve_ineligible_choices ; true).
 
+withdraw_character_fact_without_resolving(CharName, Fact) :-
+    character_file_path(CharName, Path),
+    snapshot(
+        (load_character_file(Path),
+         ( retract(Fact),
+           retractall(Fact),
+           rewrite_character_file(Path)
+         ; true))).
+
 record_character_fact(CharName, Fact) :-
     character_file_path(CharName, Path),
     append_to_character_file(Path, Fact).
@@ -102,7 +110,7 @@ load_character_file(Path) :-
     assert(Term),
     Term = end_of_file, !,
     close(In).
-    
+
 rewrite_character_file(Path) :-
     open(Path, write, Out),
     forall((character_definition_predicate(Pred/N),

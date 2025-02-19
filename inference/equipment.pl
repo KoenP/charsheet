@@ -4,10 +4,7 @@
 :- multifile inferred_has_options_source/4.
 :- multifile magic_item/1.
 :- discontiguous body_armor/3.
-:- dynamic has/1.
-:- dynamic weapons_equipped/1.
-
-weapons_equipped(_) :- false.
+:- dynamic asserted_has/1.
 
 item_exists(Shield) :-
     is_shield(Shield).
@@ -30,15 +27,16 @@ options_source(Origin, Id, Spec) :- inferred_has_options_source(Origin, Id, _, S
 %  A piece of equipment that your character is inferred to have.
 inferred_has(Origin, Id, Item) :-
     inferred_has_options_source(Origin, Id, ToItem, _),
+    call(Origin),
     choice_member(Origin, Id, Choice),
     call(ToItem, Choice, Item).
 
 inferred_has(Item) :- inferred_has(_, _, Item).
 has(Inferred) :- inferred_has(Inferred).
 
-has(Weapon) :-
-    weapons_equipped(Weapons),
-    member(Weapon, Weapons).
+%! asserted_has(?Item)
+asserted_has(_) :- false.
+has(Asserted) :- asserted_has(Asserted).
 
 has_weapon(Weapon) :-
     has(Weapon),
@@ -53,12 +51,14 @@ weapon_index(Index, Weapon) :-
 expand_to_sum(Item    , Item + 0) :- Item \= _+_.
 expand_to_sum(Item + N, Item + N).
 
+canonicalize_item(Item, Sum ~ base) :- Item \= _~_, expand_to_sum(Item, Sum).
+canonicalize_item(Item ~ Variant, Sum ~ Variant) :- expand_to_sum(Item, Sum).
+
 %! shield_variant(?NamedShield)
 shield_variant(_) :- false.
 
-is_shield(shield).
-is_shield(Shield + _) :- is_shield(Shield).
-is_shield(Shield ^ _) :- is_shield(Shield).
+is_shield(Shield + _) :- ground(Shield), is_shield(Shield).
+is_shield(Shield ~ _) :- ground(Shield), is_shield(Shield).
 is_shield(ShieldF) :- ShieldF =.. [shield|_].
 
 shield_or_base_body_armor(shield).
@@ -82,7 +82,7 @@ base_body_armor(splint, heavy, ac(17)).
 base_body_armor(plate, heavy, ac(18)).
 
 body_armor(Base, Weight, AC) :- base_body_armor(Base, Weight, AC).
-body_armor(Armor ^ _Variation, Weight, AC) :-
+body_armor(Armor ~ _Variation, Weight, AC) :-
     body_armor(Armor, Weight, AC).
 body_armor(Armor+N, Weight, ac(AC)) :-
     body_armor(Armor, Weight, ac(BaseAC)),
@@ -126,6 +126,17 @@ weapon('light crossbow', simple, ranged(feet(80) / feet(320)),
 weapon(longbow, martial, ranged(feet(150) / feet(600)),
        [damage(piercing, 1 d 8)], [ammunition, heavy, twohanded]).
 
+%! base_weapon_note(?Weapon, ?Note)
+base_weapon_note(Weapon, Note) :-
+    weapon(Weapon, _, _, _, Notes),
+    member(Note, Notes).
+
+%! weapon_of_category(?Category, ?Weapon)
+%
+%  Convenience predicate for partial application of Category.
+weapon_of_category(Category, Weapon) :-
+    weapon(Weapon, Category, _, _, _).
+
 %! weapon_item(?Name, ?Category, ?Rangedness, ?DamageFormula, ?Notes)
 %
 %  Weapons that are also items (basically ignoring natural weapons).
@@ -150,8 +161,12 @@ weapon_melee(Weapon) :-
     weapon(Weapon, _, melee, _, _).
 weapon_ranged(Weapon) :-
     weapon(Weapon, _, ranged(_), _, _).
+weapon_with_ammunition(Weapon) :-
+    weapon(Weapon, _, _, _, Notes),
+    member(Notes, ammunition).
 
 %! weapon_variant(?NamedWeapon, ?BaseWeapon, ?ExtraRolls, ?ExtraNotes)
+%  TODO docs outdated
 %  Some (magic) weapons have a specific name but
 %  inherit their base stats from a regular weapon.
 %  The notation for an enchantment bonus works on the BaseWeapon parameter, so
@@ -159,12 +174,10 @@ weapon_ranged(Weapon) :-
 %  The variant weapon can add extra damage rolls and notes, but can't change
 %  any other stats. If other stats need to be changed, it's no longer considered
 %  a variant.
-weapon_variant(berserker_axe(BaseWeapon), BaseWeapon + 1, [], [attunement, cursed]) :-
-    member(BaseWeapon, [handaxe, battleaxe, greataxe]).
-custom_format(berserker_axe(BaseWeapon)) -->
-    ["berserker "], [BaseWeapon].
-bonus_source(has(berserker_axe(_)), 'max hp' + Lvl) :-
-    level(Lvl).
+%weapon_variant(BaseWeapon ~ _, BaseWeapon, [], []).
+%weapon_variant(BaseWeapon ~ Variant, BaseWeapon, [] , Notes) :-
+%    variant_weapon_notes(BaseWeapon ~ Variant, Notes).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Musical instruments.

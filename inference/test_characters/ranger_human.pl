@@ -31,7 +31,8 @@ test_char_level(
 test_char_level(
     'human ranger',
     2,
-    [gain_level(2, ranger, hp_avg),
+    [choice(level(2), 'as class', ranger),
+     choice(level(2), 'max hp roll'(_,_), 6),
      choice(ranger >: 2, 'fighting style', archery),
      choice(ranger >: 2, spell, ['hunter\'s mark', 'cure wounds'])],
     [max_hp(16),

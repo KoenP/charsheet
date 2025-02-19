@@ -23,8 +23,8 @@ test_char_level(
      %choice(trait('blessings of knowledge'), language, [giant, celestial]),
      choice(cleric >: 1, cantrip, ['sacred flame', 'spare the dying', guidance]),
 
-     has('half plate' + 1),
-     has(shield)],
+     asserted_has('half plate' + 1),
+     asserted_has(shield)],
     [ability(str,13),
      ability(dex,10),
      ability(con,16), % +2 from dwarf
@@ -66,7 +66,9 @@ test_char_level(
 test_char_level(
     chd,
     2,
-    [gain_level(2, cleric, hp_avg)],
+    [choice(level(2), 'as class', cleric),
+     choice(level(2), 'max hp roll'(_, _), 5)
+    ],
     [max_hp(21), % = 8 (base) + 1*5 (lvlup) + 2*3 (con) + 2 (dwarven toughness)
      ac(armor('half plate' + 1), 16, [shield(shield):2]), % = 15 (half plate) + 1 (half plate enchantment) + 2 (shield) + 0 (dex)
      findall(L-N, spell_slots(L,N), [1-3]),
@@ -78,7 +80,8 @@ test_char_level(
 test_char_level(
     chd,
     3,
-    [gain_level(3, cleric, hp_avg)],
+    [choice(level(3), 'as class', cleric),
+     choice(level(3), 'max hp roll'(_,_), 5)],
     [max_hp(30), % = 8 (base) + 2*5 (lvlup) + 3*3 (con) + 3 (dwarven toughness)
      ac(armor('half plate' + 1), 16, [shield(shield):2]), % = 15 (half plate) + 1 (half plate enchantment) + 2 (shield) + 0 (dex)
      findall(L-N, spell_slots(L,N), [1-4, 2-2]),
@@ -96,7 +99,8 @@ test_char_level(
 test_char_level(
     chd,
     4,
-    [gain_level(4, cleric, hp_avg),
+    [choice(level(4), 'as class', cleric),
+     choice(level(4), 'max hp roll'(_,_), 5),
      choice(cleric >: 4, 'asi or feat', [wis, str]),
      choice(cleric >: 4, cantrip, mending),
      prepare_spell(cleric, 'cure wounds'),
@@ -123,7 +127,8 @@ test_char_level(
 test_char_level(
     chd,
     5,
-    [gain_level(5, cleric, hp_avg)],
+    [choice(level(5), 'as class', cleric),
+     choice(level(5), 'max hp roll'(_,_), 5)],
     [spell_save_dc(cleric, 15), % = 8 + 4 (wis) + 3 (prof bon)
      spell_attack_modifier(cleric, 7), % = 4 (wis) + 3 (prof bon)
      trait(destroy_undead(cr(1/2))),
@@ -133,63 +138,31 @@ test_char_level(
 test_char_level(
     chd,
     6,
-    [gain_level(6, cleric, hp_avg)],
+    [choice(level(6), 'as class', cleric),
+     choice(level(6), 'max hp roll'(_,_), 5)],
     [known_spell_property(cleric(life), 'cure wounds', effects,
                           [heal(1 d 8 + 7), (target=other) -> self_heal(3)]),
      known_spell_property(cleric, 'prayer of healing', effects,
                           [heal(2 d 8 + 8) upto "6 creatures", (target=other) -> self_heal(4)])
     ]).
 
-test_char_level(chd, L, [gain_level(L, cleric, hp_avg)], []) :-
+test_char_level(
+    chd,
+    L,
+    [choice(level(L), 'as class', cleric),
+     choice(level(L), 'max hp roll'(_,_), cleric)
+    ],
+    []) :-
     between(7,16,L).
 
 test_char_level(
     chd,
     17,
-    [gain_level(17, cleric, hp_avg)],
+    [choice(level(17), 'as class', cleric),
+     choice(level(17), 'max hp roll'(_,_), 5)],
     [known_spell_property(cleric(life), 'cure wounds', effects,
                           [heal(15), % = 8 (supreme healing) + 4 (wis) + 2 + 1 (spell lvl)
-                           (target=other) -> self_heal(3)]), 
+                           (target=other) -> self_heal(3)]),
      known_spell_property(cleric, 'prayer of healing', effects,
                           [heal(24) upto "6 creatures",
                            (target=other) -> self_heal(4)])]).
-
-%test_char_level(
-%    chd,
-%    7,
-%    [gain_level(7, cleric, hp_avg)],
-%    []).
-%
-%test_char_level(
-%    chd,
-%    8,
-%    [gain_level(8, cleric, hp_avg),
-%     ignore(cleric >: 8, 'asi or feat')
-%    ],
-%    []).
-%
-%test_char_level(
-%    chd,
-%    9,
-%    [gain_level(9, cleric, hp_avg)],
-%    []).
-%
-%test_char_level(
-%    chd,
-%    10,
-%    [gain_level(10, cleric, hp_avg),
-%     ignore(cleric >: 10, cantrip)
-%    ],
-%    []).
-    
-%
-%gain_level(3, cleric, hp_avg).
-%
-%gain_level(4, cleric, hp_avg).
-%choice(cleric >: 4, 'asi or feat', [wis,str]).
-%
-%gain_level(5, cleric, hp_avg).
-%gain_level(6, cleric, hp_avg).
-%gain_level(7, cleric, hp_avg).
-%
-%prepare_spell(cleric, banishment).

@@ -14,7 +14,7 @@ custom_format(replace(Compound)) -->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CLASSLEVEL-BOUND
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-       
+
 %! selected_at_class_level(?ClassLevel, ?Id, ?Choice)
 %
 %  Some choices can be replaced at a later moment.

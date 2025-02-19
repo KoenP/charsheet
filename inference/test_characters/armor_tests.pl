@@ -10,7 +10,7 @@ test_char_level(
      base_ability(int,10),
      base_ability(cha,10),
 
-     has(shield + 1),
+     asserted_has(shield + 1),
 
      choice(init, 'initial class', monk)
     ],
@@ -21,7 +21,8 @@ test_char_level(
 test_char_level(
     monkbarb,
     2,
-    [gain_level(2, barbarian, hp_avg)],
+    [choice(level(2), 'as class', barbarian),
+choice(level(2), 'max hp roll'(_,_), 8)],
     [ac_formula(unarmored_defense(monk), 10 + dex + wis),
      %ac_formula(unarmored_defense(barbarian), 10 + dex + con + shield),
      ac(unarmored_defense(monk), 18, [])
@@ -44,7 +45,7 @@ test_char_level(
      base_ability(int,10),
      base_ability(cha,10),
 
-     has(shield + 1),
+     asserted_has(shield + 1),
 
      choice(init, 'initial class', barbarian)
     ],
@@ -52,7 +53,8 @@ test_char_level(
 test_char_level(
     barbmonk,
     2,
-    [gain_level(2, monk, hp_avg)],
+    [choice(level(2), 'as class', monk),
+choice(level(2), 'max hp roll'(_,_), 8)],
     [ac_formula(unarmored_defense(barbarian), 10 + dex + con + shield),
      ac(unarmored_defense(barbarian), 17, [shield(shield+1) : 3]) % 10 + 3 + 4
     ]).
@@ -73,7 +75,7 @@ test_char_level(
      base_ability(int,10),
      base_ability(cha,10),
 
-     has(shield + 1),
+     asserted_has(shield + 1),
 
      choice(init, 'initial class', sorcerer),
      choice(sorcerer >: 1, subclass, 'draconic bloodline')
@@ -84,7 +86,8 @@ test_char_level(
 test_char_level(
     dracsorcbarb,
     2,
-    [gain_level(2, barbarian, hp_avg)],
+    [choice(level(2), 'as class', barbarian),
+     choice(level(2), 'max hp roll'(_,_), 8)],
     [ac_formula(trait('draconic resilience'), 13 + dex + shield),
      ac(trait('draconic resilience'), 16, [shield(shield+1) : 3]), % with shield proficiency
      ac_formula(unarmored_defense(barbarian), 10 + dex + con + shield),

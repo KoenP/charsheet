@@ -16,14 +16,16 @@ test_char_level(
     []
 ).
 
-test_char_level(mmadept, L, [gain_level(L, wizard, hp_avg)], []) :-
+test_char_level(mmadept, L, [choice(level(L), 'as class', wizard),
+     choice(level(L), 'max hp roll'(_,_), 5)], []) :-
     between(2, 3, L).
 
 test_char_level(
     mmadept,
     4,
 
-    [gain_level(4, wizard, hp_avg),
+    [choice(level(4), 'as class', wizard),
+     choice(level(4), 'max hp roll'(_,_), 5),
      choice(wizard >: 4, 'asi or feat', 'metamagic adept'),
      choice(feat('metamagic adept'), metamagic, ['careful spell', 'distant spell'])],
 
@@ -35,14 +37,16 @@ test_char_level(
      res('metamagic adept sorcery point', 2)]
 ).
 
-test_char_level(mmadept, L, [gain_level(L, wizard, hp_avg)], []) :-
+test_char_level(mmadept, L, [choice(level(L), 'as class', wizard),
+     choice(level(L), 'max hp roll'(_,_), 5)], []) :-
     between(5, 7, L).
 
 test_char_level(
     mmadept,
     8,
 
-    [gain_level(8, wizard, hp_avg),
+    [choice(level(8), 'as class', wizard),
+     choice(level(8), 'max hp roll'(_,_), 5),
      choice(feat('metamagic adept') at 8, replace(metamagic), 'careful spell'),
      choice(feat('metamagic adept') at 8, replacing(metamagic, 'careful spell'), 'empowered spell')
     ],
@@ -52,7 +56,8 @@ test_char_level(
      trait(feat('metamagic adept'), metamagic('distant spell'))]
 ).
 
-test_char_level(mmadept, L, [gain_level(L, wizard, hp_avg)], []) :-
+test_char_level(mmadept, L, [choice(level(L), 'as class', wizard),
+     choice(level(L), 'max hp roll'(_,_), 5)], []) :-
     between(9, 11, L).
 
 % Check that reintroducing a choice that was replaced earlier works.
@@ -60,7 +65,8 @@ test_char_level(
     mmadept,
     12,
 
-    [gain_level(12, wizard, hp_avg),
+    [choice(level(12), 'as class', wizard),
+     choice(level(12), 'max hp roll'(_,_), 5),
      choice(feat('metamagic adept') at 12, replace(metamagic), 'distant spell'),
      choice(feat('metamagic adept') at 12, replacing(metamagic, 'distant spell'), 'careful spell')
     ],

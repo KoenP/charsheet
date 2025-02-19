@@ -46,7 +46,7 @@ breath_weapon(white, 15 ft cone, con).
 
 breath_weapon_dc(DC) :-
     add_ability_mod_and_profbon(8, con, DC).
-    
+
 breath_weapon_damage_dice(N) :-
     level(Level),
     ordered_lookup_largest_leq([1 -> 2, 6 -> 3, 11 -> 4, 16 -> 5], Level, N).

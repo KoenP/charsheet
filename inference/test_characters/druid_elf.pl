@@ -9,7 +9,7 @@ test_char_level(
      base_ability(wis,16),
      base_ability(cha,9),
 
-     has(quarterstaff),
+     asserted_has(quarterstaff),
 
      choice(init, 'base race', elf),
      choice(race(elf), subrace, 'high elf'),
@@ -29,7 +29,7 @@ test_char_level(
      ability(int,13), % high elf bonus + 1
      ability(wis,16),
      ability(cha,9),
-     
+
      % racial traits
      trait(race(elf), sense(darkvision)),
      trait(trait(sense('keen senses')), skill(perception)),
@@ -37,7 +37,7 @@ test_char_level(
      trait(race(elf('high elf')), weapon(shortsword)),
      trait(race(elf('high elf')), weapon(shortbow)),
      trait(race(elf('high elf')), weapon(longbow)),
-     
+
      \+ resource('wild shape', _, _),
 
      attack_variant(quarterstaff:shillelagh, feet(5), to_hit(5),
@@ -62,7 +62,8 @@ test_char_level(
 test_char_level(
     drelf,
     2,
-    [gain_level(2, druid, hp_avg),
+    [choice(level(2), 'as class', druid),
+     choice(level(2), 'max hp roll'(_,_), 5),
      choice(druid >: 2,subclass,land),
      choice(druid(land) >: 2, cantrip, guidance)
     ],
@@ -82,7 +83,8 @@ test_char_level(
 test_char_level(
     drelf,
     3,
-    [gain_level(3, druid, hp_avg),
+    [choice(level(3), 'as class', druid),
+     choice(level(3), 'max hp roll'(_,_), 5),
      choice(druid(land) >: 3,'circle spells',forest)
     ],
     [res('natural recovery', 2),
@@ -95,13 +97,19 @@ test_char_level(
      \+ known_spell(druid, wis, always, [slot], no, 'hold person')
     ]).
 
-test_char_level(drelf, L, [gain_level(L, druid, hp_avg)], []) :-
+test_char_level(
+    drelf,
+    L,
+    [choice(level(L), 'as class', druid),
+     choice(level(L), 'max hp roll'(_,_), 5)],
+    []) :-
     between(4, 19, L).
 
 test_char_level(
     drelf,
     20,
-    [gain_level(20, druid, hp_avg)],
+    [choice(level(20), 'as class', druid),
+     choice(level(20), 'max hp roll'(_,_), 5)],
     [ forall(known_spell(druid, Spell),
              (known_spell_property(druid, Spell, components, Cs),
               (Cs = [] ; Cs = [m(M)], sub_string(M, _, _, _, "gp"))

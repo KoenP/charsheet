@@ -112,7 +112,7 @@ subclass_option(artificer, alchemist).
 % If character already has alchemist's supplies proficiency from another source,
 % pick a different set of artisan's tools.
 trait_options_source(artificer(alchemist) >: 3, 'artisan\'s tools', wrap(tool),
-                     artisans_tools) :- 
+                     artisans_tools) :-
     trait(Source, tool('alchemist\'s supplies')),
     Source \= artificer(alchemist) >: 3.
 % If the character does not already have alchemist's supplies proficiency,

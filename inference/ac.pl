@@ -44,15 +44,22 @@ eval_ac_formula(Num, Num, []) :-
     number(Num).
 eval_ac_formula(shield, 0, [shield(Shield):AC]) :-
     trait(armor(shield)),
-    shield_ac(Shield, AC).
+    % Only the first shield is used to prevent explosion of options.
+    once(shield_ac(Shield, AC)).
 eval_ac_formula(shield, 0, []) :-
     \+ (trait(armor(shield)), shield_ac(_, _)).
 
-% TODO user should select a single shield they like to not explode the
-% options for calculating AC
-shield_ac(Shield ^ _, AC) :- shield_ac(Shield, AC).
-shield_ac(shield + N, AC) :- has(shield + N), AC is 2 + N.
-shield_ac(shield, 2) :- has(shield).
+shield_ac(Shield, AC) :-
+    has(Shield),
+    is_shield(Shield),
+    calculate_shield_ac(Shield, AC).
+
+calculate_shield_ac(Shield ~ Variant, AC) :-
+    ground(Shield ~ Variant),
+    calculate_shield_ac(Shield, AC).
+calculate_shield_ac(shield + N, AC) :-
+    AC is 2 + N.
+calculate_shield_ac(shield, 2).
 
 %! unarmored_defense_formula(?Origin, ?Formula)
 %

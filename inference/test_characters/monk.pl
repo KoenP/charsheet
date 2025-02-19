@@ -5,8 +5,8 @@ test_char_level(
     1,
     [choice(init, 'base race', 'half-orc'),
      choice(init, 'initial class', monk),
-     has(club),
-     has(quarterstaff),
+     asserted_has(club),
+     asserted_has(quarterstaff),
 
      base_ability(str,14),
      base_ability(dex,18),
@@ -31,8 +31,9 @@ test_char_level(
 test_char_level(
     monk,
     2,
-    [gain_level(2, fighter, hp_avg), % a level of fighter to get shield proficiency
-     has(shield) % shouldn't show up in unarmored defense
+    [choice(level(2), 'as class', fighter),
+     choice(level(2), 'max hp roll'(_,_), 5), % a level of fighter to get shield proficiency
+     asserted_has(shield) % shouldn't show up in unarmored defense
     ],
     [attack_with_sorted_notes(club, feet(5), to_hit(6), [damage(bludgeoning, 1 d 4 + 4)],
             ["unarmed strike as bonus action", light]),
@@ -48,7 +49,8 @@ test_char_level(
 test_char_level(
     monk,
     3,
-    [gain_level(3, monk, hp_avg) % a level of fighter to get shield proficiency
+    [choice(level(3), 'as class', monk),
+     choice(level(3), 'max hp roll'(_,_), 5) % a level of fighter to get shield proficiency
     ],
     [res('ki points', 2),
      speed(40),
@@ -66,7 +68,8 @@ test_char_level(
 test_char_level(
     monk,
     4,
-    [gain_level(4, monk, hp_avg)],
+    [choice(level(4), 'as class', monk),
+     choice(level(4), 'max hp roll'(_,_), 5)],
     [res('ki points', 3),
      speed(40),
      attack_with_sorted_notes(club, feet(5), to_hit(6), [damage(bludgeoning, 1 d 4 + 4)],
@@ -83,15 +86,18 @@ test_char_level(
 test_char_level(
     monk,
     5,
-    [gain_level(5, monk, hp_avg),
+    [choice(level(5), 'as class', monk),
+     choice(level(5), 'max hp roll'(_,_), 5),
      choice(monk >: 4, 'asi or feat', alert)],
     [feat(alert),
      initiative(9) % dex mod (+4) + alert feat (+5)
     ]).
 
 test_char_level(
-    monk, 6, [gain_level(6, monk, hp_avg)],
-    [ gain_level(6, monk, hp_avg),
+    monk, 6, [choice(level(6), 'as class', monk),
+     choice(level(6), 'max hp roll'(_,_), 5)],
+    [ choice(level(6), 'as class', monk),
+     choice(level(6), 'max hp roll'(_,_), 5),
       res('ki points', 5),
       speed(40),
       attack_with_sorted_notes(club, feet(5), to_hit(7), [damage(bludgeoning, 1 d 6 + 4)],
@@ -106,13 +112,16 @@ test_char_level(
       ac(unarmored_defense(monk), 17, [])
     ]).
 
-test_char_level(monk, L, [gain_level(L, monk, hp_avg)], []) :-
+test_char_level(monk, L, [choice(level(L), 'as class', monk),
+     choice(level(L), 'max hp roll'(_,_), 5)], []) :-
     between(7,17,L).
 
 % monk level 17
 test_char_level(
-    monk, 18, [gain_level(18, monk, hp_avg)],
-    [ gain_level(18, monk, hp_avg),
+    monk, 18, [choice(level(18), 'as class', monk),
+     choice(level(18), 'max hp roll'(_,_), 5)],
+    [ choice(level(18), 'as class', monk),
+     choice(level(18), 'max hp roll'(_,_), 5),
       res('ki points', 17),
       speed(55),
       attack_with_sorted_notes(club, feet(5), to_hit(10), [damage(bludgeoning, 1 d 10 + 4)],

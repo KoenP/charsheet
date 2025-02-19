@@ -9,8 +9,8 @@
 %  For cantrips, the spell has to be known (see known_spell/2).
 attack(Weapon, Range, ToHit, DamageRolls, Notes) :-
     (has(Weapon) ; has_unarmed(Weapon)),
-    ( weapon_attack(Weapon, Range, ToHit, DamageRolls, Notes)
-    ; weapon_variant_attack(Weapon, Range, ToHit, DamageRolls, Notes)).
+    weapon_attack(Weapon, Range, ToHit, DamageRolls, Notes).
+
 attack(Cantrip, Range, to_hit(ToHit), [DamageDice], Notes) :-
     known_spell_to_hit(Origin, Cantrip, ToHit),
     known_spell_data(Origin, Cantrip, Data),
@@ -47,13 +47,13 @@ cantrip_attack_note(CantripData, Note) :-
 %  The Weapon can be a base weapon as defined by the weapon/5 predicate;
 %  it can also be a compound term of the form `Weapon + Enchantment`.
 weapon_attack(Weapon, Range, to_hit(ToHit), FinalDamageRolls, Notes) :-
-    expand_to_sum(Weapon, BaseWeapon + Enchantment),
+    canonicalize_item(Weapon, BaseWeapon + Enchantment ~ Variant),
     weapon(BaseWeapon, _, _, _, _),
     %weapon_base_damage_rolls(BaseWeapon, BaseDamageRolls),
     weapon_attack_ability_and_modifier(BaseWeapon, _, Mod),
     weapon_proficiency_bonus(BaseWeapon, ProfBon),
     base_weapon_range_with_bonuses(BaseWeapon, Range),
-    attack_notes(BaseWeapon, Notes),
+    attack_notes(BaseWeapon, Variant, Notes),
     other_bonuses_to_hit(BaseWeapon, OtherBonuses),
     ToHit is Mod + ProfBon + OtherBonuses + Enchantment,
     weapon_damage_rolls(BaseWeapon, Mod, Enchantment, FinalDamageRolls).
@@ -73,11 +73,12 @@ base_weapon_range_with_bonuses(BaseWeapon, Range) :-
 %  Stats for an attack with a given weapon variant (does not check has/1).
 %  WeaponVariant must be exactly a term defined by the weapon_variant/4
 %  predicate.
-weapon_variant_attack(WeaponVariant, Range, ToHit, DamageRolls, Notes) :-
-    weapon_variant(WeaponVariant, Weapon, ExtraDamageRolls, ExtraNotes),
-    weapon_attack(Weapon, Range, ToHit, BaseDamageRolls, BaseNotes),
-    append(BaseDamageRolls, ExtraDamageRolls, DamageRolls),
-    append(BaseNotes, ExtraNotes, Notes).
+% TODO delete
+%weapon_variant_attack(Weapon ~ Variant, Range, ToHit, DamageRolls, Notes) :-
+%    weapon_variant(WeaponVariant, Weapon, ExtraDamageRolls, ExtraNotes),
+%    weapon_attack(Weapon, Range, ToHit, BaseDamageRolls, BaseNotes),
+%    append(BaseDamageRolls, ExtraDamageRolls, DamageRolls),
+%    append(BaseNotes, ExtraNotes, Notes).
 
 weapon_damage_rolls(BaseWeapon, Mod, Enchantment, FinalRolls) :-
     weapon_base_damage_rolls(BaseWeapon, BaseRolls),
@@ -149,12 +150,19 @@ add_bonus_to_first_die(Bonus, [damage(Type,Roll)|Rolls], [damage(Type,NewRoll)|R
     EvaldBonus is Bonus,
     simplify_dice_sum(Roll+EvaldBonus, NewRoll).
 
-attack_notes(Weapon, Notes) :-
-    weapon(Weapon, _, _, _, WeaponNotes),
+attack_notes(Weapon, Variant, Notes) :-
+    weapon(Weapon, _, _, _, BaseNotes),
     findall(Note,
-            (bonus(add_weapon_note(Weapon, Note)) ; not_proficient_note(Weapon, Note)),
-            BonusNotes),
-    append(WeaponNotes, BonusNotes, Notes).
+            (( member(Note, BaseNotes)
+             ; bonus(add_weapon_note(Weapon, Note))
+             ; bonus(add_variant_weapon_note(Variant, Note))
+             ; not_proficient_note(Weapon, Note)
+             ),
+             \+ ( bonus(remove_weapon_note(Weapon, Note))
+                ; bonus(remove_variant_weapon_note(Variant, Note)))
+            ),
+            Notes
+           ).
 
 not_proficient_note(Weapon, "not proficient") :-
     \+ weapon_proficiency(Weapon).
@@ -190,7 +198,6 @@ weapon_ability_candidate(Weapon, Abi) :- bonus(use_ability(Weapon, Abi)).
 weapon_ability_candidate(Weapon, dex) :-
     weapon(Weapon, _, _, _, Notes), member(finesse, Notes).
 weapon_ability_candidate(Weapon, dex) :- weapon(Weapon, _, ranged(_), _, _).
-    
 
 %! weapon_proficiency_bonus(?Weapon, ?ProfBon)
 %

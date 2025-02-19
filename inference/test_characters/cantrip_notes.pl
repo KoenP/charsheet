@@ -12,8 +12,8 @@ test_char_level(
 
      choice(wizard>:1, cantrip, ['fire bolt', 'acid splash', 'ray of frost']),
 
-     has('enhanced arcane focus'), % boosts to hit and adds a note
-     
+     asserted_has('enhanced arcane focus'), % boosts to hit and adds a note
+
      name(evocwiz)],
     [attack('fire bolt', feet(120), to_hit(7), [damage(fire, 1 d 10)], ["ignore half cover"]),
      attack('ray of frost', feet(60), to_hit(7), [damage(cold, 1 d 8)], ["ignore half cover"]),
@@ -23,17 +23,20 @@ test_char_level(
 test_char_level(
     evocwiz,
     2,
-    [gain_level(2, wizard, hp_avg),
+    [choice(level(2), 'as class', wizard),
+     choice(level(2), 'max hp roll'(_,_), 5),
      choice(wizard>:2, subclass, evocation)],
     []).
 
-test_char_level(evocwiz, L, [gain_level(L, wizard, hp_avg)], []) :-
+test_char_level(evocwiz, L, [choice(level(L), 'as class', wizard),
+     choice(level(L), 'max hp roll'(_,_), 5)], []) :-
     between(3, 5, L).
 
 test_char_level(
     evocwiz,
     6,
-    [gain_level(6, wizard, hp_avg)],
+    [choice(level(6), 'as class', wizard),
+     choice(level(6), 'max hp roll'(_,_), 5)],
     [attack('fire bolt', feet(120), to_hit(8), [damage(fire, 2 d 10)], ["ignore half cover"]),
      attack('ray of frost', feet(60), to_hit(8), [damage(cold, 2 d 8)], ["ignore half cover"]),
      attack('acid splash', feet(60), saving_throw(15,dex), [damage(acid, 2 d 6)], ["up to two targets within 5 ft of eachother", "on save: half damage"])

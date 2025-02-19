@@ -32,6 +32,7 @@
 :- op(1000, xf, qq).
 :- op(500, xfx, >:).
 :- op(500, fx, ^).
+:- op(600, xfx, ~).
 
 :- [dragon_ancestry].
 :- [util].
@@ -122,7 +123,7 @@ custom_format(phb(Page)) --> ["PHB "], [Page].
 %    current_class_level(Class:Level),
 %    known_spell_at_class_level(Class:Level, Name),
 %    spell(Name, SpellData).
-%    
+%
 %known_spell(Source, Name, SpellData, Availability, Resources) :-
 %    learn_spell(Source, Name, GenericSpellData, Availability, Resources),
 %    findall(Mod, commutative_spell_modifier(Source, Name, Mod), Mods),
@@ -147,8 +148,7 @@ match_level(Level) :-
 % Level up to level L+1.
 options(level(L), 'as class', class_option) :-
     level(CurLevel),
-    CurLevel < 20,
-    NextLevel is CurLevel + 1,
+    NextLevel is min(20, CurLevel + 1),
     between(2, NextLevel, L).
 
 options(level(L), 'max hp roll'(con(Mod), avg(Avg)), max_hp_increment(Class)) :-
@@ -248,7 +248,7 @@ res(_,_) :- false.
 %  ResourceName is the name of a resource such that
 %  `res(_, ResourceName, _)` is true.
 %  Amount documents by how much the resource is restored.
-%  This can be the atom `'full restore'`, or a term of the form `restore(F)` 
+%  This can be the atom `'full restore'`, or a term of the form `restore(F)`
 %  where F is a dice formula such as `2` or `1 d 6 + 2`.
 restore_res(_,_,_) :- false.
 meta_todo(res(Resource), 'rest for nonexistant resource') :-
@@ -310,7 +310,7 @@ describe_spell(Spell) :-
     writeln(Data.desc),
     writeln(""),
     writeln("").
-    
+
 describe_new_learnable_spells(Class:Level) :-
     forall((learnable_proper_spell(Class,Spell),
             spell_property(Spell,level,Level),

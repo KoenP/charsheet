@@ -223,7 +223,7 @@ attack_table_json_dict_entry(_{name: Name,
 % Spellcasting section.
 spell_slot_dict(SpellSlots) :-
     findall(N, spell_slots(_,N), SpellSlots).
-    
+
 %spell_slots_dict_entry(PactMagicStr, N) :-
 %    pact_magic_slots(N),
 %    pact_magic_slot_level(Level),
@@ -350,7 +350,7 @@ rest_description(Trigger, Name, DescStr) :-
     restore_res(Trigger, Name, Desc),
     fmt(format_term(Desc), DescStr).
 custom_format(restore(N)) --> ["+"], format_dice_sum(N).
-    
+
 %! term_to_json(+List, -Json)
 %
 %  One-way conversion from terms to a canonical JSON representation of Prolog

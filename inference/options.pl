@@ -130,7 +130,7 @@ unique_from(N, Pred, Choices) :-
 
 custom_format(N unique_from Spec) -->
     [N], [" unique "], to_plural(Spec).
-         
+
 %! from_list(?List, ?Elem)
 %  Like member/2, but with the arguments flipped.
 %  Useful for options/3 specifications.
@@ -178,7 +178,7 @@ hide_base_option(_,_,_) :- false.
 %  Find the documentation associated with a given Option for a given Source and Id.
 lookup_option_doc(_, _, Option, Doc) :-
     (Option ?= Doc).
-    
+
 %! option_todo(?Origin, ?Id, ?Spec)
 options_todo(Origin, Id, Spec) :-
     options(Origin, Id, Spec),
@@ -288,7 +288,7 @@ choice_to_json(List, Pred, JsonList) :-
     maplist([X,Y]>>choice_to_json(X,Pred,Y), List, JsonList).
 choice_to_json(X, _, XStr) :-
     term_string(X, XStr).
-    
+
 desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
     ((Desc = [From, N, List], (From = from ; From = unique_from)))
     ;

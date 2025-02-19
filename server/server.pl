@@ -111,7 +111,7 @@ h_logout(Request) :-
 h_list_characters(_Request) :-
     list_characters(Chars),
     reply_json_dict(Chars).
-    
+
 h_new_character(Request) :-
     http_parameters(Request, [name(Name,[])]),
     with_new_character(Name, true),
@@ -121,7 +121,7 @@ h_create_character(Request) :-
     http_parameters(Request, [name(Name,[])]),
     with_new_character(Name, true),
     reply_json_dict(Name).
-         
+
 h_get_sheet(_Request) :-
     sheet_json_dict(Dict),
     reply_json_dict(Dict).
@@ -129,7 +129,7 @@ h_get_sheet(_Request) :-
 h_get_prev_level_sheet(_Request) :-
     % Level down without saving.
     level(CurLevel),
-    retractall(gain_level(CurLevel, _, _)),
+    retractall(choice(level(CurLevel), _, _)),
     resolve_ineligible_choices,
     sheet_json_dict(Dict),
     reply_json_dict(Dict).
@@ -159,8 +159,9 @@ h_post_choice(CharId, Request) :-
     read_term_from_atom(SourceAtom, Source, []),
     read_term_from_atom(IdAtom, Id, []),
     read_term_from_atom(ChoiceAtom, Choice, []),
-    withdraw_character_fact(CharId, choice(Source, Id, _)),
+    withdraw_character_fact_without_resolving(CharId, choice(Source, Id, _)),
     record_character_fact(CharId, choice(Source, Id, Choice)),
+    resolve_ineligible_choices,
     reply_json_dict("Success!").
 
 h_post_retract_choice(CharId, Request) :-
@@ -202,8 +203,8 @@ h_post_equip_item(CharId, Request) :-
         CharId,
         (  equip_item_error(Item, Error)
         -> reply_json_dict(Error)
-        ;  record_character_fact(CharId, has(Item)),
-           assert(has(Item)),
+        ;  record_character_fact(CharId, asserted_has(Item)),
+           assert(asserted_has(Item)),
            equipment_json_dict(Items),
            reply_json_dict(Items))).
 
@@ -216,7 +217,7 @@ equip_item_error(Item, "That item does not exist") :-
 h_post_unequip_item(CharId, Request) :-
     http_parameters(Request, [item(ItemAtom,[])]),
     read_term_from_atom(ItemAtom, Item, []),
-    withdraw_character_fact(CharId, has(Item)),
+    withdraw_character_fact(CharId, asserted_has(Item)),
     with_loaded_character(CharId, (equipment_json_dict(Items), reply_json_dict(Items))).
 
 handle_with_char_snapshot(Handler, CharId, Request) :-

@@ -18,10 +18,11 @@ roll_max(X d Y, Max) :- Max is X*Y.
 %  Makes sure the dice are ordered in descending number of eyes, with
 %  the constant term at the very end.
 simplify_dice_sum(Sum, Simplified) :-
-    sum_to_list(Sum, List),
+    sum_to_list(Sum, List, Vars),
     add_up_dice(List, SumList),
     sort(2, @<, SumList, SumListSorted),
-    list_to_sum(SumListSorted, Simplified).
+    append(Vars, SumListSorted, AllTerms),
+    list_to_sum(AllTerms, Simplified).
 
 %! normalize_dice_formula(?Sum, ?Normalized)
 %
@@ -37,15 +38,21 @@ normalize_dice_formula(Dice , Dice + 0).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Internal representations for this file.
-sum_to_list(X    , [DX]      ) :-
-    X \= _ + _,
+sum_to_list(Var    , []       , [Var]) :-
+    atom(Var), !.
+sum_to_list(X      , [DX]     , []) :-
     normalize_dice_sum_term(X,DX).
-sum_to_list(X + Y, [DY|List]) :-
+sum_to_list(X + Var, List     , [Var | Vars]) :-
+    atom(Var), !,
+    sum_to_list(X, List, Vars).
+sum_to_list(X + Y  , [DY|List], Vars) :-
     normalize_dice_sum_term(Y,DY),
-    sum_to_list(X, List).
+    sum_to_list(X, List, Vars).
 
 normalize_dice_sum_term(N d X, N d X) :- X \= 1.
 normalize_dice_sum_term(N    , N d 1) :- number(N).
+normalize_dice_sum_term(Var  , Var  ) :- atom(Var).
+
 add_up_dice([0 d _ | Ds], Dice) :-
     !,
     add_up_dice(Ds, Dice).

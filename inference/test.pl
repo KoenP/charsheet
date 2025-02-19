@@ -1,4 +1,6 @@
 :- multifile test_char_level/4.
+:- multifile test_char_level/5.
+:- dynamic test_char_level_up/3.
 :- dynamic most_recent_test_character/1.
 
 :- [test_characters/armor_tests].
@@ -10,20 +12,25 @@
 :- [test_characters/extra_attack].
 :- [test_characters/metamagic_adept].
 :- [test_characters/cantrip_notes].
+:- [test_characters/infusions].
 
 % test_char_level(?Name, ?Level, ?Facts, ?Expectations)
 test_char_level(_,_,_,_) :- false.
+
+% test_char_level(?Name, ?Level, ?Facts, ?Expectations, ?ExpectedProblems)
+test_char_level(Name, Level, Facts, Expectations, []) :-
+    test_char_level(Name, Level, Facts, Expectations).
 
 test_character(Name) :- test_character(Name, true).
 test_character(Name, Goal) :-
     unload_char,
     snapshot(
-        ( findall(Level-Facts-Expectations,
-                  test_char_level(Name, Level, Facts, Expectations),
+        ( findall(Level-Facts-Expectations-ExpectedProblems,
+                  test_char_level(Name, Level, Facts, Expectations, ExpectedProblems),
                   UnsortedScenario),
           sort(1, @<, UnsortedScenario, TestScenario),
-          forall(member(Level-Facts-Expectations, TestScenario),
-                 test_character_level(Name, Level, Facts, Expectations)),
+          forall(member(Level-Facts-Expectations-ExpectedProblems, TestScenario),
+                 test_character_level(Name, Level, Facts, Expectations, ExpectedProblems)),
           call(Goal),
           abolish_all_tables
         )).
@@ -37,17 +44,19 @@ test_character(Name, Goal) :-
 %    forall(member(Level-Facts-Expectations, TestScenario),
 %           test_character_level(Name, Level, Facts, Expectations)),
 %    abolish_all_tables.
-test_character_level(Name, Level, Facts, Expectations) :-
+test_character_level(Name, Level, Facts, Expectations, ExpectedProblems) :-
     abolish_all_tables,
     write("# "), write(Name), write(" lvl "), writeln(Level),
     forall(member(Fact,Facts), assert(Fact)),
     forall(member(E,Expectations), test_expectation(E)),
-    findall(Problem, (problem(Problem), write('Problem: '), writeln(Problem)), []).
+    findall(Problem, (problem(Problem), write('Problem: '), writeln(Problem)), ExpectedProblems),
+    !.
     %findall(Todo, (todo(Todo), write('Todo: '), writeln(Todo)), _).
+
 test_expectation(Expectation) :-
     call(Expectation)
     -> true
-    ;  (write('Failed: '), write(Expectation), false).
+    ;  (write('Failed:\n\t'), write_term(Expectation, [quoted(true), fullstop(true), nl(true)]), false).
 
 tc(Name) :- tc(Name, true).
 tc(Name, Goal) :-
@@ -86,6 +95,13 @@ unload_char :-
     abolish_all_tables.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+choice(level(Level), 'as class', Class) :-
+    test_char_level_up(Level, Class, _).
+choice(level(Level), 'max hp roll'(con(Con), avg(Avg)), Avg) :-
+    test_char_level_up(Level, _, hp_avg),
+    options(level(Level), 'max hp roll'(con(Con), avg(Avg)), _).
+
 
 attack_with_sorted_notes(Name, Range, ToHitOrDC, DamageRolls, SortedNotes) :-
     attack(Name, Range, ToHitOrDC, DamageRolls, Notes),

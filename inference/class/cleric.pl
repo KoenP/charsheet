@@ -43,7 +43,7 @@ extend_class_spell_list(cleric, Spell) :-
     subclass(Class),
     Class =.. [cleric, Domain],
     cleric_domain_spell(Domain, Spell).
-    
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial class features.
 traits_from_source(^cleric,
@@ -164,7 +164,7 @@ meta_todo(trait('blessings of knowledge'), "Technically it's not expertise, but 
 % Knowledge of the ages.
 trait_source(cleric(knowledge) >: 2, 'knowledge of the ages').
 trait_source(cleric(knowledge) >: 2, channel_divinity('read thoughts')).
-    
+
 meta_todo(cleric(knowledge), "Complete this subclass implementation.").
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
