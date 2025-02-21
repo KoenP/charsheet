@@ -149,7 +149,7 @@ known_spell_property(Origin, Name, Field, Val) :-
     Val = Data.get(Field).
 
 %! known_spell_property_or_error(?Origin:atomic, ?Name:atomic, ?Field:atomic, ?Val)
-%  
+%
 %  Like known_spell_property/4, but if the Field does not exist in the
 %  spell data, throw an error instead of silently failing.
 known_spell_property_or_error(Origin, Name, Field, Val) :-
@@ -442,7 +442,6 @@ caster_denominator(1/N, N).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Helper predicates for modifying spell data.
 
-%! 
 known_spell_mod(Origin, Name, Mod) :-
     known_spell_effect(Origin, Name, Effect),
     Mod = modify_spell_field(effects, append_to_list(Effect)).

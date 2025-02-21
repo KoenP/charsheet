@@ -15,7 +15,7 @@ import String
 import Decoder.CharacterSheet exposing (sheetDec)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
-import Util exposing (simple, applyIfPresent, guardListLazy)
+import Util exposing (simple, applyIfPresent, guardListLazy, lookupLargestLeq)
 
 defaultColorScheme : ColorScheme
 defaultColorScheme = { name = "greyscale" , bg = Css.hex "e8e8e8" , fg = Css.hex "000000" }
@@ -27,6 +27,7 @@ colorSchemes =
      , mk "red" "ffdddd" "960000"
      , mk "green" "ddffdd" "009600"
      , mk "yellow" "eeeedd" "909000"
+     , mk "purple" "eeddee" "900090"
      , defaultColorScheme
      ]
 
@@ -340,8 +341,8 @@ estimateSpellDescFontSize paragraphs higherLevel bonuses =
 
 estimateFontSize : Int -> Float
 estimateFontSize len =
-  lookupLargestLeq len [(0, 14), (500, 12), (700, 10), (1000, 8), (1400, 7), (1800, 6)]
-    |> Maybe.withDefault 6
+  lookupLargestLeq len [(400, 12), (600,11), (900, 10), (1200, 9), (1500, 8), (1800, 7), (2200, 6)]
+    |> Maybe.withDefault 14
     -- if len >= 1800
     -- then 6
     -- else if len >= 1600
@@ -350,20 +351,12 @@ estimateFontSize len =
     --           then 8
     --           else 10
 
-lookupLargestLeq : comparable -> List (comparable, a) -> Maybe a
-lookupLargestLeq x l =
-  case l of
-    (y, val) :: ys ->
-      if x >= y
-      then lookupLargestLeq x ys |> Maybe.withDefault val |> Just
-      else Nothing
-    [] -> Nothing
-
 spellDescriptionLength : List String -> Maybe String -> Int
 spellDescriptionLength paragraphs higherLevel =
-  List.sum
-    <| Maybe.withDefault 0 (Maybe.map String.length higherLevel)
-      :: List.map String.length paragraphs
+    Debug.log ("spellDescriptionLength " ++ String.left 20 (List.foldr (++) "" paragraphs))
+      <| List.sum
+        <| Maybe.withDefault 0 (Maybe.map String.length higherLevel)
+          :: List.map String.length paragraphs
 
 
 descriptionContainsTable : List String -> Bool

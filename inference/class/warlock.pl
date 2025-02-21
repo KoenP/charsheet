@@ -65,6 +65,7 @@ known_spell(warlock, cha, always, [slot], Ritual, Name) :-
     spell_property(Name, ritual, Ritual). % TODO this might be wrong.
 hide_known_class_spells(warlock >: _, cantrip, warlock).
 hide_known_class_spells(warlock >: _, spell, warlock).
+hide_known_class_spells(warlock >: _, replacing(spell, _), warlock).
 
 % Learn cantrips.
 options_source(warlock >: 1, cantrip, 2 unique_from class_cantrip(warlock)).

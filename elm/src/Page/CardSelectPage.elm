@@ -75,7 +75,7 @@ view config focusedDropdownId { curSheet , prevSheet } =
              , diffSpellcastingSections prevSheet.spellcasting_sections curSheet.spellcasting_sections
              )
         else ( curSheet.notable_traits , curSheet.spellcasting_sections )
-  in 
+  in
     viewGlobalConfig config
     ::
     List.concatMap

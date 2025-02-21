@@ -78,6 +78,15 @@ nubSorted sortedList =
     _            ->
       sortedList
 
+lookupLargestLeq : comparable -> List (comparable, a) -> Maybe a
+lookupLargestLeq x l =
+  case l of
+    (y, val) :: ys ->
+      if x >= y
+      then lookupLargestLeq x ys |> Maybe.withDefault val |> Just
+      else Nothing
+    [] -> Nothing
+
 guardM : String -> (a -> Decoder Bool) -> Decoder a -> Decoder a
 guardM errMsg predDec valDec =
   valDec |> D.andThen

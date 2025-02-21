@@ -125,6 +125,8 @@ weapon('light crossbow', simple, ranged(feet(80) / feet(320)),
        [damage(piercing, 1 d 8)], [ammunition, loading, twohanded]).
 weapon(longbow, martial, ranged(feet(150) / feet(600)),
        [damage(piercing, 1 d 8)], [ammunition, heavy, twohanded]).
+weapon(pistol, simple, ranged(feet(30) / feet(90)), % TODO this is martial?
+       [damage(piercing, 1 d 10)], [ammunition, loading]).
 
 %! base_weapon_note(?Weapon, ?Note)
 base_weapon_note(Weapon, Note) :-
@@ -163,7 +165,7 @@ weapon_ranged(Weapon) :-
     weapon(Weapon, _, ranged(_), _, _).
 weapon_with_ammunition(Weapon) :-
     weapon(Weapon, _, _, _, Notes),
-    member(Notes, ammunition).
+    member(ammunition, Notes).
 
 %! weapon_variant(?NamedWeapon, ?BaseWeapon, ?ExtraRolls, ?ExtraNotes)
 %  TODO docs outdated
