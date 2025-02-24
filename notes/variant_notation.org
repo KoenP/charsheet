@@ -1,0 +1,70 @@
+
+** Kinds of weapon variants
+
+*** Categorization based on name
+
+- Fully unique name: devotee's censer
+- <weapon> of ...: dagger of venom, ...
+- ... <weapon>: vorpal sword, berserker's axe
+
+*** Mechanically
+
+- Picking from list of weapons as base weapon, with baked-in enchantment.
+- Fixed base weapon.
+- Nominally non-standard base weapon, that is (partially) a standard base weapon in reality: boomerang proficiency is granted by proficiency with javelins.
+- (not sure if exists:) fully custom (no meaningful pre-existing base weapon)
+
+** Challenges
+*** Representing enchantment
+Many magic weapons have baked-in echantment values.
+For example, a berserker's axe has a fixed enchantment of +1.
+How do we represent this baked-in enchantment?
+
+| Notation                     | Notes                                                                          |
+|------------------------------+--------------------------------------------------------------------------------|
+| 'hand axe' ^ berserker       | enchantment somehow derived from the berserker annotation (separate predicate) |
+| 'hand axe' ^ berserker + 1   | enchantment applied to ~'hand axe' ^ berserker~                                |
+| ('hand axe' + 1) ^ berserker | enchantment applied to the base weapon                                         |
+| berserker_axe('hand axe')    |                                                                                |
+
+
+
+** Prolog notation
+*** Weapon
+**** Base weapon
+
+longsword
+'hand axe'
+
+***** with enchantment
+longsword + 1
+'hand axe' + 2
+
+**** Magic variant
+***** Variant operator
+'long sword' ^ vorpal
+
+***** Variant functor
+vorpal('long sword')
+
+*** Armor
+**** Base armor
+plate
+leather
+
+**** Magic variant
+***** Variant operator
+plate ^ 'enhanced defense'
+plate ^ 'enhanced defense' + 2
+(plate + 2) ^ 'enhanced defense'
+
+***** Variant functor
+'enhanced defense'(plate)
+'enhanced defense'(plate) + 2
+'enhanced defense'(plate + 2)
+
+** Notes
+What makes picking tricky is that in some cases, the magic weapon "feels" like a variant of an existing weapon.
+For example, "enhance defense" plate armor.
+But in other cases, it feels like an item that's parameterized on a base item.
+For example, the berserker's axe.

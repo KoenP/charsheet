@@ -7,8 +7,8 @@ update_base_ability(Abi, NewScore) :-
 ability(str).
 ability(dex).
 ability(con).
-ability(wis).
 ability(int).
+ability(wis).
 ability(cha).
 
 highest_ability_from(List, Abi, Val) :-

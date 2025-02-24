@@ -65,6 +65,7 @@
 :- [sheet_json].
 :- [grants].
 :- [data/humanoid_race].
+:- [creature].
 :- [test].
 
 %! meta_todo(Source, Todo)
@@ -215,7 +216,6 @@ speed(Mode, Speed) :-
     racial_speed(Race, Mode, BaseSpeed),
     findall(Bonus, (bonus(speed+Bonus);bonus(speed(Mode)+Bonus)), Bonuses),
     sumlist([BaseSpeed|Bonuses], Speed).
-
 
 %! proficiency_bonus(?Bonus:int)
 proficiency_bonus(Bonus) :- level(Level), calc_bonus(Level, Bonus).

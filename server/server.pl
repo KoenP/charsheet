@@ -17,6 +17,7 @@
 :- use_module(library(http/http_path)).
 :- use_module(library(http/http_error)).
 :- use_module(library(http/http_session)).
+:- use_module(library(http/http_client)).
 :- use_module(library(sgml)).
 :- use_module(library(settings)).
 
@@ -106,7 +107,9 @@ h_logout(Request) :-
 :- http_handler(root(api / character / CharId / unequip_item),
                 h_post_unequip_item(CharId),
                 [method(post)]).
-
+:- http_handler(root(api / character/ CharId / store_card_config),
+                h_post_store_card_config(CharId),
+                [method(post)]).
 
 h_list_characters(_Request) :-
     list_characters(Chars),
@@ -218,7 +221,13 @@ h_post_unequip_item(CharId, Request) :-
     http_parameters(Request, [item(ItemAtom,[])]),
     read_term_from_atom(ItemAtom, Item, []),
     withdraw_character_fact(CharId, asserted_has(Item)),
-    with_loaded_character(CharId, (equipment_json_dict(Items), reply_json_dict(Items))).
+    with_loaded_character(CharId,
+                          (equipment_json_dict(Items),
+                           reply_json_dict(Items))).
+
+h_post_store_card_config(CharId, Request) :-
+    http_read_data(Request, Data, [to(string)]),
+    writeln(Data).
 
 handle_with_char_snapshot(Handler, CharId, Request) :-
     with_loaded_character(CharId, (call(Handler, Request), abolish_private_tables)).

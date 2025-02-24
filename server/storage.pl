@@ -7,12 +7,20 @@
        gain_level/3,
        choice/3.
 
-:- dynamic name/1, base_ability/2, choice/3, asserted_has/1.
+:- dynamic name/1, base_ability/2, choice/3, asserted_has/1, store/2.
 
 character_definition_predicate(name/1).
 character_definition_predicate(base_ability/2).
 character_definition_predicate(choice/3).
 character_definition_predicate(asserted_has/1).
+character_definition_predicate(store/2).
+
+%! store(?Id, ?Value)
+%
+%  Store of arbitrary records; typically data that the frontend needs to know
+%  about but which has no logical meaning to the backend
+%  (e.g. card color config)
+store(_,_) :- false.
 
 % Hashing predicates.
 hashed_user_name(Hash) :-
