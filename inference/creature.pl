@@ -4,6 +4,7 @@ creature(
        hp: 10,
        hp_roll: 3 d 4 + 3,
        speeds: [walking: feet(20), flying: feet(40)],
+       initiative: 3,
        type: fiend,
        size: tiny,
        alignment: lawful / evil,
@@ -19,7 +20,7 @@ creature(
        skills: [deception, insight, persuasion, stealth],
        resistances:
          [ cold(half),
-           nonmagical and unsilvered:
+           unless(magical or silvered):
              [piercing(half), bludgeoning(half), slashing(half)],
            fire(full),
            poison(full)
@@ -47,7 +48,46 @@ creature(
 
 % ------------------------------------------------------------------------------
 % Helper predicates for formatting creature stat cards.
-creature_abilities_to_markdown(Dict, Md) :-
+
+creature_overview_markdown_table(Dict, Md) :-
+    speed_modes_header(Dict.speeds, SpeedModesHdr),
+    cr_to_xp(Dict.challenge, XP),
+    format(
+        string(Md),
+"
+| HP      | AC | Init. | Spd~w | Prof. Bon. | Ch./XP  |
+|---------|----|-------|-------|------------|---------|
+| ~w (~w) | ~w | ~w    | ~w    | ~w         | ~w (~w) |
+",
+        [ SpeedModesHdr,
+          Dict.hp, Dict.hp_roll, Dict.ac, Dict.initiative,
+          SpeedsStr, Dict.proficiency_bonus, Dict.challenge, XP
+        ]
+
+    ).
+
+format_speed_modes_header([walking: _]) --> {!}, ["Speed"].
+format_speed_modes_header(Speeds) -->
+    { select(walking: _, Speeds, OtherSpeeds),
+      !,
+      OtherSpeeds = [_|_],
+      maplist(speed_mode_abbrev, [walking:_|OtherSpeeds], Abbrevs)
+    },
+    ["Spd. ("], format_list(Abbrevs), [")"].
+format_speed_modes_header(NoWalking) -->
+    { \+ member(walking:_, NoWalking),
+      maplist(speed_mode_abbrev, NoWalking, Abbrevs)
+    },
+    ["Spd. ("], format_list(Abbrevs), [")"].
+
+
+speed_mode_abbrev(walking:_, wlk) :- !.
+speed_mode_abbrev(flying:_, fly) :- !.
+speed_mode_abbrev(swimming:_, swm) :- !.
+speed_mode_abbrev(climbing:_, clb) :- !.
+speed_mode_abbrev(X:_, X) :- !.
+
+creature_abilities_markdown_table(Dict, Md) :-
     findall([Score, Bonus],
             (member(Abi, [str,dex,con,int,wis,cha]),
              Score = Dict.abilities.get(Abi),
@@ -64,3 +104,34 @@ creature_abilities_to_markdown(Dict, Md) :-
 | ~w (~w) | ~w (~w) | ~w (~w) | ~w (~w) | ~w (~w) | ~w (~w) |
 ",
         FmtArgs).
+
+cr_to_xp(1, 200).
+cr_to_xp(2, 450).
+cr_to_xp(3, 700).
+cr_to_xp(4, 1100).
+cr_to_xp(5, 1800).
+cr_to_xp(6, 2300).
+cr_to_xp(7, 2900).
+cr_to_xp(8, 3900).
+cr_to_xp(9, 5000).
+cr_to_xp(10, 5900).
+cr_to_xp(11, 7200).
+cr_to_xp(12, 8400).
+cr_to_xp(13, 10000).
+cr_to_xp(14, 11500).
+cr_to_xp(15, 13000).
+cr_to_xp(16, 15000).
+cr_to_xp(17, 18000).
+cr_to_xp(18, 20000).
+cr_to_xp(19, 22000).
+cr_to_xp(20, 25000).
+cr_to_xp(21, 33000).
+cr_to_xp(22, 41000).
+cr_to_xp(23, 50000).
+cr_to_xp(24, 62000).
+cr_to_xp(25, 75000).
+cr_to_xp(26, 90000).
+cr_to_xp(27, 105000).
+cr_to_xp(28, 120000).
+cr_to_xp(29, 135000).
+cr_to_xp(30, 155000).
