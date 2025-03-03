@@ -41,6 +41,28 @@ skill_ability(intimidation      , cha).
 skill_ability(performance       , cha).
 skill_ability(persuasion        , cha).
 
+%! skill_shorthand(?Skill:atomic, ?Shorthand:atomic)
+%
+%  An abbreviation for each skill.
+skill_shorthand(athletics         , athl).
+skill_shorthand(acrobatics        , acro).
+skill_shorthand('sleight of hand' , 's. o. h').
+skill_shorthand(stealth           , slth).
+skill_shorthand(arcana            , arca).
+skill_shorthand(history           , hist).
+skill_shorthand(investigation     , invg).
+skill_shorthand(nature            , nat).
+skill_shorthand(religion          , reli).
+skill_shorthand('animal handling' , 'a. h').
+skill_shorthand(insight           , ins).
+skill_shorthand(medicine          , mdc).
+skill_shorthand(perception        , perc).
+skill_shorthand(survival          , surv).
+skill_shorthand(deception         , decp).
+skill_shorthand(intimidation      , int).
+skill_shorthand(performance       , perf).
+skill_shorthand(persuasion        , pers).
+
 %! proficient_at_skill(?Skill:atomic)
 %
 %  Checks whether character is proficient at given Skill.

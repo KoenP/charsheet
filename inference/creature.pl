@@ -48,14 +48,49 @@ creature(
 
 % ------------------------------------------------------------------------------
 % Helper predicates for formatting creature stat cards.
+creature_desc(Creature, Desc) :-
+    creature(Creature, Dict),
+    fmt(format_creature_dict(Dict), Desc).
+
+format_creature_dict(Dict) -->
+    { Algmnt1 / Algmnt2  = Dict.alignment,
+      creature_overview_markdown_table(Dict, Overview),
+      creature_abilities_markdown_table(Dict, Abilities)
+    },
+    unlines(
+        [ (emph(unwords([[Dict.size], [Dict.type]])), [", "], emph(unwords([[Algmnt1], [Algmnt2]]))),
+          [Overview],
+          [Abilities],
+          format_creature_skills(Dict.abilities, Dict.proficiency_bonus, Dict.skills),
+          format_creature_resistances(Dict.resistances)
+        ]
+    ).
+
+format_creature_skills(_, _, []) --> {!}, [].
+format_creature_skills(Abilities, ProfBon, Skills) -->
+    {findall(format_skill(Abilities,ProfBon,S), member(S, Skills), Phrases)},
+    emph(["Skills"]), [" "], sep(", ", Phrases).
+
+format_skill(Abilities, ProfBon, Skill) -->
+    { skill_ability(Skill, Ability),
+      mf(Abilities.get(Ability), AbiMod),
+      Bonus is AbiMod + ProfBon,
+      skill_shorthand(Skill, Shorthand)
+    },
+    [Shorthand], [". "], format_bonus(Bonus).
+
+format_creature_resistances([]) --> {!}, [].
+format_creature_resistances(Resistances) -->
+    [TODO].
 
 creature_overview_markdown_table(Dict, Md) :-
-    speed_modes_header(Dict.speeds, SpeedModesHdr),
+    fmt(format_speed_modes_header(Dict.speeds), SpeedModesHdr),
+    fmt(format_speeds(Dict.speeds), SpeedsStr),
     cr_to_xp(Dict.challenge, XP),
     format(
         string(Md),
 "
-| HP      | AC | Init. | Spd~w | Prof. Bon. | Ch./XP  |
+| HP      | AC | Init. | Spd.~w | Prof. Bon. | CR (XP)  |
 |---------|----|-------|-------|------------|---------|
 | ~w (~w) | ~w | ~w    | ~w    | ~w         | ~w (~w) |
 ",
@@ -68,17 +103,17 @@ creature_overview_markdown_table(Dict, Md) :-
 
 format_speed_modes_header([walking: _]) --> {!}, ["Speed"].
 format_speed_modes_header(Speeds) -->
-    { select(walking: _, Speeds, OtherSpeeds),
-      !,
-      OtherSpeeds = [_|_],
-      maplist(speed_mode_abbrev, [walking:_|OtherSpeeds], Abbrevs)
+    { Speeds \= [walking: _],
+      maplist(speed_mode_abbrev, Speeds, Abbrevs)
     },
-    ["Spd. ("], format_list(Abbrevs), [")"].
-format_speed_modes_header(NoWalking) -->
-    { \+ member(walking:_, NoWalking),
-      maplist(speed_mode_abbrev, NoWalking, Abbrevs)
+    [" ("], format_list(Abbrevs), [")"].
+
+format_speeds([walking: Spd]) --> {!}, format_term(Spd).
+format_speeds(TaggedSpeeds) -->
+    { TaggedSpeeds \= [walking: _],
+      findall(Spd, member(_: Spd, TaggedSpeeds), Speeds)
     },
-    ["Spd. ("], format_list(Abbrevs), [")"].
+    format_list_empty_as_dash(Speeds).
 
 
 speed_mode_abbrev(walking:_, wlk) :- !.

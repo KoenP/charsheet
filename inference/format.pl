@@ -157,7 +157,7 @@ format_effect(List) -->
     format_effects(List).
 format_effect(E) -->
     format_term(E).
-    
+
 format_area(N ft Shape) --> [N], [" ft "], [Shape].
 format_area(N by M ft Shape) --> [N], ["×"], [M], [" ft "], [Shape].
 
@@ -168,14 +168,19 @@ format_ref(T) --> format_term(T).
 us_to_space([ X |Xs]) --> {X \= '_'}, [X], us_to_space(Xs).
 us_to_space(['_'|Xs]) --> [' '], us_to_space(Xs).
 us_to_space([]) --> [].
-    
+
 interleave([X|Xs], [Y|Ys]) --> [X], [Y], interleave(Xs, Ys).
 interleave(Xs, []) --> {Xs \= []}, seq(Xs).
 interleave([], Ys) --> seq(Ys).
 
-sep(_, []) --> [].
-sep(_, [X]) --> [X].
-sep(Sep, [X|Xs]) --> {Xs \= []}, [X], seq(Sep), sep(Sep, Xs).
+emph(Ph) --> ["**"], phrase(Ph), ["**"].
+
+unwords(Words) --> sep(" ", Words).
+unlines(Lines) --> sep("\n", Lines).
+
+sep(_  , []       ) --> {!}, [].
+sep(_  , [Ph]     ) --> {!}, phrase(Ph).
+sep(Sep, [Ph|Phs] ) --> phrase(Ph), [Sep], sep(Sep, Phs).
 
 rep(_) --> [].
 rep(X) --> [X], rep(X).
@@ -184,7 +189,7 @@ seq([]) --> [].
 seq([E|Es]) --> [E], seq(Es).
 
 seq_atom(Atom) --> {atom_chars(Atom, Chars)}, seq(Chars).
-    
+
 maybe(_) --> [].
 maybe(X) --> [X].
 
