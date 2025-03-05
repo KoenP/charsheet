@@ -180,7 +180,16 @@ add_spell_effect('eldritch blast', Effect) :-
 
 add_spell_effect('false life', 'temp hp' + (1 d 4 + 4)).
 
-add_spell_effect('find familiar', test).
+% Find familiar.
+trait_source(known_spell(_, 'find familiar'), familiar_option(Fam)) :-
+    familiar_option(Fam).
+familiar_option(Fam) :-
+    member(Fam, [bat, cat, crab, frog, toad, hawk, lizard, octopus, owl, 'poisonous snake', fish, rat, raven, 'sea horse', spider, weasel]).
+familiar_option(Fam) :-
+    bonus(extra_familiar_option(Fam)).
+(familiar_option(Fam) ?= Desc) :-
+    creature_desc(Fam, Desc).
+custom_format(familiar_option(Fam)) --> [Fam], [" familiar"].
 
 add_spell_effect(frostbite,
                  saving_throw(con):damage(cold,N d 6)) :-

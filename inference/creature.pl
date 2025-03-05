@@ -1,3 +1,45 @@
+% TODO delete this test case
+%trait(test, creature(imp)).
+
+(creature(Creature) ?= Desc) :-
+    creature_desc(Creature, Desc).
+
+creature(
+    owl,
+    _{ ac: 11,
+       hp: 1,
+       hp_roll: 1 d 4 - 1,
+       speeds: [walking: feet(5), flying: feet(60)],
+       initiative: 1,
+       type: beast,
+       size: tiny,
+       alignment: unaligned,
+       abilities: _{
+           str: 3,
+           dex: 13,
+           con: 8,
+           int: 2,
+           wis: 12,
+           cha: 7
+       },
+       proficiency_bonus: 2,
+       skills: [perception, stealth],
+       senses: [darkvision(feet(120), 'passive perception'(11))],
+       challenge: 0,
+       traits: _{
+           flyby: "The owl doesn't provoke opportunity attacks when it flies out of an enemy's reach.",
+           'keen hearing and sight': "The owl has advantage on Wisdom (Perception) checks that rely on hearing or sight."
+       },
+       actions: _{
+           talons: attack{
+                       range: melee,
+                       to_hit: 3,
+                       damage_rolls: [damage(slashing, 1)]
+                   }
+       }
+     }
+).
+
 creature(
     imp,
     _{ ac: 13,
@@ -19,20 +61,17 @@ creature(
        proficiency_bonus: 2,
        skills: [deception, insight, persuasion, stealth],
        resistances:
-         [ cold(half),
-           unless(magical or silvered):
-             [piercing(half), bludgeoning(half), slashing(half)],
-           fire(full),
-           poison(full)
-         ],
+         [ cold,
+           (unless(magical or silvered): [piercing, bludgeoning, slashing]) ],
+       immunities: [ fire, poison ],
        condition_immunities: [poisoned],
        senses: [darkvision(feet(120)), 'passive perception'(11)],
        languages: [infernal, common],
        challenge: 1,
        traits: _{
-         shapechanger: "The imp can use its action to polymorph into a beast form that resembles a rat (speed 20 ft.), a raven (20 ft., fly 60 ft.), or a spider (20 ft., climb 20 ft.), or back into its true form. Its statistics are the same in each form, except for the speed changes noted. Any equipment it is wearing or carrying isn't transformed. It reverts to its true form if it dies.",
+         shapechanger: "Polymorph into rat (20 ft.), raven (20 ft., fly 60 ft.), or spider (20 ft., climb 20 ft.). Stats unchanged except speed. Gear unaffected. Reverts on death.",
          'devil\'s sight': "Magical darkness doesn't impede the imp's darkvision.",
-         'magic resistance': "The imp has advantage on saving throws against spells and other magical effects."
+         'magic resistance': "Adv. on saving throws against spells and other magical effects."
        },
        actions: _{
          'sting (bite in beast form)':
@@ -48,28 +87,42 @@ creature(
 
 % ------------------------------------------------------------------------------
 % Helper predicates for formatting creature stat cards.
+
+% TODO maybe I should look into just generating this as HTML instead of generating markdown which is then converted to HTML on the frontend.
+
 creature_desc(Creature, Desc) :-
     creature(Creature, Dict),
     fmt(format_creature_dict(Dict), Desc).
 
 format_creature_dict(Dict) -->
-    { Algmnt1 / Algmnt2  = Dict.alignment,
-      creature_overview_markdown_table(Dict, Overview),
-      creature_abilities_markdown_table(Dict, Abilities)
+    { creature_abilities_markdown_table(Dict, Abilities),
+      dict_pairs(Dict.get(traits, _{}), _, Traits)
     },
-    unlines(
-        [ (emph(unwords([[Dict.size], [Dict.type]])), [", "], emph(unwords([[Algmnt1], [Algmnt2]]))),
-          [Overview],
+    paragraphs(
+        [ (emph(unwords([[Dict.size], [Dict.type]])), [", "], emph(format_alignment(Dict.alignment))),
+          format_creature_overview_table(Dict),
           [Abilities],
-          format_creature_skills(Dict.abilities, Dict.proficiency_bonus, Dict.skills),
-          format_creature_resistances(Dict.resistances)
-        ]
-    ).
+          format_creature_skills(Dict.abilities, Dict.proficiency_bonus, Dict.get(skills, [])),
+          format_creature_resistances(Dict.get(resistances, [])),
+          format_creature_damage_immunities(Dict.get(immunities, [])),
+          format_creature_optional_list("Condition immunities", Dict.get(condition_immunities, [])),
+          format_creature_optional_list("Senses", Dict.get(senses, [])),
+          format_creature_optional_list("Languages", Dict.get(languages, []))
+        ]),
+    ["\n\n"],
+    foreach(member(Name-Desc,Traits), format_paragraph(capitalize_atom_words(Name), [Desc]), ["\n\n"]).
 
-format_creature_skills(_, _, []) --> {!}, [].
+format_paragraph(HeaderPhrase, ContentPhrase) -->
+    emph((phrase(HeaderPhrase), [". "])),
+    phrase(ContentPhrase).
+
+format_alignment(A1 / A2) --> unwords([[A1], [A2]]).
+format_alignment(unaligned) --> [unaligned].
+
+format_creature_skills(_, _, []) --> [].
 format_creature_skills(Abilities, ProfBon, Skills) -->
-    {findall(format_skill(Abilities,ProfBon,S), member(S, Skills), Phrases)},
-    emph(["Skills"]), [" "], sep(", ", Phrases).
+    emph(["Skills. "]),
+    foreach(member(S, Skills), format_skill(Abilities,ProfBon,S), [", "]).
 
 format_skill(Abilities, ProfBon, Skill) -->
     { skill_ability(Skill, Ability),
@@ -81,24 +134,45 @@ format_skill(Abilities, ProfBon, Skill) -->
 
 format_creature_resistances([]) --> {!}, [].
 format_creature_resistances(Resistances) -->
-    [TODO].
+    {member(_:_, Resistances) -> Sep = ["; "] ; Sep = [", "]},
+    emph(["Resistances. "]),
+    foreach(member(R,Resistances), format_resistance_or_immunity(R), Sep).
 
-creature_overview_markdown_table(Dict, Md) :-
-    fmt(format_speed_modes_header(Dict.speeds), SpeedModesHdr),
-    fmt(format_speeds(Dict.speeds), SpeedsStr),
-    cr_to_xp(Dict.challenge, XP),
-    format(
-        string(Md),
-"
-| HP      | AC | Init. | Spd.~w | Prof. Bon. | CR (XP)  |
-|---------|----|-------|-------|------------|---------|
-| ~w (~w) | ~w | ~w    | ~w    | ~w         | ~w (~w) |
-",
-        [ SpeedModesHdr,
-          Dict.hp, Dict.hp_roll, Dict.ac, Dict.initiative,
-          SpeedsStr, Dict.proficiency_bonus, Dict.challenge, XP
+format_creature_damage_immunities([]) --> {!}, [].
+format_creature_damage_immunities(Immunities) -->
+    emph(["Immunities. "]),
+    foreach(member(I,Immunities), format_resistance_or_immunity(I), [", "]).
+
+format_creature_optional_list(Header, Terms) -->
+    optional(
+        ( {Terms \= []}, emph(([Header], [". "])), format_list(Terms) ),
+        []
+    ).
+
+format_resistance_or_immunity(unless(Cond):SimpleResistances) -->
+    {!},
+    ["unless "], format_simple_boolean_expression(Cond), [": "],
+    format_list(SimpleResistances).
+format_resistance_or_immunity(Atom) --> {atom(Atom), !}, [Atom].
+
+format_simple_boolean_expression(A or B) -->
+    [A], [" or "], [B].
+
+format_creature_hp_and_roll(HP, HPRoll) -->
+    format_number(HP),
+    [" ("],
+    format_dice_sum(HPRoll),
+    [")"].
+
+format_creature_overview_table(Dict) -->
+    format_markdown_table(
+        [ ["HP"]                                 - format_creature_hp_and_roll(Dict.hp, Dict.hp_roll),
+          ["AC"]                                 - [Dict.ac],
+          ["Init"]                               - format_bonus(Dict.initiative),
+          format_speed_modes_header(Dict.speeds) - format_speeds(Dict.speeds),
+          ["PB"]                                 - format_bonus(Dict.proficiency_bonus),
+          ["CR (XP)"]                            - format_cr_and_xp(Dict.challenge)
         ]
-
     ).
 
 format_speed_modes_header([walking: _]) --> {!}, ["Speed"].
@@ -106,7 +180,7 @@ format_speed_modes_header(Speeds) -->
     { Speeds \= [walking: _],
       maplist(speed_mode_abbrev, Speeds, Abbrevs)
     },
-    [" ("], format_list(Abbrevs), [")"].
+    ["Spd ("], format_list(Abbrevs), [")"].
 
 format_speeds([walking: Spd]) --> {!}, format_term(Spd).
 format_speeds(TaggedSpeeds) -->
@@ -114,7 +188,6 @@ format_speeds(TaggedSpeeds) -->
       findall(Spd, member(_: Spd, TaggedSpeeds), Speeds)
     },
     format_list_empty_as_dash(Speeds).
-
 
 speed_mode_abbrev(walking:_, wlk) :- !.
 speed_mode_abbrev(flying:_, fly) :- !.
@@ -140,6 +213,11 @@ creature_abilities_markdown_table(Dict, Md) :-
 ",
         FmtArgs).
 
+format_cr_and_xp(CR) -->
+    {cr_to_xp(CR, XP)},
+    format_number(CR), [" ("], format_number(XP), [")"].
+
+cr_to_xp(0, 10).
 cr_to_xp(1, 200).
 cr_to_xp(2, 450).
 cr_to_xp(3, 700).

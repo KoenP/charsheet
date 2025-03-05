@@ -102,6 +102,8 @@ bonus_source(trait('pact boon'(chain)),
              modify_spell(warlock, 'find familiar', Goal)) :-
     ExtraForms = "extra warlock forms: imp, pseudodragon, quasit, sprite",
     Goal = modify_spell_field(effects, [Es1,Es2]>>append(Es1,[ExtraForms],Es2)).
+bonus_source(trait('pact boon'(chain)), extra_familiar_option(Opt)) :-
+    member(Opt, [imp, pseudodragon, quasit, sprite]).
 
 % TODO this is a workaround for a bug.
 custom_format(modify_spell_field(effects, [_,_]>>append(_, ["extra warlock forms: imp, pseudodragon, quasit, sprite"], _))) --> ["extra warlock forms: imp, pseudodragon, quasit, sprite"].

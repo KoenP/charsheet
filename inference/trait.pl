@@ -127,7 +127,6 @@ notable_traits_by_category(TraitsPerCat) :-
             CatTraits),
     sort(1, @=<, CatTraits, Sorted),
     group_pairs_by_key(Sorted, TraitsPerCat).
-    
 
 %! traits_by_category(?TraitsPerCat)
 traits_by_category(TraitsPerCat) :-

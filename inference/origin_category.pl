@@ -3,6 +3,8 @@ origin_category('level up', level(_)).
 origin_category(class(Class), Origin) :-
     class_option(Class),
     class_origin_to_class(Origin, Class).
+origin_category(class(Class), Class) :-
+    class_option(Class).
 origin_category(race(Race), race(Race)) :-
     Race =.. [_].
 origin_category(race(BaseRace), race(Race)) :-
@@ -13,6 +15,8 @@ origin_category(Category, trait(Trait)) :-
     trait(Origin, Trait),
     origin_category(Category, Origin).
 origin_category(Category, choice(Origin, _)) :-
+    origin_category(Category, Origin).
+origin_category(Category, known_spell(Origin, _)) :-
     origin_category(Category, Origin).
 
 origin_category_canonical_order('level up', 0) :- !.

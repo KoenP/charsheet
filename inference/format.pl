@@ -1,3 +1,5 @@
+:- use_module(library(dcg/high_order)).
+
 :- multifile custom_format//1.
 :- multifile special_plural//1.
 
@@ -66,12 +68,14 @@ format_range(X) --> [X].
 
 
 format_dice_sum(Ds + K) --> {number(K), K \= 0, !}, format_dice_sum(Ds), ['+'], [K].
+format_dice_sum(Ds - K) --> {number(K), K \= 0, !}, format_dice_sum(Ds), ['-'], [K].
 format_dice_sum(Ds + in_parens(Ds2)) -->
     format_dice_sum(Ds),
     ['(+'],
     format_dice_sum(Ds2),
     [')'].
 format_dice_sum(Ds + 0) --> {!}, format_dice_sum(Ds).
+format_dice_sum(Ds - 0) --> {!}, format_dice_sum(Ds).
 format_dice_sum(Ds + D) --> {!}, format_dice_sum(Ds), ['+'], format_dice(D).
 format_dice_sum(Ds) --> format_dice(Ds).
 format_dice(N d X) --> seq([N, 'd', X]).
@@ -169,14 +173,31 @@ us_to_space([ X |Xs]) --> {X \= '_'}, [X], us_to_space(Xs).
 us_to_space(['_'|Xs]) --> [' '], us_to_space(Xs).
 us_to_space([]) --> [].
 
+% Capitalize the first character of every word in an atom.
+capitalize_atom_words(Atom) -->
+    {split_string(Atom, " ", "", Words)},
+    capitalize_words(Words).
+
+% Capitalize the first character of every atom in a list.
+capitalize_words([]) --> [].
+capitalize_words([Word]) --> {!}, capitalize_atom(Word).
+capitalize_words([Word|Words]) -->
+    capitalize_atom(Word),
+    [" "],
+    capitalize_words(Words).
+
+% Capitalize the first character of an atom.
+capitalize_atom(Atom) -->
+    { atom_to_chars(Atom, [H|T]),
+      to_upper(H, H_),
+      atom_to_chars(Capitalized, [H_|T])
+    },
+    [Capitalized].
+
+
 interleave([X|Xs], [Y|Ys]) --> [X], [Y], interleave(Xs, Ys).
 interleave(Xs, []) --> {Xs \= []}, seq(Xs).
 interleave([], Ys) --> seq(Ys).
-
-emph(Ph) --> ["**"], phrase(Ph), ["**"].
-
-unwords(Words) --> sep(" ", Words).
-unlines(Lines) --> sep("\n", Lines).
 
 sep(_  , []       ) --> {!}, [].
 sep(_  , [Ph]     ) --> {!}, phrase(Ph).
@@ -196,3 +217,22 @@ maybe(X) --> [X].
 to_plural(Noun)   --> special_plural(Noun), {!}.
 to_plural(Noun)   --> {atom(Noun)}, format_atom(Noun), ['s'].
 to_plural(GiveUp) --> [GiveUp].
+
+unwords(Words) --> sep(" ", Words).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Markdown-specific formatting.
+emph(Ph) --> ["**"], phrase(Ph), ["**"].
+
+paragraphs(Lines) --> sep("\n\n", Lines).
+
+format_markdown_table(Entries) -->
+    format_markdown_table_header_row(Entries), ["\n"],
+    format_markdown_table_divider_row(Entries), ["\n"],
+    format_markdown_table_values_row(Entries), ["\n"].
+format_markdown_table_header_row(Entries) -->
+    ["| "], foreach(member(H-_,Entries), phrase(H), [" | "]), [" |"].
+format_markdown_table_divider_row(Entries) -->
+    ["|-"], foreach(member(_,Entries), ["-"], ["-|-"]), ["-|"].
+format_markdown_table_values_row(Entries) -->
+    ["| "], foreach(member(_-V,Entries), phrase(V), [" | "]), [" |"].
