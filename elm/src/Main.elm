@@ -219,7 +219,7 @@ handleHttpResponseMsg msg model =
                      , optionsPerLevel = options
                      , traitsAndBonusesPerLevel = traits_and_bonuses 
                      , charLevel = char_level
-                     , selectedLevel = Just char_level
+                     , selectedLevel = char_level
                      , desc = Nothing
                      , setAbilitiesOnNextTick = Dict.empty
                      }
@@ -240,7 +240,7 @@ handleHttpResponseMsg msg model =
           model
           ("handleHttpResponseMsg called with unsupported message: "
           ++ Debug.toString msg)
-               
+
 newCharacter : String -> Cmd Msg
 newCharacter charName =
   Http.post

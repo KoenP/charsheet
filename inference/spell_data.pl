@@ -1,5 +1,6 @@
 %:- [resources/spells/srd].
 :- [spell_auto_data].
+:- table spell_data/2.
 :- multifile extend_spell_data/3.
 :- multifile add_spell_effect/2, known_spell_effect/3, suppress_autoderived_spell_effect/1.
 
@@ -42,12 +43,22 @@ spell_property_or_error(Name, Prop, Val) :-
 %  * (effects): Summary of effects, but not damage rolls.
 spell_data(Name, Data) :-
     spell_auto_data(Name, AutoData),
+    AutoData.desc
     findall(Ext,
             (extend_spell_data(Name, Field, Val), Ext=add_dict_field(Field:Val)),
             Exts),
     sequence(Exts, AutoData, Data).
 add_dict_field(Field:Val, Old, New) :-
     New = Old.put(Field,Val).
+
+desc_paragraphs(Ps, Text) :-
+    intersperse("\n\n", Ps, Interspersed),
+    atomics_to_string(Interspersed, Text).
+intersperse(_, [], []).
+intersperse(_, [Y], [Y]).
+intersperse(X, [Y|Ys], [Y,X|Zs]) :- intersperse(X, Ys, Zs).
+
+
 
 %! spell_effect(?Spell, ?Effect)
 spell_effect(Spell, AutoEffect) :-

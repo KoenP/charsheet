@@ -13,6 +13,7 @@ import Html.Styled.Events as E
 import Http
 import Maybe
 import Platform.Cmd as Cmd
+import String
 import Tuple
 import Zipper exposing (Zipper(..))
 
@@ -52,7 +53,7 @@ update msg model oldData =
             , optionsPerLevel          = options
             , traitsAndBonusesPerLevel = traits_and_bonuses
             , charLevel                = char_level
-            , selectedLevel            = Just <| Maybe.withDefault char_level oldData.selectedLevel
+            , selectedLevel            = oldData.selectedLevel
             , desc                     = Nothing
             , setAbilitiesOnNextTick   =
                 let newBaseAbilities = Dict.map (\_ v -> v.base) ability_table 
@@ -83,32 +84,14 @@ update msg model oldData =
                        (mkHttpResponseMsg (\_ -> Update))
                        (D.succeed ())
             }
-            
-
-          
       )
 
     EditCharacterLevel newLevel ->
-      ( applyPageData model { oldData | selectedLevel = Just newLevel }
+      ( applyPageData model { oldData | selectedLevel = newLevel }
       , Cmd.none
       )
 
-    GotoLevelUp ->
-      ( applyPageData model { oldData | selectedLevel = Nothing, desc = Nothing }
-      , Cmd.none
-      ) 
-
-    LevelUpAs class ->
-      ( transferSheetCache model, Http.post
-          { url = characterRequestUrl model.charId ["gain_level"] [("class", class)]
-          , body = Http.emptyBody
-          , expect = Http.expectJson
-                     (mkHttpResponseMsg (\_ -> Update))
-                     (D.succeed ())
-          }
-      )
-
-    SetBaseAbilityScore ability newScore -> 
+    SetBaseAbilityScore ability newScore ->
       ( applyPageData (invalidateAllSheetCaches model)
           { oldData
           | setAbilitiesOnNextTick =
@@ -140,18 +123,10 @@ update msg model oldData =
     SetEditCharacterPageDesc desc ->
       ( applyPageData model { oldData | desc = desc }
       , Cmd.none
-      ) 
+      )
 
     Retract retraction ->
       case retraction of
-        RetractLevelUp level ->
-          ( invalidateAllSheetCaches model , Http.post
-              { url = characterRequestUrl model.charId ["retract_gain_level"] [("level", String.fromInt level)]
-              , body = Http.emptyBody
-              , expect = Http.expectJson (mkHttpResponseMsg (\_ -> Update)) (D.succeed ())
-              }
-          )
-
         RetractChoice { origin, id } ->
           ( invalidateAllSheetCaches model , Http.post
               { url = characterRequestUrl model.charId ["retract_choice"] [("source", origin), ("id", id)]
@@ -164,7 +139,7 @@ update msg model oldData =
       let _ = Debug.log "" msg
       in errorPage model ("Page.EditCharacter.update called with "
                            ++ Debug.toString msg)
-      
+
 applyBaseAbilityChanges : AbilityTable -> Dict Ability Int -> Dict Ability Int
 applyBaseAbilityChanges abilityTable setAbilitiesOnNextTick =
   Dict.union setAbilitiesOnNextTick (Dict.map (\k v -> v.base) abilityTable)
@@ -195,19 +170,19 @@ viewSideNav { desc, optionsPerLevel, selectedLevel, charLevel } =
             (tr [] [viewLevelUpButton charLevel selectedLevel])
             ::
             ( optionsPerLevel
-              |> Dict.keys 
+              |> Dict.keys
               |> List.reverse
               |> List.filter (\lvl -> lvl <= charLevel)
               |> List.map (viewSideNavLevelButton selectedLevel) )
         ]
 
-descStyle : List Style            
+descStyle : List Style
 descStyle =
   [ Css.color (Css.hex "ffffff")
   , Css.padding2 (Css.px 0) (Css.px 10)
   ]
 
-viewSideNavLevelButton : Maybe Level -> Level -> Html Msg
+viewSideNavLevelButton : Level -> Level -> Html Msg
 viewSideNavLevelButton selectedLevel lvl =
   tr
     []
@@ -215,7 +190,9 @@ viewSideNavLevelButton selectedLevel lvl =
         [ case lvl of
             1 -> div [] []
             _ -> button
-                   [ E.onClick (Retract (RetractLevelUp lvl))
+                   [ E.onClick (Retract (RetractChoice { origin = "level(" ++ String.fromInt lvl ++ ")"
+                                                       , id = "'as class'"
+                                                       }))
                    , Attr.css (sideNavButtonStyle False)
                    ]
                    [ text "x" ]
@@ -229,16 +206,16 @@ viewSideNavLevelButton selectedLevel lvl =
     , td []
         [ button
             [ E.onClick (EditCharacterLevel lvl)
-            , Attr.css (sideNavButtonStyle (Just lvl == selectedLevel))
+            , Attr.css (sideNavButtonStyle (lvl == selectedLevel))
             ]
             [ text ("Level " ++ String.fromInt lvl) ]
         ]
     ]
 
-viewLevelUpButton : Level -> Maybe Level -> Html Msg
+viewLevelUpButton : Level -> Level -> Html Msg
 viewLevelUpButton charLevel selectedLevel =
   button
-    [ Attr.css (sideNavButtonStyle (selectedLevel == Just (charLevel + 1)))
+    [ Attr.css (sideNavButtonStyle (selectedLevel == charLevel + 1))
     , E.onClick (EditCharacterLevel (charLevel + 1))
     ]
     [ text "+" ]
@@ -246,7 +223,7 @@ viewLevelUpButton charLevel selectedLevel =
 viewMain : Maybe String -> EditCharacterPageData -> Html Msg
 viewMain focusedDropdownId { abilityTable, optionsPerLevel, traitsAndBonusesPerLevel, selectedLevel, setAbilitiesOnNextTick } =
   div
-    [ Attr.css mainSectionStyle ] 
+    [ Attr.css mainSectionStyle ]
     [ viewTopBar abilityTable setAbilitiesOnNextTick
     , div
         [ Attr.css
@@ -270,7 +247,6 @@ viewTopBar abilityTable setAbilitiesOnNextTick =
         ]
         [ abilityNamesTableRow
         , baseAbilityValuesTableRow abilityTable setAbilitiesOnNextTick
-                        
         , abilityBonusTableRow (listFromAbilityTable .totalBonus abilityTable)
         , abilityScoreTableRow (listFromAbilityTable .score abilityTable)
         , abilityModTableRow (listFromAbilityTable .mod abilityTable)
@@ -326,49 +302,43 @@ abilityModTableRow modifiers =
 topBarTh : String -> Html msg
 topBarTh val = th [] [text val]
 
-topBarTd : String -> Html msg               
+topBarTd : String -> Html msg
 topBarTd val = td [Attr.css topBarTdCss] [text val]
 
 topBarTdCss : List Style
 topBarTdCss = [Css.textAlign Css.center]
 
-viewMainContents :  Maybe String -> Dict Level (List Options) -> Dict Level (List Effect) -> Maybe Level
+viewMainContents :  Maybe String -> Dict Level (List Options) -> Dict Level (List Effect) -> Level
                  -> List (Html Msg)
-viewMainContents focusedDropdownId opts tbs selectedLevel =
-  case selectedLevel of
-    Just level ->
-      let
-        tbsHtml =
-          tbs
-          |> Dict.get level |> Maybe.withDefault []
-          |> categorizeEffects |> Dict.toList
-          |> List.map viewEffectCategory
+viewMainContents focusedDropdownId opts tbs level =
+  let
+    tbsHtml =
+      tbs
+      |> Dict.get level |> Maybe.withDefault []
+      |> categorizeEffects |> Dict.toList
+      |> List.map viewEffectCategory
 
-        optsHtml = 
-          (opts
-          |> Dict.get level
-          |> Maybe.withDefault []
-          |> Util.multiDictFromList (\{display_origin_category, origin_category_index} ->
-                                       (origin_category_index, display_origin_category))
-          |> Dict.map (viewOriginCategoryOptionsList focusedDropdownId)
-          |> Dict.values)
+    optsHtml = 
+      (opts
+      |> Dict.get level
+      |> Maybe.withDefault []
+      |> Util.multiDictFromList (\{display_origin_category, origin_category_index} ->
+                                   (origin_category_index, display_origin_category))
+      |> Dict.map (viewOriginCategoryOptionsList focusedDropdownId)
+      |> Dict.values)
 
-      in
-        List.filter (\_ -> not (List.isEmpty tbsHtml))
-          (h1 [] [text "You gained:"] :: tbsHtml)
-        ++
-        List.filter (\_ -> not (List.isEmpty optsHtml)) -- not (Dict.isEmpty (Dict.get level opts)))
-          (h1 [] [text "You have the following options:"] :: optsHtml)
-          
-      
-    Nothing ->
-      viewLevelUpPage
+  in
+    List.filter (\_ -> not (List.isEmpty tbsHtml))
+      (h1 [] [text "You gained:"] :: tbsHtml)
+    ++
+    List.filter (\_ -> not (List.isEmpty optsHtml)) -- not (Dict.isEmpty (Dict.get level opts)))
+      (h1 [] [text "You have the following options:"] :: optsHtml)
 
 -- TODO: this "works", but is not great either in terms of code
 -- and presentation. I think this merits a full rework at some point.
 viewEffectCategory : (String, List Effect) -> Html Msg
 viewEffectCategory (category, effects) =
-  let 
+  let
     unwrap : Effect -> String
     unwrap = .effect >> defunctor >> List.map Util.showPrologTerm >> String.concat
 
@@ -383,9 +353,9 @@ viewEffectCategory (category, effects) =
       = List.map
           (\effect ->
              case effect.desc of
-                 [] -> 
+                 [] ->
                    text (showEffect effect)
-                 desc -> 
+                 desc ->
                    tooltip tooltipSize Bottom
                      (text <| showEffect effect)
                      (div [] <| List.map (simple p) desc))
@@ -438,9 +408,6 @@ viewEffectCategory (category, effects) =
     -- showEffect f = .effect >> defunctor >> List.map (showPrologTerm >> f) >> String.concat
   in
     div [ Attr.css effectCategoryStyle ] content
-      
-
-
 
 -- TODO move this somewhere else. Dedicated formatting module maybe?
 formatEffect : PrologTerm -> String
@@ -449,20 +416,6 @@ formatEffect tm =
     Compound "armor" [Atomic "shield"] -> "Proficiency with shields."
     Compound "armor" [Atomic arg] -> "Proficiency with " ++ arg ++ " armor."
     _ -> Util.showPrologTerm tm
-
-viewLevelUpPage : List (Html Msg)
-viewLevelUpPage =
-  [ simple h2 "Level Up"
-  , simple h3 "Pick a class:"
-  , select
-      [ E.onInput LevelUpAs ]
-      (option [Attr.disabled True, Attr.selected True] [text "-- select an option --"]
-       ::
-       List.map
-          (\x -> option [] [text x])
-          -- TODO: fetch this from the server
-          ["artificer", "barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue", "sorcerer", "warlock", "wizard"])
-  ]
 
 viewOriginCategoryOptionsList : Maybe String -> (Int, String) -> List Options -> Html Msg
 viewOriginCategoryOptionsList focusedDropdownId (_, category) optionsList =

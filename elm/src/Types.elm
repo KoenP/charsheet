@@ -247,7 +247,7 @@ type alias EditCharacterPageData =
   , optionsPerLevel : Dict Level (List Options)
   , traitsAndBonusesPerLevel : Dict Level (List Effect)
   , charLevel : Level
-  , selectedLevel : Maybe Level
+  , selectedLevel : Level
   , desc : Maybe (List String)
   , setAbilitiesOnNextTick : Dict Ability Int
   }
@@ -280,7 +280,7 @@ errorPage model msg = ({ model | page = Error msg }, Cmd.none)
 initPreparedSpells : List SpellcastingSection -> Dict Origin (Set SpellName)
 initPreparedSpells =
   Dict.fromList << List.map (\section -> ( section.origin, Set.empty ))
-    
+
 setSpellPreparedness : Origin -> SpellName -> Bool
                      -> Dict Origin (Set SpellName)
                      -> Dict Origin (Set SpellName)
@@ -354,11 +354,9 @@ type Msg
   | OrSCChooseDir String String Dir
   | GotoEditCharacter
   | GotoSheet
-  | GotoLevelUp
   | GotoCardsPage CardsPageOptions
   | GotoCardSelectPage CharacterSheet
   | GotoSelectCharacterPage
-  | LevelUpAs String
   | SetEditCharacterPageDesc (Maybe (List String))
   | SelectDropdownOption String String
   | ToggleDropdown String
@@ -374,8 +372,7 @@ type Msg
   | AddItemInput String
   | SetCardConfig CardConfig
 
-type Retraction = RetractLevelUp Int
-                | RetractChoice { origin : String, id : String }
+type Retraction = RetractChoice { origin : String, id : String }
 
 type Choice = ListChoice (List String) | SingletonChoice String
 
@@ -403,6 +400,6 @@ type HttpResponseMsg
 mkHttpResponseMsg : (a -> HttpResponseMsg) -> (Result Http.Error a -> Msg)
 mkHttpResponseMsg f result =
   HttpResponse (Result.map f result)
-    
+
 type alias CardsPageOptions = { showSpells : ShowSpellOption }
 type ShowSpellOption = AllSpells | OnlyPreparedSpells | NoSpells

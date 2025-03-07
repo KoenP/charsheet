@@ -94,10 +94,6 @@ h_logout(Request) :-
 % Single-character updates.
 :- http_handler(root(api / character / CharId / choice), h_post_choice(CharId), [method(post)]).
 :- http_handler(root(api / character / CharId / retract_choice), h_post_retract_choice(CharId), [method(post)]).
-:- http_handler(root(api / character / CharId / gain_level), h_post_gain_level(CharId), [method(post)]).
-:- http_handler(root(api / character / CharId / retract_gain_level),
-                h_post_retract_gain_level(CharId),
-                [method(post)]).
 :- http_handler(root(api / character / CharId / set_base_abilities),
                 h_post_set_base_abilities(CharId),
                 [method(post)]).
@@ -174,21 +170,6 @@ h_post_retract_choice(CharId, Request) :-
     read_term_from_atom(SourceAtom, Source, []),
     read_term_from_atom(IdAtom, Id, []),
     withdraw_character_fact(CharId, choice(Source, Id, _)),
-    reply_json_dict("Success!").
-
-h_post_gain_level(CharId, Request) :-
-    http_parameters(Request, [class(Class,[])]),
-    with_loaded_character(
-        CharId,
-        ( level(CurLevel),
-          NewLevel is CurLevel + 1,
-          record_character_fact(CharId, gain_level(NewLevel, Class, hp_avg))) ),
-    reply_json_dict("Success!").
-
-h_post_retract_gain_level(CharId, Request) :-
-    http_parameters(Request, [level(RetractedLevel, [integer])]),
-    withdraw_gain_level(CharId, RetractedLevel),
-    resolve_ineligible_choices,
     reply_json_dict("Success!").
 
 h_post_set_base_abilities(CharId, Request) :-

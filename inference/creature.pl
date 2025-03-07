@@ -81,7 +81,7 @@ creature(
                damage_rolls: [damage(piercing, 1 d 4 + 3), damage(poison, 3 d 6)],
                notes: ["DC 11 CON ST; on success: half poison damage"]
            },
-         invisibility: " The imp magically turns invisible until it attacks, or until its concentration ends (as if concentrating on a spell). Any equipment the imp wears or carries is invisible with it."
+         invisibility: "Turns invisible until it attacks or concentration ends; equipment also invisible."
         }
      }).
 
@@ -96,7 +96,8 @@ creature_desc(Creature, Desc) :-
 
 format_creature_dict(Dict) -->
     { creature_abilities_markdown_table(Dict, Abilities),
-      dict_pairs(Dict.get(traits, _{}), _, Traits)
+      dict_pairs(Dict.get(traits, _{}), _, Traits),
+      dict_pairs(Dict.get(actions, _{}), _, Actions)
     },
     paragraphs(
         [ (emph(unwords([[Dict.size], [Dict.type]])), [", "], emph(format_alignment(Dict.alignment))),
@@ -110,7 +111,11 @@ format_creature_dict(Dict) -->
           format_creature_optional_list("Languages", Dict.get(languages, []))
         ]),
     ["\n\n"],
-    foreach(member(Name-Desc,Traits), format_paragraph(capitalize_atom_words(Name), [Desc]), ["\n\n"]).
+    optional(({Traits \= []}, ["---\n### Traits\n"]), []),
+    foreach(member(Name-Desc,Traits), format_paragraph(capitalize_atom_words(Name), [Desc]), ["\n\n"]),
+    ["\n\n"],
+    optional(({Actions \= []}, ["---\n### Actions\n"]), []),
+    foreach(member(Name-Spec,Actions), format_paragraph(capitalize_atom_words(Name), format_creature_action(Spec)), ["\n\n"]).
 
 format_paragraph(HeaderPhrase, ContentPhrase) -->
     emph((phrase(HeaderPhrase), [". "])),
@@ -212,6 +217,21 @@ creature_abilities_markdown_table(Dict, Md) :-
 | ~w (~w) | ~w (~w) | ~w (~w) | ~w (~w) | ~w (~w) | ~w (~w) |
 ",
         FmtArgs).
+
+format_creature_action(attack{
+               range: Range,
+               to_hit: ToHit,
+               damage_rolls: DamageRolls,
+               notes: Notes
+              }) -->
+    {!},
+    [Range], ["; "], % TODO
+    format_bonus(ToHit), [" to hit;"],
+    format_damage(DamageRolls), ["; "],
+    foreach(member(Note,Notes), [Note], [", "]).
+format_creature_action(Desc) -->
+    {string(Desc)},
+    [Desc].
 
 format_cr_and_xp(CR) -->
     {cr_to_xp(CR, XP)},
