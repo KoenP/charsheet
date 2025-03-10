@@ -58,7 +58,7 @@ type alias Resistance = { damage_type: String, resistance: String }
 type alias NotableTraitCategory = { category: String, traits: List Trait }
 type alias Trait =
   { name : String
-  , desc : Maybe String
+  , desc : Maybe (List String)
   , ref  : Maybe String
   }
 
@@ -82,38 +82,38 @@ type alias Attack =
   }
 
 type alias SpellcastingSection =
-  { max_prepared_spells : Maybe Int
-  , origin : Origin
-  , origin_shorthand : String
-  , spell_attack_mod : Int
-  , spell_save_dc : Int
-  , spellcasting_ability : String
+  { max_prepared_spells      : Maybe Int
+  , origin                   : Origin
+  , origin_shorthand         : String
+  , spell_attack_mod         : Int
+  , spell_save_dc            : Int
+  , spellcasting_ability     : String
   , spellcasting_ability_mod : Int
-  , spells : List Spell
+  , spells                   : List Spell
   }
 type alias Origin = String
 
 type alias Spell =
-  { aoe : Maybe String
-  , casting_time : String
-  , components : List Component
+  { aoe           : Maybe String
+  , casting_time  : String
+  , components    : List Component
   , concentration : Bool
-  , description : List String
-  , higher_level : Maybe String
-  , duration : String
-  , level : Int
-  , name : SpellName
-  , prepared : AlwaysPrepared
-  , range : String
-  , resources : List PrologTerm
-  , ref : Maybe String
-  , ritual : Ritual
-  , school : String
-  , shortdesc : Maybe (List String)
-  , summary : String
-  , to_hit : Maybe Int
-  , rolls : Maybe String
-  , bonuses : List SpellBonus
+  , description   : String
+  , higher_level  : Maybe String
+  , duration      : String
+  , level         : Int
+  , name          : SpellName
+  , prepared      : AlwaysPrepared
+  , range         : String
+  , resources     : List PrologTerm
+  , ref           : Maybe String
+  , ritual        : Ritual
+  , school        : String
+  , shortdesc     : Maybe String
+  , summary       : String
+  , to_hit        : Maybe Int
+  , rolls         : Maybe String
+  , bonuses       : List SpellBonus
   }
 type Component = V | S | M String
 type alias AlwaysPrepared = Bool

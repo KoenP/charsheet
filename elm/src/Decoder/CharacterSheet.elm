@@ -30,7 +30,7 @@ sheetDec =
     |> D.andMap (D.field "spellcasting_sections" (D.list spellcastingSectionDec))
     |> D.andMap (D.field "spell_slots" (D.list D.int))
     |> D.andMap (D.field "resources" (D.list resourceDec))
-  
+
 summaryDec : Decoder CharacterSummary
 summaryDec =
   D.succeed CharacterSummary
@@ -90,7 +90,7 @@ traitDec : Decoder Trait
 traitDec =
   D.succeed Trait
     |> D.andMap (D.field "name" D.string)
-    |> D.andMap (D.field "desc" (D.nullable D.string))
+    |> D.andMap (D.field "desc" (D.nullable (D.list D.string)))
     |> D.andMap (D.field "ref" (D.nullable D.string))
 
 attackDec : Decoder Attack
@@ -121,7 +121,7 @@ spellDec =
     |> D.andMap (D.field "casting_time" D.string)
     |> D.andMap (D.field "components" (D.list componentDec))
     |> D.andMap (D.field "concentration" Util.yesNoDec)
-    |> D.andMap (D.field "description" (D.list D.string))
+    |> D.andMap (D.field "description" D.string)
     |> D.andMap (D.field "higher_level" (D.nullable D.string))
     |> D.andMap (D.field "duration" D.string)
     |> D.andMap (D.field "level" D.int)
@@ -132,7 +132,7 @@ spellDec =
     |> D.andMap (D.field "ref" (D.nullable D.string))
     |> D.andMap (D.field "ritual" ritualDec)
     |> D.andMap (D.field "school" D.string)
-    |> D.andMap (D.field "shortdesc" (D.nullable (D.list D.string)))
+    |> D.andMap (D.field "shortdesc" (D.nullable D.string))
     |> D.andMap (D.field "summary" D.string)
     |> D.andMap (D.field "to_hit" (D.nullable D.int))
     |> D.andMap (D.field "rolls" (D.nullable D.string))

@@ -34,7 +34,7 @@ colorSchemes =
 viewNotableTraitCard : CardConfig -> ColorScheme -> String -> Trait -> Html Msg    
 viewNotableTraitCard config ambientColorScheme category { name, desc, ref } =
   let colorScheme = Dict.get ( category , name ) config.traitColorSchemes
-        |> Maybe.withDefault ambientColorScheme 
+        |> Maybe.withDefault ambientColorScheme
   in div
        [ Attr.css (cardStyle colorScheme) ]
        [ div [ Attr.css (cardTitleSectionStyle colorScheme) ] (viewCardTitle name ref)
@@ -42,10 +42,10 @@ viewNotableTraitCard config ambientColorScheme category { name, desc, ref } =
        , div [ Attr.css (descriptionStyle
                            colorScheme
                            (Maybe.withDefault 0
-                              (Maybe.map (estimateFontSize << String.length) desc)))
+                              (Maybe.map (estimateFontSize << List.foldl (+) 0 << List.map String.length) desc)))
              , Attr.class "card-description"
              ]
-           [  Maybe.withDefault "" desc
+           [  Maybe.withDefault [] desc
               |> Markdown.toHtmlWith
                    { githubFlavored = Just { tables = True, breaks = False }
                    , defaultHighlighting = Nothing
@@ -95,9 +95,9 @@ viewSpellCard cardConfig ambientColorScheme origin spell =
        ]
        ++
        viewConcentrationBadge colorScheme spell.concentration
-       ++ 
+       ++
        [ div [ Attr.css (cardTypeStyle colorScheme) ]
-         [ text (origin 
+         [ text (origin
                    ++ case (spell.level, spell.prepared)
                       of (0, _    ) -> " cantrip"
                          (_, False) -> " spell"
@@ -105,26 +105,25 @@ viewSpellCard cardConfig ambientColorScheme origin spell =
          ]
        ]
 
-getSpellDescriptionText : Spell -> List String
+getSpellDescriptionText : Spell -> String
 getSpellDescriptionText spell =
-  Maybe.withDefault spell.description <| Maybe.map (\d -> "(Summary:)" :: d) spell.shortdesc
+  Maybe.withDefault spell.description <| Maybe.map (\d -> "(Summary:)" ++ d) spell.shortdesc
 
-viewSpellDescription : ColorScheme -> List String -> Maybe String -> List SpellBonus -> List PrologTerm -> Int -> Html Msg
-viewSpellDescription colorScheme paragraphs higherLevel bonuses resources spellLevel =
-  div [ Attr.css (descriptionStyle colorScheme (estimateSpellDescFontSize paragraphs higherLevel bonuses))
+viewSpellDescription : ColorScheme -> String -> Maybe String -> List SpellBonus -> List PrologTerm -> Int -> Html Msg
+viewSpellDescription colorScheme desc higherLevel bonuses resources spellLevel =
+  div [ Attr.css (descriptionStyle colorScheme (estimateSpellDescFontSize desc higherLevel bonuses))
       , Attr.class "card-description"
       ]
-    <| (  paragraphs
-       |> List.intersperse "\n\n"
-       |> String.concat
-       -- |> Md.toHtml_ Md.Extended 
-       |> Markdown.toHtmlWith
-            { githubFlavored = Just { tables = True, breaks = False }
-            , defaultHighlighting = Nothing
-            , sanitize = False
-            , smartypants = True
-            }
-            []
+    <| (
+       -- |> Md.toHtml_ Md.Extended
+       Markdown.toHtmlWith
+           { githubFlavored = Just { tables = True, breaks = False }
+           , defaultHighlighting = Nothing
+           , sanitize = False
+           , smartypants = True
+           }
+           []
+           desc
        |> fromUnstyled
        )
        -- |> List.map (text >> List.singleton
@@ -333,34 +332,21 @@ descriptionStyle colScheme fontSize =
   , Css.borderWidth (Css.px 2)
   ]
 
-estimateSpellDescFontSize : List String -> Maybe String -> List SpellBonus -> Float
-estimateSpellDescFontSize paragraphs higherLevel bonuses =
-  if descriptionContainsTable paragraphs
+estimateSpellDescFontSize : String -> Maybe String -> List SpellBonus -> Float
+estimateSpellDescFontSize desc higherLevel bonuses =
+  if descriptionContainsTable desc
   then 6
-  else estimateFontSize (spellDescriptionLength (paragraphs ++ List.map .bonus bonuses) higherLevel)
+  else estimateFontSize (String.length desc + String.length (Maybe.withDefault "" higherLevel))
 
 estimateFontSize : Int -> Float
 estimateFontSize len =
   lookupLargestLeq len [(400, 12), (600,11), (900, 10), (1200, 9), (1500, 8), (1800, 7), (2200, 6)]
     |> Maybe.withDefault 14
-    -- if len >= 1800
-    -- then 6
-    -- else if len >= 1600
-    --      then 7
-    --      else if len >= 1000
-    --           then 8
-    --           else 10
-
-spellDescriptionLength : List String -> Maybe String -> Int
-spellDescriptionLength paragraphs higherLevel =
-    Debug.log ("spellDescriptionLength " ++ String.left 20 (List.foldr (++) "" paragraphs))
-      <| List.sum
-        <| Maybe.withDefault 0 (Maybe.map String.length higherLevel)
-          :: List.map String.length paragraphs
 
 
-descriptionContainsTable : List String -> Bool
-descriptionContainsTable = List.any (String.contains "|---|")
+
+descriptionContainsTable : String -> Bool
+descriptionContainsTable = String.contains "|---|"
 
 
 cardTypeStyle : ColorScheme -> List Style
