@@ -95,12 +95,10 @@ creature_desc(Creature, Desc) :-
     findall(Page, fmt(format_creature_dict(Dict), Page), Desc).
 
 format_creature_dict(Dict) -->
-    { creature_abilities_markdown_table(Dict, Abilities)
-    },
     paragraphs(
         [ (emph(unwords([[Dict.size], [Dict.type]])), [", "], emph(format_alignment(Dict.alignment))),
           format_creature_overview_table(Dict),
-          [Abilities],
+          format_creature_abilities_markdown_table(Dict.abilities),
           format_creature_skills(Dict.abilities, Dict.proficiency_bonus, Dict.get(skills, [])),
           format_creature_resistances(Dict.get(resistances, [])),
           format_creature_damage_immunities(Dict.get(immunities, [])),
@@ -201,23 +199,15 @@ speed_mode_abbrev(swimming:_, swm) :- !.
 speed_mode_abbrev(climbing:_, clb) :- !.
 speed_mode_abbrev(X:_, X) :- !.
 
-creature_abilities_markdown_table(Dict, Md) :-
-    findall([Score, Bonus],
-            (member(Abi, [str,dex,con,int,wis,cha]),
-             Score = Dict.abilities.get(Abi),
-             mf(Score, Modifier),
-             fmt(format_bonus(Modifier), Bonus)
-            ),
-            ScoresAndBonuses),
-    flatten(ScoresAndBonuses, FmtArgs),
-    format(
-        string(Md),
-"
-| STR     | DEX     | CON     | INT     | WIS     | CHA     |
-|---------|---------|---------|---------|---------|---------|
-| ~w (~w) | ~w (~w) | ~w (~w) | ~w (~w) | ~w (~w) | ~w (~w) |
-",
-        FmtArgs).
+format_creature_abilities_markdown_table(Dict) -->
+    { findall([Abi] - (format_number(Score), [" ("], format_bonus(Modifier), [")"]),
+              (member(Abi, [str,dex,con,int,wis,cha]),
+               Score = Dict.Abi,
+               mf(Score, Modifier)),
+              Columns
+             )
+    },
+    format_markdown_table(Columns).
 
 format_creature_action(attack{
                range: Range,
