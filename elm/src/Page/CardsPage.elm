@@ -14,7 +14,7 @@ import Set exposing (Set)
 import String
 
 import Decoder.CharacterSheet exposing (sheetDec)
-import Element.Card exposing (defaultColorScheme, viewSpellCard, viewNotableTraitCard)
+import Element.Card exposing (defaultColorScheme, viewSpellCard, viewNotableTraitCardPages)
 import Request exposing (characterRequestUrl)
 import Types exposing (..)
 import Util exposing (simple, applyIfPresent, guardListLazy)
@@ -86,10 +86,10 @@ isTraitExcluded { explicitlyExcludedTraits } category { name } =
 viewNotableTraitCategory : CardConfig -> ColorScheme -> NotableTraitCategory -> List (Html Msg)
 viewNotableTraitCategory config ambientColorScheme { category, traits } =
   let colorScheme = Dict.get category config.traitCategoryColorSchemes
-        |> Maybe.withDefault ambientColorScheme 
+        |> Maybe.withDefault ambientColorScheme
   in traits
        |> List.filter (\trait -> trait.desc /= Nothing)
-       |> List.map (viewNotableTraitCard config colorScheme category)
+       |> List.concatMap (viewNotableTraitCardPages config colorScheme category)
 
 viewSpellcastingSection :  CardConfig -> SpellcastingSection -> List (Html Msg)
 viewSpellcastingSection cardConfig section =

@@ -203,7 +203,13 @@ trait_json_dict(TraitVal, _{name: Trait, desc: Desc, ref: Ref}) :-
     %\+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_), skill(_)]),
     fmt(format_trait(TraitVal), Trait),
     default_on_fail(null, ?=(TraitVal), Desc_),
-    (is_list(Desc_) -> Desc = Desc_ ; Desc = [Desc_]),
+    (  is_list(Desc_) % TODO this is messy
+    -> Desc = Desc_
+    ;  (Desc_ = null
+       -> Desc = null
+       ;  Desc = [Desc_]
+       )
+    ),
     default_on_fail(null, ([Ref]>>((TraitVal @= RefVal), fmt(format_ref(RefVal), Ref))), Ref).
 
 % Attack table.

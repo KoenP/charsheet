@@ -1,4 +1,4 @@
-module Element.Card exposing (viewSpellCard , viewNotableTraitCard , colorSchemes , defaultColorScheme)
+module Element.Card exposing (viewSpellCard , viewNotableTraitCardPages , colorSchemes , defaultColorScheme)
 
 import Css exposing (Color, Style, px, mm)
 import Css.Media
@@ -31,8 +31,28 @@ colorSchemes =
      , defaultColorScheme
      ]
 
-viewNotableTraitCard : CardConfig -> ColorScheme -> String -> Trait -> Html Msg    
-viewNotableTraitCard config ambientColorScheme category { name, desc, ref } =
+viewNotableTraitCardPages :  CardConfig -> ColorScheme -> String -> Trait
+                          -> List (Html Msg)
+viewNotableTraitCardPages config ambientColorScheme category { name, desc, ref } =
+    let pages = Maybe.withDefault [] desc
+        n = List.length pages
+        addPageCount i =
+            String.concat
+            [name, " (", String.fromInt i, "/", String.fromInt n, ")"]
+        headers = if n > 1
+                  then List.range 1 n |> List.map addPageCount
+                  else [name]
+    in List.map2
+        (viewNotableTraitCard
+             config
+             ambientColorScheme
+             category
+             ref)
+        headers
+        pages
+
+viewNotableTraitCard : CardConfig -> ColorScheme -> String -> Maybe String -> String -> String -> Html Msg
+viewNotableTraitCard config ambientColorScheme category ref name desc =
   let colorScheme = Dict.get ( category , name ) config.traitColorSchemes
         |> Maybe.withDefault ambientColorScheme
   in div
@@ -41,11 +61,10 @@ viewNotableTraitCard config ambientColorScheme category { name, desc, ref } =
        , div [ Attr.css [ Css.flexGrow (Css.num 1), Css.minHeight Css.zero ] ] []
        , div [ Attr.css (descriptionStyle
                            colorScheme
-                           (Maybe.withDefault 0
-                              (Maybe.map (estimateFontSize << List.foldl (+) 0 << List.map String.length) desc)))
+                           (estimateFontSize (String.length desc)))
              , Attr.class "card-description"
              ]
-           [  Maybe.withDefault [] desc
+           [  desc
               |> Markdown.toHtmlWith
                    { githubFlavored = Just { tables = True, breaks = False }
                    , defaultHighlighting = Nothing
@@ -206,7 +225,7 @@ showSpellResourcesList op resources =
   List.map showSpellResource resources
     |> List.intersperse [text op]
     |> List.concat
-  
+
 
 cardSubtitle : Spell -> String
 cardSubtitle spell =
@@ -239,7 +258,7 @@ showComponent c =
     V   -> "V"
     S   -> "S"
     M _ -> "M"
-                  
+
 ----------------------------------------------------------------------
 -- STYLE
 ----------------------------------------------------------------------
@@ -340,7 +359,7 @@ estimateSpellDescFontSize desc higherLevel bonuses =
 
 estimateFontSize : Int -> Float
 estimateFontSize len =
-  lookupLargestLeq len [(400, 12), (600,11), (900, 10), (1200, 9), (1500, 8), (1800, 7), (2200, 6)]
+  lookupLargestLeq len [(400, 12), (600,11), (900, 10), (1000, 9), (1400, 8), (1800, 7), (2200, 6)]
     |> Maybe.withDefault 14
 
 

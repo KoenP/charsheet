@@ -25,15 +25,16 @@ diffTraitCategories old new =
               GT -> n :: go (o :: os) ns
 
           ( _ , ns ) -> ns
-                                 
+
   in go (List.sortBy .category old) (List.sortBy .category new)
 
 diffTraits : List Trait -> List Trait -> List Trait
 diffTraits old new =
-  let go sortedOld sortedNew =
+  let go : List Trait -> List Trait -> List Trait
+      go sortedOld sortedNew =
         case ( sortedOld , sortedNew ) of
           ( o :: os , n :: ns ) ->
-            case compare (o.name , Maybe.withDefault "" o.desc) (n.name , Maybe.withDefault "" n.desc) of
+            case compare (o.name , Maybe.withDefault [] o.desc) (n.name , Maybe.withDefault [] n.desc) of
               -- Traits are equal, so we can drop this one (on both sides).
               EQ -> go os ns
 

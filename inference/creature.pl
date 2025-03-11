@@ -92,12 +92,10 @@ creature(
 
 creature_desc(Creature, Desc) :-
     creature(Creature, Dict),
-    fmt(format_creature_dict(Dict), Desc).
+    findall(Page, fmt(format_creature_dict(Dict), Page), Desc).
 
 format_creature_dict(Dict) -->
-    { creature_abilities_markdown_table(Dict, Abilities),
-      dict_pairs(Dict.get(traits, _{}), _, Traits),
-      dict_pairs(Dict.get(actions, _{}), _, Actions)
+    { creature_abilities_markdown_table(Dict, Abilities)
     },
     paragraphs(
         [ (emph(unwords([[Dict.size], [Dict.type]])), [", "], emph(format_alignment(Dict.alignment))),
@@ -109,8 +107,11 @@ format_creature_dict(Dict) -->
           format_creature_optional_list("Condition immunities", Dict.get(condition_immunities, [])),
           format_creature_optional_list("Senses", Dict.get(senses, [])),
           format_creature_optional_list("Languages", Dict.get(languages, []))
-        ]),
-    ["\n\n"],
+        ]).
+format_creature_dict(Dict) -->
+    { dict_pairs(Dict.get(traits, _{}), _, Traits),
+      dict_pairs(Dict.get(actions, _{}), _, Actions)
+    },
     optional(({Traits \= []}, ["---\n### Traits\n"]), []),
     foreach(member(Name-Desc,Traits), format_paragraph(capitalize_atom_words(Name), [Desc]), ["\n\n"]),
     ["\n\n"],
