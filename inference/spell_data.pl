@@ -193,15 +193,48 @@ add_spell_effect('eldritch blast', Effect) :-
 add_spell_effect('false life', 'temp hp' + (1 d 4 + 4)).
 
 % Find familiar.
-trait_source(known_spell(_, 'find familiar'), familiar_option(Fam)) :-
-    familiar_option(Fam).
-familiar_option(Fam) :-
+trait_source(known_spell(Source, 'find familiar'), familiar_option(Source, Fam)) :-
+    familiar_option(Source, Fam).
+familiar_option(Source, Fam) :-
+    known_spell(Source, 'find familiar'),
     member(Fam, [bat, cat, crab, frog, toad, hawk, lizard, octopus, owl, 'poisonous snake', fish, rat, raven, 'sea horse', spider, weasel]).
-familiar_option(Fam) :-
-    bonus(extra_familiar_option(Fam)).
-(familiar_option(Fam) ?= Desc) :-
-    creature_desc(Fam, Desc).
-custom_format(familiar_option(Fam)) --> [Fam], [" familiar"].
+familiar_option(Source, Fam) :-
+    bonus(extra_familiar_option(Source, Fam)).
+(familiar_option(Source, Fam) ?= Desc) :-
+    creature(Fam, Dict),
+    amend_creature_for_find_familiar(Source, Dict, FamDict),
+    creature_dict_to_desc(FamDict, Desc).
+custom_format(familiar_option(_, Fam)) --> [Fam], [" familiar"].
+
+amend_creature_for_find_familiar(Source, Old, New) :-
+    bonus(override_amend_creature_for_find_familiar(Source, Amend)),
+    call(Amend, Old, New),
+    !.
+amend_creature_for_find_familiar(Source, Old, New) :-
+    compose([creature_dict_remove_attack_actions,
+             creature_dict_add_no_attack_note,
+             creature_dict_add_deliver_touch_spell_reaction
+            ],
+            Old,
+            New).
+creature_dict_remove_attack_actions(Old, New) :-
+    get_dict(actions, Old, OldActions, New, NewActions),
+    dict_pairs(OldActions, _, OldPairs),
+    findall(Tag-Act,
+            (member(Tag-Act, OldPairs), \+ (is_dict(Act, attack))),
+            NewPairs),
+    dict_pairs(NewActions, _, NewPairs).
+creature_dict_add_no_attack_note(Old, New) :-
+    Tag = 'no attack',
+    Note = "Cannot take the attack action.",
+    get_dict(traits, Old, OldTraits, New, NewTraits),
+    NewTraits = OldTraits.put(Tag, Note).
+creature_dict_add_deliver_touch_spell_reaction(Old, New) :-
+    Tag = 'deliver spell',
+    Note = "If you cast a spell with range of touch and familiar is within 100 ft., it can deliver the spell as a reaction. If the spell requires an attack roll, use your action modifier.",
+    get_dict(actions, Old, OldActions, New, NewActions),
+    NewActions = OldActions.put(Tag, Note).
+% ..
 
 add_spell_effect(frostbite,
                  saving_throw(con):damage(cold,N d 6)) :-

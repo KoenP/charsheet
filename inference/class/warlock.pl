@@ -102,8 +102,25 @@ bonus_source(trait('pact boon'(chain)),
              modify_spell(warlock, 'find familiar', Goal)) :-
     ExtraForms = "extra warlock forms: imp, pseudodragon, quasit, sprite",
     Goal = modify_spell_field(effects, [Es1,Es2]>>append(Es1,[ExtraForms],Es2)).
-bonus_source(trait('pact boon'(chain)), extra_familiar_option(Opt)) :-
+bonus_source(trait('pact boon'(chain)), extra_familiar_option(warlock, Opt)) :-
     member(Opt, [imp, pseudodragon, quasit, sprite]).
+bonus_source(trait('pact boon'(chain)), override_amend_creature_for_find_familiar(warlock, amend_creature_for_pact_of_the_chain)).
+amend_creature_for_pact_of_the_chain(Old, New) :-
+    compose([creature_dict_add_deliver_touch_spell_reaction,
+             creature_dict_attack_as_reaction],
+           Old, New).
+creature_dict_attack_as_reaction(Old, New) :-
+    get_dict(actions, Old, OldActions, New, NewActions),
+    dict_pairs(OldActions, _, OldActionPairs),
+    maplist(attack_as_reaction, OldActionPairs, NewActionPairs),
+    dict_pairs(NewActions, _, NewActionPairs).
+attack_as_reaction(Tag - Attack, Tag - Reaction) :-
+    is_dict(Attack, attack),
+    !,
+    get_dict(notes,
+             Attack.put(time, reaction), OldNotes,
+             Reaction, ["Can **only** attack if you take the attack action and forego one of your own attacks. Can only attack once per turn."| OldNotes]).
+attack_as_reaction(X, X).
 
 % TODO this is a workaround for a bug.
 custom_format(modify_spell_field(effects, [_,_]>>append(_, ["extra warlock forms: imp, pseudodragon, quasit, sprite"], _))) --> ["extra warlock forms: imp, pseudodragon, quasit, sprite"].

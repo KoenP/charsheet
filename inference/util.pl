@@ -133,6 +133,11 @@ id(X,X).
 is_true(Goal, true) :- call(Goal), !.
 is_true(_, false) :- !.
 
+compose([], X, X).
+compose([G|Gs], X, Z) :-
+    call(G, X, Y),
+    compose(Gs, Y, Z).
+
 %! \/(Goal1, Goal2, Arg)
 %
 %  Second-order disjunction.

@@ -34,7 +34,8 @@ creature(
            talons: attack{
                        range: melee,
                        to_hit: 3,
-                       damage_rolls: [damage(slashing, 1)]
+                       damage_rolls: [damage(slashing, 1)],
+                       time: action
                    }
        }
      }
@@ -79,6 +80,7 @@ creature(
                range: melee,
                to_hit: 5,
                damage_rolls: [damage(piercing, 1 d 4 + 3), damage(poison, 3 d 6)],
+               time: action,
                notes: ["DC 11 CON ST; on success: half poison damage"]
            },
          invisibility: "Turns invisible until it attacks or concentration ends; equipment also invisible."
@@ -92,6 +94,9 @@ creature(
 
 creature_desc(Creature, Desc) :-
     creature(Creature, Dict),
+    creature_dict_to_desc(Dict, Desc).
+
+creature_dict_to_desc(Dict, Desc) :-
     findall(Page, fmt(format_creature_dict(Dict), Page), Desc).
 
 format_creature_dict(Dict) -->
