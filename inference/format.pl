@@ -194,6 +194,9 @@ capitalize_atom(Atom) -->
     },
     [Capitalized].
 
+uppercase_atom(Atom) -->
+    {string_upper(Atom, Upper)},
+    [Upper].
 
 interleave([X|Xs], [Y|Ys]) --> [X], [Y], interleave(Xs, Ys).
 interleave(Xs, []) --> {Xs \= []}, seq(Xs).

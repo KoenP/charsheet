@@ -86,6 +86,7 @@ creature(
          invisibility: "Turns invisible until it attacks or concentration ends; equipment also invisible."
         }
      }).
+creature_desc_page_break_before(imp, format_creature_traits_section(_)).
 
 % ------------------------------------------------------------------------------
 % Helper predicates for formatting creature stat cards.
@@ -97,29 +98,50 @@ creature_desc(Creature, Desc) :-
     creature_dict_to_desc(Dict, Desc).
 
 creature_dict_to_desc(Dict, Desc) :-
-    findall(Page, fmt(format_creature_dict(Dict), Page), Desc).
+    findall(Page,
+            ( creature_desc_page_structure(Creature, PageStructure),
+              member(Paragraphs, PageStructure),
+              fmt(format_creature_page(Paragraphs), Page)
+            ),
+            Desc).
 
-format_creature_dict(Dict) -->
-    paragraphs(
-        [ (emph(unwords([[Dict.size], [Dict.type]])), [", "], emph(format_alignment(Dict.alignment))),
-          format_creature_overview_table(Dict),
-          format_creature_abilities_markdown_table(Dict.abilities),
-          format_creature_skills(Dict.abilities, Dict.proficiency_bonus, Dict.get(skills, [])),
-          format_creature_resistances(Dict.get(resistances, [])),
-          format_creature_damage_immunities(Dict.get(immunities, [])),
-          format_creature_optional_list("Condition immunities", Dict.get(condition_immunities, [])),
-          format_creature_optional_list("Senses", Dict.get(senses, [])),
-          format_creature_optional_list("Languages", Dict.get(languages, []))
-        ]).
-format_creature_dict(Dict) -->
-    { dict_pairs(Dict.get(traits, _{}), _, Traits),
-      dict_pairs(Dict.get(actions, _{}), _, Actions)
-    },
-    optional(({Traits \= []}, ["---\n### Traits\n"]), []),
-    foreach(member(Name-Desc,Traits), format_paragraph(capitalize_atom_words(Name), [Desc]), ["\n\n"]),
-    ["\n\n"],
-    optional(({Actions \= []}, ["---\n### Actions\n"]), []),
-    foreach(member(Name-Spec,Actions), format_paragraph(capitalize_atom_words(Name), format_creature_action(Spec)), ["\n\n"]).
+creature_desc_structure(Dict, Paragraphs) :-
+    Paragraphs =
+      [ (emph(unwords([[Dict.size], [Dict.type]])), [", "], emph(format_alignment(Dict.alignment))),
+        format_creature_overview_table(Dict),
+        format_creature_abilities_markdown_table(Dict.abilities),
+        format_creature_skills(Dict.abilities, Dict.proficiency_bonus, Dict.get(skills, [])),
+        format_creature_resistances(Dict.get(resistances, [])),
+        format_creature_damage_immunities(Dict.get(immunities, [])),
+        format_creature_optional_list("Condition immunities", Dict.get(condition_immunities, [])),
+        format_creature_optional_list("Senses", Dict.get(senses, [])),
+        format_creature_optional_list("Languages", Dict.get(languages, [])),
+        format_creature_traits_section(Dict.traits),
+        format_creature_actions_section(Dict.actions)
+      ].
+
+creature_desc_page_structure(Creature, [Before, [BreakBefore|After]]) :-
+    creature_desc_page_break_before(Creature, BreakBefore),
+    creature(Creature, Dict),
+    creature_desc_structure(Dict, Paragraphs),
+    append(Before, [BreakBefore|After], Paragraphs).
+
+format_creature_page(Paragraphs) -->
+    foreach(member(Paragraph,Paragraphs),
+            phrase(Paragraph),
+            ["\n\n"]).
+
+format_creature_traits_section(_{}) --> [].
+format_creature_traits_section(Traits) -->
+    {Traits \= _{}, !, dict_pairs(Traits, _, Pairs)},
+    ["\n### Traits\n"],
+    foreach(member(Name-Desc,Pairs), format_paragraph(capitalize_atom_words(Name), [Desc]), ["\n\n"]).
+
+format_creature_actions_section(_{}) --> [].
+format_creature_actions_section(Actions) -->
+    {Actions \= _{}, !, dict_pairs(Actions, _, Pairs)},
+    ["\n### Actions\n"],
+    foreach(member(Name-Spec,Pairs), format_paragraph(capitalize_atom_words(Name), format_creature_action(Spec)), ["\n\n"]).
 
 format_paragraph(HeaderPhrase, ContentPhrase) -->
     emph((phrase(HeaderPhrase), [". "])),
@@ -205,7 +227,7 @@ speed_mode_abbrev(climbing:_, clb) :- !.
 speed_mode_abbrev(X:_, X) :- !.
 
 format_creature_abilities_markdown_table(Dict) -->
-    { findall([Abi] - (format_number(Score), [" ("], format_bonus(Modifier), [")"]),
+    { findall(uppercase_atom(Abi) - (format_number(Score), [" ("], format_bonus(Modifier), [")"]),
               (member(Abi, [str,dex,con,int,wis,cha]),
                Score = Dict.Abi,
                mf(Score, Modifier)),
