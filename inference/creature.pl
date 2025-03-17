@@ -40,7 +40,7 @@ creature(
        }
      }
 ).
-creature_desc_page_break_before(owl, format_creature_actions_section(_)).
+%creature_desc_page_break_before(owl, format_creature_actions_section(_)).
 
 creature(
     imp,
@@ -133,7 +133,7 @@ creature(
          invisibility: "Turns invisible until it attacks, uses Scare, or concentration ends; equipment also invisible."
         }
      }).
-creature_desc_page_break_before(quasit, format_creature_traits_section(_)).
+creature_desc_page_break_before(quasit, format_creature_actions_section(_)).
 
 creature(
     pseudodragon,
@@ -286,7 +286,10 @@ format_resistance_or_immunity(unless(Cond):SimpleResistances) -->
 format_resistance_or_immunity(Atom) --> {atom(Atom), !}, [Atom].
 
 format_simple_boolean_expression(A or B) -->
+    {!},
     [A], [" or "], [B].
+format_simple_boolean_expression(A) -->
+    [A].
 
 format_creature_hp_and_roll(HP, HPRoll) -->
     format_number(HP),
@@ -335,18 +338,12 @@ format_creature_abilities_markdown_table(Dict) -->
     },
     format_markdown_table(Columns).
 
-format_creature_action(attack{
-               range: Range,
-               to_hit: ToHit,
-               damage_rolls: DamageRolls,
-               time: Time,
-               notes: Notes
-              }) -->
-    {!},
-    [Time], ["; "],
-    [Range], ["; "], % TODO
-    format_bonus(ToHit), [" to hit;"],
-    format_damage(DamageRolls), ["; "],
+format_creature_action(Attack) -->
+    {is_dict(Attack, attack), !, Notes = Attack.get(notes, [])},
+    [Attack.time], ["; "],
+    [Attack.range], ["; "], % TODO
+    format_bonus(Attack.to_hit), [" to hit;"],
+    format_damage(Attack.damage_rolls), ["; "],
     foreach(member(Note,Notes), [Note], [", "]).
 format_creature_action(Desc) -->
     {string(Desc)},
@@ -354,9 +351,13 @@ format_creature_action(Desc) -->
 
 format_cr_and_xp(CR) -->
     {cr_to_xp(CR, XP)},
-    format_number(CR), [" ("], format_number(XP), [")"].
+    format_term(CR), [" ("], format_number(XP), [")"].
+
 
 cr_to_xp(0, 10).
+cr_to_xp(1 / 8, 25).
+cr_to_xp(1 / 4, 50).
+cr_to_xp(1 / 2, 100).
 cr_to_xp(1, 200).
 cr_to_xp(2, 450).
 cr_to_xp(3, 700).
