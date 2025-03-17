@@ -1,3 +1,4 @@
+:- discontiguous creature/2, creature_desc_page_break_before/2.
 % TODO delete this test case
 %trait(test, creature(imp)).
 
@@ -87,6 +88,102 @@ creature(
         }
      }).
 creature_desc_page_break_before(imp, format_creature_traits_section(_)).
+
+creature(
+    quasit,
+    _{ ac: 13,
+       hp: 7,
+       hp_roll: 3 d 4,
+       speeds: [walking: feet(40)],
+       initiative: 3,
+       type: fiend,
+       size: tiny,
+       alignment: chaotic / evil,
+       abilities: _{
+           str: 5,
+           dex: 17,
+           con: 10,
+           int: 7,
+           wis: 10,
+           cha: 10
+       },
+       proficiency_bonus: 2,
+       skills: [stealth],
+       resistances: [cold, fire, lightning,
+                     (unless(magical): [piercing, bludgeoning, slashing])],
+       immunities: [poison],
+       condition_immunities: [poisoned],
+       senses: [darkvision(feet(120)), 'passive perception'(10)],
+       languages: [abyssal, common],
+       challenge: 1,
+       traits: _{
+         shapechanger: "Polymorph into bat (10 ft., fly 40 ft.), centipede (40 ft., climb 40 ft.), or toad (40 ft., swim 40 ft.). Stats unchanged except speed. Gear unaffected. Reverts on death.",
+         'magic resistance': "Adv. on saving throws against spells and other magical effects."
+       },
+       actions: _{
+         'claws (bite in beast form)':
+           attack{
+               range: melee,
+               to_hit: 4,
+               damage_rolls: [damage(piercing, 1 d 4 + 3), damage(poison, 2 d 4)],
+               time: action,
+               notes: ["DC 10 CON ST; on success: poisoned for 1 minute, repeat save at end of turns."]
+           },
+         scare: "1/day. DC 10 WIS ST. If failed, frightened for 1 minute. Repeat ST at end of turns, disadvantage if quasit is in sight.",
+         invisibility: "Turns invisible until it attacks, uses Scare, or concentration ends; equipment also invisible."
+        }
+     }).
+creature_desc_page_break_before(quasit, format_creature_traits_section(_)).
+
+creature(
+    pseudodragon,
+    _{ ac: 13,
+       hp: 7,
+       hp_roll: 2 d 4 + 2,
+       speeds: [walking: feet(15), flying: feet(60)],
+       initiative: 2,
+       type: dragon,
+       size: tiny,
+       alignment: neutral / good,
+       abilities: _{
+           str: 6,
+           dex: 15,
+           con: 13,
+           int: 10,
+           wis: 12,
+           cha: 10
+       },
+       proficiency_bonus: 2,
+       skills: [perception, stealth],
+       senses: [blindsight(feet(10)), darkvision(feet(60)), 'passive perception'(13)],
+       languages: [common, draconic],
+       challenge: 1 / 4,
+       traits: _{
+         'keen senses': "Advantage on Wisdom (Perception) checks that rely on sight, hearing, or smell.",
+         'magic resistance': "Adv. on saving throws against spells and other magical effects.",
+         'limited telepathy': "Can communicate simple ideas, emotions, and images telepathically with creatures within 100 ft. that understand a language."
+       },
+       actions: _{
+         bite:
+           attack{
+               range: melee,
+               to_hit: 4,
+               damage_rolls: [damage(piercing, 1 d 4 + 2)],
+               time: action
+           },
+         sting:
+           attack{
+               range: melee,
+               to_hit: 4,
+               damage_rolls: [damage(piercing, 1 d 4 + 2)],
+               time: action,
+               notes: ["DC 11 CON ST; on fail: poisoned for 1 hour; if fail by 5 or more, unconscious until damage or shake awake."]
+           }
+        }
+     }).
+creature_desc_page_break_before(pseudodragon, format_creature_traits_section(_)).
+
+
 
 % ------------------------------------------------------------------------------
 % Helper predicates for formatting creature stat cards.
