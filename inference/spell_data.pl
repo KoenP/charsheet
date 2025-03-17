@@ -204,14 +204,14 @@ familiar_option(Source, Fam) :-
 (familiar_option(Source, Fam) ?= Desc) :-
     creature(Fam, Dict),
     amend_creature_for_find_familiar(Source, Dict, FamDict),
-    creature_dict_to_desc(FamDict, Desc).
+    creature_dict_to_desc(Fam, FamDict, Desc).
 custom_format(familiar_option(_, Fam)) --> [Fam], [" familiar"].
 
 amend_creature_for_find_familiar(Source, Old, New) :-
     bonus(override_amend_creature_for_find_familiar(Source, Amend)),
     call(Amend, Old, New),
     !.
-amend_creature_for_find_familiar(Source, Old, New) :-
+amend_creature_for_find_familiar(_, Old, New) :-
     compose([creature_dict_remove_attack_actions,
              creature_dict_add_no_attack_note,
              creature_dict_add_deliver_touch_spell_reaction

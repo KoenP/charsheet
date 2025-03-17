@@ -359,7 +359,7 @@ estimateSpellDescFontSize desc higherLevel bonuses =
 
 estimateFontSize : Int -> Float
 estimateFontSize len =
-  lookupLargestLeq len [(400, 12), (600,11), (900, 10), (1000, 9), (1400, 8), (1800, 7), (2200, 6)]
+  lookupLargestLeq len [(400, 12), (600,10), (900, 9), (1000, 8), (1400, 7), (1800, 6)]
     |> Maybe.withDefault 14
 
 

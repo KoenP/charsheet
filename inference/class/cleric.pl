@@ -107,6 +107,7 @@ meta_todo(trait('disciple of life'), "How to communicate the upcasting effect on
 trait_source(cleric(life) >: 2, channel_divinity(preserve_life(Pool))) :-
     class_level(cleric:L),
     Pool is 5*L.
+custom_format(preserve_life(Pool)) --> ["Preserve life ("], [Pool], [" HP)"].
 trait_source(cleric(life) >: 6, 'blessed healer').
 bonus_source(trait('blessed healer'),
              modify_spell(_, HealingSpell, add_spell_effects([(target=other)->self_heal(HP)]))) :-
@@ -197,6 +198,11 @@ divine_intervention(_) ?= "Beginning at 10th level, you can call on your deity t
 'blessed healer' ?= "Beginning at 6th level, the healing spells you cast on others heal you as well. When you cast a spell of 1st level or higher that restores hit points to a creature other than you, you regain hit points equal to 2 + the spell's level.".
 
 'divine strike' ?= "At 8th level, you gain the ability to infuse your weapon strikes with divine energy. Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 radiant damage to the target. When you reach 14th level, the extra damage increases to 2d8.".
+
+channel_divinity(preserve_life(_)) ?= "Starting at 2nd level, you can use your Channel Divinity to heal the badly injured.
+As an action, you present your holy symbol and evoke healing energy that can restore a number of hit points equal to five times your cleric level. Choose any creatures within 30 feet of you, and divide those hit points among them. This feature can restore a creature to no more than half of its hit point maximum. You can't use this feature on an undead or a construct. ".
+
+'supreme healing' ?= "Starting at 17th level, when you would normally roll one or more dice to restore hit points with a spell, you instead use the highest number possible for each die. For example, instead of restoring 2d6 hit points to a creature, you restore 12.".
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

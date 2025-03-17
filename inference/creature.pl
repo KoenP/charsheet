@@ -1,6 +1,4 @@
 :- discontiguous creature/2, creature_desc_page_break_before/2.
-% TODO delete this test case
-%trait(test, creature(imp)).
 
 (creature(Creature) ?= Desc) :-
     creature_desc(Creature, Desc).
@@ -36,11 +34,13 @@ creature(
                        range: melee,
                        to_hit: 3,
                        damage_rolls: [damage(slashing, 1)],
-                       time: action
+                       time: action,
+                       notes: []
                    }
        }
      }
 ).
+creature_desc_page_break_before(owl, format_creature_actions_section(_)).
 
 creature(
     imp,
@@ -192,15 +192,23 @@ creature_desc_page_break_before(pseudodragon, format_creature_traits_section(_))
 
 creature_desc(Creature, Desc) :-
     creature(Creature, Dict),
-    creature_dict_to_desc(Dict, Desc).
+    creature_dict_to_desc(Creature, Dict, Desc).
 
-creature_dict_to_desc(Dict, Desc) :-
+creature_dict_to_desc(Creature, Dict, Desc) :-
     findall(Page,
-            ( creature_desc_page_structure(Creature, PageStructure),
+            ( creature_desc_page_structure(Creature, Dict, PageStructure),
               member(Paragraphs, PageStructure),
               fmt(format_creature_page(Paragraphs), Page)
             ),
             Desc).
+
+creature_desc_page_structure(Creature, Dict, [Before, [BreakBefore|After]]) :-
+    creature_desc_page_break_before(Creature, BreakBefore),
+    !,
+    creature_desc_structure(Dict, Paragraphs),
+    append(Before, [BreakBefore|After], Paragraphs).
+creature_desc_page_structure(_, Dict, [Paragraphs]) :-
+    creature_desc_structure(Dict, Paragraphs).
 
 creature_desc_structure(Dict, Paragraphs) :-
     Paragraphs =
@@ -213,15 +221,9 @@ creature_desc_structure(Dict, Paragraphs) :-
         format_creature_optional_list("Condition immunities", Dict.get(condition_immunities, [])),
         format_creature_optional_list("Senses", Dict.get(senses, [])),
         format_creature_optional_list("Languages", Dict.get(languages, [])),
-        format_creature_traits_section(Dict.traits),
-        format_creature_actions_section(Dict.actions)
+        format_creature_traits_section(Dict.get(traits, _{})),
+        format_creature_actions_section(Dict.get(actions, _{}))
       ].
-
-creature_desc_page_structure(Creature, [Before, [BreakBefore|After]]) :-
-    creature_desc_page_break_before(Creature, BreakBefore),
-    creature(Creature, Dict),
-    creature_desc_structure(Dict, Paragraphs),
-    append(Before, [BreakBefore|After], Paragraphs).
 
 format_creature_page(Paragraphs) -->
     foreach(member(Paragraph,Paragraphs),
@@ -337,9 +339,11 @@ format_creature_action(attack{
                range: Range,
                to_hit: ToHit,
                damage_rolls: DamageRolls,
+               time: Time,
                notes: Notes
               }) -->
     {!},
+    [Time], ["; "],
     [Range], ["; "], % TODO
     format_bonus(ToHit), [" to hit;"],
     format_damage(DamageRolls), ["; "],
