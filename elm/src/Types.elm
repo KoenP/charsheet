@@ -57,9 +57,10 @@ type alias Resistance = { damage_type: String, resistance: String }
 
 type alias NotableTraitCategory = { category: String, traits: List Trait }
 type alias Trait =
-  { name : String
-  , desc : Maybe (List String)
-  , ref  : Maybe String
+  { name        : String
+  , desc        : Maybe (List String)
+  , ref         : Maybe String
+  , seminotable : Bool
   }
 
 type alias AcFormula =

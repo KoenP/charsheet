@@ -199,18 +199,13 @@ trait_category_string(Compound, Atom) :-
 trait_category_string(Cat, Str) :-
     fmt(format_term(Cat), Str).
 
-trait_json_dict(TraitVal, _{name: Trait, desc: Desc, ref: Ref}) :-
+trait_json_dict(TraitVal, _{name: Trait, desc: Desc, ref: Ref, seminotable: Semi}) :-
     %\+ member(TraitVal, [language(_), tool(_), weapon(_), armor(_), skill(_)]),
     fmt(format_trait(TraitVal), Trait),
     default_on_fail(null, ?=(TraitVal), Desc_),
-    (  is_list(Desc_) % TODO this is messy
-    -> Desc = Desc_
-    ;  (Desc_ = null
-       -> Desc = null
-       ;  Desc = [Desc_]
-       )
-    ),
-    default_on_fail(null, ([Ref]>>((TraitVal @= RefVal), fmt(format_ref(RefVal), Ref))), Ref).
+    (Desc_ = null -> Desc = null ; nonlist_to_singleton(Desc_, Desc)),
+    default_on_fail(null, ([Ref]>>((TraitVal @= RefVal), fmt(format_ref(RefVal), Ref))), Ref),
+    is_true(seminotable(TraitVal), Semi).
 
 % Attack table.
 attack_table_json_dict(List) :-

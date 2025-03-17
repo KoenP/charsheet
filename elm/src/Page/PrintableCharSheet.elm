@@ -211,13 +211,14 @@ viewNotableTraits categories =
   [ viewBadgeDiv "notable traits" "notable-traits"
     <| List.map (div [] << viewNotableTraitCategory)
     <| List.sortBy (negate << List.length << .traits) categories
-  ] 
+  ]
 
 viewNotableTraitCategory : NotableTraitCategory -> List (Html Msg)
 viewNotableTraitCategory { category, traits } =
   [ h3 [] [ text category ]
   , ul []
     <| List.map (li [] << viewTrait)
+    <| List.filter (not << .seminotable)
     <| traits
   ]
 

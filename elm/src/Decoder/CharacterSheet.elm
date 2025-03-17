@@ -92,6 +92,7 @@ traitDec =
     |> D.andMap (D.field "name" D.string)
     |> D.andMap (D.field "desc" (D.nullable (D.list D.string)))
     |> D.andMap (D.field "ref" (D.nullable D.string))
+    |> D.andMap (D.field "seminotable" D.bool)
 
 attackDec : Decoder Attack
 attackDec =

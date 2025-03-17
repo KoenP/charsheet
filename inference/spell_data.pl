@@ -195,6 +195,7 @@ add_spell_effect('false life', 'temp hp' + (1 d 4 + 4)).
 % Find familiar.
 trait_source(known_spell(Source, 'find familiar'), familiar_option(Source, Fam)) :-
     familiar_option(Source, Fam).
+seminotable(familiar_option(_,_)).
 familiar_option(Source, Fam) :-
     known_spell(Source, 'find familiar'),
     member(Fam, [bat, cat, crab, frog, toad, hawk, lizard, octopus, owl, 'poisonous snake', fish, rat, raven, 'sea horse', spider, weasel]).
