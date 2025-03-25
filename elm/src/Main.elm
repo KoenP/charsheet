@@ -50,7 +50,7 @@ subscriptions { focusedDropdownId, page } =
   let
     clickoutSub =
       case focusedDropdownId of
-        Just _ -> 
+        Just _ ->
           Browser.Events.onClick (succeed ClickOut)
         Nothing ->
           Sub.none
@@ -61,9 +61,9 @@ subscriptions { focusedDropdownId, page } =
           Time.every 500 Tick
         _ ->
           Sub.none
-  in 
+  in
     Sub.batch [clickoutSub, timeSub]
-    
+
 
 -- MODEL
 init : String -> (Model, Cmd Msg)

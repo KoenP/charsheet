@@ -31,4 +31,3 @@ character_list_items_html([]) --> [].
 character_list_items_html([Name|Names]) -->
     html([ li(a(href=location_by_id(load_character_page(Name)), Name)),
            \character_list_items_html(Names)]).
-    

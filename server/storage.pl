@@ -22,6 +22,15 @@ character_definition_predicate(store/2).
 %  (e.g. card color config)
 store(_,_) :- false.
 
+%! user_id(Id)
+%
+%  If logged in, the hash of the user name.
+%  If not logged in, the atom `public`.
+user_id(Hash) :-
+    http_in_session(_),
+    hashed_user_name(Hash).
+user_id(public).
+
 % Hashing predicates.
 hashed_user_name(Hash) :-
     http_session_data(logged_in_as(UserName)),
@@ -30,43 +39,52 @@ hashed_user_name(Hash) :-
 hash_name(Name, Hash) :-
     crypto_data_hash(Name, Hash, [algorithm(md5)]).
 
+character_file_path(CharId, Path) :-
+    user_id(UserId),
+    format(string(Path), 'storage/~w/~w.pl', [UserId, CharId]).
+
+ensure_user_dir :-
+    user_id(Id),
+    format(string(Path), 'storage/~w', [Id]),
+    (\+ exists_directory(Path) -> make_directory(Path) ; true).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Character operations that modify the character in a snapshot.
-with_new_character(CharName, Cont) :-
-    character_file_path(CharName, Path),
+with_new_character(CharName, CharId, Cont) :-
+    uuid(CharId),
+    character_file_path(CharId, Path),
     \+ exists_file(Path),
+    ensure_user_dir,
     snapshot(
         (initialize_new_character(CharName),
-         character_dir_path(DirPath),
-         make_directory_path(DirPath),
          (rewrite_character_file(Path), call(Cont)))).
 
 initialize_new_character(Name) :-
     assert(name(Name)),
     forall(ability(Abi), assert(base_ability(Abi,10))).
 
-with_loaded_character(CharName, Cont) :-
-    character_file_path(CharName, Path),
+with_loaded_character(CharId, Cont) :-
+    character_file_path(CharId, Path),
     snapshot((load_character_file(Path), call(Cont))).
 
-set_base_abilities(CharName, Abilities) :-
-    character_file_path(CharName, Path),
+set_base_abilities(CharId, Abilities) :-
+    character_file_path(CharId, Path),
     snapshot(
         (load_character_file(Path),
          forall(member(Abi=Score, Abilities),
                 (retractall(base_ability(Abi,_)), assert(base_ability(Abi, Score)))),
          rewrite_character_file(Path))).
 
-withdraw_gain_level(CharName, RetractedLevel) :-
-    character_file_path(CharName, Path),
+withdraw_gain_level(CharId, RetractedLevel) :-
+    character_file_path(CharId, Path),
     snapshot(
         (load_character_file(Path),
          level(CurLevel),
          forall(between(RetractedLevel, CurLevel, L), retractall(choice(level(L),_,_))),
          resolve_ineligible_choices,
          rewrite_character_file(Path))).
-withdraw_character_fact(CharName, Fact) :-
-    character_file_path(CharName, Path),
+withdraw_character_fact(CharId, Fact) :-
+    character_file_path(CharId, Path),
     snapshot(
         (load_character_file(Path),
          ( retract(Fact),
@@ -80,8 +98,8 @@ resolve_ineligible_choices :-
     forall(member(Origin-Id, ChoicesToUndo), retractall(choice(Origin, Id, _))),
     (ChoicesToUndo \= [] -> resolve_ineligible_choices ; true).
 
-withdraw_character_fact_without_resolving(CharName, Fact) :-
-    character_file_path(CharName, Path),
+withdraw_character_fact_without_resolving(CharId, Fact) :-
+    character_file_path(CharId, Path),
     snapshot(
         (load_character_file(Path),
          ( retract(Fact),
@@ -89,13 +107,13 @@ withdraw_character_fact_without_resolving(CharName, Fact) :-
            rewrite_character_file(Path)
          ; true))).
 
-record_character_fact(CharName, Fact) :-
-    character_file_path(CharName, Path),
+record_character_fact(CharId, Fact) :-
+    character_file_path(CharId, Path),
     append_to_character_file(Path, Fact).
 
 list_characters(Names) :-
-    hashed_user_name(UserNameHash),
-    format(string(Pattern), 'storage/~w/characters/*.pl', [UserNameHash]),
+    user_id(UserId),
+    format(string(Pattern), 'storage/~w/*.pl', [UserId]),
     expand_file_name(Pattern, FilePaths),
     findall(Name,
             (member(Path, FilePaths), character_file_peek_name(Path, Name)),
@@ -104,6 +122,7 @@ list_characters(Names) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Character file operations.
 character_file_peek_name(Path, Name) :-
+    exists_file(Path),
     open(Path, read, In),
     repeat,
     catch(read_term(In, Term, []), _, true),
@@ -112,6 +131,7 @@ character_file_peek_name(Path, Name) :-
 
 load_character_file(Path) :-
     abolish_private_tables,
+    exists_file(Path),
     open(Path, read, In),
     repeat,
     read_term(In, Term, []),
@@ -120,6 +140,7 @@ load_character_file(Path) :-
     close(In).
 
 rewrite_character_file(Path) :-
+    exists_file(Path),
     open(Path, write, Out),
     forall((character_definition_predicate(Pred/N),
             length(Args, N),
@@ -130,22 +151,10 @@ rewrite_character_file(Path) :-
     close(Out).
 
 append_to_character_file(Path, Fact) :-
+    exists_file(Path),
     open(Path, append, Out),
     write_term(Out, Fact, [quoted(true), fullstop(true), nl(true)]),
     close(Out).
-
-character_file_path(CharName, Path) :-
-    character_dir_path(DirPath),
-    hash_name(CharName, CharNameHash),
-    format(string(Path), '~w/~w.pl', [DirPath, CharNameHash]).
-
-character_dir_path(Path) :-
-    user_dir_path(UserPath),
-    format(string(Path), '~w/characters', [UserPath]).
-
-user_dir_path(Path) :-
-    hashed_user_name(UserNameHash),
-    format(string(Path), 'storage/~w', [UserNameHash]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % For easy testing and debugging.

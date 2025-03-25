@@ -36,16 +36,23 @@ file_search_path(static, static).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Server-generated pages.
-:- http_handler(root(.), serve_page(login_page), [method(get), id(login_page)]).
+:- http_handler(root(.), serve_login_or_redirect_to_select, [method(get), id(login_page)]).
 :- http_handler(root(select), serve_page_if_logged_in(select_character_page),
                 [method(get), id(select_character_page)]).
-:- http_handler(root(character/CharId), serve_page_if_logged_in(character_editor_page(CharId)),
+:- http_handler(root(character/CharId), serve_page(character_editor_page(CharId)),
                 [method(get), id(load_character_page)]).
 
 serve_page(Html, _Request) :-
     phrase(Html, Tokenized),
     format('Content-type: text/html~n~n'),
     print_html(Tokenized).
+
+serve_login_or_redirect_to_select(Request) :-
+    logged_in_as(_), !,
+    http_redirect(see_other, location_by_id(select_character_page), Request).
+serve_login_or_redirect_to_select(Request) :-
+    serve_page(login_page, Request).
+
 serve_page_if_logged_in(Html, Request) :-
     (  http_session_data(logged_in_as(_))
     -> serve_page(Html, Request)
@@ -68,11 +75,14 @@ h_logout(Request) :-
     http_close_session(Id),
     http_redirect(see_other, location_by_id(login_page), Request).
 
+logged_in_as(User) :-
+    http_in_session(_),
+    http_session_data(logged_in_as(User)).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Character management.
 :- http_handler(root(api / list_characters), h_list_characters, [method(get)]).
 :- http_handler(root(api / new_character), h_new_character, [method(post)]).
-:- http_handler(root(api / create_character), h_create_character, [method(post)]).
 
 % Single-character queries.
 :- http_handler(root(api / character / CharId / sheet),
@@ -113,13 +123,8 @@ h_list_characters(_Request) :-
 
 h_new_character(Request) :-
     http_parameters(Request, [name(Name,[])]),
-    with_new_character(Name, true),
-    http_redirect(see_other, location_by_id(load_character_page(Name)), Request).
-
-h_create_character(Request) :-
-    http_parameters(Request, [name(Name,[])]),
-    with_new_character(Name, true),
-    reply_json_dict(Name).
+    with_new_character(Name, Id, true),
+    http_redirect(see_other, location_by_id(load_character_page(Id)), Request).
 
 h_get_sheet(_Request) :-
     sheet_json_dict(Dict),
@@ -206,7 +211,7 @@ h_post_unequip_item(CharId, Request) :-
                           (equipment_json_dict(Items),
                            reply_json_dict(Items))).
 
-h_post_store_card_config(CharId, Request) :-
+h_post_store_card_config(_CharId, Request) :-
     http_read_data(Request, Data, [to(string)]),
     writeln(Data).
 
