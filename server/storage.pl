@@ -111,13 +111,20 @@ record_character_fact(CharId, Fact) :-
     character_file_path(CharId, Path),
     append_to_character_file(Path, Fact).
 
-list_characters(Names) :-
+list_characters(IdNamePairs) :-
     user_id(UserId),
     format(string(Pattern), 'storage/~w/*.pl', [UserId]),
     expand_file_name(Pattern, FilePaths),
-    findall(Name,
-            (member(Path, FilePaths), character_file_peek_name(Path, Name)),
-            Names).
+    findall(CharId-Name,
+            (member(Path, FilePaths),
+             extract_id_from_file_path(Path, CharId),
+             character_file_peek_name(Path, Name)),
+            IdNamePairs).
+
+extract_id_from_file_path(Path, Id) :-
+    atom_codes(Path, Codes),
+    append([`storage/`, _, `/`, IdCodes, `.pl`], Codes),
+    atom_codes(Id, IdCodes).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Character file operations.
@@ -132,6 +139,7 @@ character_file_peek_name(Path, Name) :-
 load_character_file(Path) :-
     abolish_private_tables,
     exists_file(Path),
+    !,
     open(Path, read, In),
     repeat,
     read_term(In, Term, []),
@@ -140,7 +148,6 @@ load_character_file(Path) :-
     close(In).
 
 rewrite_character_file(Path) :-
-    exists_file(Path),
     open(Path, write, Out),
     forall((character_definition_predicate(Pred/N),
             length(Args, N),

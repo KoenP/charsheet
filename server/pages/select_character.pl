@@ -28,6 +28,6 @@ character_list_html -->
     html([ul(\character_list_items_html(Chars))]).
 
 character_list_items_html([]) --> [].
-character_list_items_html([Name|Names]) -->
-    html([ li(a(href=location_by_id(load_character_page(Name)), Name)),
-           \character_list_items_html(Names)]).
+character_list_items_html([Id-Name|Chars]) -->
+    html([ li(a(href=location_by_id(load_character_page(Id)), Name)),
+           \character_list_items_html(Chars)]).
