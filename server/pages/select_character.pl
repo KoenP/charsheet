@@ -18,10 +18,6 @@ new_character_box_html -->
               ]
              )).
 
-    %html([ input([type=text, placeholder='New character name']),
-    %       button(['Create'])
-    %     ]).
-
 character_list_html -->
     %{char_db:list_characters(Chars)},
     {list_characters(Chars)},
