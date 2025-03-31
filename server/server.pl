@@ -17,6 +17,7 @@
 :- use_module(library(http/http_path)).
 :- use_module(library(http/http_error)).
 :- use_module(library(http/http_session)).
+:- use_module(library(http/http_authenticate)).
 :- use_module(library(http/http_client)).
 :- use_module(library(sgml)).
 :- use_module(library(settings)).
@@ -62,6 +63,9 @@ serve_page_if_logged_in(Html, Request) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % User account management.
 :- http_handler(root(api / login), h_login, [method(post)]).
+
+%h_register(Request) :-
+%    http_write_password_file('storage/passwords', [passwd(User, Hash, )])
 
 h_login(Request) :-
     http_parameters(Request, [username(Name,[])]),

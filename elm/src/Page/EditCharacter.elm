@@ -108,7 +108,7 @@ update msg model oldData =
             (\_ ->
                List.map
                  (\opt ->
-                    if (origin, id) /= (opt.origin, opt.id)
+                    if (origin, id) /= (opt.origin, opt.id.id)
                     then opt
                     else case opt.spec of
                            OrSC _ left right -> { opt | spec = OrSC (Just dir) left right }
@@ -318,12 +318,12 @@ viewMainContents focusedDropdownId opts tbs level =
       |> categorizeEffects |> Dict.toList
       |> List.map viewEffectCategory
 
-    optsHtml = 
+    optsHtml =
       (opts
       |> Dict.get level
       |> Maybe.withDefault []
-      |> Util.multiDictFromList (\{display_origin_category, origin_category_index} ->
-                                   (origin_category_index, display_origin_category))
+      |> Util.multiDictFromList (\{origin_category, origin_category_index} ->
+                                   (origin_category_index, origin_category.display))
       |> Dict.map (viewOriginCategoryOptionsList focusedDropdownId)
       |> Dict.values)
 
@@ -424,17 +424,17 @@ viewOriginCategoryOptionsList focusedDropdownId (_, category) optionsList =
                   "init"     -> "Choose your background, class, and race:"
                   "level up" -> "Level up:"
                   _          -> "From " ++ category ++ ":"
-  in 
+  in
     div
       [ Attr.css originCategoryStyle ]
       (simple h2 headerMsg :: List.map (viewOptions focusedDropdownId) optionsList)
 
 viewOptions : Maybe String -> Options -> Html Msg
-viewOptions focusedDropdownId {origin, spec, id, display_id} =
+viewOptions focusedDropdownId {origin, spec, id} =
   div
     [ Attr.css optionsSectionStyle ]
-    [ h3 [] [ text display_id
-            , button [E.onClick (Retract (RetractChoice {origin = origin, id = id}))] [text "x"]
+    [ h3 [] [ text id.display
+            , button [E.onClick (Retract (RetractChoice {origin = origin, id = id.id}))] [text "x"]
             ]
     , viewSpec
         { origin            = origin
@@ -443,7 +443,7 @@ viewOptions focusedDropdownId {origin, spec, id, display_id} =
         , focusedDropdownId = focusedDropdownId
         , disabledOptions   = []
         }
-        (singletonChoiceMsg origin id) False spec
+        (singletonChoiceMsg origin id.id) False spec
     ]
 
 singletonChoiceMsg : String -> String -> Maybe String -> Msg
@@ -454,7 +454,7 @@ singletonChoiceMsg origin id choice =
 
 type alias ViewSpecContext =
   { origin             : String
-  , id                 : String
+  , id                 : DisplayId
   , dropdownIdSuffix   : String
   , focusedDropdownId  : Maybe String
   , disabledOptions    : List String
@@ -479,19 +479,19 @@ viewSpec ctx mkMsg isDisabled spec =
 
 viewListSC :  ViewSpecContext
            -> (Maybe String -> Msg)
-           -> Maybe String -> Bool -> List (String, List String)
+           -> Maybe String -> Bool -> List (DisplayId, List String)
            -> Html Msg
 viewListSC { disabledOptions, origin, id, focusedDropdownId, dropdownIdSuffix } mkMsg selected isDisabled options =
   let
-    dropdownId = String.concat [origin, id, dropdownIdSuffix]
+    dropdownId = String.concat [origin, id.id, dropdownIdSuffix]
     entries =
       List.map
-        (\(entry, desc) -> { entry = entry
-                           , desc = entry :: desc
-                           , enabled = not <| List.member entry disabledOptions
-                           , msg = mkMsg (Just entry)
-                           , style = []
-                           })
+        (\(displayId, desc) -> { entry = displayId.display
+                               , desc = displayId.display :: desc
+                               , enabled = not <| List.member displayId.id disabledOptions
+                               , msg = mkMsg (Just displayId.id)
+                               , style = []
+                               })
         options
     withDeleteEntry =
       case selected of
@@ -518,7 +518,7 @@ viewFromSC ctx unique limit subspecs =
 
     disabledOptions = if unique then choicesList else []
     k = List.length editFunctions
-  in 
+  in
     div [] <|
       -- Already something selected.
       List.map4
@@ -537,7 +537,7 @@ viewFromSC ctx unique limit subspecs =
       List.map3
         (\i -> viewSpec
            { ctx | disabledOptions = disabledOptions, dropdownIdSuffix = ctx.dropdownIdSuffix ++ "/" ++ String.fromInt i }
-           (\opt -> Maybe.map (\x -> Choice origin id <| ListChoice <| choicesList ++ [x]) opt
+           (\opt -> Maybe.map (\x -> Choice origin id.id <| ListChoice <| choicesList ++ [x]) opt
                     |> Maybe.withDefault Null))
         (case limit of
            Just n  -> List.range (k+1) n
@@ -547,22 +547,22 @@ viewFromSC ctx unique limit subspecs =
                                        Nothing -> [True])
         (List.drop k subspecs)
 
-choiceEditFunctions : String -> String -> List String -> List (Maybe String -> Msg)
+choiceEditFunctions : String -> DisplayId -> List String -> List (Maybe String -> Msg)
 choiceEditFunctions origin id choices =
   case choices of
     [] ->
-      [ Choice origin id << ListChoice << List.singleton << Maybe.withDefault "" ] -- TODO better error handling (this case should never occur though)
+      [ Choice origin id.id << ListChoice << List.singleton << Maybe.withDefault "" ] -- TODO better error handling (this case should never occur though)
     c :: cs ->
       let
         zipper = Zipper [] c cs
 
         overwriteOrDeleteFocused : Zipper String -> (Maybe String -> Msg)
         overwriteOrDeleteFocused (Zipper pre _ post) newChoice =
-          Choice origin id <| ListChoice <| 
+          Choice origin id.id <| ListChoice <|
             case newChoice of
               Just x -> Zipper.toList (Zipper pre x post)
-              Nothing -> pre ++ post 
-      in 
+              Nothing -> pre ++ post
+      in
         Zipper.toList (Zipper.extend overwriteOrDeleteFocused zipper)
 
 viewOrSC :  ViewSpecContext
@@ -571,30 +571,30 @@ viewOrSC :  ViewSpecContext
 viewOrSC ctx dir (lname, lspec) (rname, rspec) =
   let
     { origin, id } = ctx
-    name = origin ++ "_" ++ id
-    leftId  = String.concat <| List.intersperse "_" [origin, id, lname]
-    rightId = String.concat <| List.intersperse "_" [origin, id, rname]
-  in 
+    name = origin ++ "_" ++ id.display
+    leftId  = String.concat <| List.intersperse "_" [origin, id.id, lname]
+    rightId = String.concat <| List.intersperse "_" [origin, id.id, rname]
+  in
     div []
       [ input [ Attr.type_ "radio"
               , Attr.checked (dir == Just L)
               , Attr.id leftId
               , Attr.name name
-              , E.onInput (\_ -> OrSCChooseDir origin id L)
+              , E.onInput (\_ -> OrSCChooseDir origin id.id L)
               ] []
       , label [ Attr.for leftId ] [ text lname ]
       , input [ Attr.type_ "radio"
               , Attr.id rightId
               , Attr.name name
               , Attr.checked (dir == Just R)
-              , E.onInput (\_ -> OrSCChooseDir origin id R)
+              , E.onInput (\_ -> OrSCChooseDir origin id.id R)
               ] []
       , label [ Attr.for rightId ] [ text rname ]
       , div [] <|
           case dir of
             Nothing   -> []
             Just dir_ -> [ viewSpec ctx
-                             (singletonChoiceMsg origin id)
+                             (singletonChoiceMsg origin id.id)
                              False
                              (case dir_ of
                                 L -> lspec
@@ -610,7 +610,7 @@ viewOrSC ctx dir (lname, lspec) (rname, rspec) =
 
 groupOptionsByOriginCategory : List Options -> Dict String (List Options)
 groupOptionsByOriginCategory =
-  Util.multiDictFromList .origin_category
+  Util.multiDictFromList (.origin_category >> .id)
 
 --------------------------------------------------------------------------------
 -- STYLES

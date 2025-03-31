@@ -206,9 +206,11 @@ dict_get_pred(Dict, Field, Val) :-
 
 %! options_json(?Origin, ?Id, ?Json)
 options_json(Origin, Id, _{origin: OriginStr,
-                           origin_category: CategoryStr, display_origin_category: DisplayCategory,
+                           origin_category: _{id: CategoryStr, display: DisplayCategory},
                            origin_category_index: CatIdx,
-                           charlevel: CharLevel, id: IdStr, display_id: DisplayId, spec: SpecJson,
+                           charlevel: CharLevel,
+                           id: _{id: IdStr, display: DisplayId},
+                           spec: SpecJson,
                            choice: ChoiceJson}) :-
     options(Origin, Id, Spec),
     origin_category_or_uncategorized(Category, Origin), term_string(Category, CategoryStr),
@@ -258,10 +260,11 @@ spec_to_json(Origin, Id, Spec1 or Spec2,
 % Case: any other predicate.
 spec_to_json(Origin, Id, Spec,
              _{spectype: list, list: List}) :-
-    findall(_{opt: XStr, desc: Desc},
+    findall(_{opt: _{id: XStr, display: Display}, desc: Desc},
             (call(Spec, X),
              (\+ hide_base_option(Origin, Id, X)),
              term_string(X, XStr),
+             fmt(format_term(X), Display),
              default_on_fail("", lookup_option_doc(Origin, Id, X), Desc)),
              %fmt(format_term(X), XStr)),
             List).
@@ -287,7 +290,8 @@ choice_to_json(List, Pred, JsonList) :-
     !,
     maplist([X,Y]>>choice_to_json(X,Pred,Y), List, JsonList).
 choice_to_json(X, _, XStr) :-
-    term_string(X, XStr).
+    fmt(format_term(X), XStr).
+    %term_string(X, XStr).
 
 desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
     ((Desc = [From, N, List], (From = from ; From = unique_from)))

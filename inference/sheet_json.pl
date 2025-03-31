@@ -124,7 +124,7 @@ get_formula_name(armor(Armor), Str) :-
     !.
 get_formula_name(Other, Str) :-
     fmt(format_term(Other), Str).
-    
+
 % Hit dice.
 hit_dice_json_dict(HitDiceJson) :-
     hit_dice(HitDice),

@@ -2,7 +2,7 @@
 :- [spell_auto_data].
 :- table spell_data/2.
 :- multifile extend_spell_data/3.
-:- multifile add_spell_effect/2, known_spell_effect/3, suppress_autoderived_spell_effect/1.
+:- multifile add_spell_effect/2, known_spell_effect/3, suppress_autoderived_spell_effect/1, seminotable/1.
 
 %! spell_property(?Name:atomic, ?Field:atomic, ?Val)
 %

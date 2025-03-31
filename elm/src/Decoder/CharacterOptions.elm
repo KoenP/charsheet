@@ -68,13 +68,17 @@ optionsDec : Decoder Options
 optionsDec =
   D.succeed Options
     |> D.andMap (D.field "charlevel" D.int)
-    |> D.andMap (D.field "id" D.string)
-    |> D.andMap (D.field "display_id" D.string)
+    |> D.andMap (D.field "id" displayIdDec)
     |> D.andMap (D.field "origin" D.string)
-    |> D.andMap (D.field "origin_category" D.string)
-    |> D.andMap (D.field "display_origin_category" D.string)
+    |> D.andMap (D.field "origin_category" displayIdDec)
     |> D.andMap (D.field "origin_category_index" D.int)
     |> D.andMap extractSpecAndChoice
+
+displayIdDec : Decoder DisplayId
+displayIdDec =
+  D.succeed DisplayId
+    |> D.andMap (D.field "id" D.string)
+    |> D.andMap (D.field "display" D.string)
 
 extractSpecAndChoice : Decoder SpecAndChoice
 extractSpecAndChoice =
@@ -85,7 +89,7 @@ extractSpecAndChoice =
                         ]))
 
 addChoiceDec : SpecAndChoice -> Decoder SpecAndChoice
-addChoiceDec spec = 
+addChoiceDec spec =
   case spec of
     ListSC _ options ->
       D.map (\choice -> ListSC (Just choice) options) D.string
@@ -112,7 +116,7 @@ addOrChoiceDec (lname,lspec) (rname,rspec) dir =
         L -> lspec
         R -> rspec
     choiceDec =
-      D.field "choice" (addChoiceDec subspec)  
+      D.field "choice" (addChoiceDec subspec)
   in
     D.map
       (\newspec -> case dir of
@@ -143,12 +147,11 @@ listSpecDec : Decoder SpecAndChoice
 listSpecDec =
   D.field "list" <| D.map (ListSC Nothing) <| D.list
     (D.succeed (\x y -> (x,y))
-       |> D.andMap (D.field "opt" D.string)
+       |> D.andMap (D.field "opt" displayIdDec)
        |> D.andMap (D.field "desc" (D.oneOf [ D.list D.string
                                             , D.string |> D.map List.singleton
                                             ]
                                    )))
-    
 
 orSpecDec : Decoder SpecAndChoice
 orSpecDec =

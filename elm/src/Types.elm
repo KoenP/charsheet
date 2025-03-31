@@ -161,7 +161,7 @@ foldPT fCompound fList fAtomic t =
 
 mapPrologTermStrings : (String -> String) -> PrologTerm -> PrologTerm
 mapPrologTermStrings f =
-  foldPT 
+  foldPT
     (\functor args -> Compound (f functor) args)
     (\xs -> List xs)
     (Atomic << f)
@@ -175,32 +175,28 @@ defunctor tm =
 
 ----------------------------------------------------------------------
 -- EDIT CHARACTER PAGE
+type alias DisplayId = { id : String, display : String }
+
 type alias Options =
   { charlevel : Level
-  , id : String
-  , display_id : String
+  , id : DisplayId
   , origin : String
-  , origin_category : String
-  , display_origin_category : String
+  , origin_category : DisplayId
   , origin_category_index : Int
   , spec : SpecAndChoice
   }
-type Spec
-  = ListSpec (List String)
-  | OrSpec (String, Spec) (String, Spec)
-  | FromSpec Unique Int Spec
 type alias Unique = Bool
 
 type Dir = L | R
 type SpecAndChoice
   = ListSC
     (Maybe String)               -- The user's choice (if relevant).
-    (List (String, List String)) -- List of options, and option description (list of paragraphs).
+    (List (DisplayId, List String)) -- List of options, and option description (list of paragraphs).
   | OrSC
     (Maybe Dir)                  -- The user's choice (if relevant).
     (String, SpecAndChoice)      -- Name and spec on the left side.
     (String, SpecAndChoice)      -- Name and spec on the right side.
-  | FromSC 
+  | FromSC
     Unique                       -- Whether this spec is a "from" or "unique_from" spec.
     (Maybe Int)                  -- Number of choices `n` the user gets to make,
                                  -- or `Nothing` if the user gets to make unlimited choices.
