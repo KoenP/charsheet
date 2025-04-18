@@ -241,21 +241,29 @@ pact_magic_json_dict(null).
 spellcasting_section_json_dict(
     _{origin: BaseOrigin,
       origin_shorthand: BaseOriginAbbrev,
-      spellcasting_ability: Abi,
-      spellcasting_ability_mod: AbiMod,
-      spell_save_dc: DC,
-      spell_attack_mod: AttackMod,
-      max_prepared_spells: Prep,
+      stats: Stats,
       spells: Spells}) :-
     base_spell_origin(BaseOrigin),
     default_on_fail(null, spell_origin_shorthand(BaseOrigin), BaseOriginAbbrev),
+    spellcasting_section_stats_json_dict(BaseOrigin, Stats),
+    spell_list_json_dict(BaseOrigin, Spells).
+
+spellcasting_section_stats_json_dict(
+    BaseOrigin,
+    _{spellcasting_ability: Abi,
+      spellcasting_ability_mod: AbiMod,
+      spell_save_dc: DC,
+      spell_attack_mod: AttackMod,
+      max_prepared_spells: Prep
+     }) :-
     spellcasting_ability(BaseOrigin, Abi),
     ability_mod(Abi, AbiMod),
+    !,
     %known_spell_origin_class(BaseBaseOrigin, Class),
     spell_save_dc(BaseOrigin, DC),
     spell_attack_modifier(BaseOrigin, AttackMod),
-    default_on_fail(null, max_prepared_spells(BaseOrigin), Prep),
-    spell_list_json_dict(BaseOrigin, Spells).
+    default_on_fail(null, max_prepared_spells(BaseOrigin), Prep).
+spellcasting_section_stats_json_dict(_, null).
 
 spell_list_json_dict(BaseOrigin, SpellsSorted) :-
     findall(Spell,
@@ -308,6 +316,12 @@ spell_json_dict(BaseOrigin,
     known_spell_aoe_or_null(Origin, Name, Aoe),
     findall(Bonus, spell_bonus_json(Origin, Name, Bonus), Bonuses),
     default_on_fail(null, ([Ref]>>((spell_property(Name, ref, RefVal)), fmt(format_ref(RefVal), Ref))), Ref).
+
+
+display_spell_effects(Data, Effects) :-
+    fmt(format_effects(Data.get(effects)), Effects),
+    !.
+display_spell_effects(_, "-").
 
 known_spell_saving_throw_or_null(Origin, Name, DC, Abi) :-
     known_spell_saving_throw(Origin, Name, DC, Abi),

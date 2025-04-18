@@ -304,11 +304,6 @@ format_resources([R|Rs]) --> format_resource(R), [', '], format_resources(Rs).
 format_resource(per_rest(Dur, N)) --> {!}, checkboxes(N), [' / '], [Dur], [' rest'].
 format_resource(R) --> [R].
 
-display_spell_effects(Data, Effects) :-
-    fmt(format_effects(Data.get(effects)), Effects),
-    !.
-display_spell_effects(_, "-").
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -26,6 +26,13 @@ maybeToList mx =
     Nothing -> []
     Just x  -> [x]
 
+catMaybes : List (Maybe a) -> List a
+catMaybes l =
+  case l of
+    Just x  :: xs -> x :: catMaybes xs
+    Nothing :: xs -> catMaybes xs
+    []            -> []
+
 multiDictFromList : (a -> comparable) -> List a -> Dict comparable (List a)
 multiDictFromList key =
   List.foldl

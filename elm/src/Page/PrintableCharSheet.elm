@@ -45,7 +45,12 @@ view sheet =
           viewOtherProficiencies sheet.weapons sheet.armor sheet.languages sheet.tools sheet.resistances)
        ::
        div [ class "column" ]
-         (  viewSpellcastingTable sheet.spellcasting_sections
+         (  viewSpellcastingTable
+              (Util.catMaybes
+                 <| List.map (\section ->
+                                Maybe.map (\x -> (section.origin_shorthand,x)) section.stats)
+                 <| sheet.spellcasting_sections)
+
          ++ viewSpellSlots sheet.spell_slots
          ++ viewPactMagic sheet.pact_magic
          )
@@ -231,7 +236,7 @@ viewTrait { name, ref } =
                            ]
                      )
     [text name]
-  
+
 viewOtherProficiencies :  List String -> List String -> List String -> List Tool -> List Resistance
                        -> List (Html Msg)
 viewOtherProficiencies weapons armor languages tools resistances =
@@ -257,34 +262,34 @@ showResistance : Resistance -> String
 showResistance { damage_type, resistance } =
   String.concat [damage_type, " (", resistance, ")"]
 
-viewSpellcastingTable : List SpellcastingSection -> List (Html Msg)
+viewSpellcastingTable : List (String, SpellcastingSectionStats) -> List (Html Msg)
 viewSpellcastingTable sections =
   case sections of
-      []          -> []
-      [ section ] -> [ viewBadgeDiv "spellcasting" "spellcasting"
-                       (viewSingleSectionSpellcastingTable section) ]
-      _           -> [ viewBadgeDiv "spellcasting" "spellcasting"
-                       (viewMultiSectionSpellcastingTable sections) ]
+      []             -> []
+      [ (_, stats) ] -> [ viewBadgeDiv "spellcasting" "spellcasting"
+                          (viewSingleSectionSpellcastingTable stats) ]
+      _              -> [ viewBadgeDiv "spellcasting" "spellcasting"
+                          (viewMultiSectionSpellcastingTable sections) ]
 
-viewSingleSectionSpellcastingTable : SpellcastingSection -> List (Html Msg)
-viewSingleSectionSpellcastingTable section =
+viewSingleSectionSpellcastingTable : SpellcastingSectionStats -> List (Html Msg)
+viewSingleSectionSpellcastingTable stats =
   [ table [ class "spellcasting-table" ]
     <| List.map
        (\(field, val) -> tr [] [ simple th field, simple td val ])
-       [ ("save DC", String.fromInt section.spell_save_dc)
-       , ("attack mod", Util.formatModifier section.spell_attack_mod)
+       [ ("save DC", String.fromInt stats.spell_save_dc)
+       , ("attack mod", Util.formatModifier stats.spell_attack_mod)
        , ("prepared", Maybe.withDefault "-"
-                      <| Maybe.map String.fromInt section.max_prepared_spells)
-       , ("ability", String.toUpper section.spellcasting_ability)
+                      <| Maybe.map String.fromInt stats.max_prepared_spells)
+       , ("ability", String.toUpper stats.spellcasting_ability)
        ]
   ]
 
-viewMultiSectionSpellcastingTable : List SpellcastingSection -> List (Html Msg)
+viewMultiSectionSpellcastingTable : List (String, SpellcastingSectionStats) -> List (Html Msg)
 viewMultiSectionSpellcastingTable sections =
   [ table [ class "spellcasting-table" ]
-    <| tr [] (simple td "" :: List.map (simple th << .origin_shorthand) sections)
+    <| tr [] (simple td "" :: List.map (simple th << Tuple.first) sections)
       :: List.map
-      (\(field, fn) -> tr [] (simple th field :: List.map (simple td << fn) sections))
+      (\(field, fn) -> tr [] (simple th field :: List.map (simple td << fn << Tuple.second) sections))
       [ ("DC", String.fromInt << .spell_save_dc)
       , ("mod", Util.formatModifier << .spell_attack_mod)
       , ("prep", Maybe.withDefault "-" << Maybe.map String.fromInt << .max_prepared_spells)

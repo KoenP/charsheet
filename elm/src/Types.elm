@@ -83,16 +83,19 @@ type alias Attack =
   }
 
 type alias SpellcastingSection =
-  { max_prepared_spells      : Maybe Int
-  , origin                   : Origin
-  , origin_shorthand         : String
-  , spell_attack_mod         : Int
+  { origin              : Origin
+  , origin_shorthand    : String
+  , stats               : Maybe SpellcastingSectionStats
+  , spells              : List Spell
+  }
+type alias Origin = String
+type alias SpellcastingSectionStats =
+  { spell_attack_mod         : Int
   , spell_save_dc            : Int
   , spellcasting_ability     : String
   , spellcasting_ability_mod : Int
-  , spells                   : List Spell
+  , max_prepared_spells      : Maybe Int
   }
-type alias Origin = String
 
 type alias Spell =
   { aoe           : Maybe String

@@ -33,18 +33,21 @@
 %    Origin is relevant for:
 %    * Characters can learn the same spell multiple times,
 %      but not more than once for the same Origin.
-%    * If the spell needs to be prepared (see also Availability), then we
-%      use the Origin to check which list of prepared spells it is
-%      added to when prepared.
 %    * Some traits add bonuses to spells based on their Origin, such
 %      as the `'empowered evocation'` trait, which increases the damage
 %      of wizard evocations. In this case, both the literal Origin
 %      `wizard`, as well as any Origins of the form `wizard(_)` count
 %      as "wizard spells" .
+%    * For multiclass characters, the user needs to know which origin each spell
+%      belongs to in order to prepare the correct number of spells from each
+%      list.
 %  * Ability is the ability used for casting the spell. For many
 %    spells this is irrelevant, but it's usually tied to the
 %    Origin. Because I'm not 100% sure it's _always_ tied to the
 %    origin, I decided to register it as a separate argument here.
+%    In some cases no ability is specified (for example the 'totem warrior'
+%    barbarian subclass). In that case the value here is ignored.
+%    By convention, we use the atom `none` to signal this.
 %  * Availability indicates whether the spell is always prepared
 %    (`always`) or has to be explicitly prepared (`when prepared`). If it
 %    has to be prepared, we look at the Origin to check which list of

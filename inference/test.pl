@@ -4,6 +4,7 @@
 :- dynamic most_recent_test_character/1.
 
 :- [test_characters/armor_tests].
+:- [test_characters/barbarian_totem_warrior].
 :- [test_characters/cleric_hill_dwarf].
 :- [test_characters/druid_elf].
 :- [test_characters/monk].

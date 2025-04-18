@@ -106,14 +106,19 @@ attackDec =
 spellcastingSectionDec : Decoder SpellcastingSection
 spellcastingSectionDec =
   D.succeed SpellcastingSection
-    |> D.andMap (D.field "max_prepared_spells" (D.nullable D.int))
     |> D.andMap (D.field "origin" D.string)
     |> D.andMap (D.field "origin_shorthand" D.string)
+    |> D.andMap (D.field "stats" (D.nullable spellcastingSectionStatsDec))
+    |> D.andMap (D.field "spells" (D.list spellDec))
+
+spellcastingSectionStatsDec : Decoder SpellcastingSectionStats
+spellcastingSectionStatsDec =
+  D.succeed SpellcastingSectionStats
     |> D.andMap (D.field "spell_attack_mod" D.int)
     |> D.andMap (D.field "spell_save_dc" D.int)
     |> D.andMap (D.field "spellcasting_ability" D.string)
     |> D.andMap (D.field "spellcasting_ability_mod" D.int)
-    |> D.andMap (D.field "spells" (D.list spellDec))
+    |> D.andMap (D.field "max_prepared_spells" (D.nullable D.int))
 
 spellDec : Decoder Spell
 spellDec =

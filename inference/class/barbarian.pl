@@ -62,11 +62,54 @@ bonus_source(trait('primal champion'), max_ability(con) + 4).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SUBCLASSES                                                                   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Path of the berserker.
+% ----------------------
 subclass_option(barbarian, berserker).
 trait_source(barbarian(berserker) >: 3, frenzy).
 trait_source(barbarian(berserker) >: 6, 'mindless rage').
 trait_source(barbarian(berserker) >: 10, 'intimidating presence').
 trait_source(barbarian(berserker) >: 14, retaliation).
+
+% Path of the totem warrior.
+% --------------------------
+subclass_option(barbarian, 'totem warrior').
+
+trait_source(barbarian('totem warrior') >: 3, 'spirit seeker').
+known_spell(barbarian('totem warrior'), none, always, [], only, Spell) :-
+    trait('spirit seeker'),
+    (Spell = 'beast sense' ; Spell = 'speak with animals').
+
+totem_spirit_option(bear).
+totem_spirit_option(eagle).
+totem_spirit_option(wolf).
+trait_options_source(barbarian('totem warrior') >: 3, 'totem spirit', wrap('totem spirit'),
+                     totem_spirit_option).
+
+trait_options_source(barbarian('totem warrior') >: 6,
+                     'aspect of the beast',
+                     wrap('aspect of the beast'),
+                     totem_spirit_option).
+
+trait_source(barbarian('totem warrior') >: 10, 'spirit walker').
+known_spell(barbarian('totem warrior'), none, always, [], only, 'commune with nature') :-
+    trait('spirit walker').
+% TODO: verify that this shows up on the frontend:
+known_spell_effect(barbarian('totem warrior'), 'commune with nature', Effect) :-
+    trait('spirit walker'),
+    findall(Spirit,
+            (trait('totem spirit'(Spirit)) ; trait('aspect of the beast'(Spirit))),
+            Spirits),
+    intersperse(" or ", Spirits, Disjunction),
+    atomics_to_string(Disjunction, SpiritsStr),
+    format(string(Effect),
+           "A spiritual ~w appears to you to convey the information you seek",
+           [SpiritsStr]).
+
+trait_options_source(barbarian('totem warrior') >: 14,
+                     'totemic attunement',
+                     wrap('totemic attunement'),
+                     totem_spirit_option).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DESCRIPTIONS                                                                 %
@@ -119,6 +162,23 @@ frenzy ?= "Starting when you choose this path at 3rd level, you can go into a fr
 If the creature succeeds on its saving throw, you can't use this feature on that creature again for 24 hours. ".
 
 retaliation ?= "Starting at 14th level, when you take damage from a creature that is within 5 feet of you, you can use your reaction to make a melee weapon attack against that creature.".
+
+% TODO totem warrior
+'totem spirit'(bear) ?= "While raging, you have resistance to all damage except psychic damage. The spirit of the bear makes you tough enough to stand up to any punishment.".
+'totem spirit'(eagle) ?= "While you’re raging, other creatures have disadvantage on opportunity attack rolls against you, and you can use the Dash action as a bonus action on your turn. The spirit of the eagle makes you into a predator who can weave through the fray with ease.".
+'totem spirit'(wolf) ?= "While you’re raging, your friends have advantage on melee attack rolls against any creature within 5 feet of you that is hostile to you. The spirit of the wolf makes you a leader of hunters.".
+
+'aspect of the beast'(bear) ?= "You gain the might of a bear. Your carrying capacity (including maximum load and maximum lift) is doubled, and you have advantage on Strength checks made to push, pull, lift, or break objects.".
+'aspect of the beast'(eagle) ?= "You gain the eyesight of an eagle. You can see up to 1 mile away with no difficulty, able to discern even fine details as though looking at something no more than 100 feet away from you. Additionally, dim light doesn’t impose disadvantage on your Wisdom (Perception) checks.".
+'aspect of the beast'(wolf) ?= "You gain the hunting sensibilities of a wolf. You can track other creatures while traveling at a fast pace, and you can move stealthily while traveling at a normal pace (see chapter 8, “Adventuring,” for rules on travel pace).".
+
+'spirit walker' ?= "At 10th level, you can cast the commune with nature spell, but only as a ritual. When you do so, a spiritual version of one of the animals you chose for Totem Spirit or Aspect of the Beast appears to you to convey the information you seek.".
+
+'totemic attunement'(bear) ?= "While you’re raging, any creature within 5 feet of you that’s hostile to you has disadvantage on attack rolls against targets other than you or another character with this feature. An enemy is immune to this effect if it can’t see or hear you or if it can’t be frightened.".
+
+'totemic attunement'(eagle) ?= "While raging, you have a flying speed equal to your current walking speed. This benefit works only in short bursts; you fall if you end your turn in the air and nothing else is holding you aloft.".
+
+'totemic attunement'(wolf) ?= "While you’re raging, you can use a bonus action on your turn to knock a Large or smaller creature prone when you hit it with melee weapon attack.".
 
 rage(_)@=srd('48').
 'reckless attack'@=srd('48').

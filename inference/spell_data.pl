@@ -143,7 +143,7 @@ unique_effects(Effects, UniqueEffects) :-
     maplist(just_once, Effects, UniqueEffects).
 just_once(_*X, X).
 just_once(X, X) :- X \= _*_.
-    
+
 %! extend_spell_data(+Name:atomic, ?Field:atomic, ?Val)
 extend_spell_data(Name, effects, Effects) :-
     spell_auto_data(Name, _), % ground Name
