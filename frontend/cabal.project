@@ -1,0 +1,3 @@
+packages: .
+with-compiler: /home/koen/.ghcup/bin/javascript-unknown-ghcjs-ghc-9.10
+with-hc-pkg: /home/koen/.ghcup/bin/javascript-unknown-ghcjs-ghc-pkg-9.10
