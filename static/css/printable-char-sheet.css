@@ -1,3 +1,8 @@
+:root {
+    --side-nav-width: 260px;
+    --tab-bar-height: 36px;
+}
+
 @media print {
     .page-break {
         page-break-after: always;
@@ -630,4 +635,45 @@ input:checked {
 
 .card-description ol {
     padding-inline-start: 2.5mm;
+}
+
+.side-nav {
+    height: 100%;
+    width: var(--side-nav-width);
+    position: fixed;
+    z-index: 1;
+    top: var(--tab-bar-height);
+    left: 0;
+    background-color: #010101;
+    overflow-x: hidden;
+    color: #818181;
+}
+
+.side-nav button {
+    background-color: transparent;
+    border: 0;
+    margin-left: 20px;
+    margin-top: 15px;
+    padding: 0;
+    cursor: pointer;
+    font-size: 25px;
+    display: block;
+    color: inherit;
+    /* font-family: 'Dosis'; */ /* uncomment if you're using this font */
+}
+
+.side-nav button:hover {
+    color: #ffffff;
+}
+
+.edit-page .main-section {
+    margin-left: var(--side-nav-width);
+    margin-top: var(--tab-bar-height);
+}
+
+.origin-category {
+    background-color: #eeeeee;
+    border-radius: 10px;
+    padding: 8px 0px 16px 20px;
+    margin-top: 8px;
 }

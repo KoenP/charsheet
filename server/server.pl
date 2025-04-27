@@ -117,9 +117,9 @@ logged_in_as(User) :-
 :- http_handler(root(api / character / CharId / unequip_item),
                 h_post_unequip_item(CharId),
                 [method(post)]).
-:- http_handler(root(api / character/ CharId / store_card_config),
-                h_post_store_card_config(CharId),
-                [method(post)]).
+:- http_handler(root(api / character/ CharId / store / Field),
+                h_store(Method, CharId, Field),
+                [method(Method)]).
 
 h_list_characters(_Request) :-
     list_characters(Chars),
@@ -215,9 +215,17 @@ h_post_unequip_item(CharId, Request) :-
                           (equipment_json_dict(Items),
                            reply_json_dict(Items))).
 
-h_post_store_card_config(_CharId, Request) :-
+h_store(get, CharId, Field, _Request) :-
+    with_loaded_character(CharId, store(Field, Data)),
+    format('Content-type: text/text~n~n'),
+    format(Data).
+
+% TODO: Limit the amount of data that can be stored.
+%       Test for only recognized fields.
+h_store(post, CharId, Field, Request) :-
     http_read_data(Request, Data, [to(string)]),
-    writeln(Data).
+    withdraw_character_fact_without_resolving(CharId, store(Field, _)),
+    record_character_fact(CharId, store(Field, Data)).
 
 handle_with_char_snapshot(Handler, CharId, Request) :-
     with_loaded_character(CharId, (call(Handler, Request), abolish_private_tables)).
