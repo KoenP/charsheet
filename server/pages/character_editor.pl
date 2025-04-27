@@ -9,11 +9,18 @@ character_editor_page(CharName) -->
           link([rel=stylesheet, href='https://fonts.googleapis.com/css2?family=Dosis:wght@400;700&display=swap'], [])
          ],
          body([div([id=app], []),
-          \js_script({|javascript(CharName)||
-                      var app = Elm.Main.init( {
-                          node: document.getElementById("app"),
-                          flags: CharName
-                      });
-                     |})
-               ]
+               \js_script({|javascript(CharName)||
+                            function getCharName() {
+                                return CharName;
+                            }
+                          |})
+              ]
              )).
+
+
+%\js_script({|javascript(CharName)||
+          %            var app = Elm.Main.init( {
+          %                node: document.getElementById("app"),
+          %                flags: CharName
+          %            });
+          %           |})
