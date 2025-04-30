@@ -78,8 +78,8 @@ trait_source(cleric >: 10, divine_intervention(Pct pct)) :-
 % DOMAINS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Life domain.
+% ------------
 subclass_option(cleric, life).
 
 cleric_domain_spell(life, bless).
@@ -134,8 +134,8 @@ heal_roll_max(heal(Formula), heal(NewFormula)) :-
     simplify_dice_sum(MaxedRolls, NewFormula).
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Knowledge domain.
+% -----------------
 subclass_option(cleric, knowledge).
 
 cleric_domain_spell(knowledge, command).
@@ -159,12 +159,26 @@ trait_options(trait('blessings of knowledge'), skill, wrap(skill),
     cleric(knowledge) >: 1.
 trait_source(trait('blessings of knowledge'), expertise(skill(Skill))) :-
     choice_member(trait('blessings of knowledge'), skill, Skill).
-meta_todo(nontermination, "why can't the blessings of knowledge trait options refer to the blessings of knowledge trait without causing an infinite loop? [later note: I don't know what this is about, I can't reproduce a nontermination issue here]").
 meta_todo(trait('blessings of knowledge'), "Technically it's not expertise, but mechanically I'm not sure it's worth making a distinction here. In particular if it's not expertise, I'm not sure how/whether it stacks with expertise.").
 
 % Knowledge of the ages.
 trait_source(cleric(knowledge) >: 2, 'knowledge of the ages').
-trait_source(cleric(knowledge) >: 2, channel_divinity('read thoughts')).
+trait_source(cleric(knowledge) >: 6, channel_divinity('read thoughts')).
+
+trait_source(cleric(knowledge) >: 8, 'potent spellcasting'(cleric)).
+bonus_source(trait('potent spellcasting'(cleric)), modify_spell(_, Cantrip, Goal)) :-
+    known_spell(_, Cantrip),
+    spell_data(Cantrip, Data),
+    Data.level = 0,
+    subterm_member(damage(_,_), Data.effects),
+    ability_mod(Wis, Bonus),
+    Goal = modify_spell_field(effects, apply_potent_spellcasting(Bonus)).
+apply_potent_spellcasting(Bonus, OldEffects, NewEffects) :-
+    select_subterm(damage(Element, Dice), OldEffects,
+                   damage(Element, NewDice), NewEffects),
+    simplify_dice_sum(Dice + Bonus, NewDice).
+
+trait_source(cleric(knowledge) >: 17, 'visions of the past').
 
 meta_todo(cleric(knowledge), "Complete this subclass implementation.").
 
@@ -188,6 +202,16 @@ As an action, choose one creature that you can see within 60 feet of you. That c
 If the creature fails its save, you can read its surface thoughts (those foremost in its mind, reflecting its current emotions and what it is actively thinking about) when it is within 60 feet of you. This effect lasts for 1 minute.
 
 During that time, you can use your action to end this effect and cast the Suggestion spell on the creature without expending a spell slot. The target automatically fails its saving throw against the spell.".
+
+'potent spellcasting' ?= "Starting at 8th level, you add your Wisdom modifier to the damage you deal with any cleric cantrip.".
+
+'visions of the past' ?= "Starting at 17th level, you can call up visions of the past that relate to an object you hold or your immediate surroundings. You spend at least 1 minute in meditation and prayer, then receive dreamlike, shadowy glimpses of recent events. You can meditate in this way for a number of minutes equal to your Wisdom score and must maintain concentration during that time, as if you were casting a spell.
+
+Once you use this feature, you can’t use it again until you finish a short or long rest.
+
+**Object Reading.** Holding an object as you meditate, you can see visions of the object’s previous owner. After meditating for 1 minute, you learn how the owner acquired and lost the object, as well as the most recent significant event involving the object and that owner. If the object was owned by another creature in the recent past (within a number of days equal to your Wisdom score), you can spend 1 additional minute for each owner to learn the same information about that creature.
+
+**Area Reading.** As you meditate, you see visions of recent events in your immediate vicinity (a room, street, tunnel, clearing, or the like, up to a 50-foot cube), going back a number of days equal to your Wisdom score. For each minute you meditate, you learn about one significant event, beginning with the most recent. Significant events typically involve powerful emotions, such as battles and betrayals, marriages and murders, births and funerals. However, they might also include more mundane events that are nevertheless important in your current situation.".
 
 destroy_undead(_) ?= "Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold, as shown in the Destroy Undead table.".
 

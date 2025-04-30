@@ -50,7 +50,7 @@ restore_res('short rest', 'bardic insipiration', 'full restore') :-
     trait('font of inspiration').
 
 trait_source(bard >: 6, countercharm).
-    
+
 trait_options_source(bard >: L, 'magical secrets', wrap(magical_secret),
                      2 unique_from magical_secret_spell) :-
     member(L, [10, 14, 18]).
@@ -101,14 +101,26 @@ options(bard >: L, replacing(spell, Name), learnable_proper_spell(sorcerer)) :-
 % SUBCLASSES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % College of Lore
+% ---------------
 subclass_option(bard, lore).
 trait_options_source(bard(lore) >: 3, skill, wrap(skill), 3 unique_from skill).
-trait_source(bard(lore) >: 3, 'curring words').
+trait_source(bard(lore) >: 3, 'cutting words').
 trait_options_source(bard(lore) >: 6, 'magical secrets', wrap(magical_secret),
                      2 unique_from magical_secret_spell).
 trait_source(bard(lore) >: 14, 'peerless skill').
+
+% College of Valor
+% ----------------
+% TODO untested
+subclass_option(bard, valor).
+traits_from_source(bard(valor) >: 3, [armor(medium),
+                                      armor(shield),
+                                      weapon(martial)]).
+trait_source(bard(valor) >: 3, 'combat inspiration').
+multiclass_trait_source(bard(valor) >: 6, extra_attack(1)).
+trait_source(bard(valor) >: 14, 'battle magic').
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DESCRIPTIONS
@@ -132,6 +144,14 @@ The extra hit points increase when you reach certain levels in this class: to 1d
 'countercharm' ?= "At 6th level, you gain the ability to use musical notes or words of power to disrupt mind-influencing effects. As an action, you can start a performance that lasts until the end of your next turn. During that time, you and any friendly creatures within 30 feet of you have advantage on saving throws against being frightened or charmed. A creature must be able to hear you to gain this benefit. The performance ends early if you are incapacitated or silenced or if you voluntarily end it (no action required).".
 
 'superior inspiration' ?= "At 20th level, when you roll initiative and have no uses of Bardic Inspiration left, you regain one use.".
+
+'cutting words' ?= "Also at 3rd level, you learn how to use your wit to distract, confuse, and otherwise sap the confidence and competence of others. When a creature that you can see within 60 feet of you makes an attack roll, an ability check, or a damage roll, you can use your reaction to expend one of your uses of Bardic Inspiration, rolling a Bardic Inspiration die and subtracting the number rolled from the creature’s roll. You can choose to use this feature after the creature makes its roll, but before the DM determines whether the attack roll or ability check succeeds or fails, or before the creature deals its damage. The creature is immune if it can’t hear you or if it’s immune to being charmed.".
+
+'peerless skill' ?= "Starting at 14th level, when you make an ability check, you can expend one use of Bardic Inspiration. Roll a Bardic Inspiration die and add the number rolled to your ability check. You can choose to do so after you roll the die for the ability check, but before the DM tells you whether you succeed or fail.".
+
+'combat inspiration' ?= "Also at 3rd level, you learn to inspire others in battle. A creature that has a Bardic Inspiration die from you can roll that die and add the number rolled to a weapon damage roll it just made. Alternatively, when an attack roll is made against the creature, it can use its reaction to roll the Bardic Inspiration die and add the number rolled to its AC against that attack, after seeing the roll but before knowing whether it hits or misses.".
+
+'battle magic' ?= "At 14th level, you have mastered the art of weaving spellcasting and weapon use into a single harmonious act. When you use your action to cast a bard spell, you can make one weapon attack as a bonus action.".
 
 'bardic inspiration'@=srd('53-54').
 'jack of all trades'@=srd('54').
