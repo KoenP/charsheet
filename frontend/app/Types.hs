@@ -1,6 +1,7 @@
 module Types where
 
 --------------------------------------------------------------------------------
+import Data.Char
 import Data.Map (Map)
 import GHC.Generics
 
@@ -8,7 +9,8 @@ import Data.Aeson
 import Data.Aeson.Types
 import Miso
 import Miso.Effect
-import Miso.String
+import Miso.String (MisoString)
+import qualified Miso.String as MS
 
 import SF (type (~>))
 --------------------------------------------------------------------------------
@@ -56,9 +58,36 @@ data Option = Option
   , origin_category         :: MisoString
   , display_origin_category :: MisoString
   , origin_category_index   :: Int
-  -- , spec :: SpecAndChoice
+  , spec :: Spec
   } deriving (Generic, Show)
 instance FromJSON Option where
+
+type Unique = Bool
+
+data ListSpecEntry = ListSpecEntry { desc :: MisoString, opt :: MisoString }
+  deriving (Generic, Show)
+instance FromJSON ListSpecEntry where
+
+data Spec
+  = ListSpec
+    { list      :: [ListSpecEntry]
+    }
+  | OrSpec
+    { leftname  :: MisoString
+    , left      :: Spec
+    , rightname :: MisoString
+    , right     :: Spec
+    }
+  | FromSpec
+    { unique    :: Unique
+    , num       :: Maybe Int
+    , spec      :: Spec
+    }
+  deriving (Generic, Show)
+instance FromJSON Spec where
+  parseJSON = genericParseJSON $ defaultOptions
+    { constructorTagModifier = map toLower . reverse . drop 4 . reverse
+    }
 
 -- type Unique = Bool
 -- data SpecAndChoice

@@ -74,7 +74,7 @@ feat_option('metamagic adept').
 
 % Pick two metamagic options.
 options_source(feat('metamagic adept'), metamagic, 2 unique_from metamagic_option).
-   
+
 % One option can be replaced any time the character gets an ASI or feat from their class
 % (except on the level this feat is picked).
 replace_at_character_level(feat('metamagic adept'), CharLevel, metamagic, 1, metamagic_option) :-

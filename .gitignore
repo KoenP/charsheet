@@ -13,3 +13,6 @@ server/.stack-work
 *.yaml.lock
 
 charsheet.js
+
+dist-newstyle
+newdist
