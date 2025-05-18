@@ -72,7 +72,8 @@ executable charsheet-frontend
                       containers,
                       aeson,
                       ghcjs-base >= 0.8.0.2,
-                      lens
+                      lens,
+                      bytestring,
                       -- servant >= 0.20.2
 
     -- Directories containing source files.

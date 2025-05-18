@@ -7,6 +7,8 @@ import Control.Applicative
 import Control.Arrow
 import Control.Category
 import Control.Monad
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Internal as BS
 import Data.Functor
 import Data.Map (Map)
 import GHC.Generics
@@ -46,7 +48,8 @@ loadingPage = div_ [] [text "Loading..."]
 --------------------------------------------------------------------------------
 
 main :: IO ()
-main = startApp App {..}
+main = traceShow (eitherDecodeStrict example :: Either String Spec) $
+  startApp App {..}
   where
     initialAction = SendRequest
     model         = Model loadingPage sf
@@ -88,5 +91,14 @@ getEditCharacterPage = do
                     , reqWithCredentials = False
                     , reqData = NoData
                     }
-  Just resp <- fmap ((decodeStrict =<<) . contents) (xhrByteString req)
-  return resp
+  Just encodedOptions <- fmap contents (xhrByteString req)
+  case eitherDecodeStrict encodedOptions of
+    Left err   -> error
+      $ Prelude.concat [err, "\nin:\n", Prelude.map BS.w2c (BS.unpack encodedOptions)]
+    Right resp -> return resp
+
+maybeToEither :: e -> Maybe a -> Either e a
+maybeToEither err Nothing    = Left err
+maybeToEither _   (Just res) = Right res
+
+example = "{\"list\": [{\"desc\": \"\", \"opt\": \"dragonborn\"}, {\"desc\": \"\", \"opt\": \"dwarf\"}, {\"desc\": \"\", \"opt\": \"elf\"}, {\"desc\": \"\", \"opt\": \"gnome\"}, {\"desc\": \"\", \"opt\": \"'half-elf'\"}, {\"desc\": \"\", \"opt\": \"'half-orc'\"}, {\"desc\": \"\", \"opt\": \"halfling\"}, {\"desc\": \"\", \"opt\": \"human\"}, {\"desc\": \"\", \"opt\": \"tiefling\"}, {\"desc\": \"\", \"opt\": \"bugbear\"}, {\"desc\": \"\", \"opt\": \"tabaxi\"}, {\"desc\": \"\", \"opt\": \"firbolg\"}], \"spectype\": \"list\"}"

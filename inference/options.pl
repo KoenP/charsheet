@@ -235,7 +235,7 @@ resolve_not_eligible :-
 spec_to_json(Origin, Id, Spec,
              _{ spectype: Functor,
                 num: N,
-                spec: SubSpec1
+                subspec: SubSpec1
               }) :-
     Spec =.. [Functor, N, SubSpec],
     (Functor = from ; Functor = unique_from),
@@ -272,21 +272,21 @@ choice_json(Origin, Id, Spec, Json) :-
     choice_to_json(Choice, Spec, Json).
 choice_json(Origin, Id, _, null) :-
     \+ choice(Origin, Id, _).
-choice_to_json(X, Left or _, _{choicetype: or, side: left, choice: Json}) :-
+choice_to_json(X, Left or _, _{tag: or_choice, side: l, subchoice: Json}) :-
     ground(Left),
     call(Left, X),
     !,
     choice_to_json(X, Left, Json).
-choice_to_json(X, _ or Right, _{choicetype: or, side: right, choice: Json}) :-
+choice_to_json(X, _ or Right, _{tag: or_choice, side: r, subchoice: Json}) :-
     ground(Right),
     call(Right, X),
     !,
     choice_to_json(X, Right, Json).
-choice_to_json(List, Pred, JsonList) :-
+choice_to_json(List, Pred, _{tag: list_choice, subchoices: JsonList}) :-
     is_list(List),
     !,
     maplist([X,Y]>>choice_to_json(X,Pred,Y), List, JsonList).
-choice_to_json(X, _, XStr) :-
+choice_to_json(X, _, {tag: atomic_choice, atomic_choice: XStr}) :-
     term_string(X, XStr).
 
 desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
@@ -303,8 +303,6 @@ fill_in_option(Origin, Id, Choice) :-
     todo(options(Origin, Id, Spec)),
     call(Spec, Choice), !,
     assert(choice(Origin, Id, Choice)).
-    
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % OPTION TREE

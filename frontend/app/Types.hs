@@ -58,7 +58,8 @@ data Option = Option
   , origin_category         :: MisoString
   , display_origin_category :: MisoString
   , origin_category_index   :: Int
-  , spec :: Spec
+  , spec                    :: Spec
+  , choice                  :: Maybe Choice
   } deriving (Generic, Show)
 instance FromJSON Option where
 
@@ -81,13 +82,25 @@ data Spec
   | FromSpec
     { unique    :: Unique
     , num       :: Maybe Int
-    , spec      :: Spec
+    , subspec   :: Spec
     }
   deriving (Generic, Show)
 instance FromJSON Spec where
-  parseJSON = genericParseJSON $ defaultOptions
+  parseJSON = genericParseJSON $ Data.Aeson.Types.defaultOptions
     { constructorTagModifier = map toLower . reverse . drop 4 . reverse
+    , sumEncoding = TaggedObject "spectype" ""
     }
+
+data Dir = L | R
+  deriving (Generic, Show)
+instance FromJSON Dir
+
+data Choice
+  = OrChoice { side :: Dir, subchoice :: Choice }
+  | ListChoice { subchoices :: [Choice] }
+  | AtomicChoice { atomic_choice :: String }
+  deriving (Generic, Show)
+instance FromJSON Choice
 
 -- type Unique = Bool
 -- data SpecAndChoice
