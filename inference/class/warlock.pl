@@ -152,7 +152,7 @@ eldinv(Inv) :- trait('eldritch invocation'(Inv)).
 
 :- discontiguous eldinv_deletes_spell_component/2.
 delete_component_source(trait('eldritch invocation'(Inv)),
-                        warlock:'eldritch invocation'(Inv),
+                        warlock('eldritch invocation'(Inv)),
                         _,
                         Component) :-
     eldinv_deletes_spell_component(Inv, Component).

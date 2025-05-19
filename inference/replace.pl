@@ -24,14 +24,16 @@ custom_format(replace(Compound)) -->
 %  at which class level by looking at the current and past
 %  class levels.
 selected_at_class_level(Class:Level, Id, Choice) :-
-    class_origin_to_class_level(Origin, Class:Level),
+    base_class(Class, BaseClass),
+    class_origin_to_class_level(Origin, BaseClass:Level),
     (choice_member(Origin, Id, Choice) ; choice_member(Origin, replacing(Id,_), Choice)).
 selected_at_class_level(Class:Level, Id, Choice) :-
     class_level(Class:CurLevel),
+    base_class(Class, BaseClass),
     between(2, CurLevel, Level), % ground Level
     PrevLevel is Level-1,
     selected_at_class_level(Class:PrevLevel, Id, Choice),
-    \+ (class_origin_to_class_level(Origin, Class:Level),
+    \+ (class_origin_to_class_level(Origin, BaseClass:Level),
         choice_member(Origin, replace(Id), Choice)).
 
 %! replaceable_class_options(?ClassLevel, ?Id, ?Goal)
@@ -61,8 +63,9 @@ options(Class >: L, replacing(Id, Choice), Goal) :-
 
 % this name is horrible
 find_choice_level(Class:Level, Id, Choice) :-
-    class_level(Class:CurLevel),
-    selected_at_class_level(Class:CurLevel, Id, Choice),
+    base_class(Class, BaseClass),
+    class_level(BaseClass:CurLevel),
+    selected_at_class_level(BaseClass:CurLevel, Id, Choice),
     findall(L,
             (choice_member(Class >: L, ChoiceId, Choice),
              member(ChoiceId, [Id, replacing(Id,_)])),

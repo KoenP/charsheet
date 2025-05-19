@@ -1,19 +1,23 @@
 :- multifile test_char_level/4.
 :- multifile test_char_level/5.
+:- multifile test_char_levelup_fromto/3.
 :- dynamic test_char_level_up/3.
 :- dynamic most_recent_test_character/1.
 
 :- [test_characters/armor_tests].
 :- [test_characters/barbarian_totem_warrior].
+:- [test_characters/battle_master].
 :- [test_characters/cleric_hill_dwarf].
 :- [test_characters/druid_elf].
 :- [test_characters/monk].
+:- [test_characters/monk_four_elements].
 :- [test_characters/paladin].
 :- [test_characters/ranger_human].
 :- [test_characters/extra_attack].
 :- [test_characters/metamagic_adept].
 :- [test_characters/cantrip_notes].
 :- [test_characters/infusions].
+:- [test_characters/knowledge_cleric].
 
 % test_char_level(?Name, ?Level, ?Facts, ?Expectations)
 test_char_level(_,_,_,_) :- false.
@@ -21,6 +25,15 @@ test_char_level(_,_,_,_) :- false.
 % test_char_level(?Name, ?Level, ?Facts, ?Expectations, ?ExpectedProblems)
 test_char_level(Name, Level, Facts, Expectations, []) :-
     test_char_level(Name, Level, Facts, Expectations).
+test_char_level(Name, Level, Facts, [], []) :-
+    test_char_levelup_fromto(Name, Class, Low-High),
+    Facts = [ choice(level(Level), 'as class', Class),
+              choice(level(Level), 'max hp roll'(_,_), 1)
+            ],
+    between(Low, High, Level).
+
+% test_char_levelup_fromto(?Name, ?Class, ?Range)
+test_char_levelup_fromto(_,_,_) :- false.
 
 test_character(Name) :- test_character(Name, true).
 test_character(Name, Goal) :-
@@ -83,10 +96,19 @@ ltc :-
 ltc(Name) :- ltc(Name, 20).
 ltc(Name, Level) :-
     unload_char,
-    test_char_level(Name, _, _, _), % Fail if the character does not exist.
+    test_char_level(Name, _, _, _, _), % Fail if the character does not exist.
     !,
-    forall((test_char_level(Name, L, Facts, _), L =< Level, member(Fact, Facts)),
+    forall((test_char_level(Name, L, Facts, _, _), L =< Level, member(Fact, Facts)),
            assert(Fact)).
+
+wtc :-
+    ltc,
+    name(Name),
+    format(string(Path), 'storage/public/~w.pl', [Name]),
+    rewrite_character_file(Path),
+    format("Written character to ~w.", [Path]),
+    unload_char.
+
 
 unload_char :-
     forall((character_definition_predicate(Pred/N),

@@ -542,6 +542,8 @@ bonus_source(BonusOrigin, modify_spell(SpellOrigin, Spell, Goal)) :-
     Goal = modify_spell_field(components,
                               {Component}/[Cs1,Cs2]
                                >> delete(Cs1, Component, Cs2)).
+custom_format(modify_spell_field(components, {Component}/[_,_] >> delete(_, Component, _))) :-
+    [Component].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Cantrip damage scaling.

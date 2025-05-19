@@ -290,8 +290,8 @@ choice_to_json(List, Pred, JsonList) :-
     !,
     maplist([X,Y]>>choice_to_json(X,Pred,Y), List, JsonList).
 choice_to_json(X, _, XStr) :-
-    fmt(format_term(X), XStr).
-    %term_string(X, XStr).
+    %fmt(format_term(X), XStr).
+    term_string(X, XStr).
 
 desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-
     ((Desc = [From, N, List], (From = from ; From = unique_from)))

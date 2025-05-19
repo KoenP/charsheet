@@ -171,12 +171,14 @@ bonus_source(trait('potent spellcasting'(cleric)), modify_spell(_, Cantrip, Goal
     spell_data(Cantrip, Data),
     Data.level = 0,
     subterm_member(damage(_,_), Data.effects),
-    ability_mod(Wis, Bonus),
+    ability_mod(wis, Bonus),
     Goal = modify_spell_field(effects, apply_potent_spellcasting(Bonus)).
 apply_potent_spellcasting(Bonus, OldEffects, NewEffects) :-
     select_subterm(damage(Element, Dice), OldEffects,
                    damage(Element, NewDice), NewEffects),
     simplify_dice_sum(Dice + Bonus, NewDice).
+custom_format(modify_spell_field(effects, apply_potent_spellcasting(Bonus))) -->
+    ["+"], [Bonus], [" damage"].
 
 trait_source(cleric(knowledge) >: 17, 'visions of the past').
 

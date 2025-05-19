@@ -129,6 +129,27 @@ trait_source(monk('open hand') >: 11, tranquility(dc(DC))) :-
 
 trait_source(monk('open hand') >: 17, 'quivering palm').
 
+% Way of the Four Elements
+% ------------------------
+subclass_option(monk, 'four elements').
+
+:- [monk/elemental_discipline].
+
+trait_source(monk('four elements') >: 3, 'disciple of the elements').
+trait_source(monk('four elements') >: 3, 'elemental discipline'('elemental attunement')).
+trait_options_source(monk('four elements') >: L,
+                     'elemental discipline',
+                     wrap('elemental discipline'),
+                     elemental_discipline_option) :-
+    choose_elemental_discipline_level(L).
+delete_component_source(trait('disciple of the elements'),
+                        monk('elemental discipline'(_)),
+                        _,
+                        m(_)).
+
+choose_elemental_discipline_level(L) :- member(L, [3,6,11,17]).
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DESCRIPTIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
