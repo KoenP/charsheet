@@ -2,7 +2,8 @@
        replaceable_class_options/3,
        replace_at_class_level/4,
        replaceable_character_options/4,
-       replace_at_character_level/5.
+       replace_at_character_level/5,
+       replaceable_autoselected_option/3.
 
 custom_format(replacing(Id, ToReplace)) -->
     format_term(Id), [": replace \""], format_term(ToReplace), ["\""].
@@ -26,7 +27,7 @@ custom_format(replace(Compound)) -->
 selected_at_class_level(Class:Level, Id, Choice) :-
     base_class(Class, BaseClass),
     class_origin_to_class_level(Origin, BaseClass:Level),
-    (choice_member(Origin, Id, Choice) ; choice_member(Origin, replacing(Id,_), Choice)).
+    (replaceable_choice_member(Origin, Id, Choice) ; replaceable_choice_member(Origin, replacing(Id,_), Choice)).
 selected_at_class_level(Class:Level, Id, Choice) :-
     class_level(Class:CurLevel),
     base_class(Class, BaseClass),
@@ -34,10 +35,19 @@ selected_at_class_level(Class:Level, Id, Choice) :-
     PrevLevel is Level-1,
     selected_at_class_level(Class:PrevLevel, Id, Choice),
     \+ (class_origin_to_class_level(Origin, BaseClass:Level),
-        choice_member(Origin, replace(Id), Choice)).
+        replaceable_choice_member(Origin, replace(Id), Choice)).
 
 %! replaceable_class_options(?ClassLevel, ?Id, ?Goal)
 replaceable_class_options(_,_,_) :- false.
+
+%! replaceable_autoselected_option(?ClassLevel, ?Id, ?Autoselected)
+replaceable_autoselected_option(_,_,_) :- false.
+
+replaceable_choice(Origin, Id, Choice) :-
+    choice(Origin, Id, Choice) ; replaceable_autoselected_option(Origin, Id, Choice).
+replaceable_choice_member(Origin, Id, ChoiceMember) :-
+    replaceable_choice(Origin, Id, Choice),
+    (is_list(Choice) -> member(ChoiceMember, Choice) ; ChoiceMember = Choice).
 
 %! replace_at_class_level(?ClassLevel, ?Id, ?N:integer, ?Goal)
 replace_at_class_level(_,_,_,_) :- false.
@@ -57,9 +67,7 @@ options_source(Class >: L,
 options(Class >: L, replacing(Id, Choice), Goal) :-
     class_level(Class:CurLvl),
     replace_at_class_level(Class:CurLvl, Id, _, Goal),
-    choice_member(Class >: L,
-                  replace(Id),
-                  Choice).
+    replaceable_choice_member(Class >: L, replace(Id), Choice).
 
 % this name is horrible
 find_choice_level(Class:Level, Id, Choice) :-
@@ -67,7 +75,7 @@ find_choice_level(Class:Level, Id, Choice) :-
     class_level(BaseClass:CurLevel),
     selected_at_class_level(BaseClass:CurLevel, Id, Choice),
     findall(L,
-            (choice_member(Class >: L, ChoiceId, Choice),
+            (replaceable_choice_member(Class >: L, ChoiceId, Choice),
              member(ChoiceId, [Id, replacing(Id,_)])),
             Ls),
     max_member(Level, Ls).

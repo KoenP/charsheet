@@ -1,3 +1,5 @@
+:- discontiguous paladin_oath_spell/2.
+
 class_option(paladin).
 hd_per_level(paladin, 1 d 10).
 initial_class_base_hp(paladin, 10).
@@ -97,8 +99,8 @@ extend_class_spell_list(paladin, Spell) :-
 % OATHS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Oath of Devotion
+% ----------------
 subclass_option(paladin, devotion).
 
 paladin_oath_spell(devotion, 'protection from evil and good').
@@ -121,6 +123,35 @@ trait_source(paladin(devotion) >: 20, 'holy nimbus').
 res('holy nimbus', 1) :-
     trait('holy nimbus').
 restore_res('long rest', 'holy nimbus', 'full restore').
+
+% Oath of the Ancients
+% --------------------
+subclass_option(paladin, ancients).
+
+paladin_oath_spell(ancients, 'ensnaring strike').
+paladin_oath_spell(ancients, 'speak with animals').
+paladin_oath_spell(ancients, 'misty step').
+paladin_oath_spell(ancients, moonbeam).
+paladin_oath_spell(ancients, 'plant growth').
+paladin_oath_spell(ancients, 'protection from energy').
+paladin_oath_spell(ancients, 'ice storm').
+paladin_oath_spell(ancients, stoneskin).
+paladin_oath_spell(ancients, 'commune with nature').
+paladin_oath_spell(ancients, 'tree stride').
+
+trait_source(paladin(ancients) >: 3, channel_divinity('nature\'s wrath')).
+trait_source(paladin(ancients) >: 3, channel_divinity('turn the faithless')).
+trait_source(paladin(ancients) >: 7, 'aura of warding'(feet(Range))) :-
+    class_level(paladin:L),
+    (L < 18 -> Range = 10; Range = 30).
+
+trait_source(paladin(ancients) >: 15, 'undying sentinel').
+res('undying sentinel', 1) :- trait('undying sentinel').
+restore_res('long rest', 'undying sentinel', 'full restore').
+
+trait_source(paladin(ancients) >: 20, 'elder champion').
+res('elder champion transformation', 1) :- trait('elder champion').
+restore_res('long rest', 'elder champion transformation', 'full restore').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -164,6 +195,32 @@ At 18th level, the range of this aura increases to 30 feet.".
 Whenever an enemy creature starts its turn in the bright light, the creature takes 10 radiant damage.
 In addition, for the duration, you have advantage on saving throws against spells cast by fiends or undead.
 Once you use this feature, you can't use it again until you finish a long rest.".
+
+channel_divinity('nature\'s wrath' )?= "You can use your Channel Divinity to invoke primeval forces to ensnare a foe. As an action, you can cause spectral vines to spring up and reach for a creature within 10 feet of you that you can see. The creature must succeed on a Strength or Dexterity saving throw (its choice) or be restrained. While restrained by the vines, the creature repeats the saving throw at the end of each of its turns. On a success, it frees itself and the vines vanish.".
+
+channel_divinity('turn the faithless' )?= "You can use your Channel Divinity to utter ancient words that are painful for fey and fiends to hear. As an action, you present your holy symbol, and each fey or fiend within 30 feet of you that can hear you must make a Wisdom saving throw. On a failed save, the creature is turned for 1 minute or until it takes damage.
+
+A turned creature must spend its turns trying to move as far away from you as it can, and it can’t willingly move to a space within 30 feet of you. It also can’t take reactions. For its action, it can use only the Dash action or try to escape from an effect that prevents it from moving. If there’s nowhere to move, the creature can use the Dodge action.
+
+If the creature’s true form is concealed by an illusion, shapeshifting, or other effect, that form is revealed while it is turned.".
+
+'aura of warding' ?= "Beginning at 7th level, ancient magic lies so heavily upon you that it forms an eldritch ward. You and friendly creatures within 10 feet of you have resistance to damage from spells.
+
+At 18th level, the range of this aura increases to 30 feet.".
+
+'undying sentinel' ?= "Starting at 15th level, when you are reduced to 0 hit points and are not killed outright, you can choose to drop to 1 hit point instead. Once you use this ability, you can’t use it again until you finish a long rest.
+
+Additionally, you suffer none of the drawbacks of old age, and you can’t be aged magically.".
+
+'elder champion' ?= "At 20th level, you can assume the form of an ancient force of nature, taking on an appearance you choose. For example, your skin might turn green or take on a bark-like texture, your hair might become leafy or moss-like, or you might sprout antlers or a lion-like mane.
+
+Using your action, you undergo a transformation. For 1 minute, you gain the following benefits:
+
+    At the start of each of your turns, you regain 10 hit points.
+    Whenever you cast a paladin spell that has a casting time of 1 action, you can cast it using a bonus action instead.
+    Enemy creatures within 10 feet of you have disadvantage on saving throws against your paladin spells and Channel Divinity options.
+
+Once you use this feature, you can’t use it again until you finish a long rest.".
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
