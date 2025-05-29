@@ -18,12 +18,13 @@ custom_format(replace(Compound)) -->
 
 %! selected_at_class_level(?ClassLevel, ?Id, ?Choice)
 %
-%  Some choices can be replaced at a later moment.
-%  For example, a sorcerer may choose to forget one spell
-%  to gain another every level starting from level 2.
-%  This predicate helps keep track of what is selected
-%  at which class level by looking at the current and past
-%  class levels.
+%  Some choices can be replaced at a later moment. For example, a sorcerer may
+%  choose to forget one spell to gain another every level starting from level 2.
+%  This predicate helps keep track of what is selected at which class level by
+%  looking at the current and past class levels.
+%  It can also be asserted directly, for traits gained automatically, but which
+%  are replaceable (like the "elemental attunement" discipline for the Way of
+%  the Four Elements monk).
 selected_at_class_level(Class:Level, Id, Choice) :-
     base_class(Class, BaseClass),
     class_origin_to_class_level(Origin, BaseClass:Level),

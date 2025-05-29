@@ -537,13 +537,15 @@ bonus_source(BonusOrigin, modify_spell(SpellOrigin, Spell, Goal)) :-
 %  True iff your character has some feature (BonusOrigin) that causes
 %  Spell (for SpellOrigin) to not require Component as a component.
 delete_component_source(_,_,_,_) :- false.
-bonus_source(BonusOrigin, modify_spell(SpellOrigin, Spell, Goal)) :-
-    delete_component_source(BonusOrigin, SpellOrigin, Spell, Component),
-    Goal = modify_spell_field(components,
-                              {Component}/[Cs1,Cs2]
-                               >> delete(Cs1, Component, Cs2)).
-custom_format(modify_spell_field(components, {Component}/[_,_] >> delete(_, Component, _))) :-
-    [Component].
+bonus_source(BonusOrigin, modify_spell(SpellOrigin, Spell, remove_spell_component(Component))) :-
+    delete_component_source(BonusOrigin, SpellOrigin, Spell, Component).
+
+remove_spell_component(ToRemove, Old, Old.put(components, NewComponents)) :-
+    delete(Old.components, ToRemove, NewComponents).
+
+custom_format(remove_spell_component(Component)) -->
+    ["no "], format_component_fullname(Component), [" component"].
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Cantrip damage scaling.

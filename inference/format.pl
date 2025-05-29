@@ -36,6 +36,10 @@ format_term(Compound) -->
     format_terms(Tms),
     [')'].
 
+format_component_fullname(v) --> ["verbal"].
+format_component_fullname(s) --> ["somatic"].
+format_component_fullname(m(_)) --> ["material"].
+
 format_number(Number) --> {number(Number), !, number_chars(Number, Chars)}, seq(Chars). 
 
 format_atom(Atom) -->

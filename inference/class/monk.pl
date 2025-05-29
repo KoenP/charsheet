@@ -136,18 +136,46 @@ subclass_option(monk, 'four elements').
 :- [monk/elemental_discipline].
 
 trait_source(monk('four elements') >: 3, 'disciple of the elements').
-trait_source(monk('four elements') >: 3, 'elemental discipline'('elemental attunement')).
-trait_options_source(monk('four elements') >: L,
-                     'elemental discipline',
-                     wrap('elemental discipline'),
-                     elemental_discipline_option) :-
+
+% Choose elemental disciplines.
+choose_elemental_discipline_level(L) :-
+    member(L, [3,6,11,17]).
+
+replaceable_class_options(monk('four elements'):L, 'elemental discipline',
+                          elemental_discipline_option) :-
     choose_elemental_discipline_level(L).
+
+replace_at_class_level(monk('four elements'):L, 'elemental discipline', 1,
+                       elemental_discipline_option) :-
+    choose_elemental_discipline_level(L).
+
+trait_source(monk('four elements') >: L, 'elemental discipline'(Discipline)) :-
+    find_choice_level(monk('four elements'):L, 'elemental discipline', Discipline).
+
+lookup_option_doc(monk('four elements') >: _, 'elemental discipline', Discipline, Doc) :-
+    ('elemental discipline'(Discipline) ?= Doc).
+
+% The "elemental attument" discipline is granted automatically, but is replaceable at later levels.
+selected_at_class_level(monk('four elements'):3, 'elemental discipline', 'elemental attunement').
+
+% Learn elemental discipline spells.
+known_spell(monk('elemental discipline'(Discipline)), wis, always, [KiStr], no, Spell) :-
+    trait('elemental discipline'(Discipline)),
+    elemental_discipline_spell(Discipline, Spell, Ki),
+    format(string(KiStr), "~w ki points", Ki).
+
+% Elemental discipline spells don't need material components.
 delete_component_source(trait('disciple of the elements'),
                         monk('elemental discipline'(_)),
                         _,
                         m(_)).
+% Some elemental discipline spells (marked by only_target_self_source/2) are
+% restricted to self-cast only.
+bonus_source(Origin, modify_spell(Origin), Spell, modify_spell_field(range, [_,self]>>true)) :-
+    only_target_self_source(Origin, Spell).
+custom_format(modify_spell_field(range, [_,self]>>true)) -->
+    ["can only target self"].
 
-choose_elemental_discipline_level(L) :- member(L, [3,6,11,17]).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
