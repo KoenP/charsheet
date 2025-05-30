@@ -164,14 +164,19 @@ known_spell(monk('elemental discipline'(Discipline)), wis, always, [KiStr], no, 
     elemental_discipline_spell(Discipline, Spell, Ki),
     format(string(KiStr), "~w ki points", Ki).
 
+% Several elemental discipline spells are limited to self-targeting.
+bonus_source(trait('elemental discipline'(Discipline)),
+             modify_spell(monk('elemental discipline'(Discipline)),
+                          Spell,
+                          modify_spell_field(range, [_, self] >> true))) :-
+    elemental_discipline_spell_self_target_only(Discipline, Spell).
+
 % Elemental discipline spells don't need material components.
 delete_component_source(trait('disciple of the elements'),
                         monk('elemental discipline'(_)),
                         _,
                         m(_)).
 
-custom_format(modify_spell_field(range, [_,self]>>true)) -->
-    ["can only target self"].
 
 
 

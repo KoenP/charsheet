@@ -22,21 +22,19 @@ custom_format(replace(Compound)) -->
 %  choose to forget one spell to gain another every level starting from level 2.
 %  This predicate helps keep track of what is selected at which class level by
 %  looking at the current and past class levels.
-%  It can also be asserted directly, for traits gained automatically, but which
-%  are replaceable (like the "elemental attunement" discipline for the Way of
-%  the Four Elements monk).
 selected_at_class_level(Class:Level, Id, Choice) :-
     base_class(Class, BaseClass),
     class_origin_to_class_level(Origin, BaseClass:Level),
     (replaceable_choice_member(Origin, Id, Choice) ; replaceable_choice_member(Origin, replacing(Id,_), Choice)).
 selected_at_class_level(Class:Level, Id, Choice) :-
-    class_level(Class:CurLevel),
     base_class(Class, BaseClass),
+    class_level(BaseClass:CurLevel),
     between(2, CurLevel, Level), % ground Level
     PrevLevel is Level-1,
     selected_at_class_level(Class:PrevLevel, Id, Choice),
     \+ (class_origin_to_class_level(Origin, BaseClass:Level),
         replaceable_choice_member(Origin, replace(Id), Choice)).
+
 
 %! replaceable_class_options(?ClassLevel, ?Id, ?Goal)
 replaceable_class_options(_,_,_) :- false.
@@ -66,8 +64,9 @@ options_source(Class >: L,
 
 % WHAT TO REPLACE WITH?
 options(Class >: L, replacing(Id, Choice), Goal) :-
-    class_level(Class:CurLvl),
     replace_at_class_level(Class:CurLvl, Id, _, Goal),
+    base_class(Class, BaseClass),
+    class_level(BaseClass:CurLvl),
     replaceable_choice_member(Class >: L, replace(Id), Choice).
 
 % this name is horrible
@@ -80,6 +79,19 @@ find_choice_level(Class:Level, Id, Choice) :-
              member(ChoiceId, [Id, replacing(Id,_)])),
             Ls),
     max_member(Level, Ls).
+
+hide_base_option(Origin, Id, Choice) :-
+    hide_replaceable_base_option(Origin, Id, Choice).
+hide_replaceable_base_option(Class >: L, Id, Choice) :-
+    find_choice_level(Class:ChoiceLevel, Id, Choice),
+    (class_level(Class:CurLevel) ; subclass_level(Class:CurLevel)),
+    between(ChoiceLevel, CurLevel, L).
+hide_replaceable_base_option(Class >: L, replacing(Id, _), Choice) :-
+    find_choice_level(Class:ChoiceLevel, Id, Choice),
+    (class_level(Class:CurLevel) ; subclass_level(Class:CurLevel)),
+    between(ChoiceLevel, CurLevel, L).
+hide_replaceable_base_option(_ >: _, replacing(_, Choice), Choice).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CHARLEVEL-BOUND

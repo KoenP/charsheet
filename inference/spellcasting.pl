@@ -454,6 +454,9 @@ modify_spell_field(Field, UpdateField, Old, New) :-
     call(UpdateField, OldField, NewField),
     New = Old.put(Field, NewField).
 
+custom_format(modify_spell_field(range, [_,self]>>true)) -->
+    ["can only target self"].
+
 add_spell_effects(NewEffects, Old, New) :-
     modify_spell_field(effects, [Es1,Es2]>>append(Es1,NewEffects,Es2), Old, New).
 
