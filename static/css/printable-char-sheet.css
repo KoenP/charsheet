@@ -677,3 +677,54 @@ input:checked {
     padding: 8px 0px 16px 20px;
     margin-top: 8px;
 }
+
+.options-section-style {
+    background-color: #dddddd;
+    padding: 1px 0 16px 20px;
+    margin-top: 4px;
+    margin-right: 16px;
+    border-radius: 10px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown > button {
+    background-color: #3498db;
+    color: #ffffff;
+    padding: 0 8px 0 8px;
+    font-size: 16px;
+    border: 0;
+    cursor: pointer;
+    border-radius: 10px;
+    min-width: 120px;
+    min-height: 32px;
+}
+
+.dropdown > button:hover {
+    background-color: #2989b9;
+}
+
+.dropdown-content {
+    display: block;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0 8px 8px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-entry {
+    text-decoration: none;
+    display: block;
+    border: 0;
+    background-color: transparent;
+    min-width: 160px;
+}
+
+.dropdown-entry:hover {
+    background-color: #dddddd;
+    cursor: pointer;
+}

@@ -86,6 +86,15 @@ setter a0 = stateful' a0 update
   where update Nothing  a = a
         update (Just a) _ = a
 
+potentiallyUninitializedSetter :: forall a. Maybe a -> (Maybe a ~> Maybe a)
+potentiallyUninitializedSetter a0 = fmap Just ^>> setter a0
+
+
+  -- proc a -> do
+  -- setter a0 -< fmap Just a
+
+  -- fmap Just >>> (setter a0 :: Maybe (Maybe a) ~> Maybe a)
+
 stateful :: s -> (Time -> i -> s -> s) -> (i ~> s)
 stateful a0 update = SF sf
   where sf (dt,b) = let a1 = update dt b a0 in (a1, stateful a1 update)
@@ -197,7 +206,7 @@ countEvents = length ^>> stateful' 0 (+)
 --------------
 col :: Functor f => f (a ~> b) -> (a ~> f b)
 col sfs = SF $ \dta -> let fsf = fmap (\(SF sf) -> sf dta) sfs
-                      in (fmap fst fsf, col (fmap snd fsf))
+                       in (fmap fst fsf, col (fmap snd fsf))
 
 sfMap :: forall id i o. Ord id => ([id], [(id, i ~> o)], i) ~> Map id o
 sfMap = fmap fst <$> stateful Map.empty step

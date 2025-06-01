@@ -34,7 +34,11 @@ sf = proc cmd -> do
   let pageSFEvent = case cmd of
         Goto page -> Just (selectPageSF page)
         _         -> Nothing
-  installEventSF (constant loadingPage) -< (pageSFEvent, cmd)
+  page <- installEventSF (constant loadingPage) -< (pageSFEvent, cmd)
+
+  -- TODO this doesn't seem to work everywhere (clicking "outside" of the main
+  -- div doesn't trigger clickout).
+  returnA -< div_ [onClick (Cmd ClickOut)] [page]
 
 selectPageSF :: Page -> (Cmd ~> View Action)
 selectPageSF LoadingPage =

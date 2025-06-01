@@ -25,12 +25,19 @@ data Action
 data Page
   = LoadingPage
   | EditCharPage CharacterOptions
-  deriving Show
+  deriving (Show, Eq)
 
 data Cmd
   = Goto Page
   | SelectLevel Level
-  deriving Show
+  | DropdownCmd MisoString DropdownCmd
+  | ClickOut
+  deriving (Show, Eq)
+
+data DropdownCmd
+  = OpenDropdown
+  | SelectDropdownOption MisoString
+  deriving (Show, Eq)
 
 data Model = Model (View Action) (Cmd ~> View Action)
 instance Eq Model where
@@ -46,7 +53,7 @@ data CharacterOptions = CharacterOptions
   { options            :: Map Level [Option]
   -- , traits_and_bonuses :: Map Level [Effect]
   , char_level         :: Level
-  } deriving (Generic, Show)
+  } deriving (Generic, Show, Eq)
 
 instance FromJSON CharacterOptions where
 
@@ -60,13 +67,13 @@ data Option = Option
   , origin_category_index   :: Int
   , spec                    :: Spec
   , choice                  :: Maybe Choice
-  } deriving (Generic, Show)
+  } deriving (Generic, Show, Eq)
 instance FromJSON Option where
 
 type Unique = Bool
 
 data ListSpecEntry = ListSpecEntry { desc :: MisoString, opt :: MisoString }
-  deriving (Generic, Show)
+  deriving (Generic, Show, Eq)
 instance FromJSON ListSpecEntry where
 
 data Spec
@@ -84,7 +91,7 @@ data Spec
     , num       :: Maybe Int
     , subspec   :: Spec
     }
-  deriving (Generic, Show)
+  deriving (Generic, Show, Eq)
 instance FromJSON Spec where
   parseJSON = genericParseJSON $ Data.Aeson.Types.defaultOptions
     { constructorTagModifier = map toLower . reverse . drop 4 . reverse
@@ -92,14 +99,14 @@ instance FromJSON Spec where
     }
 
 data Dir = L | R
-  deriving (Generic, Show)
+  deriving (Generic, Show, Eq)
 instance FromJSON Dir
 
 data Choice
   = OrChoice { side :: Dir, subchoice :: Choice }
   | ListChoice { subchoices :: [Choice] }
-  | AtomicChoice { atomic_choice :: String }
-  deriving (Generic, Show)
+  | AtomicChoice { atomic_choice :: MisoString }
+  deriving (Generic, Show, Eq)
 instance FromJSON Choice
 
 -- type Unique = Bool

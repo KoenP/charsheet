@@ -116,26 +116,66 @@ originCategoryOptionsListSF category options = proc cmd -> do
   returnA -< div_ [class_ "origin-category"] (header : optionViews)
 
 optionSF :: Option -> (Cmd ~> View Action)
-optionSF Option{spec, choice} = undefined
+optionSF Option{origin_category, id, display_id, spec, choice} = proc cmd -> do
+  specView <- specSF (origin_category <> "/" <> id) spec choice -< cmd
+  returnA -< div_
+    [class_ "options-section-style"]
+    [h3_ [] [text display_id], specView]
 
-specSF :: Spec -> Maybe Choice -> (Cmd ~> View Action)
-specSF (ListSpec entries) choice =
-  let listChoice = case choice of Just (ListChoice xs) -> Just xs; _ -> Nothing
-  in dropdownSF entries listChoice
+specSF :: MisoString -> Spec -> Maybe Choice -> (Cmd ~> View Action)
+specSF idPrefix (ListSpec entries) choice =
+  let atomicChoice = case choice of Just (AtomicChoice x) -> Just x; _ -> Nothing
+  in dropdownSF idPrefix (map opt entries) atomicChoice
 
-dropdownSF :: MisoString -> MisoString -> Maybe MisoString -> (Cmd ~> View Action)
-dropdownSF id entries currentlySelected = proc cmd -> do
-  open <- setter False
-       -< case cmd of Dropdown id' isOpen | id == id' -> Just isOpen; _ -> Nothing
+dropdownSF :: MisoString -> [MisoString] -> Maybe MisoString -> (Cmd ~> View Action)
+dropdownSF id entries initiallySelected = proc cmd -> do
+  let dropdownCmd = case cmd of DropdownCmd id' cmd' | id == id' -> Just cmd' ; _ -> Nothing
+
+  open <- setter False -< case dropdownCmd of
+    Just OpenDropdown -> Just True
+    Just (SelectDropdownOption _) -> Just False
+    _ -> case cmd of ClickOut -> Just False
+                     DropdownCmd id' _ | id /= id' -> Just False
+                     _ -> Nothing
+
+  currentlySelected
+    <- potentiallyUninitializedSetter initiallySelected
+    -< case dropdownCmd of Just (SelectDropdownOption new) -> Just new
+                           _                               -> Nothing
+
+  let mkDropdownEntry entry = button_
+        [ class_ "dropdown-entry"
+        , onClick (Cmd $ DropdownCmd id $ SelectDropdownOption entry)
+        ]
+        [text entry]
 
   returnA -<
     div_
-    [class_ "dropdown"] -- TODO dropdown style
-    [ button_ [onClick (Dropdown id True)] []
-    , div_
-      [style_ $ Map.singleton "visibility" (if open then "visible" else "hidden")]
-      []
+    [ class_ "dropdown"
+    , onWithOptions
+        (Options { preventDefault = False, stopPropagation = True })
+        "click"
+        emptyDecoder
+        (const NoOp)
     ]
+    [ button_
+      [onClick (Cmd $ DropdownCmd id OpenDropdown)]
+      [case currentlySelected of Nothing -> text "..."; Just x -> text x]
+    , div_
+      [ style_ $ Map.singleton "visibility" (if open then "visible" else "hidden")
+      , class_ "dropdown-content"
+      ]
+      (map mkDropdownEntry entries)
+    ]
+
+buttonColor :: Bool -> Bool -> Bool -> MisoString
+buttonColor isDisabled isOptionSelected isOpen =
+  case (isDisabled, isOptionSelected, isOpen ) of
+    (True, _    , _    ) -> "rgb(150,150,150)"
+    (_   , True , False) -> "rgb(0,180,0)"
+    (_   , True , True ) -> "rgb(0,150,0)"
+    (_   , False, True ) -> "#2989b9"
+    (_   , False, False) -> "#3498db"
 
 viewOriginCategoryHeader :: MisoString -> View Action
 viewOriginCategoryHeader category = h2_ [] [text headerMsg] 
