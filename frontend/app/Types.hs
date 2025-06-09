@@ -15,11 +15,15 @@ import qualified Miso.String as MS
 import SF (type (~>))
 --------------------------------------------------------------------------------
 
+type Origin = MisoString
+type Identifier = MisoString
+
 data Action
   = NoOp
   | SendRequest -- TODO parameterize
   | GotResponse CharacterOptions -- TODO parameterize
   | Cmd Cmd
+  | SendChoiceSubmission OptionId SubmitChoice
   deriving Show
 
 data Page
@@ -32,6 +36,7 @@ data Cmd
   | SelectLevel Level
   | DropdownCmd MisoString DropdownCmd
   | ClickOut
+  | SelectOrChoiceDir MisoString Dir
   deriving (Show, Eq)
 
 data DropdownCmd
@@ -70,9 +75,12 @@ data Option = Option
   } deriving (Generic, Show, Eq)
 instance FromJSON Option where
 
+data OptionId = OptionId { oiOrigin :: MisoString, oiId :: MisoString }
+  deriving Show
+
 type Unique = Bool
 
-data ListSpecEntry = ListSpecEntry { desc :: MisoString, opt :: MisoString }
+data ListSpecEntry = ListSpecEntry { desc :: [MisoString], opt :: MisoString }
   deriving (Generic, Show, Eq)
 instance FromJSON ListSpecEntry where
 
@@ -107,20 +115,37 @@ data Choice
   | ListChoice { subchoices :: [Choice] }
   | AtomicChoice { atomic_choice :: MisoString }
   deriving (Generic, Show, Eq)
-instance FromJSON Choice
+instance FromJSON Choice where
+  parseJSON = genericParseJSON $ Data.Aeson.Types.defaultOptions
+    { constructorTagModifier = camelToSnakeCase
+    }
 
--- type Unique = Bool
--- data SpecAndChoice
---   = ListSC
---     (Maybe String)          -- The user's choice (if relevant).
---     [(String, List String)] -- List of options, and option description (list of paragraphs).
---   | OrSC
---     (Maybe Dir)             -- The user's choice (if relevant).
---     (String, SpecAndChoice) -- Name and spec on the left side.
---     (String, SpecAndChoice) -- Name and spec on the right side.
---   | FromSC
---     Unique                  -- Whether this spec is a "from" or "unique_from" spec.
---     (Maybe Int)             -- Number of choices `n` the user gets to make,
---                             -- or `Nothing` if the user gets to make unlimited choices.
---     [SpecAndChoice]         -- `n` repetitions of the spec, each potentially with its own
---                             --   registered choice
+-- TODO delete
+-- getOrChoice :: Choice -> Maybe (Dir, Choice)
+-- getOrChoice OrChoice{side, subchoice} = Just (side, subchoice)
+-- getOrChoice _ = Nothing
+-- 
+-- getListChoice :: Choice -> Maybe [Choice]
+-- getListChoice ListChoice{subchoices} = Just subchoices
+-- getListChoice _ = Nothing
+-- 
+-- getAtomicChoice :: Choice -> Maybe MisoString
+-- getAtomicChoice AtomicChoice{atomic_choice} = Just atomic_choice
+-- getAtomicChoice _ = Nothing
+
+
+camelToSnakeCase :: String -> String
+camelToSnakeCase []     = []
+camelToSnakeCase (c:cs) = toLower c
+  : concatMap (\c' -> if isUpper c' then ['_', toLower c'] else [c']) cs
+
+
+-- | We use distinct "choice" datatypes for receiving and submitting choices.
+--   Internally, the server does not store the structure of a choice (for
+--   example whether an "or" choice is left or right), but the frontend needs
+--   this information to determine for example which radio button to have
+--   selected. So the server retroactively determines this structure for the
+--   benefit of the frontend. However it does not need to get this information
+--   back, so the frontend can send an "unstructured" choice back.
+data SubmitChoice = SubmitListChoice [MisoString] | SubmitSingletonChoice MisoString
+  deriving Show

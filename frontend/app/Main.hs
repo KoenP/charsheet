@@ -9,6 +9,9 @@ import Control.Category
 import Control.Monad
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Internal as BS
+import qualified Data.ByteString.Lazy as LBS
+import qualified Data.ByteString.Lazy.Char8 as LBS8
+import qualified Data.ByteString.Lazy.Internal as LBS
 import Data.Functor
 import Data.Map (Map)
 import GHC.Generics
@@ -23,6 +26,8 @@ import JavaScript.Web.XMLHttpRequest
 import Miso
 import Miso.Effect
 import Miso.String
+import Data.Text (Text)
+import Data.String.Conversions (ConvertibleStrings(convertString), cs)
 
 import SF
 import Types
@@ -76,6 +81,8 @@ updateModel SendRequest m =
   m <# fmap GotResponse getEditCharacterPage
 updateModel (GotResponse options) m =
   Main.updateSF (Goto (EditCharPage options)) m
+updateModel (SendChoiceSubmission (OptionId origin id) choice) m =
+  m <# fmap GotResponse (postSubmitChoice (fromMisoString origin) (fromMisoString id) (submitChoiceToJSString choice))
 updateModel (Cmd cmd) m =
   Main.updateSF cmd m
 
@@ -101,8 +108,34 @@ getEditCharacterPage = do
       $ Prelude.concat [err, "\nin:\n", Prelude.map BS.w2c (BS.unpack encodedOptions)]
     Right resp -> return resp
 
+submitChoiceToJSString :: SubmitChoice -> JSString
+submitChoiceToJSString (SubmitListChoice choices) = cs (encode choices)
+submitChoiceToJSString (SubmitSingletonChoice choice) = fromMisoString choice
+
+postSubmitChoice :: JSString -> JSString -> JSString -> IO CharacterOptions
+postSubmitChoice origin id choice = do
+  let req = Request { reqMethod = POST
+                    , reqURI = JSString.concat
+                      ["/api/character/", charName, "/choice"]
+                    , reqLogin = Nothing
+                    , reqHeaders = []
+                    , reqWithCredentials = False
+                    , reqData = FormData [ ("origin", StringVal origin)
+                                         , ("id", StringVal id)
+                                         , ("choice", StringVal choice)
+                                         ]
+                    }
+  Just encodedOptions <- fmap contents (xhrByteString req)
+  case eitherDecodeStrict encodedOptions of
+    Left err -> error
+      $ Prelude.concat [err, "\nin:\n", Prelude.map BS.w2c (BS.unpack encodedOptions)]
+    Right resp -> return resp
+
 maybeToEither :: e -> Maybe a -> Either e a
 maybeToEither err Nothing    = Left err
 maybeToEither _   (Just res) = Right res
 
 example = "{\"list\": [{\"desc\": \"\", \"opt\": \"dragonborn\"}, {\"desc\": \"\", \"opt\": \"dwarf\"}, {\"desc\": \"\", \"opt\": \"elf\"}, {\"desc\": \"\", \"opt\": \"gnome\"}, {\"desc\": \"\", \"opt\": \"'half-elf'\"}, {\"desc\": \"\", \"opt\": \"'half-orc'\"}, {\"desc\": \"\", \"opt\": \"halfling\"}, {\"desc\": \"\", \"opt\": \"human\"}, {\"desc\": \"\", \"opt\": \"tiefling\"}, {\"desc\": \"\", \"opt\": \"bugbear\"}, {\"desc\": \"\", \"opt\": \"tabaxi\"}, {\"desc\": \"\", \"opt\": \"firbolg\"}], \"spectype\": \"list\"}"
+
+instance ConvertibleStrings LBS.ByteString JSString where
+  convertString = JSString.pack . LBS8.unpack

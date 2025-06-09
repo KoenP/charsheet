@@ -6,6 +6,11 @@ import Data.List
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe
+
+import Miso.String (MisoString, ms)
+import qualified Miso.String as MS
+import Data.JSString (JSString)
+import qualified Data.JSString as JSString
 --------------------------------------------------------------------------------
 
 mapDeleteMany :: Ord k => [k] -> Map k a -> Map k a
@@ -37,3 +42,9 @@ multiMapLookup k = join . maybeToList . Map.lookup k
 infixr 0 |>
 (|>) :: a -> (a -> b) -> b
 x |> f = f x
+
+(</>) :: MisoString -> MisoString -> MisoString
+a </> b = a <> "/" <> b
+
+msToJsString :: MisoString -> JSString
+msToJsString = JSString.pack . MS.unpack

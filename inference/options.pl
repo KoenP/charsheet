@@ -233,12 +233,14 @@ resolve_not_eligible :-
 
 % Case: `from` or `unique_from` spec.
 spec_to_json(Origin, Id, Spec,
-             _{ spectype: Functor,
+             _{ spectype: from,
+                unique: Unique,
                 num: N,
                 subspec: SubSpec1
               }) :-
-    Spec =.. [Functor, N, SubSpec],
-    (Functor = from ; Functor = unique_from),
+    Spec =.. [Functor, NumOrUnlimited, SubSpec],
+    (NumOrUnlimited = unlimited -> N = null ; N = NumOrUnlimited),
+    (Functor = from -> Unique = false ; Functor = unique_from -> Unique = true),
     !,
     spec_to_json(Origin, Id, SubSpec, SubSpec1).
 
@@ -258,11 +260,13 @@ spec_to_json(Origin, Id, Spec1 or Spec2,
 % Case: any other predicate.
 spec_to_json(Origin, Id, Spec,
              _{spectype: list, list: List}) :-
-    findall(_{opt: XStr, desc: Desc},
+    findall(_{opt: XStr, desc: DescPages},
             (call(Spec, X),
              (\+ hide_base_option(Origin, Id, X)),
              term_string(X, XStr),
-             default_on_fail("", lookup_option_doc(Origin, Id, X), Desc)),
+             default_on_fail("", lookup_option_doc(Origin, Id, X), Desc),
+             nonlist_to_singleton(Desc, DescPages)
+            ),
              %fmt(format_term(X), XStr)),
             List).
 
@@ -286,7 +290,7 @@ choice_to_json(List, Pred, _{tag: list_choice, subchoices: JsonList}) :-
     is_list(List),
     !,
     maplist([X,Y]>>choice_to_json(X,Pred,Y), List, JsonList).
-choice_to_json(X, _, {tag: atomic_choice, atomic_choice: XStr}) :-
+choice_to_json(X, _, _{tag: atomic_choice, atomic_choice: XStr}) :-
     term_string(X, XStr).
 
 desc_to_dict_pairs(Desc, [spectype-"list", num-N, options-List]) :-

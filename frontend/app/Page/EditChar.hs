@@ -22,6 +22,8 @@ import qualified Miso.String
 import SF
 import Types
 import Util
+
+import Debug.Trace
 --------------------------------------------------------------------------------
 
 pageSF :: CharacterOptions -> (Cmd ~> View Action)
@@ -36,7 +38,7 @@ viewSideNav selectedLevel (CharacterOptions { char_level, options }) = div_
   [ class_ "side-nav" ]
   [ table_ []
     $ map (viewSideNavLevelButton selectedLevel)
-    $ reverse $ filter (<= char_level) $ Map.keys $ options
+    $ reverse $ Map.keys $ options
   ]
 
 viewSideNavLevelButton :: Level -> Level -> View Action
@@ -116,42 +118,109 @@ originCategoryOptionsListSF category options = proc cmd -> do
   returnA -< div_ [class_ "origin-category"] (header : optionViews)
 
 optionSF :: Option -> (Cmd ~> View Action)
-optionSF Option{origin_category, id, display_id, spec, choice} = proc cmd -> do
-  specView <- specSF (origin_category <> "/" <> id) spec choice -< cmd
+optionSF Option{origin_category, origin, id, display_id, spec, choice} = proc cmd -> do
+  specView <- specSF (OptionId origin id) spec choice -< cmd
   returnA -< div_
     [class_ "options-section-style"]
     [h3_ [] [text display_id], specView]
 
-specSF :: MisoString -> Spec -> Maybe Choice -> (Cmd ~> View Action)
-specSF idPrefix (ListSpec entries) choice =
-  let atomicChoice = case choice of Just (AtomicChoice x) -> Just x; _ -> Nothing
-  in dropdownSF idPrefix (map opt entries) atomicChoice
+optionIdToId :: OptionId -> MisoString
+optionIdToId (OptionId origin id) = origin </> id
 
-dropdownSF :: MisoString -> [MisoString] -> Maybe MisoString -> (Cmd ~> View Action)
-dropdownSF id entries initiallySelected = proc cmd -> do
+listSpecEntryToDropdownEntry :: OptionId -> ListSpecEntry -> DropdownEntry
+listSpecEntryToDropdownEntry optionId (ListSpecEntry desc opt)
+  = DropdownEntry opt (mconcat $ intersperse "\n\n" desc)
+  $ SendChoiceSubmission optionId (SubmitSingletonChoice opt)
+
+specSF :: OptionId -> Spec -> Maybe Choice -> (Cmd ~> View Action)
+
+specSF optionId (ListSpec entries) choice =
+  let atomicChoice = fmap atomic_choice choice -- deliberate irrefutable record access
+  in dropdownSF (map (listSpecEntryToDropdownEntry optionId) entries) (optionIdToId optionId) atomicChoice
+
+specSF optionId (FromSpec unique num subspec) choice =
+  let sub = join $ maybeToList $ fmap subchoices choice -- deliberate irrefutable record access
+  in fromSpecSF optionId unique num subspec sub
+
+specSF optionId (OrSpec leftname left rightname right) choice =
+  let orChoice = liftA2 (,) side subchoice <$> choice
+  in orSpecSF optionId leftname left rightname right orChoice
+
+fromSpecSF :: OptionId -> Unique -> Maybe Int -> Spec -> [Choice] -> (Cmd ~> View Action)
+fromSpecSF optionId unique numOrUnlimited subspec subchoices =
+  fmap (\dropdowns -> div_ [] (limit $ dropdowns <> disabledDropdowns)) . sequenceA $
+  zipWith (dropdownSF entries) ids dropdownChoices
+  where
+    -- For now, we only support lists of dropdowns in the interface, so anything
+    -- but list subspec / atomic choices will error.
+    entries = map (listSpecEntryToDropdownEntry optionId) $ list subspec
+    ids = [prefix </> ms (show i) | let prefix = optionIdToId optionId, i :: Int <- [0..]]
+    dropdownChoices = map (Just . atomic_choice) subchoices <> [Nothing]
+
+    limit = case numOrUnlimited of Nothing -> Data.Function.id
+                                   Just n -> take n
+    disabledDropdowns = case numOrUnlimited of Nothing -> []
+                                               Just _  -> repeat (text "x")
+orSpecSF :: OptionId
+         -> MisoString -> Spec -> MisoString -> Spec
+         -> Maybe (Dir, Choice)
+         -> (Cmd ~> View Action)
+orSpecSF optionId leftname left rightname right orChoice = proc cmd -> do
+  dir <- potentiallyUninitializedSetter (fmap fst orChoice) -< case cmd of
+    SelectOrChoiceDir id' dir' | id' == idPrefix -> Just dir'
+    _                                            -> Nothing
+  returnA -< div_ []
+    [ input_ [ type_ "radio"
+             , checked_ (dir == Just L)
+             , id_ leftId
+             , onInput $ const $ Cmd $ SelectOrChoiceDir idPrefix L
+             ]
+    , label_ [for_ leftId] [text leftname]
+    , input_ [ type_ "radio"
+             , checked_ (dir == Just R)
+             , id_ rightId
+             , onInput $ const $ Cmd $ SelectOrChoiceDir idPrefix R
+             ]
+    , label_ [for_ rightId] [text rightname]
+    ]
+
+  where
+    idPrefix = optionIdToId optionId
+    leftId   = idPrefix <> "/" <> leftname
+    rightId  = idPrefix <> "/" <> rightname
+
+data DropdownEntry = DropdownEntry
+  { ddeName   :: MisoString
+  , ddeDesc   :: MisoString
+  , ddeAction :: Action
+  }
+dropdownSF :: [DropdownEntry] -> MisoString -> Maybe MisoString -> (Cmd ~> View Action)
+dropdownSF entries id initiallySelected = proc cmd -> do
   let dropdownCmd = case cmd of DropdownCmd id' cmd' | id == id' -> Just cmd' ; _ -> Nothing
 
-  open <- setter False -< case dropdownCmd of
-    Just OpenDropdown -> Just True
-    Just (SelectDropdownOption _) -> Just False
-    _ -> case cmd of ClickOut -> Just False
-                     DropdownCmd id' _ | id /= id' -> Just False
-                     _ -> Nothing
+  rec
+    dOpen <- delay False -< open
+    open <- setter False -< case dropdownCmd of
+      Just OpenDropdown -> Just (not dOpen)
+      Just (SelectDropdownOption _) -> Just False
+      _ -> case cmd of ClickOut -> Just False
+                       DropdownCmd id' _ | id /= id' -> Just False
+                       _ -> Nothing
 
   currentlySelected
     <- potentiallyUninitializedSetter initiallySelected
     -< case dropdownCmd of Just (SelectDropdownOption new) -> Just new
                            _                               -> Nothing
 
-  let mkDropdownEntry entry = button_
+  let mkDropdownEntry DropdownEntry{ddeName, ddeAction} = button_
         [ class_ "dropdown-entry"
-        , onClick (Cmd $ DropdownCmd id $ SelectDropdownOption entry)
+        , onClick ddeAction
         ]
-        [text entry]
+        [text ddeName]
 
   returnA -<
     div_
-    [ class_ "dropdown"
+    [ class_ "dropdown dropdown-enabled"
     , onWithOptions
         (Options { preventDefault = False, stopPropagation = True })
         "click"
