@@ -21,7 +21,6 @@ type Identifier = MisoString
 data Action
   = NoOp
   | SendRequest -- TODO parameterize
-  | GotResponse CharacterOptions -- TODO parameterize
   | Cmd Cmd
   | SendChoiceSubmission OptionId SubmitChoice
   deriving Show
@@ -37,11 +36,12 @@ data Cmd
   | DropdownCmd MisoString DropdownCmd
   | ClickOut
   | SelectOrChoiceDir MisoString Dir
+  | ReceivedCharacterOptions CharacterOptions
   deriving (Show, Eq)
 
 data DropdownCmd
   = OpenDropdown
-  | SelectDropdownOption MisoString
+  | SelectDropdownOption (Maybe MisoString)
   deriving (Show, Eq)
 
 data Model = Model (View Action) (Cmd ~> View Action)
@@ -128,7 +128,7 @@ instance FromJSON Choice where
 -- getListChoice :: Choice -> Maybe [Choice]
 -- getListChoice ListChoice{subchoices} = Just subchoices
 -- getListChoice _ = Nothing
--- 
+--
 -- getAtomicChoice :: Choice -> Maybe MisoString
 -- getAtomicChoice AtomicChoice{atomic_choice} = Just atomic_choice
 -- getAtomicChoice _ = Nothing

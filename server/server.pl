@@ -102,7 +102,9 @@ logged_in_as(User) :-
                 [method(get)]).
 
 % Single-character updates.
-:- http_handler(root(api / character / CharId / choice), h_post_choice(CharId), [method(post)]).
+:- http_handler(root(api / character / CharId / choice),
+                h_post_choice(CharId),
+                [method(post)]).
 :- http_handler(root(api / character / CharId / retract_choice), h_post_retract_choice(CharId), [method(post)]).
 :- http_handler(root(api / character / CharId / set_base_abilities),
                 h_post_set_base_abilities(CharId),
@@ -143,11 +145,14 @@ h_get_options(_Request) :-
     reply_json_dict(Json).
 
 h_get_edit_character_page(_Request) :-
+    edit_character_page_json(Json),
+    reply_json_dict(Json).
+
+edit_character_page_json(_{options: OptsJson, ability_table: AbiJson, traits_and_bonuses: TBJson, char_level: Level}) :-
     all_options_by_level_json(OptsJson),
     traits_and_bonuses_json(TBJson),
     ability_table_json_dict(AbiJson),
-    level(Level),
-    reply_json_dict(_{options: OptsJson, ability_table: AbiJson, traits_and_bonuses: TBJson, char_level: Level}).
+    level(Level).
 
 h_get_equipment(CharId, _Request) :-
     with_loaded_character(
@@ -156,6 +161,7 @@ h_get_equipment(CharId, _Request) :-
          reply_json_dict(Items))).
 
 h_post_choice(CharId, Request) :-
+    writeln(user_output, Request),
     http_parameters(Request, [ source(SourceAtom,[]),
                                id(IdAtom,[]),
                                choice(ChoiceAtom,[])
@@ -166,7 +172,8 @@ h_post_choice(CharId, Request) :-
     withdraw_character_fact_without_resolving(CharId, choice(Source, Id, _)),
     record_character_fact(CharId, choice(Source, Id, Choice)),
     resolve_ineligible_choices,
-    reply_json_dict("Success!").
+    with_loaded_character(CharId, (edit_character_page_json(Json), abolish_private_tables)),
+    reply_json_dict(Json).
 
 h_post_retract_choice(CharId, Request) :-
     http_parameters(Request, [ source(SourceAtom, []),

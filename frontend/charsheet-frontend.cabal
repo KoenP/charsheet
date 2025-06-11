@@ -61,7 +61,8 @@ executable charsheet-frontend
     other-modules:    SF,
                       Util,
                       Types,
-                      Page.EditChar
+                      Page.EditChar,
+                      Data.Zipper
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -75,8 +76,9 @@ executable charsheet-frontend
                       lens,
                       bytestring,
                       string-conversions >= 0.4.0.1,
-                      text
-                      -- servant >= 0.20.2
+                      text,
+                      uri-encode,
+                      comonad
 
     -- Directories containing source files.
     hs-source-dirs:   app

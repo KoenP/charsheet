@@ -6,8 +6,9 @@ import Prelude hiding ((.))
 import Control.Applicative
 import Control.Arrow
 import Control.Category
+import Control.Comonad
 import Control.Monad
-import Data.List
+import Data.List hiding (intercalate)
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe
@@ -16,9 +17,11 @@ import Data.Functor
 import GHC.Generics
 
 import Miso hiding (on)
-import Miso.String (MisoString, ms)
+import Miso.String (MisoString, ms, intercalate)
 import qualified Miso.String
 
+import Data.Zipper (Zipper(Zipper))
+import qualified Data.Zipper as Zipper
 import SF
 import Types
 import Util
@@ -27,10 +30,21 @@ import Debug.Trace
 --------------------------------------------------------------------------------
 
 pageSF :: CharacterOptions -> (Cmd ~> View Action)
-pageSF charOpts = proc cmd -> do
+pageSF charOpts0 = proc cmd -> do
   selectedLevel <- setter 1 -< case cmd of (SelectLevel lvl) -> Just lvl; _ -> Nothing
+
+  let newCharOptsE = case cmd of ReceivedCharacterOptions new -> Just new
+                                 _                            -> Nothing
+
+  charOpts <- setter charOpts0 -< newCharOptsE
+
   let sideNavView = viewSideNav selectedLevel charOpts
-  mainView    <- mainSF (options charOpts) -< (cmd, selectedLevel)
+
+  mainView
+    <- installEventSF (mainSF . options $ charOpts0)
+    -< (mainSF . options <$> newCharOptsE, (cmd, selectedLevel))
+
+  -- mainView    <- mainSF (options charOpts) -< (cmd, selectedLevel)
   returnA -< div_ [class_ "edit-page"] [sideNavView, mainView]
 
 viewSideNav :: Level -> CharacterOptions -> View Action
@@ -127,16 +141,13 @@ optionSF Option{origin_category, origin, id, display_id, spec, choice} = proc cm
 optionIdToId :: OptionId -> MisoString
 optionIdToId (OptionId origin id) = origin </> id
 
-listSpecEntryToDropdownEntry :: OptionId -> ListSpecEntry -> DropdownEntry
-listSpecEntryToDropdownEntry optionId (ListSpecEntry desc opt)
-  = DropdownEntry opt (mconcat $ intersperse "\n\n" desc)
-  $ SendChoiceSubmission optionId (SubmitSingletonChoice opt)
-
 specSF :: OptionId -> Spec -> Maybe Choice -> (Cmd ~> View Action)
 
 specSF optionId (ListSpec entries) choice =
   let atomicChoice = fmap atomic_choice choice -- deliberate irrefutable record access
-  in dropdownSF (map (listSpecEntryToDropdownEntry optionId) entries) (optionIdToId optionId) atomicChoice
+      mkAction = SendChoiceSubmission optionId . SubmitSingletonChoice . fromJust
+      ddEntries = [DropdownEntry opt (intercalate "\n\n" desc) | ListSpecEntry desc opt <- entries]
+  in dropdownSF ddEntries (optionIdToId optionId) mkAction atomicChoice
 
 specSF optionId (FromSpec unique num subspec) choice =
   let sub = join $ maybeToList $ fmap subchoices choice -- deliberate irrefutable record access
@@ -149,18 +160,39 @@ specSF optionId (OrSpec leftname left rightname right) choice =
 fromSpecSF :: OptionId -> Unique -> Maybe Int -> Spec -> [Choice] -> (Cmd ~> View Action)
 fromSpecSF optionId unique numOrUnlimited subspec subchoices =
   fmap (\dropdowns -> div_ [] (limit $ dropdowns <> disabledDropdowns)) . sequenceA $
-  zipWith (dropdownSF entries) ids dropdownChoices
+  zipWith3 (dropdownSF entries) ids editFns dropdownChoices
   where
     -- For now, we only support lists of dropdowns in the interface, so anything
     -- but list subspec / atomic choices will error.
-    entries = map (listSpecEntryToDropdownEntry optionId) $ list subspec
+    atomicChoices = map atomic_choice subchoices
+    editFns = choiceEditFunctions optionId atomicChoices
+
+    entries = [DropdownEntry opt (intercalate "\n\n" desc) | ListSpecEntry desc opt <- list subspec]
+
     ids = [prefix </> ms (show i) | let prefix = optionIdToId optionId, i :: Int <- [0..]]
-    dropdownChoices = map (Just . atomic_choice) subchoices <> [Nothing]
+    dropdownChoices = map Just atomicChoices <> [Nothing]
 
     limit = case numOrUnlimited of Nothing -> Data.Function.id
                                    Just n -> take n
     disabledDropdowns = case numOrUnlimited of Nothing -> []
                                                Just _  -> repeat (text "x")
+
+choiceEditFunctions :: OptionId -> [MisoString] -> [Maybe MisoString -> Action]
+choiceEditFunctions optionId choices = case choices of
+  []     -> [mkChoice . singleton . fromMaybe ""]
+  c : cs -> Zipper.toList (extend overwriteOrDeleteFocused (Zipper [] c cs))
+    <> [mkChoice . ((c:cs) <>) . singleton . fromMaybe ""]
+
+  where
+    mkChoice = SendChoiceSubmission optionId . SubmitListChoice
+
+    overwriteOrDeleteFocused :: Zipper MisoString -> (Maybe MisoString -> Action)
+    overwriteOrDeleteFocused (Zipper ls _ rs) newChoice =
+      mkChoice $ case newChoice of
+                   Just x  -> Zipper.toList (Zipper ls x rs)
+                   Nothing -> reverse ls <> rs
+
+
 orSpecSF :: OptionId
          -> MisoString -> Spec -> MisoString -> Spec
          -> Maybe (Dir, Choice)
@@ -192,10 +224,10 @@ orSpecSF optionId leftname left rightname right orChoice = proc cmd -> do
 data DropdownEntry = DropdownEntry
   { ddeName   :: MisoString
   , ddeDesc   :: MisoString
-  , ddeAction :: Action
   }
-dropdownSF :: [DropdownEntry] -> MisoString -> Maybe MisoString -> (Cmd ~> View Action)
-dropdownSF entries id initiallySelected = proc cmd -> do
+dropdownSF :: [DropdownEntry] -> MisoString -> (Maybe MisoString -> Action) -> Maybe MisoString
+           -> (Cmd ~> View Action)
+dropdownSF entries id mkAction initiallySelected = proc cmd -> do
   let dropdownCmd = case cmd of DropdownCmd id' cmd' | id == id' -> Just cmd' ; _ -> Nothing
 
   rec
@@ -208,15 +240,15 @@ dropdownSF entries id initiallySelected = proc cmd -> do
                        _ -> Nothing
 
   currentlySelected
-    <- potentiallyUninitializedSetter initiallySelected
+    <- setter initiallySelected
     -< case dropdownCmd of Just (SelectDropdownOption new) -> Just new
                            _                               -> Nothing
 
-  let mkDropdownEntry DropdownEntry{ddeName, ddeAction} = button_
+  let mkDropdownEntry maybeName = button_
         [ class_ "dropdown-entry"
-        , onClick ddeAction
+        , onClick (mkAction maybeName)
         ]
-        [text ddeName]
+        [text (fromMaybe "-- clear selection --" maybeName)]
 
   returnA -<
     div_
@@ -234,7 +266,7 @@ dropdownSF entries id initiallySelected = proc cmd -> do
       [ style_ $ Map.singleton "visibility" (if open then "visible" else "hidden")
       , class_ "dropdown-content"
       ]
-      (map mkDropdownEntry entries)
+      (mkDropdownEntry Nothing : map (mkDropdownEntry . Just . ddeName) entries)
     ]
 
 buttonColor :: Bool -> Bool -> Bool -> MisoString

@@ -28,6 +28,7 @@ import Miso.Effect
 import Miso.String
 import Data.Text (Text)
 import Data.String.Conversions (ConvertibleStrings(convertString), cs)
+import qualified Network.URI.Encode as URI
 
 import SF
 import Types
@@ -77,14 +78,14 @@ charName = pFromJSVal getCharNameJSVal
 
 updateModel :: Action -> Model -> Effect Action Model
 updateModel NoOp m = pure m
-updateModel SendRequest m =
-  m <# fmap GotResponse getEditCharacterPage
-updateModel (GotResponse options) m =
-  Main.updateSF (Goto (EditCharPage options)) m
-updateModel (SendChoiceSubmission (OptionId origin id) choice) m =
-  m <# fmap GotResponse (postSubmitChoice (fromMisoString origin) (fromMisoString id) (submitChoiceToJSString choice))
+
 updateModel (Cmd cmd) m =
   Main.updateSF cmd m
+
+updateModel SendRequest m =
+  m <# fmap (Cmd . Goto . EditCharPage) getEditCharacterPage
+updateModel (SendChoiceSubmission (OptionId origin id) choice) m =
+  m <# fmap (Cmd . ReceivedCharacterOptions) (postSubmitChoice origin id choice)
 
 updateSF :: Cmd -> Model -> Effect Action Model
 updateSF cmd (Model v (SF sf)) =
@@ -108,28 +109,37 @@ getEditCharacterPage = do
       $ Prelude.concat [err, "\nin:\n", Prelude.map BS.w2c (BS.unpack encodedOptions)]
     Right resp -> return resp
 
-submitChoiceToJSString :: SubmitChoice -> JSString
-submitChoiceToJSString (SubmitListChoice choices) = cs (encode choices)
-submitChoiceToJSString (SubmitSingletonChoice choice) = fromMisoString choice
+submitChoiceToString :: SubmitChoice -> MisoString
+submitChoiceToString (SubmitListChoice choices) = "[" <> intercalate "," choices <> "]"
+submitChoiceToString (SubmitSingletonChoice choice) = choice
 
-postSubmitChoice :: JSString -> JSString -> JSString -> IO CharacterOptions
+postSubmitChoice :: MisoString -> MisoString -> SubmitChoice -> IO CharacterOptions
 postSubmitChoice origin id choice = do
+  let params = paramListToJSString
+        [ ("source", origin)
+        , ("id", id)
+        , ("choice", submitChoiceToString choice)
+        ]
   let req = Request { reqMethod = POST
                     , reqURI = JSString.concat
-                      ["/api/character/", charName, "/choice"]
+                      ["/api/character/", charName, "/choice?", params] -- TODO pass this in body
                     , reqLogin = Nothing
                     , reqHeaders = []
                     , reqWithCredentials = False
-                    , reqData = FormData [ ("origin", StringVal origin)
-                                         , ("id", StringVal id)
-                                         , ("choice", StringVal choice)
-                                         ]
+                    , reqData = NoData
                     }
   Just encodedOptions <- fmap contents (xhrByteString req)
   case eitherDecodeStrict encodedOptions of
     Left err -> error
       $ Prelude.concat [err, "\nin:\n", Prelude.map BS.w2c (BS.unpack encodedOptions)]
     Right resp -> return resp
+
+paramListToJSString :: [(MisoString, MisoString)] -> MisoString
+paramListToJSString args = JSString.intercalate "&"
+  [uriEncode key <> "=" <> uriEncode val | (key, val) <- args]
+
+uriEncode :: MisoString -> MisoString
+uriEncode = toMisoString . URI.encode . fromMisoString
 
 maybeToEither :: e -> Maybe a -> Either e a
 maybeToEither err Nothing    = Left err
