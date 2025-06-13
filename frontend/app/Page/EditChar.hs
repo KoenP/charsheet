@@ -30,33 +30,33 @@ import Debug.Trace
 --------------------------------------------------------------------------------
 
 pageSF :: CharacterOptions -> (Cmd ~> View Action)
-pageSF charOpts0 = proc cmd -> do
-  selectedLevel <- setter 1 -< case cmd of (SelectLevel lvl) -> Just lvl; _ -> Nothing
+pageSF charOpts0@(CharacterOptions opts0 selectedLevel0) = trace "pageSF" $ proc cmd -> do
+  let selectLevelE = case cmd of SelectLevel lvl -> Just lvl; _ -> Nothing
+  selectedLevel <- setter selectedLevel0 -< selectLevelE
 
   let newCharOptsE = case cmd of ReceivedCharacterOptions new -> Just new
                                  _                            -> Nothing
-
   charOpts <- setter charOpts0 -< newCharOptsE
 
   let sideNavView = viewSideNav selectedLevel charOpts
 
-  mainView
-    <- installEventSF (mainSF . options $ charOpts0)
-    -< (mainSF . options <$> newCharOptsE, (cmd, selectedLevel))
+  let refreshMainE = mainSF (fromJust $ Map.lookup selectedLevel $ options charOpts)
+        <$ (void selectLevelE <|> void newCharOptsE)
+  mainView <- installEventSF (mainSF $ fromJust $ Map.lookup selectedLevel0 $ options charOpts0)
+    -< (refreshMainE, cmd)
 
-  -- mainView    <- mainSF (options charOpts) -< (cmd, selectedLevel)
   returnA -< div_ [class_ "edit-page"] [sideNavView, mainView]
 
 viewSideNav :: Level -> CharacterOptions -> View Action
-viewSideNav selectedLevel (CharacterOptions { char_level, options }) = div_
+viewSideNav selectedLevel (CharacterOptions options char_level) = div_
   [ class_ "side-nav" ]
   [ table_ []
-    $ map (viewSideNavLevelButton selectedLevel)
+    $ map (viewSideNavLevelButton char_level selectedLevel)
     $ reverse $ Map.keys $ options
   ]
 
-viewSideNavLevelButton :: Level -> Level -> View Action
-viewSideNavLevelButton selectedLevel level =
+viewSideNavLevelButton :: Level -> Level -> Level -> View Action
+viewSideNavLevelButton charLevel selectedLevel level =
   tr_ []
   [ td_ [] [] -- TODO add retract button
   , td_ []
@@ -64,26 +64,29 @@ viewSideNavLevelButton selectedLevel level =
       (onClick (Cmd (SelectLevel level))
        : [style_ (Map.singleton "color" "#ffffff") | selectedLevel == level]
       )
-      [ text (ms $ "Level " ++ show level)]
+      [text buttonText]
     ]
   ]
+  where
+    buttonText | level > charLevel = "+"
+               | otherwise         = "Level " <> ms (show level)
 
-mainSF :: Map Level [Option] -> ((Cmd, Level) ~> View Action)
-mainSF optsPerLevel0 = proc (cmd, selectedLevel) -> do
-  let selectLevelE = case cmd of SelectLevel lvl -> Just lvl; _ -> Nothing
-      newOptionsE = Nothing -- TODO
+-- mainSF :: Map Level [Option] -> ((Cmd, Level, ) ~> View Action)
+-- mainSF optsPerLevel0 = proc (cmd, selectedLevel) -> do
+  -- let selectLevelE = case cmd of SelectLevel lvl -> Just lvl; _ -> Nothing
+  --     newOptionsE = Nothing -- TODO
 
-  optsPerLevel <- setter optsPerLevel0 -< newOptionsE
+  -- optsPerLevel <- setter optsPerLevel0 -< newOptionsE
 
-  let opts = fromMaybe [] $ Map.lookup selectedLevel optsPerLevel
-      nextE = optionListSF opts <$ (void selectLevelE <|> void newOptionsE)
+  -- let opts = fromMaybe [] $ Map.lookup selectedLevel optsPerLevel
+  --     nextE = optionListSF opts <$ (void selectLevelE <|> void newOptionsE)
 
-  installEventSF (optionListSF (fromMaybe [] $ Map.lookup 1 optsPerLevel0))
-    -< (nextE, cmd)
+  -- installEventSF (optionListSF (fromMaybe [] $ Map.lookup 1 optsPerLevel0))
+  --   -< (nextE, cmd)
 
 
-optionListSF :: [Option] -> (Cmd ~> View Action)
-optionListSF options =
+mainSF :: [Option] -> (Cmd ~> View Action)
+mainSF options =
   let
     optionsSortField Option{display_origin_category, origin_category_index} =
       (origin_category_index, display_origin_category)
@@ -145,7 +148,7 @@ specSF :: OptionId -> Spec -> Maybe Choice -> (Cmd ~> View Action)
 
 specSF optionId (ListSpec entries) choice =
   let atomicChoice = fmap atomic_choice choice -- deliberate irrefutable record access
-      mkAction = SendChoiceSubmission optionId . SubmitSingletonChoice . fromJust
+      mkAction = SendChoiceSubmission optionId . SubmitSingletonChoice . fromJust -- TODO also support clear choice command
       ddEntries = [DropdownEntry opt (intercalate "\n\n" desc) | ListSpecEntry desc opt <- entries]
   in dropdownSF ddEntries (optionIdToId optionId) mkAction atomicChoice
 
@@ -159,8 +162,8 @@ specSF optionId (OrSpec leftname left rightname right) choice =
 
 fromSpecSF :: OptionId -> Unique -> Maybe Int -> Spec -> [Choice] -> (Cmd ~> View Action)
 fromSpecSF optionId unique numOrUnlimited subspec subchoices =
-  fmap (\dropdowns -> div_ [] (limit $ dropdowns <> disabledDropdowns)) . sequenceA $
-  zipWith3 (dropdownSF entries) ids editFns dropdownChoices
+  fmap viewDropdowns . sequenceA
+  $ zipWith3 (dropdownSF entries) ids editFns dropdownChoices
   where
     -- For now, we only support lists of dropdowns in the interface, so anything
     -- but list subspec / atomic choices will error.
@@ -175,7 +178,16 @@ fromSpecSF optionId unique numOrUnlimited subspec subchoices =
     limit = case numOrUnlimited of Nothing -> Data.Function.id
                                    Just n -> take n
     disabledDropdowns = case numOrUnlimited of Nothing -> []
-                                               Just _  -> repeat (text "x")
+                                               Just _  -> repeat disabledDropdown
+
+    disabledDropdown = div_
+      [class_ "dropdown dropdown-disabled"]
+      [button_ [] [text "..."]]
+
+    viewDropdowns dropdowns = div_ []
+      $ map (div_ [style_ (Map.singleton "marginTop" "2px")] . singleton)
+      $ limit
+      $ dropdowns <> disabledDropdowns
 
 choiceEditFunctions :: OptionId -> [MisoString] -> [Maybe MisoString -> Action]
 choiceEditFunctions optionId choices = case choices of
@@ -260,13 +272,16 @@ dropdownSF entries id mkAction initiallySelected = proc cmd -> do
         (const NoOp)
     ]
     [ button_
-      [onClick (Cmd $ DropdownCmd id OpenDropdown)]
+      [ onClick (Cmd $ DropdownCmd id OpenDropdown)
+      , class_ (if open then "dropdown-button-open" else "dropdown-button-closed")
+      ]
       [case currentlySelected of Nothing -> text "..."; Just x -> text x]
     , div_
       [ style_ $ Map.singleton "visibility" (if open then "visible" else "hidden")
       , class_ "dropdown-content"
       ]
-      (mkDropdownEntry Nothing : map (mkDropdownEntry . Just . ddeName) entries)
+      ([mkDropdownEntry Nothing | isJust currentlySelected]
+       <> map (mkDropdownEntry . Just . ddeName) entries)
     ]
 
 buttonColor :: Bool -> Bool -> Bool -> MisoString
@@ -279,7 +294,7 @@ buttonColor isDisabled isOptionSelected isOpen =
     (_   , False, False) -> "#3498db"
 
 viewOriginCategoryHeader :: MisoString -> View Action
-viewOriginCategoryHeader category = h2_ [] [text headerMsg] 
+viewOriginCategoryHeader category = h2_ [] [text headerMsg]
   where
     headerMsg = case category of
       "init"     -> "Choose your background, class, and race:"
