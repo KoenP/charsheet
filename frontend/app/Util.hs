@@ -48,3 +48,10 @@ a </> b = a <> "/" <> b
 
 msToJsString :: MisoString -> JSString
 msToJsString = JSString.pack . MS.unpack
+
+(?) :: a -> a -> Bool -> a
+(?) x y b = if b then x else y
+
+(|->) :: Ord k => k -> v -> Map k v
+(|->) = Map.singleton
+

@@ -182,7 +182,8 @@ h_post_retract_choice(CharId, Request) :-
     read_term_from_atom(SourceAtom, Source, []),
     read_term_from_atom(IdAtom, Id, []),
     withdraw_character_fact(CharId, choice(Source, Id, _)),
-    reply_json_dict("Success!").
+    with_loaded_character(CharId, (edit_character_page_json(Json), abolish_private_tables)),
+    reply_json_dict(Json).
 
 h_post_set_base_abilities(CharId, Request) :-
     member(search(Params), Request),

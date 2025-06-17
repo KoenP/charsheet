@@ -4,49 +4,47 @@ module Types where
 import Data.Char
 import Data.Map (Map)
 import GHC.Generics
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 import Data.Aeson
 import Data.Aeson.Types
-import Miso
-import Miso.Effect
-import Miso.String (MisoString)
-import qualified Miso.String as MS
 
 import SF (type (~>))
 --------------------------------------------------------------------------------
 
-type Origin = MisoString
-type Identifier = MisoString
+type Origin = Text
+type Identifier = Text
 
-data Action
-  = NoOp
-  | SendRequest -- TODO parameterize
-  | Cmd Cmd
-  | SendChoiceSubmission OptionId SubmitChoice
-  deriving Show
-
-data Page
-  = LoadingPage
-  | EditCharPage CharacterOptions
-  deriving (Show, Eq)
-
-data Cmd
-  = Goto Page
-  | SelectLevel Level
-  | DropdownCmd MisoString DropdownCmd
-  | ClickOut
-  | SelectOrChoiceDir MisoString Dir
-  | ReceivedCharacterOptions CharacterOptions
-  deriving (Show, Eq)
-
-data DropdownCmd
-  = OpenDropdown
-  | SelectDropdownOption (Maybe MisoString)
-  deriving (Show, Eq)
-
-data Model = Model (View Action) (Cmd ~> View Action)
-instance Eq Model where
-  _ == _ = False -- TODO is there a better way?
+-- data Action
+--   = NoOp
+--   | SendRequest -- TODO parameterize
+--   | Cmd Cmd
+--   | SendChoiceSubmission OptionId SubmitChoice
+--   deriving Show
+-- 
+-- data Page
+--   = LoadingPage
+--   | EditCharPage CharacterOptions
+--   deriving (Show, Eq)
+-- 
+-- data Cmd
+--   = Goto Page
+--   | SelectLevel Level
+--   | DropdownCmd Text DropdownCmd
+--   | ClickOut
+--   | SelectOrChoiceDir Text Dir
+--   | ReceivedCharacterOptions CharacterOptions
+--   deriving (Show, Eq)
+-- 
+-- data DropdownCmd
+--   = OpenDropdown
+--   | SelectDropdownOption (Maybe Text)
+--   deriving (Show, Eq)
+-- 
+-- data Model = Model (View Action) (Cmd ~> View Action)
+-- instance Eq Model where
+--   _ == _ = False -- TODO is there a better way?
 
 --------------------------------------------------------------------------------
 -- EDIT CHARACTER PAGE
@@ -64,23 +62,23 @@ instance FromJSON CharacterOptions where
 
 data Option = Option
   { charlevel               :: Level
-  , id                      :: MisoString
-  , display_id              :: MisoString
-  , origin                  :: MisoString
-  , origin_category         :: MisoString
-  , display_origin_category :: MisoString
+  , id                      :: Text
+  , display_id              :: Text
+  , origin                  :: Text
+  , origin_category         :: Text
+  , display_origin_category :: Text
   , origin_category_index   :: Int
   , spec                    :: Spec
   , choice                  :: Maybe Choice
   } deriving (Generic, Show, Eq)
 instance FromJSON Option where
 
-data OptionId = OptionId { oiOrigin :: MisoString, oiId :: MisoString }
+data OptionId = OptionId { oiOrigin :: Text, oiId :: Text }
   deriving Show
 
 type Unique = Bool
 
-data ListSpecEntry = ListSpecEntry { desc :: [MisoString], opt :: MisoString }
+data ListSpecEntry = ListSpecEntry { desc :: [Text], opt :: Text }
   deriving (Generic, Show, Eq)
 instance FromJSON ListSpecEntry where
 
@@ -89,9 +87,9 @@ data Spec
     { list      :: [ListSpecEntry]
     }
   | OrSpec
-    { leftname  :: MisoString
+    { leftname  :: Text
     , left      :: Spec
-    , rightname :: MisoString
+    , rightname :: Text
     , right     :: Spec
     }
   | FromSpec
@@ -113,7 +111,7 @@ instance FromJSON Dir
 data Choice
   = OrChoice { side :: Dir, subchoice :: Choice }
   | ListChoice { subchoices :: [Choice] }
-  | AtomicChoice { atomic_choice :: MisoString }
+  | AtomicChoice { atomic_choice :: Text }
   deriving (Generic, Show, Eq)
 instance FromJSON Choice where
   parseJSON = genericParseJSON $ Data.Aeson.Types.defaultOptions
@@ -129,7 +127,7 @@ instance FromJSON Choice where
 -- getListChoice ListChoice{subchoices} = Just subchoices
 -- getListChoice _ = Nothing
 --
--- getAtomicChoice :: Choice -> Maybe MisoString
+-- getAtomicChoice :: Choice -> Maybe Text
 -- getAtomicChoice AtomicChoice{atomic_choice} = Just atomic_choice
 -- getAtomicChoice _ = Nothing
 
@@ -147,5 +145,5 @@ camelToSnakeCase (c:cs) = toLower c
 --   selected. So the server retroactively determines this structure for the
 --   benefit of the frontend. However it does not need to get this information
 --   back, so the frontend can send an "unstructured" choice back.
-data SubmitChoice = SubmitListChoice [MisoString] | SubmitSingletonChoice MisoString
+data SubmitChoice = SubmitListChoice [Text] | SubmitSingletonChoice Text | RetractChoice
   deriving Show

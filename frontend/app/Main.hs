@@ -1,5 +1,10 @@
 module Main where
 
+import qualified Main2
+
+main = Main2.main
+
+{-
 --------------------------------------------------------------------------------
 import Prelude hiding ((.))
 
@@ -149,3 +154,5 @@ example = "{\"list\": [{\"desc\": \"\", \"opt\": \"dragonborn\"}, {\"desc\": \"\
 
 instance ConvertibleStrings LBS.ByteString JSString where
   convertString = JSString.pack . LBS8.unpack
+
+-}
