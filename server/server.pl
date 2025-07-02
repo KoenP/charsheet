@@ -161,7 +161,7 @@ h_get_equipment(CharId, _Request) :-
          reply_json_dict(Items))).
 
 h_post_choice(CharId, Request) :-
-    writeln(user_output, Request),
+    %writeln(user_output, Request),
     http_parameters(Request, [ source(SourceAtom,[]),
                                id(IdAtom,[]),
                                choice(ChoiceAtom,[])

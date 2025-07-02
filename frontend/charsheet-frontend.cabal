@@ -61,7 +61,8 @@ executable charsheet-frontend
     other-modules:    Util,
                       Types,
                       Data.Zipper,
-                      Main2
+                      Main2,
+                      Page.EditChar,
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -78,8 +79,11 @@ executable charsheet-frontend
                       text,
                       uri-encode,
                       comonad,
+                      reflex,
                       reflex-dom,
-                      jsaddle
+                      jsaddle,
+                      jsaddle-dom,
+                      ghcjs-dom-javascript,
 
     -- Directories containing source files.
     hs-source-dirs:   app
@@ -103,4 +107,6 @@ executable charsheet-frontend
                          RecursiveDo,
                          FlexibleContexts,
                          FlexibleInstances,
-                         UndecidableInstances
+                         UndecidableInstances,
+                         ConstraintKinds,
+                         MonadComprehensions

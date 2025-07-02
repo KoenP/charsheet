@@ -1,6 +1,7 @@
 module Types where
 
 --------------------------------------------------------------------------------
+import Control.Monad.Fix
 import Data.Char
 import Data.Map (Map)
 import GHC.Generics
@@ -9,9 +10,11 @@ import qualified Data.Text as Text
 
 import Data.Aeson
 import Data.Aeson.Types
-
-import SF (type (~>))
+import Reflex.Dom
 --------------------------------------------------------------------------------
+
+type ReactiveM t m = (DomBuilder t m, MonadHold t m, PostBuild t m , TriggerEvent t m, MonadFix m)
+
 
 type Origin = Text
 type Identifier = Text
@@ -106,7 +109,9 @@ instance FromJSON Spec where
 
 data Dir = L | R
   deriving (Generic, Show, Eq)
-instance FromJSON Dir
+instance FromJSON Dir where
+  parseJSON = genericParseJSON $ Data.Aeson.Types.defaultOptions
+    { constructorTagModifier = map toLower }
 
 data Choice
   = OrChoice { side :: Dir, subchoice :: Choice }

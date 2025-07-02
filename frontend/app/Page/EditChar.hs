@@ -1,302 +1,271 @@
 module Page.EditChar where
 
 --------------------------------------------------------------------------------
-import Prelude hiding ((.))
-
 import Control.Applicative
-import Control.Arrow
-import Control.Category
 import Control.Comonad
 import Control.Monad
-import Data.List hiding (intercalate)
+import Control.Monad.Fix
+import Control.Monad.IO.Class
+import Data.Aeson
+import Data.Functor
+import Data.List
+import Data.Maybe
+import Reflex.Dom
+import Reflex.Dom.Xhr
 import Data.Map (Map)
 import qualified Data.Map as Map
-import Data.Maybe
-import Data.Function hiding ((.))
-import Data.Functor
-import GHC.Generics
+import Data.Text (Text, pack)
+import qualified Data.Text as Text
+import Data.JSString (JSString)
+import qualified Data.JSString as JSString
+import qualified Data.Map as Map
+import Language.Javascript.JSaddle.Types
+import Debug.Trace hiding (traceEvent)
+import Foreign.JavaScript.TH (withJSContextSingletonMono)
+import JSDOM (currentDocumentUnchecked)
 
-import Miso hiding (on)
-import Miso.String (MisoString, ms, intercalate)
-import qualified Miso.String
-
-import Data.Zipper (Zipper(Zipper))
-import qualified Data.Zipper as Zipper
-import SF
+import Widget
+import Constants (charName)
 import Types
 import Util
-
-import Debug.Trace
+import Data.Zipper (Zipper(Zipper))
+import qualified Data.Zipper as Zipper
 --------------------------------------------------------------------------------
 
-pageSF :: CharacterOptions -> (Cmd ~> View Action)
-pageSF charOpts0@(CharacterOptions opts0 selectedLevel0) = trace "pageSF" $ proc cmd -> do
-  let selectLevelE = case cmd of SelectLevel lvl -> Just lvl; _ -> Nothing
-  selectedLevel <- setter selectedLevel0 -< selectLevelE
+page :: ( DomBuilder t m
+        , MonadHold t m
+        , PostBuild t m
+        , MonadJSM (Performable m)
+        , MonadIO m
+        , PerformEvent t m
+        , TriggerEvent t m
+        , MonadFix m
+        )
+      => CharacterOptions -> m ()
+page charOpts0 = mdo
+  let clickOutE = domEvent Click topLevel
+  (topLevel, _) <- elClass' "div" "edit-page" $ mdo
+    let pageLoadE = uncurry mkChoiceReq <$> submitChoiceE
+    receivedNewCharOptsE <- fmap fromJust <$> postAndDecode pageLoadE
+    charOptsDyn <- holdDyn charOpts0 receivedNewCharOptsE
 
-  let newCharOptsE = case cmd of ReceivedCharacterOptions new -> Just new
-                                 _                            -> Nothing
-  charOpts <- setter charOpts0 -< newCharOptsE
+    selectedLevelDyn <- sideNav charOptsDyn
 
-  let sideNavView = viewSideNav selectedLevel charOpts
+    let selectedLevelOptsDyn = ffor2 charOptsDyn selectedLevelDyn $ \(CharacterOptions opts _) lvl ->
+          fromJust $ lvl `Map.lookup` opts
 
-  let refreshMainE = mainSF (fromJust $ Map.lookup selectedLevel $ options charOpts)
-        <$ (void selectLevelE <|> void newCharOptsE)
-  mainView <- installEventSF (mainSF $ fromJust $ Map.lookup selectedLevel0 $ options charOpts0)
-    -< (refreshMainE, cmd)
+    submitChoiceE <- (switchHold never =<<) $ dyn $ fmap (mainSection clickOutE) selectedLevelOptsDyn
+    return ()
 
-  returnA -< div_ [class_ "edit-page"] [sideNavView, mainView]
+  return ()
 
-viewSideNav :: Level -> CharacterOptions -> View Action
-viewSideNav selectedLevel (CharacterOptions options char_level) = div_
-  [ class_ "side-nav" ]
-  [ table_ []
-    $ map (viewSideNavLevelButton char_level selectedLevel)
-    $ reverse $ Map.keys $ options
-  ]
+-- TODO rework all of this
+postAndDecode :: ( DomBuilder t m
+                 , MonadHold t m
+                 , PostBuild t m
+                 , MonadJSM (Performable m)
+                 , MonadIO m
+                 , PerformEvent t m
+                 , TriggerEvent t m
+                 , MonadFix m
+                 , FromJSON a
+                 )
+              => Event t Text -> m (Event t (Maybe a))
+postAndDecode url = do
+  r <- performRequestAsync $ fmap (\x -> XhrRequest "POST" x def) url
+  return $ fmap decodeXhrResponse r
 
-viewSideNavLevelButton :: Level -> Level -> Level -> View Action
-viewSideNavLevelButton charLevel selectedLevel level =
-  tr_ []
-  [ td_ [] [] -- TODO add retract button
-  , td_ []
-    [ button_
-      (onClick (Cmd (SelectLevel level))
-       : [style_ (Map.singleton "color" "#ffffff") | selectedLevel == level]
-      )
-      [text buttonText]
-    ]
-  ]
+-- TODO Rework this, this sucks.
+mkChoiceReq :: OptionId -> SubmitChoice -> Text
+mkChoiceReq (OptionId origin id) RetractChoice = "/api/character/" <> charName <> "/retract_choice"
+  <> "?source=" <> origin
+  <> "&id=" <> id
+mkChoiceReq (OptionId origin id) choice = "/api/character/" <> charName <> "/choice"
+  <> "?source=" <> origin
+  <> "&id=" <> id
+  <> "&choice=" <> submitChoiceToString choice
   where
-    buttonText | level > charLevel = "+"
-               | otherwise         = "Level " <> ms (show level)
+    submitChoiceToString (SubmitListChoice choices) = "[" <> Text.intercalate "," choices <> "]"
+    submitChoiceToString (SubmitSingletonChoice choice) = choice
 
--- mainSF :: Map Level [Option] -> ((Cmd, Level, ) ~> View Action)
--- mainSF optsPerLevel0 = proc (cmd, selectedLevel) -> do
-  -- let selectLevelE = case cmd of SelectLevel lvl -> Just lvl; _ -> Nothing
-  --     newOptionsE = Nothing -- TODO
+sideNav :: forall m t. (DomBuilder t m, MonadHold t m, PostBuild t m, MonadFix m)
+        => Dynamic t CharacterOptions
+        -> m (Dynamic t Int)
+sideNav charOptsDyn = elClass "div" "side-nav" $ mdo
+  opts0 <- sample $ current charOptsDyn
 
-  -- optsPerLevel <- setter optsPerLevel0 -< newOptionsE
+  selectLevelE <- (switchHold never =<<) $ dyn $ charOptsDyn
+    <&> \(CharacterOptions optionsPerLevel curlvl) ->
+          let maxlvl = maximum $ Map.keys optionsPerLevel
+          in fmap leftmost $ sequence [sideNavButton selectedLevelDyn curlvl l | l <- [maxlvl,maxlvl-1..1]]
 
-  -- let opts = fromMaybe [] $ Map.lookup selectedLevel optsPerLevel
-  --     nextE = optionListSF opts <$ (void selectLevelE <|> void newOptionsE)
+  selectedLevelDyn <- holdDyn (char_level opts0) selectLevelE
 
-  -- installEventSF (optionListSF (fromMaybe [] $ Map.lookup 1 optsPerLevel0))
-  --   -< (nextE, cmd)
+  return selectedLevelDyn
 
+sideNavButton :: (DomBuilder t m, MonadHold t m, PostBuild t m, MonadFix m)
+              => Dynamic t Int -> Int -> Int -> m (Event t Int)
+sideNavButton selectedLevelDyn charLevel level = do
+  let styleDyn = selectedLevelDyn <&> \selectedLevel ->
+        if selectedLevel == level
+        then Map.singleton "style" "color: #ffffff"
+        else Map.empty
+  let buttonText | level > charLevel = "+"
+                 | otherwise         = "Level " <> pack (show level)
+  selectLevelE <- elDynAttr "div" styleDyn $ button buttonText
+  return (level <$ selectLevelE)
 
-mainSF :: [Option] -> (Cmd ~> View Action)
-mainSF options =
-  let
-    optionsSortField Option{display_origin_category, origin_category_index} =
-      (origin_category_index, display_origin_category)
-
-    sfs
-      = map (uncurry originCategoryOptionsListSF)
-      $ map (\((_,k),v) -> (k,v)) $ Map.assocs
+mainSection :: ReactiveM t m
+            => Event t ()
+            -> [Option]
+            -> m (Event t (OptionId, SubmitChoice))
+mainSection clickOutE options = elClass "div" "main-section"
+  $ fmap leftmost
+  $ mapM (uncurry $ originCategoryWidget clickOutE) originCategories
+  where
+    originCategories = map (\((_,k),v) -> (k,v))
+      $ Map.assocs
       $ multiMapFromList
       $ zip (map optionsSortField options) options
 
-  in
-    div_ [class_ "main-section"]
-    . (h1_ [] [text "You have the following options:"] :)
-    <$> col sfs
+    optionsSortField Option{display_origin_category, origin_category_index} =
+      (origin_category_index, display_origin_category)
 
--- TODO ability table
--- mainSF :: CharacterOptions -> ((Cmd, Level) ~> View Action)
--- mainSF CharacterOptions{ options } = proc (cmd, selectedLevel) -> do
---   let
---     optionsForLevel = fromMaybe [] $ Map.lookup selectedLevel $ options
---     optionsSortField Option{display_origin_category, origin_category_index} =
---       (origin_category_index, display_origin_category)
--- 
--- 
---   optsView <- col optsSFs -< cmd
--- 
---   returnA -< div_
---     [class_ "main-section"]
---     ( h1_ [] [text "You have the following options:"]
---     : optsView
---     )
--- 
---   where
---     optsSFs :: [Cmd ~> View Action]
---     optsSFs
---       = map (uncurry originCategoryOptionsListSF)
---       $ map (\((_,k),v) -> (k,v)) $ Map.assocs
---       $ multiMapFromList
---       $ zip (map optionsSortField optionsForLevel) optionsForLevel
+originCategoryWidget :: ReactiveM t m
+                     => Event t () -> Text -> [Option]
+                     -> m (Event t (OptionId, SubmitChoice))
+originCategoryWidget clickOutE cat opts = elClass "div" "origin-category" $ do
+  let headerText = case cat of
+        "init"     -> "Choose your background, class, and race:"
+        "level up" -> "Level up:"
+        _          -> "From " <> cat <> ":"
+  el "h2" (text headerText)
+  leftmost <$> mapM (optionWidget clickOutE) opts
 
-
-originCategoryOptionsListSF :: MisoString -> List Option -> (Cmd ~> View Action)
-originCategoryOptionsListSF category options = proc cmd -> do
-  let header = viewOriginCategoryHeader category
-  optionViews <- col (map optionSF options) -< cmd
-  returnA -< div_ [class_ "origin-category"] (header : optionViews)
-
-optionSF :: Option -> (Cmd ~> View Action)
-optionSF Option{origin_category, origin, id, display_id, spec, choice} = proc cmd -> do
-  specView <- specSF (OptionId origin id) spec choice -< cmd
-  returnA -< div_
-    [class_ "options-section-style"]
-    [h3_ [] [text display_id], specView]
-
-optionIdToId :: OptionId -> MisoString
-optionIdToId (OptionId origin id) = origin </> id
-
-specSF :: OptionId -> Spec -> Maybe Choice -> (Cmd ~> View Action)
-
-specSF optionId (ListSpec entries) choice =
-  let atomicChoice = fmap atomic_choice choice -- deliberate irrefutable record access
-      mkAction = SendChoiceSubmission optionId . SubmitSingletonChoice . fromJust -- TODO also support clear choice command
-      ddEntries = [DropdownEntry opt (intercalate "\n\n" desc) | ListSpecEntry desc opt <- entries]
-  in dropdownSF ddEntries (optionIdToId optionId) mkAction atomicChoice
-
-specSF optionId (FromSpec unique num subspec) choice =
-  let sub = join $ maybeToList $ fmap subchoices choice -- deliberate irrefutable record access
-  in fromSpecSF optionId unique num subspec sub
-
-specSF optionId (OrSpec leftname left rightname right) choice =
-  let orChoice = liftA2 (,) side subchoice <$> choice
-  in orSpecSF optionId leftname left rightname right orChoice
-
-fromSpecSF :: OptionId -> Unique -> Maybe Int -> Spec -> [Choice] -> (Cmd ~> View Action)
-fromSpecSF optionId unique numOrUnlimited subspec subchoices =
-  fmap viewDropdowns . sequenceA
-  $ zipWith3 (dropdownSF entries) ids editFns dropdownChoices
+optionWidget :: ReactiveM t m => Event t () -> Option -> m (Event t (OptionId, SubmitChoice))
+optionWidget clickOutE Option{id, display_id, origin, spec, choice}
+  = elClass "div" "options-section-style"
+  $ do el "h3" (text display_id)
+       specWidget clickOutE optionId spec choice
   where
-    -- For now, we only support lists of dropdowns in the interface, so anything
-    -- but list subspec / atomic choices will error.
-    atomicChoices = map atomic_choice subchoices
-    editFns = choiceEditFunctions optionId atomicChoices
+    optionId = OptionId origin id
 
-    entries = [DropdownEntry opt (intercalate "\n\n" desc) | ListSpecEntry desc opt <- list subspec]
+specWidget :: ReactiveM t m
+           => Event t () -> OptionId -> Spec -> Maybe Choice
+           -> m (Event t (OptionId, SubmitChoice))
+specWidget clickOutE optionId spec choice = case spec of
+  ListSpec entries -> listSpecWidget
+    clickOutE optionId entries (fmap atomic_choice choice)
+  OrSpec leftname left rightname right -> orSpecWidget
+    clickOutE optionId leftname left rightname right
+    (liftA2 (,) side subchoice <$> choice)
+  FromSpec unique num (ListSpec entries) -> fromSpecWidget
+    clickOutE optionId unique num entries
+    (map atomic_choice $ concatMap subchoices $ maybeToList choice)
+  _ -> error $ "unsupported spec: " <> show spec
 
-    ids = [prefix </> ms (show i) | let prefix = optionIdToId optionId, i :: Int <- [0..]]
-    dropdownChoices = map Just atomicChoices <> [Nothing]
+listSpecWidget :: ReactiveM t m => Event t () -> OptionId -> [ListSpecEntry] -> Maybe Text
+               -> m (Event t (OptionId, SubmitChoice))
+listSpecWidget clickOutE optionId entries choice =
+  updated . fmap inform <$> customDropdownWidget clickOutE (map opt entries) choice
+  where
+    inform (Just choice) = (optionId, SubmitSingletonChoice choice)
+    inform Nothing       = (optionId, RetractChoice)
 
-    limit = case numOrUnlimited of Nothing -> Data.Function.id
-                                   Just n -> take n
-    disabledDropdowns = case numOrUnlimited of Nothing -> []
-                                               Just _  -> repeat disabledDropdown
+orSpecWidget :: forall t m. ReactiveM t m
+             => Event t () -> OptionId -> Text -> Spec -> Text -> Spec -> Maybe (Dir, Choice)
+             -> m (Event t (OptionId, SubmitChoice))
+orSpecWidget clickOutE optionId leftname left rightname right choice = el "div" $ mdo
+  let subChoice dir = [c | (dir', c) <- choice, dir == dir']
 
-    disabledDropdown = div_
-      [class_ "dropdown dropdown-disabled"]
-      [button_ [] [text "..."]]
+  let leftSubSpecWidget, rightSubSpecWidget :: m (Event t (OptionId, SubmitChoice))
+      leftSubSpecWidget  = specWidget clickOutE optionId left (subChoice L)
+      rightSubSpecWidget = specWidget clickOutE optionId right (subChoice R)
 
-    viewDropdowns dropdowns = div_ []
-      $ map (div_ [style_ (Map.singleton "marginTop" "2px")] . singleton)
-      $ limit
-      $ dropdowns <> disabledDropdowns
+  -- TODO styling
+  selectedDirDyn <- holdDyn (fmap fst choice) $ leftmost [Just L <$ selectLeftE, Just R <$ selectRightE]
+  let styleDyn dir = selectedDirDyn <&> \dir' -> Map.fromList
+        [("style", "font-weight: bold;") | Just dir == dir']
+  selectLeftE  <- dynAttrButton (styleDyn L) leftname
+  selectRightE <- dynAttrButton (styleDyn R) rightname
+  let selectE = leftmost [ leftSubSpecWidget  <$ selectLeftE
+                         , rightSubSpecWidget <$ selectRightE
+                         ]
 
-choiceEditFunctions :: OptionId -> [MisoString] -> [Maybe MisoString -> Action]
-choiceEditFunctions optionId choices = case choices of
-  []     -> [mkChoice . singleton . fromMaybe ""]
+  let subWidget0 = case fmap fst choice of
+                     Nothing -> return never
+                     Just L  -> leftSubSpecWidget
+                     Just R  -> rightSubSpecWidget
+
+  el "div" $ switchDyn <$> widgetHold subWidget0 selectE
+
+fromSpecWidget :: ReactiveM t m
+               => Event t () -> OptionId
+               -> Unique -> Maybe Int -> [ListSpecEntry]
+               -> [Text]
+               -> m (Event t (OptionId, SubmitChoice))
+fromSpecWidget clickOutE optionId unique limit entries choices = mdo
+  -- Render a prefilled dropdown widget for each choice.
+  overwriteChoiceEs <- map updated <$> mapM (mkDropdownWidget . Just) choices
+
+  -- If there are fewer choices than the limit, or if there is no limit, render
+  -- a dropdown widget that is not yet filled in.
+  appendChoiceEs <- map updated
+    <$> mapM mkDropdownWidget [Nothing | fromMaybe True ((length choices <) <$> limit)]
+
+  -- If there is a limit, create inert, greyed-out "dropdowns" as placeholders for the
+  -- remaining choices.
+  replicateM (fromMaybe 0 ((\num -> num - length choices - 1) <$> limit))
+    $ elClass "div" "dropdown dropdown-disabled" (button "...")
+
+  return
+    $ fmap (optionId,)
+    $ leftmost
+    $ zipWith fmap (choiceEditFunctions choices) (overwriteChoiceEs <> appendChoiceEs)
+
+  where mkDropdownWidget = customDropdownWidget clickOutE (map opt entries)
+
+choiceEditFunctions :: [Text] -> [Maybe Text -> SubmitChoice]
+choiceEditFunctions choices = case choices of
+  []     -> [SubmitListChoice . singleton . fromMaybe ""]
   c : cs -> Zipper.toList (extend overwriteOrDeleteFocused (Zipper [] c cs))
-    <> [mkChoice . ((c:cs) <>) . singleton . fromMaybe ""]
+    <> [SubmitListChoice . ((c:cs) <>) . singleton . fromMaybe ""]
 
   where
-    mkChoice = SendChoiceSubmission optionId . SubmitListChoice
-
-    overwriteOrDeleteFocused :: Zipper MisoString -> (Maybe MisoString -> Action)
+    overwriteOrDeleteFocused :: Zipper Text -> (Maybe Text -> SubmitChoice)
     overwriteOrDeleteFocused (Zipper ls _ rs) newChoice =
-      mkChoice $ case newChoice of
-                   Just x  -> Zipper.toList (Zipper ls x rs)
-                   Nothing -> reverse ls <> rs
+      SubmitListChoice $ case newChoice of
+                           Just x  -> Zipper.toList (Zipper ls x rs)
+                           Nothing -> reverse ls <> rs
 
 
-orSpecSF :: OptionId
-         -> MisoString -> Spec -> MisoString -> Spec
-         -> Maybe (Dir, Choice)
-         -> (Cmd ~> View Action)
-orSpecSF optionId leftname left rightname right orChoice = proc cmd -> do
-  dir <- potentiallyUninitializedSetter (fmap fst orChoice) -< case cmd of
-    SelectOrChoiceDir id' dir' | id' == idPrefix -> Just dir'
-    _                                            -> Nothing
-  returnA -< div_ []
-    [ input_ [ type_ "radio"
-             , checked_ (dir == Just L)
-             , id_ leftId
-             , onInput $ const $ Cmd $ SelectOrChoiceDir idPrefix L
-             ]
-    , label_ [for_ leftId] [text leftname]
-    , input_ [ type_ "radio"
-             , checked_ (dir == Just R)
-             , id_ rightId
-             , onInput $ const $ Cmd $ SelectOrChoiceDir idPrefix R
-             ]
-    , label_ [for_ rightId] [text rightname]
-    ]
+customDropdownWidget :: forall t m. ReactiveM t m
+                     => Event t () -> [Text] -> Maybe Text -> m (Dynamic t (Maybe Text))
+customDropdownWidget clickOutE options selected0 = mdo
+  elAttr "div" (Map.fromList [ ("class", "dropdown dropdown-enabled")
+                             , ("onclick", "event.stopPropagation();")
+                             ]) $ mdo
+    selectedDyn <- holdDyn selected0 $ traceEvent "selectE" selectE
+    openDyn <- foldDyn ($) False $ leftmost [not <$ toggleE, const False <$ closeE]
+    let dropdownButtonClassDyn = openDyn <&> ("dropdown-button-open" ? "dropdown-button-closed")
+    (buttonEl, selectE) <- elDynClass' "button" dropdownButtonClassDyn $ mdo
+      dynText $ fmap (fromMaybe "...") selectedDyn
 
-  where
-    idPrefix = optionIdToId optionId
-    leftId   = idPrefix <> "/" <> leftname
-    rightId  = idPrefix <> "/" <> rightname
+      let divStyleDyn = openDyn <&> \open ->
+            "style" |-> ("visibility: " <> if open then "visible" else "hidden")
+      elDynAttr "div" (Map.insert "class" "dropdown-content" <$> divStyleDyn) $
+        leftmost <$>
+        liftA2 (:) (customDropdownEntryWidget Nothing) (mapM (customDropdownEntryWidget . Just) options)
 
-data DropdownEntry = DropdownEntry
-  { ddeName   :: MisoString
-  , ddeDesc   :: MisoString
-  }
-dropdownSF :: [DropdownEntry] -> MisoString -> (Maybe MisoString -> Action) -> Maybe MisoString
-           -> (Cmd ~> View Action)
-dropdownSF entries id mkAction initiallySelected = proc cmd -> do
-  let dropdownCmd = case cmd of DropdownCmd id' cmd' | id == id' -> Just cmd' ; _ -> Nothing
 
-  rec
-    dOpen <- delay False -< open
-    open <- setter False -< case dropdownCmd of
-      Just OpenDropdown -> Just (not dOpen)
-      Just (SelectDropdownOption _) -> Just False
-      _ -> case cmd of ClickOut -> Just False
-                       DropdownCmd id' _ | id /= id' -> Just False
-                       _ -> Nothing
+    let toggleE = domEvent Click buttonEl
+    let closeE = leftmost [void selectE, clickOutE `difference` toggleE]
 
-  currentlySelected
-    <- setter initiallySelected
-    -< case dropdownCmd of Just (SelectDropdownOption new) -> Just new
-                           _                               -> Nothing
+    return selectedDyn
 
-  let mkDropdownEntry maybeName = button_
-        [ class_ "dropdown-entry"
-        , onClick (mkAction maybeName)
-        ]
-        [text (fromMaybe "-- clear selection --" maybeName)]
+customDropdownEntryWidget :: ReactiveM t m => Maybe Text -> m (Event t (Maybe Text))
+customDropdownEntryWidget option = do
+  (buttonEl, _) <- elClass' "button" "dropdown-entry"
+                   $ text $ fromMaybe "-- clear selection --" option
+  return (option <$ domEvent Click buttonEl)
 
-  returnA -<
-    div_
-    [ class_ "dropdown dropdown-enabled"
-    , onWithOptions
-        (Options { preventDefault = False, stopPropagation = True })
-        "click"
-        emptyDecoder
-        (const NoOp)
-    ]
-    [ button_
-      [ onClick (Cmd $ DropdownCmd id OpenDropdown)
-      , class_ (if open then "dropdown-button-open" else "dropdown-button-closed")
-      ]
-      [case currentlySelected of Nothing -> text "..."; Just x -> text x]
-    , div_
-      [ style_ $ Map.singleton "visibility" (if open then "visible" else "hidden")
-      , class_ "dropdown-content"
-      ]
-      ([mkDropdownEntry Nothing | isJust currentlySelected]
-       <> map (mkDropdownEntry . Just . ddeName) entries)
-    ]
-
-buttonColor :: Bool -> Bool -> Bool -> MisoString
-buttonColor isDisabled isOptionSelected isOpen =
-  case (isDisabled, isOptionSelected, isOpen ) of
-    (True, _    , _    ) -> "rgb(150,150,150)"
-    (_   , True , False) -> "rgb(0,180,0)"
-    (_   , True , True ) -> "rgb(0,150,0)"
-    (_   , False, True ) -> "#2989b9"
-    (_   , False, False) -> "#3498db"
-
-viewOriginCategoryHeader :: MisoString -> View Action
-viewOriginCategoryHeader category = h2_ [] [text headerMsg]
-  where
-    headerMsg = case category of
-      "init"     -> "Choose your background, class, and race:"
-      "level up" -> "Level up:"
-      _          -> "From " <> category <> ":"

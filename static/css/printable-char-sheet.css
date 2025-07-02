@@ -588,9 +588,8 @@ input:checked {
     z-index: 2;
 }
 
-.tab {
+.tab-bar button {
     background-color: inherit;
-    color: "#ffffff";
     margin-right: 10px;
     border: none;
     outline: none;
@@ -599,8 +598,12 @@ input:checked {
     padding: 6pt 4pt 10pt 4pt;
 }
 
-.tab-bar button:hover {
-    color: "#ffffff";
+.tab-bar button:not(:hover):not(.selected) {
+    color: #cccccc;
+}
+
+.tab-bar button:hover, button.selected {
+    color: #ffffff;
 }
 
 .tab-bar button:hover > img {
