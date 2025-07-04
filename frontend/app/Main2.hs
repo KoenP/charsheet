@@ -1,37 +1,17 @@
 module Main2 where
 
-import Control.Applicative
-import Control.Comonad
-import Control.Monad
-import Control.Monad.Fix
-import Control.Monad.IO.Class
-import Data.Aeson
+--------------------------------------------------------------------------------
 import Data.Functor
-import Data.List
-import Data.Maybe
 import Reflex.Dom
-import Reflex.Dom.Xhr
-import Data.Map (Map)
 import qualified Data.Map as Map
-import Data.Text (Text, pack)
-import qualified Data.Text as Text
-import Data.JSString (JSString)
-import qualified Data.JSString as JSString
-import qualified Data.Map as Map
-import Language.Javascript.JSaddle.Types
-import Debug.Trace hiding (traceEvent)
-import Foreign.JavaScript.TH (withJSContextSingletonMono)
-import JSDOM (currentDocumentUnchecked)
-import GHCJS.DOM.Document (getBodyUnchecked)
+import Data.Text (Text)
 
 import qualified Page.EditChar
+import qualified Page.Sheet
 
-import Data.Zipper (Zipper(Zipper))
-import qualified Data.Zipper as Zipper
-import Constants (charName)
 import Types
-import Util
 import Widget
+--------------------------------------------------------------------------------
 
 -- mainWidgetWithClickOut = withJSContextSingletonMono $ \jsSing -> do
 --   doc <- currentDocumentUnchecked
@@ -39,17 +19,17 @@ import Widget
 
 data Tab = EditCharTab | SheetTab deriving Eq
 
-tabs :: [(Tab, Text)]
-tabs = [(EditCharTab, "Edit"), (SheetTab, "Sheet")]
+type TabDef = (Tab, Text, Text)
+
+tabs :: [TabDef]
+tabs = [(EditCharTab, "Edit", "edit.png"), (SheetTab, "Sheet", "sheet.png")]
 
 main :: IO ()
 main = mainWidget $ do
-  postBuildE <- getPostBuild
-  let pageLoadE = "/api/character/" <> charName <> "/edit_character_page" <$ postBuildE
-  receivedOptsE :: Event _ CharacterOptions <- fmap fromJust <$> getAndDecode pageLoadE
-  (tabDyn, backToCharacterSelectionE) <- tabBarWidget
-  widgetHold_ (text "Loading...") (Page.EditChar.page <$> receivedOptsE)
-
+  (tabDyn, _) <- tabBarWidget
+  let loadTab EditCharTab = Page.EditChar.load
+      loadTab SheetTab = Page.Sheet.load
+  elClass "div" "below-tabs" $ dyn_ (fmap loadTab tabDyn)
 
 tabBarWidget :: ReactiveM t m => m (Dynamic t Tab, Event t ())
 tabBarWidget = elClass "div" "dont-print tab-bar" $ liftA2 (,) tabWidgets backToCharacterSelectionWidget
@@ -63,8 +43,13 @@ tabWidgets = el "div" $ mdo
 backToCharacterSelectionWidget :: ReactiveM t m => m (Event t ())
 backToCharacterSelectionWidget = el "div" $ button "Back to character selection"
 
-tabWidget :: ReactiveM t m => Dynamic t Tab -> (Tab, Text) -> m (Event t Tab)
-tabWidget selectedTabDyn (tab, label) = do
+tabWidget :: ReactiveM t m => Dynamic t Tab -> TabDef -> m (Event t Tab)
+tabWidget selectedTabDyn (tab, label, imgFileName) = do
   let highlightedDyn = (==tab) <$> selectedTabDyn
+  let imgAttrsDyn = highlightedDyn <&> \hl ->
+        Map.fromList [ ("src", "/static/icons/" <> imgFileName)
+                     , ("class", if hl then "full-invert" else "partial-invert")
+                     ]
+  elDynAttr "img" imgAttrsDyn (pure ())
   clickE <- dynClassButton (uncondCondClasses [] ["selected"] highlightedDyn) label
   return (tab <$ clickE)

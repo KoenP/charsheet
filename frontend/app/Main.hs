@@ -2,6 +2,7 @@ module Main where
 
 import qualified Main2
 
+main :: IO ()
 main = Main2.main
 
 {-

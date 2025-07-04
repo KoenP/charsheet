@@ -54,4 +54,3 @@ msToJsString = JSString.pack . MS.unpack
 
 (|->) :: Ord k => k -> v -> Map k v
 (|->) = Map.singleton
-

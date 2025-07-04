@@ -67,7 +67,7 @@ call_snd(Id-Goal, Id-Result) :-
 % Summary table.
 summary_json_dict(Dict) :-
     IdGoals
-    = [ class-classes_str,
+    = [ classes-classes_str,
         race-race_str,
         level-level,
         maxhp-max_hp,

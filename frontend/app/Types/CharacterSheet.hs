@@ -1,0 +1,22 @@
+module Types.CharacterSheet where
+
+-- data CharacterSheet = CharacterSheet
+--   { name :: Text
+--   , summary :: CharacterSummary
+--   , ac_formulas :: [AcFormula]
+--   , hit_dice :: [HitDice]
+--   , ability_table :: AbilityTable
+--   , skill_table :: SkillTable
+--   , languages :: [Text]
+--   , weapons :: [Text]
+--   , armor :: [Text]
+--   , tools :: [Tool]
+--   , resistances :: [Resistance]
+--   , notable_traits :: [NotableTraitCategory]
+--   , attacks :: [Attack]
+--   , pact_magic:: Maybe PactMagic
+--   , spellcasting_sections :: [SpellcastingSection]
+--   , spell_slots :: [Int]
+--   , resources :: [Resource]
+--   }
+-- instance FromJSON CharacterSheet

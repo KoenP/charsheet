@@ -1,7 +1,6 @@
 module Page.EditChar where
 
 --------------------------------------------------------------------------------
-import Control.Applicative
 import Control.Comonad
 import Control.Monad
 import Control.Monad.Fix
@@ -11,18 +10,10 @@ import Data.Functor
 import Data.List
 import Data.Maybe
 import Reflex.Dom
-import Reflex.Dom.Xhr
-import Data.Map (Map)
-import qualified Data.Map as Map
 import Data.Text (Text, pack)
 import qualified Data.Text as Text
-import Data.JSString (JSString)
-import qualified Data.JSString as JSString
 import qualified Data.Map as Map
 import Language.Javascript.JSaddle.Types
-import Debug.Trace hiding (traceEvent)
-import Foreign.JavaScript.TH (withJSContextSingletonMono)
-import JSDOM (currentDocumentUnchecked)
 
 import Widget
 import Constants (charName)
@@ -32,16 +23,11 @@ import Data.Zipper (Zipper(Zipper))
 import qualified Data.Zipper as Zipper
 --------------------------------------------------------------------------------
 
-page :: ( DomBuilder t m
-        , MonadHold t m
-        , PostBuild t m
-        , MonadJSM (Performable m)
-        , MonadIO m
-        , PerformEvent t m
-        , TriggerEvent t m
-        , MonadFix m
-        )
-      => CharacterOptions -> m ()
+load :: ReactiveIOM t m => m ()
+load = void $ loadWidget () (xhrRequest "GET" url def) page
+  where url = "/api/character/" <> charName <> "/edit_character_page"
+
+page :: ReactiveIOM t m => CharacterOptions -> m ()
 page charOpts0 = mdo
   let clickOutE = domEvent Click topLevel
   (topLevel, _) <- elClass' "div" "edit-page" $ mdo
@@ -215,7 +201,7 @@ fromSpecWidget clickOutE optionId unique limit entries choices = mdo
 
   -- If there is a limit, create inert, greyed-out "dropdowns" as placeholders for the
   -- remaining choices.
-  replicateM (fromMaybe 0 ((\num -> num - length choices - 1) <$> limit))
+  replicateM_ (fromMaybe 0 ((\num -> num - length choices - 1) <$> limit))
     $ elClass "div" "dropdown dropdown-disabled" (button "...")
 
   return

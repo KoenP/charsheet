@@ -1,14 +1,15 @@
 module Widget where
 
 --------------------------------------------------------------------------------
-import Control.Monad.Fix
-import Data.Functor ((<&>))
+import Control.Lens
+import Data.Aeson
 import Data.Map (Map)
+import Data.Maybe
 import Data.Text (Text, intercalate)
 import Reflex.Class
 import Reflex.Dom
 
-import Types (ReactiveM)
+import Types (ReactiveM, ReactiveIOM)
 import Util ((|->))
 --------------------------------------------------------------------------------
 
@@ -22,3 +23,13 @@ dynClassButton classDyn label = dynAttrButton (("class" |->) . intercalate " " <
 
 uncondCondClasses :: Reflex t => [Text] -> [Text] -> Dynamic t Bool -> Dynamic t [Text]
 uncondCondClasses unconditional conditional dyn = dyn <&> (\b -> unconditional <> if b then conditional else [])
+
+loadWidget :: (ReactiveIOM t m, IsXhrPayload x, FromJSON a)
+           => b -> XhrRequest x -> (a -> m b) -> m (Dynamic t b)
+loadWidget nullVal req k = do
+  postBuildE <- getPostBuild
+  resE <- performRequestAsync (req <$ postBuildE)
+  let loadedWidgetE
+         =  k . fromJust . decodeStrictText . fromJust . view xhrResponse_responseText
+        <$> resE
+  widgetHold (text "Loading..." >> pure nullVal) loadedWidgetE
