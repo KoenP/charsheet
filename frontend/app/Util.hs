@@ -54,3 +54,10 @@ msToJsString = JSString.pack . MS.unpack
 
 (|->) :: Ord k => k -> v -> Map k v
 (|->) = Map.singleton
+
+errorOnLeft :: Show a => Either a b -> b
+errorOnLeft (Left x)  = error (show x)
+errorOnLeft (Right y) = y
+
+pass :: Applicative f => f ()
+pass = pure ()

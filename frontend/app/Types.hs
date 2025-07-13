@@ -50,8 +50,8 @@ data CharacterSheet = CharacterSheet
   , cs_summary :: CharacterSummary
   , cs_ac_formulas :: [AcFormula]
   , cs_hit_dice :: [HitDice]
-  , cs_ability_table :: AbilityTable
-  , cs_skill_table :: SkillTable
+  -- , cs_ability_table :: AbilityTable
+  -- , cs_skill_table :: SkillTable
   , cs_languages :: [Text]
   , cs_weapons :: [Text]
   , cs_armor :: [Text]
@@ -152,16 +152,16 @@ type Origin = Text
 data Spell = Spell
   { spell_aoe           :: Maybe Text
   , spell_casting_time  :: Text
-  , spell_components    :: [Component]
-  , spell_concentration :: Bool
+  , spell_components    :: Text -- TODO
+  , spell_concentration :: Text -- TODO -> Bool
   , spell_description   :: Text
   , spell_higher_level  :: Maybe Text
   , spell_duration      :: Text
   , spell_level         :: Int
   , spell_name          :: SpellName
-  , spell_prepared      :: AlwaysPrepared
+  , spell_prepared      :: Text -- AlwaysPrepared
   , spell_range         :: Text
-  , spell_resources     :: [PrologTerm]
+  -- , spell_resources     :: [PrologTerm] TODO
   , spell_ref           :: Maybe Text
   , spell_ritual        :: Ritual
   , spell_school        :: Text
@@ -169,7 +169,7 @@ data Spell = Spell
   , spell_summary       :: Text
   , spell_to_hit        :: Maybe Int
   , spell_rolls         :: Maybe Text
-  , spell_bonuses       :: [SpellBonus]
+  -- , spell_bonuses       :: [SpellBonus] TODO
   } deriving (Generic, Show)
 instance FromJSON Spell where
   parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "spell_"})

@@ -153,7 +153,8 @@ specWidget clickOutE optionId spec choice = case spec of
 listSpecWidget :: ReactiveM t m => Event t () -> OptionId -> [ListSpecEntry] -> Maybe Text
                -> m (Event t (OptionId, SubmitChoice))
 listSpecWidget clickOutE optionId entries choice =
-  updated . fmap inform <$> customDropdownWidget clickOutE (map opt entries) choice
+  updated . fmap inform
+  <$> customDropdownWidget clickOutE [(opt entry, True)| entry <- entries] choice
   where
     inform (Just choice) = (optionId, SubmitSingletonChoice choice)
     inform Nothing       = (optionId, RetractChoice)
@@ -209,7 +210,8 @@ fromSpecWidget clickOutE optionId unique limit entries choices = mdo
     $ leftmost
     $ zipWith fmap (choiceEditFunctions choices) (overwriteChoiceEs <> appendChoiceEs)
 
-  where mkDropdownWidget = customDropdownWidget clickOutE (map opt entries)
+  where mkDropdownWidget = customDropdownWidget clickOutE
+          [(o, not (o `elem` choices))| o <- map opt entries]
 
 choiceEditFunctions :: [Text] -> [Maybe Text -> SubmitChoice]
 choiceEditFunctions choices = case choices of
@@ -226,7 +228,8 @@ choiceEditFunctions choices = case choices of
 
 
 customDropdownWidget :: forall t m. ReactiveM t m
-                     => Event t () -> [Text] -> Maybe Text -> m (Dynamic t (Maybe Text))
+                     => Event t () -> [(Text, Bool)] -> Maybe Text
+                     -> m (Dynamic t (Maybe Text))
 customDropdownWidget clickOutE options selected0 = mdo
   elAttr "div" (Map.fromList [ ("class", "dropdown dropdown-enabled")
                              , ("onclick", "event.stopPropagation();")
@@ -249,9 +252,14 @@ customDropdownWidget clickOutE options selected0 = mdo
 
     return selectedDyn
 
-customDropdownEntryWidget :: ReactiveM t m => Maybe Text -> m (Event t (Maybe Text))
+customDropdownEntryWidget :: ReactiveM t m
+                          => Maybe (Text,Bool) -> m (Event t (Maybe Text))
 customDropdownEntryWidget option = do
-  (buttonEl, _) <- elClass' "button" "dropdown-entry"
-                   $ text $ fromMaybe "-- clear selection --" option
-  return (option <$ domEvent Click buttonEl)
+  let buttonText = fromMaybe "-- clear selection --" $ fmap fst option
+      enabled = fmap snd option /= Just False
+      classes = "dropdown-entry" <> if enabled then "" else " disabled"
+  (buttonEl, _) <- elClass' "button" classes (text buttonText)
+  return $ if enabled
+           then fmap fst option <$ domEvent Click buttonEl
+           else never
 

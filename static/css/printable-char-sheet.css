@@ -742,7 +742,11 @@ input:checked {
     min-width: 160px;
 }
 
-.dropdown-entry:hover {
+.dropdown-entry.disabled {
+    color: grey;
+}
+
+.dropdown-entry:hover:not(.disabled) {
     background-color: #dddddd;
     cursor: pointer;
 }
