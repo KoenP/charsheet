@@ -308,6 +308,11 @@
     flex-direction: column;
 }
 
+.badge hr {
+    margin-top: 2pt;
+    margin-bottom: 4pt;
+}
+
 .badge-title {
     text-transform: uppercase;
     font-weight: bold;
@@ -423,6 +428,11 @@
     border-spacing: 3pt;
 }
 
+/* Apply to the first td of all but the first row. */
+.attacks > table > tr:not(:first-child) > td:first-child {
+    text-transform: capitalize;
+}
+
 .attacks th {
     text-transform: uppercase;
     font-weight: bold;
@@ -499,6 +509,11 @@
     margin-bottom: 0;
     margin-left: 1.3mm;
     width: 40mm;
+}
+
+sub {
+    font-size: 5.5pt;
+    font-weight: bold;
 }
 
 .spell-slots table {

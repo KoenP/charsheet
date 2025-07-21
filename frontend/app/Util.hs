@@ -6,11 +6,8 @@ import Data.List
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe
-
-import Miso.String (MisoString, ms)
-import qualified Miso.String as MS
-import Data.JSString (JSString)
-import qualified Data.JSString as JSString
+import Data.Text (Text, pack)
+import Reflex.Dom (DomBuilder, text, blank)
 --------------------------------------------------------------------------------
 
 mapDeleteMany :: Ord k => [k] -> Map k a -> Map k a
@@ -39,25 +36,32 @@ multiMapFromList
 multiMapLookup :: Ord k => k -> Map k [a] -> [a]
 multiMapLookup k = join . maybeToList . Map.lookup k
 
-infixr 0 |>
-(|>) :: a -> (a -> b) -> b
-x |> f = f x
-
-(</>) :: MisoString -> MisoString -> MisoString
-a </> b = a <> "/" <> b
-
-msToJsString :: MisoString -> JSString
-msToJsString = JSString.pack . MS.unpack
-
+{-# INLINE (?) #-}
 (?) :: a -> a -> Bool -> a
 (?) x y b = if b then x else y
 
+{-# INLINE (|->) #-}
 (|->) :: Ord k => k -> v -> Map k v
 (|->) = Map.singleton
+infixr 2 |->
 
 errorOnLeft :: Show a => Either a b -> b
 errorOnLeft (Left x)  = error (show x)
 errorOnLeft (Right y) = y
 
-pass :: Applicative f => f ()
-pass = pure ()
+showText :: Show a => a -> Text
+showText = pack . show
+
+showWidget :: (DomBuilder t m, Show a) => a -> m ()
+showWidget = text . showText
+
+formatModifier :: (Num a, Ord a, Show a) => a -> Text
+formatModifier n | n > 0     = "+" <> showText n
+                 | otherwise = showText n
+
+modifierWidget :: (Num a, Ord a, Show a, DomBuilder t m) => a -> m ()
+modifierWidget = text . formatModifier
+
+whenJust :: Monad m => Maybe a -> (a -> m ()) -> m ()
+whenJust (Just x) k = k x
+whenJust Nothing  _ = blank
