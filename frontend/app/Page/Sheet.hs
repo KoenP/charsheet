@@ -13,6 +13,7 @@ import Reflex.Dom
 import Widget
 import Constants (charName)
 import Types
+import Types.Ability
 import Util
 --------------------------------------------------------------------------------
 
@@ -26,11 +27,12 @@ page :: DomBuilder t m => CharacterSheet -> m ()
 page sheet@CharacterSheet
   { cs_hit_dice, cs_notable_traits, cs_weapons, cs_armor, cs_languages
   , cs_tools, cs_resistances, cs_spellcasting_sections, cs_spell_slots, cs_pact_magic
+  , cs_resources, cs_ability_table, cs_skill_table
   } = do
   -- First page: name, class, race, abilities, skills, attacks, hit dice, other
   -- stats.
   divcl "page" $ do
-    divcl "abilities" blank
+    divcl "abilities" (abilityTableWidget cs_ability_table cs_skill_table)
     divcl "main-body" (mainBodyWidget sheet)
     divcl "hit-dice-section" (hitDiceSectionWidget cs_hit_dice)
   divcl "page-break" blank
@@ -38,16 +40,48 @@ page sheet@CharacterSheet
   -- Second page: notable traits, non-skill proficiencies, resistances,
   -- spellcasting stats, spell slots, other finite resources.
   divcl "page" $ do
-    divcl "column" (notableTraitsWidget cs_notable_traits
-                    >> otherProficienciesWidget cs_weapons cs_armor cs_languages cs_tools cs_resistances)
-    divcl "column" (spellcastingTableWidget cs_spellcasting_sections
-                    >> spellSlotsWidget cs_spell_slots
-                    >> pactMagicWidget cs_pact_magic
-                   ) -- TODO slots, pactmagic
-    divcl "column" blank
+    divcl "column" $ do
+      notableTraitsWidget cs_notable_traits
+      otherProficienciesWidget cs_weapons cs_armor cs_languages cs_tools cs_resistances
+    divcl "column" $ do
+      spellcastingTableWidget cs_spellcasting_sections
+      spellSlotsWidget cs_spell_slots
+      pactMagicWidget cs_pact_magic
+    divcl "column" $ do
+      resourcesWidget cs_resources
 
 -- First page
 -- ----------
+abilityTableWidget :: DomBuilder t m => AbilityTable -> SkillTable -> m ()
+abilityTableWidget abilityTable skillTable = el "table" $ do
+  mapM_ (elClass "tr" "ability-row" . abilityRowWidget) skillsPerAbility
+  where
+    abilityRowWidget (ability, skills) = case ability `Map.lookup` abilityTable of
+      Nothing -> error $ "ability table does not contain key " <> Text.unpack ability
+      Just AbilityTableEntry{ate_base, ate_total_bonus, ate_score, ate_mod, ate_st, ate_st_prof} -> do
+        el "td" $ divcl "ability" $ do
+          divcl "ability-name" (text ability)
+          divcl "ability-modifier" $ do
+            text (formatModifier ate_mod)
+            el "hr" blank
+            divcl "ability-score" (showWidget ate_score)
+
+        elClass "td" "skill-td" $ el "table" $ do
+          stRowWidget "saving throw" (formatModifier ate_st) ate_st_prof
+          mapM_ skillTableRowWidget skills
+
+    skillTableRowWidget skill = case skill `Map.lookup` skillTable of
+      Nothing -> error $ Text.unpack skill <> " not in skill table"
+      Just SkillTableEntry{ste_score, ste_proficient} ->
+        stRowWidget skill (formatModifier ste_score) ste_proficient
+
+stRowWidget :: DomBuilder t m => Text -> Text -> Bool -> m ()
+stRowWidget label modifier bold = el "tr" $ do
+  let emphasis | bold      = "style" |-> "font-weight: bold;"
+               | otherwise = Map.empty
+  elAttr "td" emphasis (text modifier)
+  elAttr "td" emphasis (text label)
+
 mainBodyWidget :: DomBuilder t m => CharacterSheet -> m ()
 mainBodyWidget CharacterSheet{cs_name, cs_summary, cs_ac_formulas, cs_attacks} =
   let CharacterSummary{csm_classes, csm_race, csm_level, csm_maxhp} = cs_summary
@@ -160,13 +194,37 @@ spellSlotsWidget slots = badgeWidget "spell slots" "badge-content spell-slots"
 pactMagicWidget :: DomBuilder t m => Maybe PactMagic -> m ()
 pactMagicWidget Nothing = blank
 pactMagicWidget (Just (PactMagic count level)) = badgeWidget "pact magic" "badge-content spell-slots"
-  $ el "table" $ el "tr" $ do
-  el "th" $ showWidget level
-  el "td" $ replicateM_ count slotWidget
+  $ el "table" $ el "tr"
+  $ do el "th" $ showWidget level
+       el "td" $ replicateM_ count slotWidget
 
 slotWidget :: DomBuilder t m => m ()
 slotWidget = elAttr "input" attrs blank
   where attrs = Map.fromList [("type", "checkbox"), ("class", "spell-slot")]
+
+resourcesWidget :: DomBuilder t m => [Resource] -> m ()
+resourcesWidget [] = blank
+resourcesWidget resources =
+  badgeWidget "resources" "resources spell-slots" $ mapM_ resourceWidget resources
+
+resourceWidget :: DomBuilder t m => Resource -> m ()
+resourceWidget Resource{rsc_name, rsc_number, rsc_restore} = el "div" $ do
+  el "h3" (text rsc_name)
+  divcl "resource-details" (slotsWidget >> restoreInfoWidget)
+  where
+    slotsWidget | rsc_number <= 8 = replicateM_ rsc_number slotWidget
+                | otherwise       = divcl "row" $ do
+                    smallBlankWidget
+                    text (nbsp <> "/" <> nbsp <> showText rsc_number)
+
+    restoreInfoWidget = el "table" $ mapM_ restoreInfoLine (Map.assocs rsc_restore)
+
+    restoreInfoLine (condition, restoreInfo) = el "tr" $ do
+      el "td" $ text (condition <> ":")
+      el "td" $ text restoreInfo
+
+smallBlankWidget :: DomBuilder t m => m ()
+smallBlankWidget = divcl "small-blank" blank
 
 -- Badges
 -- ------
@@ -220,7 +278,9 @@ statTableContentWidget CharacterSummary{csm_speed, csm_initiative, csm_prof_bon,
 -- ----------------------------
 plusWidget :: DomBuilder t m => m ()
 plusWidget = el "div" $ text (nbsp <> "+" <> nbsp)
-  where nbsp = Text.singleton (chr 160)
+
+nbsp :: Text
+nbsp = Text.singleton (chr 160)
 
 labeledFlexTopWidget, labeledFlexBotWidget :: DomBuilder t m => Text -> m () -> m ()
 labeledFlexTopWidget label widget = divcl "labeled-flex" $ do

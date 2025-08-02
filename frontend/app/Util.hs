@@ -2,7 +2,6 @@ module Util where
 
 --------------------------------------------------------------------------------
 import Control.Monad
-import Data.List
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe
@@ -65,3 +64,6 @@ modifierWidget = text . formatModifier
 whenJust :: Monad m => Maybe a -> (a -> m ()) -> m ()
 whenJust (Just x) k = k x
 whenJust Nothing  _ = blank
+
+dropPrefix :: String -> String -> String
+dropPrefix prefix = drop (length prefix)

@@ -139,7 +139,6 @@ viewStatTableContent { speed, initiative, prof_bon, pp } =
     , tr [] [ simple th "proficiency bonus" , simple td (formatModifier prof_bon) ]
     , tr [] [ simple th "passive perception" , simple td (String.fromInt pp) ]
     ]
-   
   ]
 
 showSpeeds : List Speed -> Html Msg
@@ -373,10 +372,10 @@ viewBadgeDiv badgeTitle contentClass content =
     , div [ class contentClass ] content
     ]
 
-viewLabeledFlexTop : String -> Html Msg -> Html Msg    
+viewLabeledFlexTop : String -> Html Msg -> Html Msg
 viewLabeledFlexTop label blank = div [ class "labeled-flex"] [ div [] [ text label ] , blank ]
 
-viewLabeledFlexBot : String -> Html Msg -> Html Msg    
+viewLabeledFlexBot : String -> Html Msg -> Html Msg
 viewLabeledFlexBot label blank = div [ class "labeled-flex"] [ blank , div [] [ text label ] ]
 
 viewFilledIn : Int -> Html Msg
@@ -406,7 +405,7 @@ plus = div [] [ text <| nbsp ++ "+" ++ nbsp ]
 nbsp : String
 nbsp = String.fromChar (Char.fromCode 160)
 
-simple : (List (Attribute Msg) -> List (Html Msg) -> Html Msg) -> String -> Html Msg           
+simple : (List (Attribute Msg) -> List (Html Msg) -> Html Msg) -> String -> Html Msg
 simple f x = f [] [ text x ]
 
 --------------------------------------------------------------------------------

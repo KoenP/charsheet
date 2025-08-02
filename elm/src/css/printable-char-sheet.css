@@ -90,6 +90,10 @@
     border-radius: 4pt;
 }
 
+.ability-modifier > hr {
+    margin: 0;
+}
+
 .ability-score {
     font-size: 10pt;
     line-height: 8pt;

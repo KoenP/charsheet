@@ -146,7 +146,7 @@ ability_table_entry(Abi-_{ score: Score,
                            total_bonus: TotalBonus,
                            mod: Mod,
                            st: ST,
-                           stProf: STProf
+                           st_prof: STProf
                          }) :-
     ability(Abi, Score),
     base_ability(Abi, Base),

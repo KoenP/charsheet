@@ -12,6 +12,9 @@ import Language.Javascript.JSaddle.Monad (MonadJSM)
 import Data.Aeson
 import Data.Aeson.Types
 import Reflex.Dom
+
+import Types.Ability
+import Util (dropPrefix)
 --------------------------------------------------------------------------------
 
 type ReactiveM t m =
@@ -36,22 +39,13 @@ type ReactiveIOM t m =
 --------------------------------------------------------------------------------
 newtype CharId = CharId Text
 
-data AbilityTable = AbilityTableTODO deriving (Generic, Show)
-instance FromJSON AbilityTable
-
-data SkillTable = SkillTableTODO deriving (Generic, Show)
-instance FromJSON SkillTable
-
-dropPrefix :: String -> String -> String
-dropPrefix prefix = drop (length prefix)
-
 data CharacterSheet = CharacterSheet
   { cs_name :: Text
   , cs_summary :: CharacterSummary
   , cs_ac_formulas :: [AcFormula]
   , cs_hit_dice :: [HitDice]
-  -- , cs_ability_table :: AbilityTable
-  -- , cs_skill_table :: SkillTable
+  , cs_ability_table :: AbilityTable
+  , cs_skill_table :: SkillTable
   , cs_languages :: [Text]
   , cs_weapons :: [Text]
   , cs_armor :: [Text]
