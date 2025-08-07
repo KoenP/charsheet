@@ -26,7 +26,7 @@ data AbilityTableEntry = AbilityTableEntry
   , ate_st          :: Int
   , ate_st_prof     :: Bool
   }
-  deriving (Generic, Show)
+  deriving (Generic, Show, Eq)
 instance FromJSON AbilityTableEntry where
   parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "ate_"})
 
@@ -40,7 +40,7 @@ listFromAbilityTable extract table =
 type Skill = Text
 type SkillTable = Map Skill SkillTableEntry
 data SkillTableEntry = SkillTableEntry { ste_score :: Int, ste_proficient :: Bool }
-  deriving (Generic, Show)
+  deriving (Generic, Show, Eq)
 instance FromJSON SkillTableEntry where
   parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "ste_"})
 

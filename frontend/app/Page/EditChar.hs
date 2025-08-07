@@ -1,6 +1,7 @@
 module Page.EditChar where
 
 --------------------------------------------------------------------------------
+import Control.Applicative
 import Control.Comonad
 import Control.Monad
 import Control.Monad.Fix
@@ -18,6 +19,7 @@ import Language.Javascript.JSaddle.Types
 import Widget
 import Constants (charName)
 import Types
+import Types.Ability
 import Util
 import Data.Zipper (Zipper(Zipper))
 import qualified Data.Zipper as Zipper
@@ -31,16 +33,20 @@ page :: ReactiveIOM t m => CharacterOptions -> m ()
 page charOpts0 = mdo
   let clickOutE = domEvent Click topLevel
   (topLevel, _) <- elClass' "div" "edit-page" $ mdo
-    let pageLoadE = uncurry mkChoiceReq <$> submitChoiceE
+    let pageLoadE = mkReq <$> mainSectionE
     receivedNewCharOptsE <- fmap fromJust <$> postAndDecode pageLoadE
     charOptsDyn <- holdDyn charOpts0 receivedNewCharOptsE
 
+    let abilityTableDyn = fmap ability_table charOptsDyn
+
     selectedLevelDyn <- sideNav charOptsDyn
 
-    let selectedLevelOptsDyn = ffor2 charOptsDyn selectedLevelDyn $ \(CharacterOptions opts _) lvl ->
+    let selectedLevelOptsDyn = ffor2 charOptsDyn selectedLevelDyn $ \(CharacterOptions _ opts _) lvl ->
           fromJust $ lvl `Map.lookup` opts
 
-    submitChoiceE <- (switchHold never =<<) $ dyn $ fmap (mainSection clickOutE) selectedLevelOptsDyn
+    mainSectionE <- (switchHold never =<<) $ dyn $ fmap (mainSection clickOutE) $
+      liftA3 (,,) selectedLevelDyn abilityTableDyn selectedLevelOptsDyn
+
     return ()
 
   return ()
@@ -61,19 +67,24 @@ postAndDecode url = do
   r <- performRequestAsync $ fmap (\x -> XhrRequest "POST" x def) url
   return $ fmap decodeXhrResponse r
 
--- TODO Rework this, this sucks.
-mkChoiceReq :: OptionId -> SubmitChoice -> Text
-mkChoiceReq (OptionId origin id) RetractChoice = "/api/character/" <> charName <> "/retract_choice"
+-- TODO Rework this, this sucks. Probably just construct the request when the event is fired.
+mkReq :: MainSectionEvent -> Text
+mkReq (MSEChoice (OptionId origin id) RetractChoice) = "/api/character/" <> charName <> "/retract_choice"
   <> "?source=" <> origin
   <> "&id=" <> id
-mkChoiceReq (OptionId origin id) choice = "/api/character/" <> charName <> "/choice"
+mkReq (MSEChoice (OptionId origin id) choice) = "/api/character/" <> charName <> "/choice"
   <> "?source=" <> origin
   <> "&id=" <> id
   <> "&choice=" <> submitChoiceToString choice
   where
     submitChoiceToString (SubmitListChoice choices) = "[" <> Text.intercalate "," choices <> "]"
     submitChoiceToString (SubmitSingletonChoice choice) = choice
+mkReq (MSESetBaseAbilityScores abilities) = "/api/character/" <> charName <> "/set_base_abilities?"
+  <> Text.intercalate "&" [ability <> "=" <> showText score | (ability,score) <- abilities]
 
+
+-- Sidenav
+-- -------
 sideNav :: forall m t. (DomBuilder t m, MonadHold t m, PostBuild t m, MonadFix m)
         => Dynamic t CharacterOptions
         -> m (Dynamic t Int)
@@ -81,7 +92,7 @@ sideNav charOptsDyn = elClass "div" "side-nav" $ mdo
   opts0 <- sample $ current charOptsDyn
 
   selectLevelE <- (switchHold never =<<) $ dyn $ charOptsDyn
-    <&> \(CharacterOptions optionsPerLevel curlvl) ->
+    <&> \(CharacterOptions _ optionsPerLevel curlvl) ->
           let maxlvl = maximum $ Map.keys optionsPerLevel
           in fmap leftmost $ sequence [sideNavButton selectedLevelDyn curlvl l | l <- [maxlvl,maxlvl-1..1]]
 
@@ -101,13 +112,19 @@ sideNavButton selectedLevelDyn charLevel level = do
   selectLevelE <- elDynAttr "div" styleDyn $ button buttonText
   return (level <$ selectLevelE)
 
+-- Main section
+-- ------------
+data MainSectionEvent = MSEChoice OptionId SubmitChoice
+                      | MSESetBaseAbilityScores [(Ability, Int)]
+
 mainSection :: ReactiveM t m
             => Event t ()
-            -> [Option]
-            -> m (Event t (OptionId, SubmitChoice))
-mainSection clickOutE options = elClass "div" "main-section"
-  $ fmap leftmost
-  $ mapM (uncurry $ originCategoryWidget clickOutE) originCategories
+            -> (Level, AbilityTable, [Option])
+            -> m (Event t MainSectionEvent)
+mainSection clickOutE (level, abilityTable, options) = elClass "div" "main-section" $ do
+  setAbilityE <- neverUnless (level == 1) (abilityTableWidget abilityTable)
+  choiceE <- fmap leftmost $ mapM (uncurry $ originCategoryWidget clickOutE) originCategories
+  return (leftmost setAbilityE (fmap singleton choiceE))
   where
     originCategories = map (\((_,k),v) -> (k,v))
       $ Map.assocs
@@ -117,9 +134,16 @@ mainSection clickOutE options = elClass "div" "main-section"
     optionsSortField Option{display_origin_category, origin_category_index} =
       (origin_category_index, display_origin_category)
 
+-- Ability table
+-- -------------
+abilityTableWidget :: ReactiveM t m => AbilityTable -> m (Event t MainSectionEvent)
+abilityTableWidget _ = return never
+
+-- Options
+-- -------
 originCategoryWidget :: ReactiveM t m
                      => Event t () -> Text -> [Option]
-                     -> m (Event t (OptionId, SubmitChoice))
+                     -> m (Event t MainSectionEvent)
 originCategoryWidget clickOutE cat opts = elClass "div" "origin-category" $ do
   let headerText = case cat of
         "init"     -> "Choose your background, class, and race:"
@@ -128,7 +152,7 @@ originCategoryWidget clickOutE cat opts = elClass "div" "origin-category" $ do
   el "h2" (text headerText)
   leftmost <$> mapM (optionWidget clickOutE) opts
 
-optionWidget :: ReactiveM t m => Event t () -> Option -> m (Event t (OptionId, SubmitChoice))
+optionWidget :: ReactiveM t m => Event t () -> Option -> m (Event t MainSectionEvent)
 optionWidget clickOutE Option{id, display_id, origin, spec, choice}
   = elClass "div" "options-section-style"
   $ do el "h3" (text display_id)
@@ -136,9 +160,11 @@ optionWidget clickOutE Option{id, display_id, origin, spec, choice}
   where
     optionId = OptionId origin id
 
+-- Spec and choices
+-- ----------------
 specWidget :: ReactiveM t m
            => Event t () -> OptionId -> Spec -> Maybe Choice
-           -> m (Event t (OptionId, SubmitChoice))
+           -> m (Event t MainSectionEvent)
 specWidget clickOutE optionId spec choice = case spec of
   ListSpec entries -> listSpecWidget
     clickOutE optionId entries (fmap atomic_choice choice)
@@ -151,7 +177,7 @@ specWidget clickOutE optionId spec choice = case spec of
   _ -> error $ "unsupported spec: " <> show spec
 
 listSpecWidget :: ReactiveM t m => Event t () -> OptionId -> [ListSpecEntry] -> Maybe Text
-               -> m (Event t (OptionId, SubmitChoice))
+               -> m (Event t MainSectionEvent)
 listSpecWidget clickOutE optionId entries choice =
   updated . fmap inform
   <$> customDropdownWidget clickOutE [(opt entry, True)| entry <- entries] choice
@@ -161,7 +187,7 @@ listSpecWidget clickOutE optionId entries choice =
 
 orSpecWidget :: forall t m. ReactiveM t m
              => Event t () -> OptionId -> Text -> Spec -> Text -> Spec -> Maybe (Dir, Choice)
-             -> m (Event t (OptionId, SubmitChoice))
+             -> m (Event t MainSectionEvent)
 orSpecWidget clickOutE optionId leftname left rightname right choice = el "div" $ mdo
   let subChoice dir = [c | (dir', c) <- choice, dir == dir']
 
@@ -190,7 +216,7 @@ fromSpecWidget :: ReactiveM t m
                => Event t () -> OptionId
                -> Unique -> Maybe Int -> [ListSpecEntry]
                -> [Text]
-               -> m (Event t (OptionId, SubmitChoice))
+               -> m (Event t MainSectionEvent)
 fromSpecWidget clickOutE optionId unique limit entries choices = mdo
   -- Render a prefilled dropdown widget for each choice.
   overwriteChoiceEs <- map updated <$> mapM (mkDropdownWidget . Just) choices

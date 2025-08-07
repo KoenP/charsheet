@@ -34,6 +34,10 @@ type ReactiveIOM t m =
   , PerformEvent t m
   )
 
+neverUnless :: ReactiveM t m => Bool -> m (Event t a) -> m (Event t a)
+neverUnless True  m = m
+neverUnless False _ = pure never
+
 --------------------------------------------------------------------------------
 -- CHARACTER SHEET
 --------------------------------------------------------------------------------
@@ -222,8 +226,8 @@ instance FromJSON PrologTerm -- TODO this is wrong
 type Identifier = Text
 
 data CharacterOptions = CharacterOptions
-  --{ ability_table      :: AbilityTable
-  { options            :: Map Level [Option]
+  { ability_table      :: AbilityTable
+  , options            :: Map Level [Option]
   -- , traits_and_bonuses :: Map Level [Effect]
   , char_level         :: Level
   } deriving (Generic, Show, Eq)
