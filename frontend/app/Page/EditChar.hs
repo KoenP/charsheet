@@ -117,14 +117,16 @@ sideNavButton selectedLevelDyn charLevel level = do
 data MainSectionEvent = MSEChoice OptionId SubmitChoice
                       | MSESetBaseAbilityScores [(Ability, Int)]
 
-mainSection :: ReactiveM t m
+mainSection :: ReactiveIOM t m
             => Event t ()
             -> (Level, AbilityTable, [Option])
             -> m (Event t MainSectionEvent)
 mainSection clickOutE (level, abilityTable, options) = elClass "div" "main-section" $ do
-  setAbilityE <- neverUnless (level == 1) (abilityTableWidget abilityTable)
-  choiceE <- fmap leftmost $ mapM (uncurry $ originCategoryWidget clickOutE) originCategories
-  return (leftmost setAbilityE (fmap singleton choiceE))
+  let baseAbilitiesEditable = level == 1
+  setAbilityE <- abilityTableWidget baseAbilitiesEditable abilityTable
+  choiceE <- divcl "character-options" $ do
+    fmap leftmost $ mapM (uncurry $ originCategoryWidget clickOutE) originCategories
+  return $ leftmost [setAbilityE, choiceE]
   where
     originCategories = map (\((_,k),v) -> (k,v))
       $ Map.assocs
@@ -136,8 +138,54 @@ mainSection clickOutE (level, abilityTable, options) = elClass "div" "main-secti
 
 -- Ability table
 -- -------------
-abilityTableWidget :: ReactiveM t m => AbilityTable -> m (Event t MainSectionEvent)
-abilityTableWidget _ = return never
+abilityTableWidget :: ReactiveIOM t m => Bool -> AbilityTable -> m (Event t MainSectionEvent)
+abilityTableWidget baseAbilitiesEditable abilityTable = divcl "ability-edit" $ el "table" $ do
+  el "tr" $ el "th" blank >> mapM_ (el "th" . text) abilities
+
+  let taggedEntries = [(abi, fromJust $ abi `Map.lookup` abilityTable) | abi <- abilities]
+      entries = map snd taggedEntries
+
+  let simpleRow header vals = el "tr" $ el "th" (text header) >> mapM_ (el "td" . text) vals
+
+  -- Base scores row. Contains number input for each ability.
+  setBaseAbilitiesE <- if baseAbilitiesEditable
+
+    -- If the base abilities are editable, 
+    then el "tr" $
+         do el "th" (text "Base Score")
+
+            -- A Dynamic for each ability setter input.
+            abilityValueDyns <- mapM (el "td" . baseAbilityScoreSetterWidget) taggedEntries
+
+            -- Trigger an event 0.5 seconds after the most recent update to one of these Dynamics.
+            sampleE <- debounce 0.5 $ void $ leftmost (map updated abilityValueDyns)
+
+            -- The value to be read when the event eventually fires.
+            let collectedDyn = MSESetBaseAbilityScores <$> sequence abilityValueDyns
+
+            return $ current collectedDyn `tag` sampleE
+
+    -- If the base abilities are not editable, just show the base score as a number (not an input).
+    else simpleRow "Base Score" (map (showText . ate_base) entries) >> return never
+
+  simpleRow "Total Bonus" $ map (formatModifier . ate_total_bonus ) entries
+  simpleRow "Total Score" $ map (showText       . ate_score       ) entries
+  simpleRow "Modifier"    $ map (formatModifier . ate_mod         ) entries
+
+  return setBaseAbilitiesE
+
+
+baseAbilityScoreSetterWidget :: forall t m. ReactiveM t m
+                             => (Ability, AbilityTableEntry) -> m (Dynamic t (Ability, Int))
+baseAbilityScoreSetterWidget (ability, AbilityTableEntry{ate_base}) = do
+  inputE <- fmap _inputElement_value $ inputElement config
+  return $ fmap (\score -> (ability, readText score)) inputE
+
+  where
+    config = def
+      & inputElementConfig_initialValue .~ showText ate_base
+      & inputElementConfig_elementConfig . elementConfig_initialAttributes .~ ("type" |-> "number")
+
 
 -- Options
 -- -------
@@ -182,8 +230,8 @@ listSpecWidget clickOutE optionId entries choice =
   updated . fmap inform
   <$> customDropdownWidget clickOutE [(opt entry, True)| entry <- entries] choice
   where
-    inform (Just choice) = (optionId, SubmitSingletonChoice choice)
-    inform Nothing       = (optionId, RetractChoice)
+    inform (Just choice) = MSEChoice optionId (SubmitSingletonChoice choice)
+    inform Nothing       = MSEChoice optionId RetractChoice
 
 orSpecWidget :: forall t m. ReactiveM t m
              => Event t () -> OptionId -> Text -> Spec -> Text -> Spec -> Maybe (Dir, Choice)
@@ -191,7 +239,7 @@ orSpecWidget :: forall t m. ReactiveM t m
 orSpecWidget clickOutE optionId leftname left rightname right choice = el "div" $ mdo
   let subChoice dir = [c | (dir', c) <- choice, dir == dir']
 
-  let leftSubSpecWidget, rightSubSpecWidget :: m (Event t (OptionId, SubmitChoice))
+  let leftSubSpecWidget, rightSubSpecWidget :: m (Event t MainSectionEvent)
       leftSubSpecWidget  = specWidget clickOutE optionId left (subChoice L)
       rightSubSpecWidget = specWidget clickOutE optionId right (subChoice R)
 
@@ -232,7 +280,7 @@ fromSpecWidget clickOutE optionId unique limit entries choices = mdo
     $ elClass "div" "dropdown dropdown-disabled" (button "...")
 
   return
-    $ fmap (optionId,)
+    $ fmap (MSEChoice optionId)
     $ leftmost
     $ zipWith fmap (choiceEditFunctions choices) (overwriteChoiceEs <> appendChoiceEs)
 

@@ -5,7 +5,7 @@ import Control.Monad
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe
-import Data.Text (Text, pack)
+import Data.Text (Text, pack, unpack)
 import Reflex.Dom (DomBuilder, text, blank)
 --------------------------------------------------------------------------------
 
@@ -47,6 +47,9 @@ infixr 2 |->
 errorOnLeft :: Show a => Either a b -> b
 errorOnLeft (Left x)  = error (show x)
 errorOnLeft (Right y) = y
+
+readText :: Read a => Text -> a
+readText = read . unpack
 
 showText :: Show a => a -> Text
 showText = pack . show

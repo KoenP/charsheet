@@ -1,6 +1,7 @@
 :root {
     --side-nav-width: 260px;
-    --tab-bar-height: 36px;
+    --tab-bar-height: 42px;
+    --ability-table-height: 187px;
 }
 
 @media print {
@@ -690,7 +691,10 @@ input:checked {
 
 .edit-page .main-section {
     margin-left: var(--side-nav-width);
-    margin-top: var(--tab-bar-height);
+}
+
+.character-options {
+    margin-top: var(--ability-table-height);
 }
 
 .origin-category {
@@ -769,3 +773,38 @@ input:checked {
     background-color: #dddddd;
     cursor: pointer;
 }
+
+.ability-edit {
+    position: fixed;
+    top: var(--tab-bar-height);
+    width: 100%;
+    overflow: hidden;
+    z-index: 2;
+    background-color: #ffffff;
+    border-bottom: 2px solid #000000;
+    padding: 0 10px 10px 10px;
+    margin-top: 0;
+    text-align: right;
+    max-height: var(--ability-table-height);
+}
+
+.ability-edit > table {
+    max-width: 600px;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.ability-edit input {
+    max-width: 40px;
+}
+
+.ability-edit > table > tr:first-child {
+    text-transform: uppercase;
+}
+
+.ability-edit > table > tr:not(:first-child) > th {
+    text-align: left;
+}
+
+

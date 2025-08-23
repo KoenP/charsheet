@@ -191,7 +191,8 @@ h_post_set_base_abilities(CharId, Request) :-
             (member(Abi=ScoreStr, Params), read_term_from_atom(ScoreStr, Score, []), integer(Score)),
             AbiScores),
     set_base_abilities(CharId, AbiScores),
-    reply_json_dict("success!").
+    with_loaded_character(CharId, (edit_character_page_json(Json), abolish_private_tables)),
+    reply_json_dict(Json).
 
 h_post_equip_item(CharId, Request) :-
     http_parameters(Request, [item(ItemAtom,[])]),
