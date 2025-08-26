@@ -26,21 +26,17 @@ import Types.Cache
 import Util
 import Data.Zipper (Zipper(Zipper))
 import qualified Data.Zipper as Zipper
-
-import Debug.Trace hiding (traceEvent, traceEventWith)
 --------------------------------------------------------------------------------
 
 load :: forall t m. ReactiveIOM t m => Maybe CharacterOptions -> m (Event t (Cache -> Cache))
-load (Just opts) = trace "using cached version" $ page opts
+load (Just opts) = page opts
 load Nothing = do
-  traceM "fetching fresh version"
   let url = "/api/character/" <> charName <> "/edit_character_page"
-  loadWidget (xhrRequest "GET" url def) page
-  -- let firstCacheE = fmap (\opts -> set #options (Just opts)) optionsE
+  (initE, cacheE) <- loadWidget (xhrRequest "GET" url def) page
+  return $ leftmost [cacheE, (set #options . Just) <$> initE]
 
 page :: ReactiveIOM t m => CharacterOptions -> m (Event t (Cache -> Cache))
 page charOpts0 = mdo
-
   let clickOutE = domEvent Click topLevel
   (topLevel, cacheE) <- elClass' "div" "edit-page" $ mdo
     let pageLoadE = mkReq <$> mainSectionE
@@ -57,10 +53,8 @@ page charOpts0 = mdo
     mainSectionE <- (switchHold never =<<) $ dyn $ fmap (mainSection clickOutE) $
       liftA3 (,,) selectedLevelDyn abilityTableDyn selectedLevelOptsDyn
 
-    initCacheE <- getPostBuild
-    return $ leftmost [ set #options . Just           <$> traceEventWith (const "set options cache") receivedNewCharOptsE
-                      , const emptyCache              <$  traceEventWith (const "clear cache") mainSectionE
-                      , set #options (Just charOpts0) <$  traceEventWith (const "init cache") initCacheE
+    return $ leftmost [ set #options . Just <$> receivedNewCharOptsE
+                      , const emptyCache    <$  mainSectionE
                       ]
 
   return cacheE

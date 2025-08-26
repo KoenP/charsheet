@@ -25,14 +25,16 @@ uncondCondClasses :: Reflex t => [Text] -> [Text] -> Dynamic t Bool -> Dynamic t
 uncondCondClasses unconditional conditional dyn = dyn <&> (\b -> unconditional <> if b then conditional else [])
 
 loadWidget :: forall t m x a b. (ReactiveIOM t m, IsXhrPayload x, FromJSON a)
-           => XhrRequest x -> (a -> m (Event t b)) -> m (Event t b)
+           => XhrRequest x -> (a -> m (Event t b)) -> m (Event t a, Event t b)
 loadWidget req k = do
   postBuildE <- getPostBuild
   resE <- performRequestAsync (req <$ postBuildE)
   let responseTextE = fmap _xhrResponse_responseText resE
       responseValE = errorOnLeft . eitherDecodeStrictText . fromJust <$> responseTextE
 
-  switchDyn <$> widgetHold (text "Loading..." >> return never) (fmap k responseValE)
+  ev <- switchDyn <$> widgetHold (text "Loading..." >> return never) (fmap k responseValE)
+
+  return (responseValE, ev)
 
 
 domShow :: (DomBuilder t m, Show a) => a -> m ()

@@ -21,10 +21,9 @@ import Util
 
 load :: ReactiveIOM t m => Maybe CharacterSheet -> m (Event t (Cache -> Cache))
 load (Just sheet) = page sheet >> return never
-load Nothing      = loadWidget (xhrRequest "GET" ("/api/character/" <> charName <> "/sheet") def) $ \sheet -> do
-  initCacheE <- fmap (set #sheet (Just sheet) <$) getPostBuild
-  page sheet
-  return initCacheE
+load Nothing      = do
+  (initE, _) <- loadWidget (xhrRequest "GET" ("/api/character/" <> charName <> "/sheet") def) (\sheet -> page sheet >> return never)
+  return (set #sheet . Just <$> initE)
 
 -- TODO: can probably use a more restricted type class as the sheet is currently
 -- non-interactive.
