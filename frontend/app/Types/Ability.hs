@@ -19,16 +19,15 @@ type Ability = Text
 type AbilityTable = Map Ability AbilityTableEntry
 
 data AbilityTableEntry = AbilityTableEntry
-  { ate_base        :: Int
-  , ate_total_bonus :: Int
-  , ate_score       :: Int
-  , ate_mod         :: Int
-  , ate_st          :: Int
-  , ate_st_prof     :: Bool
+  { base        :: Int
+  , total_bonus :: Int
+  , score       :: Int
+  , mod         :: Int
+  , st          :: Int
+  , st_prof     :: Bool
   }
   deriving (Generic, Show, Eq)
 instance FromJSON AbilityTableEntry where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "ate_"})
 
 abilities :: [Text]
 abilities = ["str", "dex", "con", "wis", "int", "cha"]
@@ -39,10 +38,9 @@ listFromAbilityTable extract table =
 
 type Skill = Text
 type SkillTable = Map Skill SkillTableEntry
-data SkillTableEntry = SkillTableEntry { ste_score :: Int, ste_proficient :: Bool }
+data SkillTableEntry = SkillTableEntry { score :: Int, proficient :: Bool }
   deriving (Generic, Show, Eq)
 instance FromJSON SkillTableEntry where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "ste_"})
 
 skillsPerAbility :: [(Ability, [Skill])]
 skillsPerAbility =

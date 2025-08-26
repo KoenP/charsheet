@@ -5,11 +5,13 @@ import Data.Functor
 import Reflex.Dom
 import qualified Data.Map as Map
 import Data.Text (Text)
+import Optics
 
 import qualified Page.EditChar
 import qualified Page.Sheet
 
 import Types
+import Types.Cache
 import Widget
 --------------------------------------------------------------------------------
 
@@ -17,19 +19,24 @@ import Widget
 --   doc <- currentDocumentUnchecked
 --   body <- getBodyUnchecked doc
 
-data Tab = EditCharTab | SheetTab deriving Eq
+data Tab = EditCharTab | SheetTab deriving (Eq, Show)
 
 type TabDef = (Tab, Text, Text)
+
+tabPage :: ReactiveIOM t m => Tab -> (Cache -> m (Event t (Cache -> Cache)))
+tabPage EditCharTab = Page.EditChar.load . view #options
+tabPage SheetTab    = Page.Sheet.load . view #sheet
 
 tabs :: [TabDef]
 tabs = [(EditCharTab, "Edit", "edit.png"), (SheetTab, "Sheet", "sheet.png")]
 
 main :: IO ()
-main = mainWidget $ do
+main = mainWidget $ mdo
+  cacheBh <- current . traceDyn "cache" <$> foldDyn ($) emptyCache updateCacheE
   (tabDyn, _) <- tabBarWidget
-  let loadTab EditCharTab = Page.EditChar.load
-      loadTab SheetTab = Page.Sheet.load
-  elClass "div" "below-tabs" $ dyn_ (fmap loadTab tabDyn)
+  let loadTab tab = tabPage tab =<< sample cacheBh
+  updateCacheE <- elClass "div" "below-tabs" (switchHold never =<< dyn (fmap loadTab tabDyn))
+  return ()
 
 tabBarWidget :: ReactiveM t m => m (Dynamic t Tab, Event t ())
 tabBarWidget = elClass "div" "dont-print tab-bar" $ liftA2 (,) tabWidgets backToCharacterSelectionWidget

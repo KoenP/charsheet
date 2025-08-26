@@ -1,12 +1,15 @@
 module Util where
 
 --------------------------------------------------------------------------------
+import Control.Category ((>>>))
 import Control.Monad
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe
 import Data.Text (Text, pack, unpack)
+import Reflex
 import Reflex.Dom (DomBuilder, text, blank)
+import Optics
 --------------------------------------------------------------------------------
 
 mapDeleteMany :: Ord k => [k] -> Map k a -> Map k a

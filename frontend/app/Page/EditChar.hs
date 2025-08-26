@@ -10,34 +10,44 @@ import Data.Aeson
 import Data.Functor
 import Data.List
 import Data.Maybe
-import Reflex.Dom
+import Reflex.Dom hiding ((.~))
+import qualified Reflex.Dom ((.~))
 import Data.Text (Text, pack)
 import qualified Data.Text as Text
 import qualified Data.Map as Map
 import Language.Javascript.JSaddle.Types
+import Optics
 
 import Widget
 import Constants (charName)
 import Types
 import Types.Ability
+import Types.Cache
 import Util
 import Data.Zipper (Zipper(Zipper))
 import qualified Data.Zipper as Zipper
+
+import Debug.Trace hiding (traceEvent, traceEventWith)
 --------------------------------------------------------------------------------
 
-load :: ReactiveIOM t m => m ()
-load = void $ loadWidget () (xhrRequest "GET" url def) page
-  where url = "/api/character/" <> charName <> "/edit_character_page"
+load :: forall t m. ReactiveIOM t m => Maybe CharacterOptions -> m (Event t (Cache -> Cache))
+load (Just opts) = trace "using cached version" $ page opts
+load Nothing = do
+  traceM "fetching fresh version"
+  let url = "/api/character/" <> charName <> "/edit_character_page"
+  loadWidget (xhrRequest "GET" url def) page
+  -- let firstCacheE = fmap (\opts -> set #options (Just opts)) optionsE
 
-page :: ReactiveIOM t m => CharacterOptions -> m ()
+page :: ReactiveIOM t m => CharacterOptions -> m (Event t (Cache -> Cache))
 page charOpts0 = mdo
+
   let clickOutE = domEvent Click topLevel
-  (topLevel, _) <- elClass' "div" "edit-page" $ mdo
+  (topLevel, cacheE) <- elClass' "div" "edit-page" $ mdo
     let pageLoadE = mkReq <$> mainSectionE
     receivedNewCharOptsE <- fmap fromJust <$> postAndDecode pageLoadE
     charOptsDyn <- holdDyn charOpts0 receivedNewCharOptsE
 
-    let abilityTableDyn = fmap ability_table charOptsDyn
+    let abilityTableDyn = fmap (view #ability_table) charOptsDyn
 
     selectedLevelDyn <- sideNav charOptsDyn
 
@@ -47,9 +57,13 @@ page charOpts0 = mdo
     mainSectionE <- (switchHold never =<<) $ dyn $ fmap (mainSection clickOutE) $
       liftA3 (,,) selectedLevelDyn abilityTableDyn selectedLevelOptsDyn
 
-    return ()
+    initCacheE <- getPostBuild
+    return $ leftmost [ set #options . Just           <$> traceEventWith (const "set options cache") receivedNewCharOptsE
+                      , const emptyCache              <$  traceEventWith (const "clear cache") mainSectionE
+                      , set #options (Just charOpts0) <$  traceEventWith (const "init cache") initCacheE
+                      ]
 
-  return ()
+  return cacheE
 
 -- TODO rework all of this
 postAndDecode :: ( DomBuilder t m
@@ -96,7 +110,7 @@ sideNav charOptsDyn = elClass "div" "side-nav" $ mdo
           let maxlvl = maximum $ Map.keys optionsPerLevel
           in fmap leftmost $ sequence [sideNavButton selectedLevelDyn curlvl l | l <- [maxlvl,maxlvl-1..1]]
 
-  selectedLevelDyn <- holdDyn (char_level opts0) selectLevelE
+  selectedLevelDyn <- holdDyn (opts0 ^. #char_level) selectLevelE
 
   return selectedLevelDyn
 
@@ -116,6 +130,7 @@ sideNavButton selectedLevelDyn charLevel level = do
 -- ------------
 data MainSectionEvent = MSEChoice OptionId SubmitChoice
                       | MSESetBaseAbilityScores [(Ability, Int)]
+  deriving Show
 
 mainSection :: ReactiveIOM t m
             => Event t ()
@@ -166,25 +181,25 @@ abilityTableWidget baseAbilitiesEditable abilityTable = divcl "ability-edit" $ e
             return $ current collectedDyn `tag` sampleE
 
     -- If the base abilities are not editable, just show the base score as a number (not an input).
-    else simpleRow "Base Score" (map (showText . ate_base) entries) >> return never
+    else simpleRow "Base Score" (map (showText . view #base) entries) >> return never
 
-  simpleRow "Total Bonus" $ map (formatModifier . ate_total_bonus ) entries
-  simpleRow "Total Score" $ map (showText       . ate_score       ) entries
-  simpleRow "Modifier"    $ map (formatModifier . ate_mod         ) entries
+  simpleRow "Total Bonus" $ map (formatModifier . view #total_bonus ) entries
+  simpleRow "Total Score" $ map (showText       . view #score       ) entries
+  simpleRow "Modifier"    $ map (formatModifier . view #mod         ) entries
 
   return setBaseAbilitiesE
 
 
 baseAbilityScoreSetterWidget :: forall t m. ReactiveM t m
                              => (Ability, AbilityTableEntry) -> m (Dynamic t (Ability, Int))
-baseAbilityScoreSetterWidget (ability, AbilityTableEntry{ate_base}) = do
+baseAbilityScoreSetterWidget (ability, AbilityTableEntry{base}) = do
   inputE <- fmap _inputElement_value $ inputElement config
   return $ fmap (\score -> (ability, readText score)) inputE
 
   where
     config = def
-      & inputElementConfig_initialValue .~ showText ate_base
-      & inputElementConfig_elementConfig . elementConfig_initialAttributes .~ ("type" |-> "number")
+      & inputElementConfig_initialValue Reflex.Dom..~ showText base
+      & inputElementConfig_elementConfig . elementConfig_initialAttributes Reflex.Dom..~ ("type" |-> "number")
 
 
 -- Options
@@ -215,20 +230,20 @@ specWidget :: ReactiveM t m
            -> m (Event t MainSectionEvent)
 specWidget clickOutE optionId spec choice = case spec of
   ListSpec entries -> listSpecWidget
-    clickOutE optionId entries (fmap atomic_choice choice)
+    clickOutE optionId entries (fromJust . preview #_AtomicChoice <$> choice)
   OrSpec leftname left rightname right -> orSpecWidget
     clickOutE optionId leftname left rightname right
-    (liftA2 (,) side subchoice <$> choice)
+    (fromJust . preview #_OrChoice <$> choice)
   FromSpec unique num (ListSpec entries) -> fromSpecWidget
     clickOutE optionId unique num entries
-    (map atomic_choice $ concatMap subchoices $ maybeToList choice)
+    (map (fromJust . preview #_AtomicChoice) $ concatMap (fromJust . preview #_ListChoice) $ maybeToList choice)
   _ -> error $ "unsupported spec: " <> show spec
 
 listSpecWidget :: ReactiveM t m => Event t () -> OptionId -> [ListSpecEntry] -> Maybe Text
                -> m (Event t MainSectionEvent)
 listSpecWidget clickOutE optionId entries choice =
   updated . fmap inform
-  <$> customDropdownWidget clickOutE [(opt entry, True)| entry <- entries] choice
+  <$> customDropdownWidget clickOutE [(entry ^. #opt, True)| entry <- entries] choice
   where
     inform (Just choice) = MSEChoice optionId (SubmitSingletonChoice choice)
     inform Nothing       = MSEChoice optionId RetractChoice
@@ -285,7 +300,7 @@ fromSpecWidget clickOutE optionId unique limit entries choices = mdo
     $ zipWith fmap (choiceEditFunctions choices) (overwriteChoiceEs <> appendChoiceEs)
 
   where mkDropdownWidget = customDropdownWidget clickOutE
-          [(o, not (o `elem` choices))| o <- map opt entries]
+          [(o, not (o `elem` choices))| o <- map (view #opt) entries]
 
 choiceEditFunctions :: [Text] -> [Maybe Text -> SubmitChoice]
 choiceEditFunctions choices = case choices of
@@ -308,7 +323,7 @@ customDropdownWidget clickOutE options selected0 = mdo
   elAttr "div" (Map.fromList [ ("class", "dropdown dropdown-enabled")
                              , ("onclick", "event.stopPropagation();")
                              ]) $ mdo
-    selectedDyn <- holdDyn selected0 $ traceEvent "selectE" selectE
+    selectedDyn <- holdDyn selected0 $ selectE
     openDyn <- foldDyn ($) False $ leftmost [not <$ toggleE, const False <$ closeE]
     let dropdownButtonClassDyn = openDyn <&> ("dropdown-button-open" ? "dropdown-button-closed")
     (buttonEl, selectE) <- elDynClass' "button" dropdownButtonClassDyn $ mdo

@@ -1,8 +1,8 @@
 module Widget where
 
 --------------------------------------------------------------------------------
-import Control.Lens
 import Data.Aeson
+import Data.Functor
 import Data.Map (Map)
 import Data.Maybe
 import Data.Text (Text, intercalate, pack)
@@ -24,20 +24,48 @@ dynClassButton classDyn label = dynAttrButton (("class" |->) . intercalate " " <
 uncondCondClasses :: Reflex t => [Text] -> [Text] -> Dynamic t Bool -> Dynamic t [Text]
 uncondCondClasses unconditional conditional dyn = dyn <&> (\b -> unconditional <> if b then conditional else [])
 
-loadWidget :: (ReactiveIOM t m, IsXhrPayload x, FromJSON a)
-           => b -> XhrRequest x -> (a -> m b) -> m (Dynamic t b)
-loadWidget nullVal req k = do
+loadWidget :: forall t m x a b. (ReactiveIOM t m, IsXhrPayload x, FromJSON a)
+           => XhrRequest x -> (a -> m (Event t b)) -> m (Event t b)
+loadWidget req k = do
   postBuildE <- getPostBuild
   resE <- performRequestAsync (req <$ postBuildE)
-  let loadedWidgetE
-         =  k
-         .  errorOnLeft . eitherDecodeStrictText
-         .  fromJust . view xhrResponse_responseText
-        <$> resE
-  widgetHold (text "Loading..." >> pure nullVal) loadedWidgetE
+  let responseTextE = fmap _xhrResponse_responseText resE
+      responseValE = errorOnLeft . eitherDecodeStrictText . fromJust <$> responseTextE
+
+  switchDyn <$> widgetHold (text "Loading..." >> return never) (fmap k responseValE)
+
 
 domShow :: (DomBuilder t m, Show a) => a -> m ()
 domShow = text . pack . show
 
 divcl :: DomBuilder t m => Text -> m a -> m a
 divcl = elClass "div"
+
+{-
+x :: XhrRequest x
+page :: CharacterOptions -> m (Event t (Cache -> Cache))
+
+loadWidget :: Event t (Cache -> Cache)
+           -> x
+           -> (CharacterOptions -> m (Event t (Cache -> Cache)))
+           -> m (Event t CharacterOptions, Dynamic t (Event t (Cache -> Cache)))
+
+responseValE :: Event t CharacterOptions
+
+fmap k responseValE :: Event t (m (Event t (Cache -> Cache)))
+
+widgetHold :: m (Event t (Cache -> Cache))
+           -> Event t (m (Event t (Cache -> Cache)))
+           -> m (Dynamic t (Event t (Cache -> Cache)))
+
+widgetHold (pure never) (fmap k responseValE)
+
+
+  postBuildE <- getPostBuild
+  resE <- performRequestAsync (req <$ postBuildE)
+
+  let responseTextE = traceEvent "responseTextE" $ fmap _xhrResponse_responseText resE
+      responseValE = errorOnLeft . eitherDecodeStrictText . fromJust <$> responseTextE
+  dyn <- widgetHold (text "Loading..." >> pure nullVal) (fmap k responseValE)
+  return (responseValE, traceDynWith (const "loadWidget dyn updated") dyn)
+-}

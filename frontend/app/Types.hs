@@ -44,138 +44,125 @@ neverUnless False _ = pure never
 newtype CharId = CharId Text
 
 data CharacterSheet = CharacterSheet
-  { cs_name :: Text
-  , cs_summary :: CharacterSummary
-  , cs_ac_formulas :: [AcFormula]
-  , cs_hit_dice :: [HitDice]
-  , cs_ability_table :: AbilityTable
-  , cs_skill_table :: SkillTable
-  , cs_languages :: [Text]
-  , cs_weapons :: [Text]
-  , cs_armor :: [Text]
-  , cs_tools :: [Tool]
-  , cs_resistances :: [Resistance]
-  , cs_notable_traits :: [NotableTraitCategory]
-  , cs_attacks :: [Attack]
-  , cs_pact_magic:: Maybe PactMagic
-  , cs_spellcasting_sections :: [SpellcastingSection]
-  , cs_spell_slots :: [Int]
-  , cs_resources :: [Resource]
+  { name :: Text
+  , summary :: CharacterSummary
+  , ac_formulas :: [AcFormula]
+  , hit_dice :: [HitDice]
+  , ability_table :: AbilityTable
+  , skill_table :: SkillTable
+  , languages :: [Text]
+  , weapons :: [Text]
+  , armor :: [Text]
+  , tools :: [Tool]
+  , resistances :: [Resistance]
+  , notable_traits :: [NotableTraitCategory]
+  , attacks :: [Attack]
+  , pact_magic:: Maybe PactMagic
+  , spellcasting_sections :: [SpellcastingSection]
+  , spell_slots :: [Int]
+  , resources :: [Resource]
   } deriving (Generic, Show)
 instance FromJSON CharacterSheet where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "cs_"})
 
 data CharacterSummary = CharacterSummary
-  { csm_ac :: Int
-  , csm_classes :: Text
-  , csm_hd :: Text
-  , csm_initiative :: Int
-  , csm_level :: Int
-  , csm_maxhp :: Int
-  , csm_pp :: Int
-  , csm_prof_bon :: Int
-  , csm_race :: Text
-  , csm_speed :: [Speed]
+  { ac :: Int
+  , classes :: Text
+  , hd :: Text
+  , initiative :: Int
+  , level :: Int
+  , maxhp :: Int
+  , pp :: Int
+  , prof_bon :: Int
+  , race :: Text
+  , speed :: [Speed]
   } deriving (Generic, Show)
 instance FromJSON CharacterSummary where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "csm_"})
 
-data Speed = Speed { speed_mode:: Text, speed_speed :: Int } deriving (Generic, Show)
+data Speed = Speed { mode:: Text, speed :: Int } deriving (Generic, Show)
 instance FromJSON Speed where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "speed_"})
 
-data Tool = Tool { tool_tool:: Text, tool_expertise :: Bool } deriving (Generic, Show)
+data Tool = Tool { tool:: Text, expertise :: Bool } deriving (Generic, Show)
 instance FromJSON Tool where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "tool_"})
 
 data Resistance = Resistance { res_damage_type:: Text, res_resistance :: Text } deriving (Generic, Show)
 instance FromJSON Resistance where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "res_"})
 
-data NotableTraitCategory = NotableTraitCategory { ntc_category:: Text
-                                                 , ntc_traits:: [Trait]
+data NotableTraitCategory = NotableTraitCategory { category:: Text
+                                                 , traits:: [Trait]
                                                  } deriving (Generic, Show)
 instance FromJSON NotableTraitCategory where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "ntc_"})
 
 data Trait = Trait
-  { trait_name        :: Text
-  , trait_desc        :: Maybe [Text]
-  , trait_ref         :: Maybe Text
-  , trait_seminotable :: Bool
+  { name        :: Text
+  , desc        :: Maybe [Text]
+  , ref         :: Maybe Text
+  , seminotable :: Bool
   } deriving (Generic, Show)
 instance FromJSON Trait where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "trait_"})
 
 data AcFormula = AcFormula
-  { ac_name :: Text
-  , ac_ac :: Int
-  , ac_shield :: Maybe Int
+  { name :: Text
+  , ac :: Int
+  , shield :: Maybe Int
   } deriving (Generic, Show)
 instance FromJSON AcFormula where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "ac_"})
 
 data HitDice = HitDice
-  { hd_n :: Int
-  , hd_d :: Int
+  { n :: Int
+  , d :: Int
   } deriving (Generic, Show)
 instance FromJSON HitDice where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "hd_"})
 
 data Attack = Attack
-  { att_name :: Text
-  , att_range :: Text
-  , att_to_hit_or_dc :: Text
-  , att_damage :: Text
-  , att_notes :: Text
+  { name :: Text
+  , range :: Text
+  , to_hit_or_dc :: Text
+  , damage :: Text
+  , notes :: Text
   } deriving (Generic, Show)
 instance FromJSON Attack where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "att_"})
 
 data SpellcastingSection = SpellcastingSection
-  { ss_max_prepared_spells      :: Maybe Int
-  , ss_origin                   :: Origin
-  , ss_origin_shorthand         :: Text
-  , ss_spell_attack_mod         :: Int
-  , ss_spell_save_dc            :: Int
-  , ss_spellcasting_ability     :: Text
-  , ss_spellcasting_ability_mod :: Int
-  , ss_spells                   :: [Spell]
+  { max_prepared_spells      :: Maybe Int
+  , origin                   :: Origin
+  , origin_shorthand         :: Text
+  , spell_attack_mod         :: Int
+  , spell_save_dc            :: Int
+  , spellcasting_ability     :: Text
+  , spellcasting_ability_mod :: Int
+  , spells                   :: [Spell]
   } deriving (Generic, Show)
 instance FromJSON SpellcastingSection where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "ss_"})
 
 type Origin = Text
 
 data Spell = Spell
-  { spell_aoe           :: Maybe Text
-  , spell_casting_time  :: Text
-  , spell_components    :: Text -- TODO
-  , spell_concentration :: Text -- TODO -> Bool
-  , spell_description   :: Text
-  , spell_higher_level  :: Maybe Text
-  , spell_duration      :: Text
-  , spell_level         :: Int
-  , spell_name          :: SpellName
-  , spell_prepared      :: Text -- AlwaysPrepared
-  , spell_range         :: Text
+  { aoe           :: Maybe Text
+  , casting_time  :: Text
+  , components    :: Text -- TODO
+  , concentration :: Text -- TODO -> Bool
+  , description   :: Text
+  , higher_level  :: Maybe Text
+  , duration      :: Text
+  , level         :: Int
+  , name          :: SpellName
+  , prepared      :: Text -- AlwaysPrepared
+  , range         :: Text
   -- , spell_resources     :: [PrologTerm] TODO
-  , spell_ref           :: Maybe Text
-  , spell_ritual        :: Ritual
-  , spell_school        :: Text
-  , spell_shortdesc     :: Maybe Text
-  , spell_summary       :: Text
-  , spell_to_hit        :: Maybe Int
-  , spell_rolls         :: Maybe Text
+  , ref           :: Maybe Text
+  , ritual        :: Ritual
+  , school        :: Text
+  , shortdesc     :: Maybe Text
+  , summary       :: Text
+  , to_hit        :: Maybe Int
+  , rolls         :: Maybe Text
   -- , spell_bonuses       :: [SpellBonus] TODO
   } deriving (Generic, Show)
 instance FromJSON Spell where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "spell_"})
 
 data Component = V | S | M Text
   deriving (Generic, Show)
 instance FromJSON Component where
-  parseJSON = genericParseJSON (defaultOptions {constructorTagModifier = map toLower})
 
 type AlwaysPrepared = Bool
 type SpellName = Text
@@ -193,26 +180,23 @@ instance FromJSON Ritual where
                      }
 
 data SpellBonus = SpellBonus
-  { sbon_origin :: Text
-  , sbon_bonus :: Text
+  { origin :: Text
+  , bonus :: Text
   } deriving (Generic, Show)
 instance FromJSON SpellBonus where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "sbon_"})
 
 data PactMagic = PactMagic
-  { pm_slot_count :: Int
-  , pm_slot_level :: Int
+  { slot_count :: Int
+  , slot_level :: Int
   } deriving (Generic, Show)
 instance FromJSON PactMagic where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "pm_"})
 
 data Resource = Resource
-  { rsc_name :: Text
-  , rsc_number :: Int
-  , rsc_restore :: Map Text Text
+  { name :: Text
+  , number :: Int
+  , restore :: Map Text Text
   } deriving (Generic, Show)
 instance FromJSON Resource where
-  parseJSON = genericParseJSON (defaultOptions {fieldLabelModifier = dropPrefix "rsc_"})
 
 data PrologTerm = Compound Text [PrologTerm]
                 | List [PrologTerm]
@@ -293,6 +277,7 @@ instance FromJSON Choice where
   parseJSON = genericParseJSON $ Data.Aeson.Types.defaultOptions
     { constructorTagModifier = camelToSnakeCase
     }
+
 
 -- TODO delete
 -- getOrChoice :: Choice -> Maybe (Dir, Choice)
