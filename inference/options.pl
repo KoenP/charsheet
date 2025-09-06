@@ -262,7 +262,7 @@ spec_to_json(Origin, Id, Spec,
              _{spectype: list, list: List}) :-
     findall(_{opt: XStr, desc: DescPages},
             (call(Spec, X),
-             (\+ hide_base_option(Origin, Id, X)),
+             (\+ (hide_base_option(Origin, Id, X), \+ choice_member(Origin, Id, X))),
              term_string(X, XStr),
              default_on_fail("", lookup_option_doc(Origin, Id, X), Desc),
              nonlist_to_singleton(Desc, DescPages)

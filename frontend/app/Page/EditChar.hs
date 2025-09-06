@@ -1,15 +1,20 @@
 module Page.EditChar where
 
 --------------------------------------------------------------------------------
+import Prelude hiding (unzip)
+
 import Control.Applicative
 import Control.Comonad
 import Control.Monad
 import Control.Monad.Fix
 import Control.Monad.IO.Class
+import Control.Monad.Reader
 import Data.Aeson
+import Data.Bifunctor (bimap)
 import Data.Functor
-import Data.List
+import Data.List hiding (unzip)
 import Data.Maybe
+import GHC.Generics
 import Reflex.Dom hiding ((.~))
 import qualified Reflex.Dom ((.~))
 import Data.Text (Text, pack)
@@ -39,25 +44,31 @@ page :: ReactiveIOM t m => CharacterOptions -> m (Event t (Cache -> Cache))
 page charOpts0 = mdo
   let clickOutE = domEvent Click topLevel
   (topLevel, cacheE) <- elClass' "div" "edit-page" $ mdo
-    let pageLoadE = mkReq <$> mainSectionE
+    -- Send any updates to the server, fire an event when the server responds with fresh data.
+    -- Every time we send a request to the server, we lock the page while waiting for the response.
     receivedNewCharOptsE <- fmap fromJust <$> postAndDecode pageLoadE
     charOptsDyn <- holdDyn charOpts0 receivedNewCharOptsE
+    lockDyn <- holdDyn False $ leftmost [False <$ receivedNewCharOptsE, True <$ pageLoadE]
 
-    let abilityTableDyn = fmap (view #ability_table) charOptsDyn
+    -- Render the side nav, which keeps track of the currently selected character level.
+    selectedLevelDyn <- sideNav charOptsDyn hoverDyn
 
-    selectedLevelDyn <- sideNav charOptsDyn
-
+    -- Render the main section, which displays character options for the currently selected level.
     let selectedLevelOptsDyn = ffor2 charOptsDyn selectedLevelDyn $ \(CharacterOptions _ opts _) lvl ->
           fromJust $ lvl `Map.lookup` opts
-
-    mainSectionE <- (switchHold never =<<) $ dyn $ fmap (mainSection clickOutE) $
+    let abilityTableDyn = fmap (view #ability_table) charOptsDyn
+    (pageLoadEE, hoverDynE) <- fmap unzip $ dyn $ fmap (flip runReaderT lockDyn) $ fmap (mainSection clickOutE) $
       liftA3 (,,) selectedLevelDyn abilityTableDyn selectedLevelOptsDyn
 
+    pageLoadE <- switchHold never pageLoadEE
+    hoverDyn <- holdDyn Nothing =<< switchHold never (fmap updated hoverDynE)
+
     return $ leftmost [ set #options . Just <$> receivedNewCharOptsE
-                      , const emptyCache    <$  mainSectionE
+                      , const emptyCache    <$  pageLoadE
                       ]
 
   return cacheE
+
 
 -- TODO rework all of this
 postAndDecode :: ( DomBuilder t m
@@ -76,18 +87,22 @@ postAndDecode url = do
   return $ fmap decodeXhrResponse r
 
 -- TODO Rework this, this sucks. Probably just construct the request when the event is fired.
-mkReq :: MainSectionEvent -> Text
-mkReq (MSEChoice (OptionId origin id) RetractChoice) = "/api/character/" <> charName <> "/retract_choice"
+type Req = Text
+
+mkChoiceReq :: OptionId -> SubmitChoice -> Req
+mkChoiceReq (OptionId origin id) RetractChoice = "/api/character/" <> charName <> "/retract_choice"
   <> "?source=" <> origin
   <> "&id=" <> id
-mkReq (MSEChoice (OptionId origin id) choice) = "/api/character/" <> charName <> "/choice"
+mkChoiceReq (OptionId origin id) choice = "/api/character/" <> charName <> "/choice"
   <> "?source=" <> origin
   <> "&id=" <> id
   <> "&choice=" <> submitChoiceToString choice
   where
     submitChoiceToString (SubmitListChoice choices) = "[" <> Text.intercalate "," choices <> "]"
     submitChoiceToString (SubmitSingletonChoice choice) = choice
-mkReq (MSESetBaseAbilityScores abilities) = "/api/character/" <> charName <> "/set_base_abilities?"
+
+mkSetAbilitiesReq :: [(Ability, Int)] -> Req
+mkSetAbilitiesReq abilities = "/api/character/" <> charName <> "/set_base_abilities?"
   <> Text.intercalate "&" [ability <> "=" <> showText score | (ability,score) <- abilities]
 
 
@@ -95,18 +110,29 @@ mkReq (MSESetBaseAbilityScores abilities) = "/api/character/" <> charName <> "/s
 -- -------
 sideNav :: forall m t. (DomBuilder t m, MonadHold t m, PostBuild t m, MonadFix m)
         => Dynamic t CharacterOptions
+        -> Dynamic t (Maybe [Text])
         -> m (Dynamic t Int)
-sideNav charOptsDyn = elClass "div" "side-nav" $ mdo
+sideNav charOptsDyn maybeHoverTextDyn = elClass "div" "side-nav" $ mdo
   opts0 <- sample $ current charOptsDyn
 
-  selectLevelE <- (switchHold never =<<) $ dyn $ charOptsDyn
-    <&> \(CharacterOptions _ optionsPerLevel curlvl) ->
-          let maxlvl = maximum $ Map.keys optionsPerLevel
-          in fmap leftmost $ sequence [sideNavButton selectedLevelDyn curlvl l | l <- [maxlvl,maxlvl-1..1]]
+  selectLevelE <- (switchHold never =<<) $ dyn $ fmap (selectWidget selectedLevelDyn) maybeHoverTextDyn
 
   selectedLevelDyn <- holdDyn (opts0 ^. #char_level) selectLevelE
 
   return selectedLevelDyn
+
+  where
+    selectWidget :: Dynamic t Int -> Maybe [Text] -> m (Event t Int)
+
+    selectWidget _ (Just (header : hoverText)) = do
+      el "h3" (text header)
+      mapM_ (el "p" . text) hoverText
+      return never
+
+    selectWidget selectedLevelDyn Nothing = (switchHold never =<<) $ dyn $ charOptsDyn
+      <&> \(CharacterOptions _ optionsPerLevel curlvl) ->
+            let maxlvl = maximum $ Map.keys optionsPerLevel
+            in fmap leftmost $ sequence [sideNavButton selectedLevelDyn curlvl l | l <- [maxlvl,maxlvl-1..1]]
 
 sideNavButton :: (DomBuilder t m, MonadHold t m, PostBuild t m, MonadFix m)
               => Dynamic t Int -> Int -> Int -> m (Event t Int)
@@ -122,20 +148,19 @@ sideNavButton selectedLevelDyn charLevel level = do
 
 -- Main section
 -- ------------
-data MainSectionEvent = MSEChoice OptionId SubmitChoice
-                      | MSESetBaseAbilityScores [(Ability, Int)]
-  deriving Show
+type MainSectionIOM t m = (ReactiveIOM t m, MonadReader (Dynamic t Bool) m)
+type MainSectionM t m = (ReactiveM t m, MonadReader (Dynamic t Bool) m)
 
-mainSection :: ReactiveIOM t m
+mainSection :: MainSectionIOM t m
             => Event t ()
             -> (Level, AbilityTable, [Option])
-            -> m (Event t MainSectionEvent)
+            -> m (Event t Req, Dynamic t (Maybe [Text]))
 mainSection clickOutE (level, abilityTable, options) = elClass "div" "main-section" $ do
   let baseAbilitiesEditable = level == 1
   setAbilityE <- abilityTableWidget baseAbilitiesEditable abilityTable
-  choiceE <- divcl "character-options" $ do
-    fmap leftmost $ mapM (uncurry $ originCategoryWidget clickOutE) originCategories
-  return $ leftmost [setAbilityE, choiceE]
+  (choiceE, hoverDyn) <- divcl "character-options" $ do
+    fmap mconcat $ mapM (uncurry $ originCategoryWidget clickOutE) originCategories
+  return $ (leftmost [setAbilityE, choiceE], hoverDyn)
   where
     originCategories = map (\((_,k),v) -> (k,v))
       $ Map.assocs
@@ -147,7 +172,7 @@ mainSection clickOutE (level, abilityTable, options) = elClass "div" "main-secti
 
 -- Ability table
 -- -------------
-abilityTableWidget :: ReactiveIOM t m => Bool -> AbilityTable -> m (Event t MainSectionEvent)
+abilityTableWidget :: MainSectionIOM t m => Bool -> AbilityTable -> m (Event t Req)
 abilityTableWidget baseAbilitiesEditable abilityTable = divcl "ability-edit" $ el "table" $ do
   el "tr" $ el "th" blank >> mapM_ (el "th" . text) abilities
 
@@ -170,7 +195,7 @@ abilityTableWidget baseAbilitiesEditable abilityTable = divcl "ability-edit" $ e
             sampleE <- debounce 0.5 $ void $ leftmost (map updated abilityValueDyns)
 
             -- The value to be read when the event eventually fires.
-            let collectedDyn = MSESetBaseAbilityScores <$> sequence abilityValueDyns
+            let collectedDyn = mkSetAbilitiesReq <$> sequence abilityValueDyns
 
             return $ current collectedDyn `tag` sampleE
 
@@ -184,32 +209,49 @@ abilityTableWidget baseAbilitiesEditable abilityTable = divcl "ability-edit" $ e
   return setBaseAbilitiesE
 
 
-baseAbilityScoreSetterWidget :: forall t m. ReactiveM t m
+baseAbilityScoreSetterWidget :: forall t m. MainSectionIOM t m
                              => (Ability, AbilityTableEntry) -> m (Dynamic t (Ability, Int))
-baseAbilityScoreSetterWidget (ability, AbilityTableEntry{base}) = do
-  inputE <- fmap _inputElement_value $ inputElement config
-  return $ fmap (\score -> (ability, readText score)) inputE
-
+baseAbilityScoreSetterWidget (ability, AbilityTableEntry{base}) = mdo
+  -- Each setter is a HTML number input element that should be disabled while the page is locked.
+  -- As far as I can tell it's not possible to provide attributes to the input element dynamically
+  -- (short of rolling our own input element), so we have to jump through some hoops to re-create
+  -- the input element each time the value of the page lock changes.
+  -- TODO: there might be a less roundabout way.
+  -- TODO: at the moment, after the user changes the value in these setters, the
+  -- value jumps back to the unchanged value when the page is locked, until the
+  -- new character data is received. I should fix that at some point.
+  lockDyn <- ask
+  lock0 <- sample (current lockDyn)
+  join <$> widgetHold (mkWidget lock0) (mkWidget <$> updated lockDyn)
   where
-    config = def
+    -- Build the number input widget, parameterized on whether it is currently locked.
+    mkWidget :: Bool -> m (Dynamic t (Ability, Int))
+    mkWidget = fmap (fmap parse . _inputElement_value) . inputElement . config
+
+    -- Input element configuration.
+    config locked = def
       & inputElementConfig_initialValue Reflex.Dom..~ showText base
-      & inputElementConfig_elementConfig . elementConfig_initialAttributes Reflex.Dom..~ ("type" |-> "number")
+      & inputElementConfig_elementConfig.elementConfig_initialAttributes
+          Reflex.Dom..~ Map.fromList ([("type", "number")] ++ [("disabled", "true") | locked])
+
+    parse :: Text -> (Ability, Int)
+    parse str = (ability, readText str)
 
 
 -- Options
 -- -------
-originCategoryWidget :: ReactiveM t m
+originCategoryWidget :: MainSectionM t m
                      => Event t () -> Text -> [Option]
-                     -> m (Event t MainSectionEvent)
+                     -> m (Event t Req, Dynamic t (Maybe [Text]))
 originCategoryWidget clickOutE cat opts = elClass "div" "origin-category" $ do
   let headerText = case cat of
         "init"     -> "Choose your background, class, and race:"
         "level up" -> "Level up:"
         _          -> "From " <> cat <> ":"
   el "h2" (text headerText)
-  leftmost <$> mapM (optionWidget clickOutE) opts
+  mconcat <$> mapM (optionWidget clickOutE) opts
 
-optionWidget :: ReactiveM t m => Event t () -> Option -> m (Event t MainSectionEvent)
+optionWidget :: MainSectionM t m => Event t () -> Option -> m (Event t Req, Dynamic t (Maybe [Text]))
 optionWidget clickOutE Option{id, display_id, origin, spec, choice}
   = elClass "div" "options-section-style"
   $ do el "h3" (text display_id)
@@ -219,9 +261,9 @@ optionWidget clickOutE Option{id, display_id, origin, spec, choice}
 
 -- Spec and choices
 -- ----------------
-specWidget :: ReactiveM t m
+specWidget :: MainSectionM t m
            => Event t () -> OptionId -> Spec -> Maybe Choice
-           -> m (Event t MainSectionEvent)
+           -> m (Event t Req, Dynamic t (Maybe [Text]))
 specWidget clickOutE optionId spec choice = case spec of
   ListSpec entries -> listSpecWidget
     clickOutE optionId entries (fromJust . preview #_AtomicChoice <$> choice)
@@ -233,22 +275,24 @@ specWidget clickOutE optionId spec choice = case spec of
     (map (fromJust . preview #_AtomicChoice) $ concatMap (fromJust . preview #_ListChoice) $ maybeToList choice)
   _ -> error $ "unsupported spec: " <> show spec
 
-listSpecWidget :: ReactiveM t m => Event t () -> OptionId -> [ListSpecEntry] -> Maybe Text
-               -> m (Event t MainSectionEvent)
-listSpecWidget clickOutE optionId entries choice =
-  updated . fmap inform
-  <$> customDropdownWidget clickOutE [(entry ^. #opt, True)| entry <- entries] choice
+listSpecWidget :: MainSectionM t m => Event t () -> OptionId -> [ListSpecEntry] -> Maybe Text
+               -> m (Event t Req, Dynamic t (Maybe [Text]))
+listSpecWidget clickOutE optionId entries choice = do
+  (selectE, hoverDyn) <- customDropdownWidget
+      clickOutE [DropdownEntry opt desc (Just opt /= choice) | ListSpecEntry desc opt <- entries]
+      choice
+  return (updated $ fmap inform selectE, hoverDyn)
   where
-    inform (Just choice) = MSEChoice optionId (SubmitSingletonChoice choice)
-    inform Nothing       = MSEChoice optionId RetractChoice
+    inform (Just choice) = mkChoiceReq optionId (SubmitSingletonChoice choice)
+    inform Nothing       = mkChoiceReq optionId RetractChoice
 
-orSpecWidget :: forall t m. ReactiveM t m
+orSpecWidget :: forall t m. MainSectionM t m
              => Event t () -> OptionId -> Text -> Spec -> Text -> Spec -> Maybe (Dir, Choice)
-             -> m (Event t MainSectionEvent)
+             -> m (Event t Req, Dynamic t (Maybe [Text]))
 orSpecWidget clickOutE optionId leftname left rightname right choice = el "div" $ mdo
   let subChoice dir = [c | (dir', c) <- choice, dir == dir']
 
-  let leftSubSpecWidget, rightSubSpecWidget :: m (Event t MainSectionEvent)
+  let leftSubSpecWidget, rightSubSpecWidget :: m (Event t Req, Dynamic t (Maybe [Text]))
       leftSubSpecWidget  = specWidget clickOutE optionId left (subChoice L)
       rightSubSpecWidget = specWidget clickOutE optionId right (subChoice R)
 
@@ -263,38 +307,40 @@ orSpecWidget clickOutE optionId leftname left rightname right choice = el "div" 
                          ]
 
   let subWidget0 = case fmap fst choice of
-                     Nothing -> return never
+                     Nothing -> return (never, pure Nothing)
                      Just L  -> leftSubSpecWidget
                      Just R  -> rightSubSpecWidget
 
-  el "div" $ switchDyn <$> widgetHold subWidget0 selectE
+  el "div" $ do
+    (reqE, hoverDyn) <- splitDynPure <$> widgetHold subWidget0 selectE
+    return (switchDyn reqE, join hoverDyn)
 
-fromSpecWidget :: ReactiveM t m
+fromSpecWidget :: forall m t. MainSectionM t m
                => Event t () -> OptionId
                -> Unique -> Maybe Int -> [ListSpecEntry]
                -> [Text]
-               -> m (Event t MainSectionEvent)
+               -> m (Event t Req, Dynamic t (Maybe [Text]))
 fromSpecWidget clickOutE optionId unique limit entries choices = mdo
   -- Render a prefilled dropdown widget for each choice.
-  overwriteChoiceEs <- map updated <$> mapM (mkDropdownWidget . Just) choices
+  (overwriteChoiceDyns, hoverDyns1) <- unzip <$> mapM (mkDropdownWidget . Just) choices
 
   -- If there are fewer choices than the limit, or if there is no limit, render
   -- a dropdown widget that is not yet filled in.
-  appendChoiceEs <- map updated
-    <$> mapM mkDropdownWidget [Nothing | fromMaybe True ((length choices <) <$> limit)]
+  (appendChoiceDyns, hoverDyns2) <- unzip <$> mapM mkDropdownWidget [Nothing | fromMaybe True ((length choices <) <$> limit)]
 
   -- If there is a limit, create inert, greyed-out "dropdowns" as placeholders for the
   -- remaining choices.
   replicateM_ (fromMaybe 0 ((\num -> num - length choices - 1) <$> limit))
     $ elClass "div" "dropdown dropdown-disabled" (button "...")
 
-  return
-    $ fmap (MSEChoice optionId)
-    $ leftmost
-    $ zipWith fmap (choiceEditFunctions choices) (overwriteChoiceEs <> appendChoiceEs)
+  let reqE = fmap (mkChoiceReq optionId)
+           $ leftmost
+           $ zipWith fmap (choiceEditFunctions choices) (map updated (overwriteChoiceDyns ++ appendChoiceDyns))
 
-  where mkDropdownWidget = customDropdownWidget clickOutE
-          [(o, not (o `elem` choices))| o <- map (view #opt) entries]
+  return (reqE, mconcat (hoverDyns1 <> hoverDyns2))
+
+    where mkDropdownWidget = customDropdownWidget clickOutE
+            [DropdownEntry opt desc (not (opt `elem` choices))| ListSpecEntry desc opt <- entries]
 
 choiceEditFunctions :: [Text] -> [Maybe Text -> SubmitChoice]
 choiceEditFunctions choices = case choices of
@@ -309,40 +355,59 @@ choiceEditFunctions choices = case choices of
                            Just x  -> Zipper.toList (Zipper ls x rs)
                            Nothing -> reverse ls <> rs
 
+data DropdownEntry = DropdownEntry
+  { label   :: Text
+  , desc    :: [Text]
+  , enabled :: Bool
+  }
+  deriving Generic
 
-customDropdownWidget :: forall t m. ReactiveM t m
-                     => Event t () -> [(Text, Bool)] -> Maybe Text
-                     -> m (Dynamic t (Maybe Text))
-customDropdownWidget clickOutE options selected0 = mdo
-  elAttr "div" (Map.fromList [ ("class", "dropdown dropdown-enabled")
-                             , ("onclick", "event.stopPropagation();")
-                             ]) $ mdo
+customDropdownWidget :: forall t m. MainSectionM t m
+                     => Event t () -> [DropdownEntry] -> Maybe Text
+                     -> m (Dynamic t (Maybe Text), Dynamic t (Maybe [Text]))
+customDropdownWidget clickOutE entries selected0 = do
+  lockDyn <- ask
+  let classAttrDyn = lockDyn <&> \locked -> ("class", if locked then "dropdown dropdown-disabled" else "dropdown dropdown-enabled")
+      attrDyn = Map.fromList . (: [("onclick", "event.stopPropagation();")]) <$> classAttrDyn
+  elDynAttr "div" attrDyn $ mdo
     selectedDyn <- holdDyn selected0 $ selectE
     openDyn <- foldDyn ($) False $ leftmost [not <$ toggleE, const False <$ closeE]
     let dropdownButtonClassDyn = openDyn <&> ("dropdown-button-open" ? "dropdown-button-closed")
-    (buttonEl, selectE) <- elDynClass' "button" dropdownButtonClassDyn $ mdo
+    (buttonEl, (selectE, hoverDyn)) <- elDynClass' "button" dropdownButtonClassDyn $ mdo
       dynText $ fmap (fromMaybe "...") selectedDyn
 
       let divStyleDyn = openDyn <&> \open ->
             "style" |-> ("visibility: " <> if open then "visible" else "hidden")
-      elDynAttr "div" (Map.insert "class" "dropdown-content" <$> divStyleDyn) $
-        leftmost <$>
-        liftA2 (:) (customDropdownEntryWidget Nothing) (mapM (customDropdownEntryWidget . Just) options)
+      elDynAttr "div" (Map.insert "class" "dropdown-content" <$> divStyleDyn)
+        $ fmap mconcat
+        $ sequence
+        $ customDropdownEntryWidget Nothing : map (customDropdownEntryWidget . Just) entries
 
+        -- $ (<>) <$> customDropdownEntryWidget Nothing <*> foldM (\acc entry -> acc <> customDropdownEntryWidget (Just entry)) entries
 
-    let toggleE = domEvent Click buttonEl
+    let toggleE = filterEventWithBh (not <$> current lockDyn) $ domEvent Click buttonEl
     let closeE = leftmost [void selectE, clickOutE `difference` toggleE]
 
-    return selectedDyn
+    return (selectedDyn, hoverDyn)
 
-customDropdownEntryWidget :: ReactiveM t m
-                          => Maybe (Text,Bool) -> m (Event t (Maybe Text))
-customDropdownEntryWidget option = do
-  let buttonText = fromMaybe "-- clear selection --" $ fmap fst option
-      enabled = fmap snd option /= Just False
+customDropdownEntryWidget :: MainSectionM t m
+                          => Maybe DropdownEntry -> m (Event t (Maybe Text), Dynamic t (Maybe [Text]))
+customDropdownEntryWidget entry = do
+  -- Create a button.
+  let buttonText = fromMaybe "-- clear selection --" $ fmap (view #label) entry
+      enabled = fmap (view #enabled) entry /= Just False
       classes = "dropdown-entry" <> if enabled then "" else " disabled"
   (buttonEl, _) <- elClass' "button" classes (text buttonText)
-  return $ if enabled
-           then fmap fst option <$ domEvent Click buttonEl
-           else never
+
+  -- When the button is clicked, fire an event carring the entry's label.
+  let clickE = fmap (view #label) entry <$ domEvent Click buttonEl
+
+  -- While hovering over the button, produce the event's description.
+  hoverDyn <- holdDyn Nothing $ leftmost [ fmap (\DropdownEntry{label, desc} -> label : desc) entry <$ domEvent Mouseenter buttonEl
+                                         , Nothing                                                  <$ domEvent Mouseleave buttonEl
+                                         , Nothing                                                  <$ domEvent Click buttonEl
+                                         ]
+
+  -- If the entry is disabled, the click event shouldn't fire, but the hover effect should still behave as normal.
+  return (if enabled then clickE else never, hoverDyn)
 

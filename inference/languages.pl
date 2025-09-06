@@ -6,7 +6,6 @@ language(gnomish).
 language(goblin).
 language(halfling).
 language(orc).
-language(language ).
 language(abyssal ).
 language(celestial).
 language(draconic).

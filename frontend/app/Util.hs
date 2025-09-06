@@ -73,3 +73,9 @@ whenJust Nothing  _ = blank
 
 dropPrefix :: String -> String -> String
 dropPrefix prefix = drop (length prefix)
+
+filterEventWithBh :: Reflex t => Behavior t Bool -> Event t a -> Event t a
+filterEventWithBh bh = fmapMaybe id . attachWith f bh
+  where
+    f True = Just
+    f False = const Nothing

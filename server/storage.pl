@@ -97,6 +97,12 @@ resolve_ineligible_choices :-
     findall(Origin-Id, problem(not_eligible(Origin, Id, _)), ChoicesToUndo),
     forall(member(Origin-Id, ChoicesToUndo), retractall(choice(Origin, Id, _))),
     (ChoicesToUndo \= [] -> resolve_ineligible_choices ; true).
+resolve_ineligible_choices(CharId) :-
+    character_file_path(CharId, Path),
+    snapshot(
+        (load_character_file(Path),
+         resolve_ineligible_choices)
+    ).
 
 withdraw_character_fact_without_resolving(CharId, Fact) :-
     character_file_path(CharId, Path),

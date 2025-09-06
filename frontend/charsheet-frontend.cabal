@@ -63,7 +63,6 @@ executable charsheet-frontend
                       Types.Ability,
                       Types.Cache,
                       Data.Zipper,
-                      Main2,
                       Page.EditChar,
                       Page.Sheet,
                       Widget,
@@ -74,7 +73,6 @@ executable charsheet-frontend
 
     -- Other library packages from which modules are imported.
     build-depends:    base,
-                      miso >= 1.8.7.0,
                       containers,
                       aeson,
                       ghcjs-base >= 0.8.0.2,
@@ -89,6 +87,7 @@ executable charsheet-frontend
                       jsaddle,
                       jsaddle-dom,
                       ghcjs-dom-javascript,
+                      mtl,
 
     -- Directories containing source files.
     hs-source-dirs:   app

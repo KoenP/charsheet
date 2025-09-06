@@ -84,7 +84,7 @@ instance FromJSON Speed where
 data Tool = Tool { tool:: Text, expertise :: Bool } deriving (Generic, Show)
 instance FromJSON Tool where
 
-data Resistance = Resistance { res_damage_type:: Text, res_resistance :: Text } deriving (Generic, Show)
+data Resistance = Resistance { damage_type:: Text, resistance :: Text } deriving (Generic, Show)
 instance FromJSON Resistance where
 
 data NotableTraitCategory = NotableTraitCategory { category:: Text

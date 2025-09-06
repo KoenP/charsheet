@@ -608,25 +608,32 @@ input:checked {
     z-index: 2;
 }
 
-.tab-bar button {
+.tab-bar > div {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.tab {
     background-color: inherit;
     margin-right: 10px;
+    margin: auto;
     border: none;
     outline: none;
     cursor: pointer;
     font-size: 17px;
     padding: 6pt 4pt 10pt 4pt;
+    text-decoration: none;
 }
 
-.tab-bar button:not(:hover):not(.selected) {
+.tab:not(:hover):not(.selected) {
     color: #cccccc;
 }
 
-.tab-bar button:hover, button.selected {
+.tab:hover, .tab.selected {
     color: #ffffff;
 }
 
-.tab-bar button:hover > img {
+.tab:hover > img {
     filter: invert(100%);
 }
 

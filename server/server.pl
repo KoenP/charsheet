@@ -169,9 +169,10 @@ h_post_choice(CharId, Request) :-
     read_term_from_atom(SourceAtom, Source, []),
     read_term_from_atom(IdAtom, Id, []),
     read_term_from_atom(ChoiceAtom, Choice, []),
+    % TODO improve performance by not reloading the file multiple times.
     withdraw_character_fact_without_resolving(CharId, choice(Source, Id, _)),
     record_character_fact(CharId, choice(Source, Id, Choice)),
-    resolve_ineligible_choices,
+    resolve_ineligible_choices(CharId),
     with_loaded_character(CharId, (edit_character_page_json(Json), abolish_private_tables)),
     reply_json_dict(Json).
 
