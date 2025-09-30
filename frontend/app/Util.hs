@@ -79,3 +79,17 @@ filterEventWithBh bh = fmapMaybe id . attachWith f bh
   where
     f True = Just
     f False = const Nothing
+
+ordinal :: Int -> Text
+ordinal 1 = "1st"
+ordinal 2 = "2nd"
+ordinal 3 = "3rd"
+ordinal n = showText n <> "th"
+
+safeTail :: [a] -> Maybe a
+safeTail []     = Nothing
+safeTail [x]    = Just x
+safeTail (_:xs) = safeTail xs
+
+lookupLargestLeq :: Ord a => a -> [(a, b)] -> Maybe b
+lookupLargestLeq x = fmap snd . safeTail . filter ((<= x) . fst)

@@ -62,11 +62,15 @@ executable charsheet-frontend
                       Types,
                       Types.Ability,
                       Types.Cache,
+                      Types.GroundTerm,
                       Data.Zipper,
+                      Page.Cards,
                       Page.EditChar,
                       Page.Sheet,
                       Widget,
-                      Constants
+                      Constants,
+                      Text.Parser,
+                      Text.Markdown,
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -88,6 +92,11 @@ executable charsheet-frontend
                       jsaddle-dom,
                       ghcjs-dom-javascript,
                       mtl,
+                      vector,
+                      -- commonmark,
+                      -- commonmark-pandoc,
+                      -- commonmark-extensions,
+                      -- pandoc-types,
 
     -- Directories containing source files.
     hs-source-dirs:   app
@@ -118,3 +127,8 @@ executable charsheet-frontend
                          DeriveGeneric,
                          DuplicateRecordFields,
                          OverloadedLabels,
+                         TypeApplications,
+                         LambdaCase,
+                         FunctionalDependencies,
+                         DeriveFunctor,
+                         GeneralisedNewtypeDeriving,

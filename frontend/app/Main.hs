@@ -9,6 +9,7 @@ import Optics
 
 import qualified Page.EditChar
 import qualified Page.Sheet
+import qualified Page.Cards
 
 import Types
 import Types.Cache
@@ -19,16 +20,20 @@ import Widget
 --   doc <- currentDocumentUnchecked
 --   body <- getBodyUnchecked doc
 
-data Tab = EditCharTab | SheetTab deriving (Eq, Show)
+data Tab = EditCharTab | SheetTab | CardsTab deriving (Eq, Show)
 
 type TabDef = (Tab, Text, Text)
 
 tabPage :: ReactiveIOM t m => Tab -> (Cache -> m (Event t (Cache -> Cache)))
 tabPage EditCharTab = Page.EditChar.load . view #options
 tabPage SheetTab    = Page.Sheet.load . view #sheet
+tabPage CardsTab    = Page.Cards.load . view #sheet
 
 tabs :: [TabDef]
-tabs = [(EditCharTab, "Edit", "edit.png"), (SheetTab, "Sheet", "sheet.png")]
+tabs = [ (EditCharTab, "Edit", "edit.png")
+       , (SheetTab, "Sheet", "sheet.png")
+       , (CardsTab, "Cards", "cards.png")
+       ]
 
 main :: IO ()
 main = mainWidget $ mdo
@@ -43,7 +48,7 @@ tabBarWidget = elClass "div" "dont-print tab-bar" $ tabWidgets <* backToCharacte
 
 tabWidgets :: ReactiveM t m => m (Dynamic t Tab)
 tabWidgets = el "div" $ mdo
-  selectedTabDyn <- holdDyn EditCharTab selectTabE
+  selectedTabDyn <- holdDyn CardsTab selectTabE
   selectTabE <- leftmost <$> mapM (tabWidget selectedTabDyn) tabs
   return selectedTabDyn
 

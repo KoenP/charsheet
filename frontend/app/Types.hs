@@ -5,6 +5,7 @@ import Control.Monad.IO.Class
 import Control.Monad.Fix
 import Data.Char
 import Data.Map (Map)
+import qualified Data.Vector as Vector
 import GHC.Generics
 import Data.Text (Text)
 import Language.Javascript.JSaddle.Monad (MonadJSM)
@@ -19,6 +20,7 @@ import Util (dropPrefix)
 
 type ReactiveM t m =
   ( DomBuilder t m
+  , DomBuilderSpace m ~ GhcjsDomSpace
   , MonadHold t m
   , PostBuild t m
   , TriggerEvent t m
@@ -139,7 +141,7 @@ type Origin = Text
 data Spell = Spell
   { aoe           :: Maybe Text
   , casting_time  :: Text
-  , components    :: Text -- TODO
+  , components    :: [Component]
   , concentration :: Text -- TODO -> Bool
   , description   :: Text
   , higher_level  :: Maybe Text
@@ -148,7 +150,7 @@ data Spell = Spell
   , name          :: SpellName
   , prepared      :: Text -- AlwaysPrepared
   , range         :: Text
-  -- , spell_resources     :: [PrologTerm] TODO
+  , resources     :: [PrologTerm]
   , ref           :: Maybe Text
   , ritual        :: Ritual
   , school        :: Text
@@ -156,13 +158,20 @@ data Spell = Spell
   , summary       :: Text
   , to_hit        :: Maybe Int
   , rolls         :: Maybe Text
-  -- , spell_bonuses       :: [SpellBonus] TODO
+  , bonuses       :: [SpellBonus]
   } deriving (Generic, Show)
 instance FromJSON Spell where
 
 data Component = V | S | M Text
   deriving (Generic, Show)
 instance FromJSON Component where
+  parseJSON json = do
+    prologTerm <- parseJSON @PrologTerm json
+    case prologTerm of
+      Atomic "v" -> return V
+      Atomic "s" -> return S
+      Compound "m" [Atomic material] -> return (M material)
+      _ -> fail $ "not a valid spell component: " <> show prologTerm
 
 type AlwaysPrepared = Bool
 type SpellName = Text
@@ -202,7 +211,10 @@ data PrologTerm = Compound Text [PrologTerm]
                 | List [PrologTerm]
                 | Atomic Text
   deriving (Generic, Show)
-instance FromJSON PrologTerm -- TODO this is wrong
+instance FromJSON PrologTerm where
+  parseJSON (String text) = pure $ Atomic text
+  parseJSON (Array list) = List <$> mapM parseJSON (Vector.toList list)
+  parseJSON (Object o) = Compound <$> o .: "functor" <*> o .: "args"
 
 --------------------------------------------------------------------------------
 -- EDIT CHARACTER PAGE

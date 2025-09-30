@@ -33,6 +33,8 @@ import Data.Zipper (Zipper(Zipper))
 import qualified Data.Zipper as Zipper
 --------------------------------------------------------------------------------
 
+-- | Load the "edit character" page.
+--   Only sends a request to the server if no cached version of the character options is provided.
 load :: forall t m. ReactiveIOM t m => Maybe CharacterOptions -> m (Event t (Cache -> Cache))
 load (Just opts) = page opts
 load Nothing = do
@@ -40,6 +42,15 @@ load Nothing = do
   (initE, cacheE) <- loadWidget (xhrRequest "GET" url def) page
   return $ leftmost [cacheE, (set #options . Just) <$> initE]
 
+-- | Construct the "edit character" page.
+--   It consists of a side bar where the character level can be selected, and a main section.
+--   The main section contains an ability score table and a list of options that can be set by the user.
+--
+--   If the user changes any of the character's properties, the page will send a request to the server to update the character options.
+--   Upon receiving the new character options, the page will update itself.
+--
+--   Every time the user makes a change, the sheet and character options caches are invalidated.
+--   When the server responds with new character options, the character options cache is refreshed.
 page :: ReactiveIOM t m => CharacterOptions -> m (Event t (Cache -> Cache))
 page charOpts0 = mdo
   let clickOutE = domEvent Click topLevel
@@ -57,10 +68,15 @@ page charOpts0 = mdo
     let selectedLevelOptsDyn = ffor2 charOptsDyn selectedLevelDyn $ \(CharacterOptions _ opts _) lvl ->
           fromJust $ lvl `Map.lookup` opts
     let abilityTableDyn = fmap (view #ability_table) charOptsDyn
-    (pageLoadEE, hoverDynE) <- fmap unzip $ dyn $ fmap (flip runReaderT lockDyn) $ fmap (mainSection clickOutE) $
+    let env = MainSectionEnv lockDyn clickOutE
+    (pageLoadEE, hoverDynE) <- fmap unzip $ dyn $ fmap (flip runReaderT env) $ fmap mainSection $
       liftA3 (,,) selectedLevelDyn abilityTableDyn selectedLevelOptsDyn
-
     pageLoadE <- switchHold never pageLoadEE
+
+    -- Retrieving the hover dynamic is a bit awkward. There is no flattening function for Event t (Dynamic t a),
+    -- so we turn the inner Dynamic into an Event, apply an Event flattening function, and turn the resulting Event
+    -- into a Dynamic.
+    -- TODO maybe there is a more straightforward way.
     hoverDyn <- holdDyn Nothing =<< switchHold never (fmap updated hoverDynE)
 
     return $ leftmost [ set #options . Just <$> receivedNewCharOptsE
@@ -70,7 +86,8 @@ page charOpts0 = mdo
   return cacheE
 
 
--- TODO rework all of this
+-- Requests
+-- --------
 postAndDecode :: ( DomBuilder t m
                  , MonadHold t m
                  , PostBuild t m
@@ -86,7 +103,6 @@ postAndDecode url = do
   r <- performRequestAsync $ fmap (\x -> XhrRequest "POST" x def) url
   return $ fmap decodeXhrResponse r
 
--- TODO Rework this, this sucks. Probably just construct the request when the event is fired.
 type Req = Text
 
 mkChoiceReq :: OptionId -> SubmitChoice -> Req
@@ -148,18 +164,27 @@ sideNavButton selectedLevelDyn charLevel level = do
 
 -- Main section
 -- ------------
-type MainSectionIOM t m = (ReactiveIOM t m, MonadReader (Dynamic t Bool) m)
-type MainSectionM t m = (ReactiveM t m, MonadReader (Dynamic t Bool) m)
+data MainSectionEnv t = MainSectionEnv { lockDyn   :: Dynamic t Bool
+                                       , clickOutE :: Event t ()
+                                       }
+  deriving Generic
+
+type MainSectionIOM t m = (ReactiveIOM t m, MonadReader (MainSectionEnv t) m)
+type MainSectionM t m = (ReactiveM t m, MonadReader (MainSectionEnv t) m)
 
 mainSection :: MainSectionIOM t m
-            => Event t ()
-            -> (Level, AbilityTable, [Option])
+            => (Level, AbilityTable, [Option])
             -> m (Event t Req, Dynamic t (Maybe [Text]))
-mainSection clickOutE (level, abilityTable, options) = elClass "div" "main-section" $ do
+mainSection (level, abilityTable, options) = elClass "div" "main-section" $ do
+  -- Show the ability table.
+  -- Only show the base abilities as editable when character level 1 is selected.
   let baseAbilitiesEditable = level == 1
   setAbilityE <- abilityTableWidget baseAbilitiesEditable abilityTable
+
+  -- Show all character options.
   (choiceE, hoverDyn) <- divcl "character-options" $ do
-    fmap mconcat $ mapM (uncurry $ originCategoryWidget clickOutE) originCategories
+    fmap mconcat $ mapM (uncurry originCategoryWidget) originCategories
+
   return $ (leftmost [setAbilityE, choiceE], hoverDyn)
   where
     originCategories = map (\((_,k),v) -> (k,v))
@@ -184,14 +209,14 @@ abilityTableWidget baseAbilitiesEditable abilityTable = divcl "ability-edit" $ e
   -- Base scores row. Contains number input for each ability.
   setBaseAbilitiesE <- if baseAbilitiesEditable
 
-    -- If the base abilities are editable, 
+    -- If the base abilities are editable, show an input element for each one.
     then el "tr" $
          do el "th" (text "Base Score")
 
             -- A Dynamic for each ability setter input.
             abilityValueDyns <- mapM (el "td" . baseAbilityScoreSetterWidget) taggedEntries
 
-            -- Trigger an event 0.5 seconds after the most recent update to one of these Dynamics.
+            -- Trigger an event 0.5 seconds after the most recent update to any one of these Dynamics.
             sampleE <- debounce 0.5 $ void $ leftmost (map updated abilityValueDyns)
 
             -- The value to be read when the event eventually fires.
@@ -220,7 +245,7 @@ baseAbilityScoreSetterWidget (ability, AbilityTableEntry{base}) = mdo
   -- TODO: at the moment, after the user changes the value in these setters, the
   -- value jumps back to the unchanged value when the page is locked, until the
   -- new character data is received. I should fix that at some point.
-  lockDyn <- ask
+  lockDyn <- view #lockDyn <$> ask
   lock0 <- sample (current lockDyn)
   join <$> widgetHold (mkWidget lock0) (mkWidget <$> updated lockDyn)
   where
@@ -228,7 +253,7 @@ baseAbilityScoreSetterWidget (ability, AbilityTableEntry{base}) = mdo
     mkWidget :: Bool -> m (Dynamic t (Ability, Int))
     mkWidget = fmap (fmap parse . _inputElement_value) . inputElement . config
 
-    -- Input element configuration.
+    -- Input element configuration, depending on whether the element should be locked.
     config locked = def
       & inputElementConfig_initialValue Reflex.Dom..~ showText base
       & inputElementConfig_elementConfig.elementConfig_initialAttributes
@@ -241,45 +266,45 @@ baseAbilityScoreSetterWidget (ability, AbilityTableEntry{base}) = mdo
 -- Options
 -- -------
 originCategoryWidget :: MainSectionM t m
-                     => Event t () -> Text -> [Option]
+                     => Text -> [Option]
                      -> m (Event t Req, Dynamic t (Maybe [Text]))
-originCategoryWidget clickOutE cat opts = elClass "div" "origin-category" $ do
+originCategoryWidget cat opts = elClass "div" "origin-category" $ do
   let headerText = case cat of
         "init"     -> "Choose your background, class, and race:"
         "level up" -> "Level up:"
         _          -> "From " <> cat <> ":"
   el "h2" (text headerText)
-  mconcat <$> mapM (optionWidget clickOutE) opts
+  mconcat <$> mapM optionWidget opts
 
-optionWidget :: MainSectionM t m => Event t () -> Option -> m (Event t Req, Dynamic t (Maybe [Text]))
-optionWidget clickOutE Option{id, display_id, origin, spec, choice}
+optionWidget :: MainSectionM t m => Option -> m (Event t Req, Dynamic t (Maybe [Text]))
+optionWidget Option{id, display_id, origin, spec, choice}
   = elClass "div" "options-section-style"
   $ do el "h3" (text display_id)
-       specWidget clickOutE optionId spec choice
+       specWidget optionId spec choice
   where
     optionId = OptionId origin id
 
 -- Spec and choices
 -- ----------------
 specWidget :: MainSectionM t m
-           => Event t () -> OptionId -> Spec -> Maybe Choice
+           => OptionId -> Spec -> Maybe Choice
            -> m (Event t Req, Dynamic t (Maybe [Text]))
-specWidget clickOutE optionId spec choice = case spec of
+specWidget optionId spec choice = case spec of
   ListSpec entries -> listSpecWidget
-    clickOutE optionId entries (fromJust . preview #_AtomicChoice <$> choice)
+    optionId entries (fromJust . preview #_AtomicChoice <$> choice)
   OrSpec leftname left rightname right -> orSpecWidget
-    clickOutE optionId leftname left rightname right
+    optionId leftname left rightname right
     (fromJust . preview #_OrChoice <$> choice)
   FromSpec unique num (ListSpec entries) -> fromSpecWidget
-    clickOutE optionId unique num entries
+    optionId unique num entries
     (map (fromJust . preview #_AtomicChoice) $ concatMap (fromJust . preview #_ListChoice) $ maybeToList choice)
   _ -> error $ "unsupported spec: " <> show spec
 
-listSpecWidget :: MainSectionM t m => Event t () -> OptionId -> [ListSpecEntry] -> Maybe Text
+listSpecWidget :: MainSectionM t m => OptionId -> [ListSpecEntry] -> Maybe Text
                -> m (Event t Req, Dynamic t (Maybe [Text]))
-listSpecWidget clickOutE optionId entries choice = do
+listSpecWidget optionId entries choice = do
   (selectE, hoverDyn) <- customDropdownWidget
-      clickOutE [DropdownEntry opt desc (Just opt /= choice) | ListSpecEntry desc opt <- entries]
+      [DropdownEntry opt desc (Just opt /= choice) | ListSpecEntry desc opt <- entries]
       choice
   return (updated $ fmap inform selectE, hoverDyn)
   where
@@ -287,14 +312,14 @@ listSpecWidget clickOutE optionId entries choice = do
     inform Nothing       = mkChoiceReq optionId RetractChoice
 
 orSpecWidget :: forall t m. MainSectionM t m
-             => Event t () -> OptionId -> Text -> Spec -> Text -> Spec -> Maybe (Dir, Choice)
+             => OptionId -> Text -> Spec -> Text -> Spec -> Maybe (Dir, Choice)
              -> m (Event t Req, Dynamic t (Maybe [Text]))
-orSpecWidget clickOutE optionId leftname left rightname right choice = el "div" $ mdo
+orSpecWidget optionId leftname left rightname right choice = el "div" $ mdo
   let subChoice dir = [c | (dir', c) <- choice, dir == dir']
 
   let leftSubSpecWidget, rightSubSpecWidget :: m (Event t Req, Dynamic t (Maybe [Text]))
-      leftSubSpecWidget  = specWidget clickOutE optionId left (subChoice L)
-      rightSubSpecWidget = specWidget clickOutE optionId right (subChoice R)
+      leftSubSpecWidget  = specWidget optionId left (subChoice L)
+      rightSubSpecWidget = specWidget optionId right (subChoice R)
 
   -- TODO styling
   selectedDirDyn <- holdDyn (fmap fst choice) $ leftmost [Just L <$ selectLeftE, Just R <$ selectRightE]
@@ -316,11 +341,11 @@ orSpecWidget clickOutE optionId leftname left rightname right choice = el "div" 
     return (switchDyn reqE, join hoverDyn)
 
 fromSpecWidget :: forall m t. MainSectionM t m
-               => Event t () -> OptionId
+               => OptionId
                -> Unique -> Maybe Int -> [ListSpecEntry]
                -> [Text]
                -> m (Event t Req, Dynamic t (Maybe [Text]))
-fromSpecWidget clickOutE optionId unique limit entries choices = mdo
+fromSpecWidget optionId unique limit entries choices = mdo
   -- Render a prefilled dropdown widget for each choice.
   (overwriteChoiceDyns, hoverDyns1) <- unzip <$> mapM (mkDropdownWidget . Just) choices
 
@@ -339,7 +364,7 @@ fromSpecWidget clickOutE optionId unique limit entries choices = mdo
 
   return (reqE, mconcat (hoverDyns1 <> hoverDyns2))
 
-    where mkDropdownWidget = customDropdownWidget clickOutE
+    where mkDropdownWidget = customDropdownWidget
             [DropdownEntry opt desc (not (opt `elem` choices))| ListSpecEntry desc opt <- entries]
 
 choiceEditFunctions :: [Text] -> [Maybe Text -> SubmitChoice]
@@ -363,16 +388,19 @@ data DropdownEntry = DropdownEntry
   deriving Generic
 
 customDropdownWidget :: forall t m. MainSectionM t m
-                     => Event t () -> [DropdownEntry] -> Maybe Text
+                     => [DropdownEntry]
+                     -> Maybe Text
                      -> m (Dynamic t (Maybe Text), Dynamic t (Maybe [Text]))
-customDropdownWidget clickOutE entries selected0 = do
-  lockDyn <- ask
+customDropdownWidget entries selected0 = do
+  MainSectionEnv{ lockDyn, clickOutE } <- ask
   let classAttrDyn = lockDyn <&> \locked -> ("class", if locked then "dropdown dropdown-disabled" else "dropdown dropdown-enabled")
       attrDyn = Map.fromList . (: [("onclick", "event.stopPropagation();")]) <$> classAttrDyn
   elDynAttr "div" attrDyn $ mdo
     selectedDyn <- holdDyn selected0 $ selectE
     openDyn <- foldDyn ($) False $ leftmost [not <$ toggleE, const False <$ closeE]
-    let dropdownButtonClassDyn = openDyn <&> ("dropdown-button-open" ? "dropdown-button-closed")
+    let dropdownButtonOpenClosedDyn = ("dropdown-button-open" ? "dropdown-button-closed") <$> openDyn
+        dropdownFilledInClassDyn = ("dropdown-filled-in" ? "dropdown-blank") . isJust <$> selectedDyn
+        dropdownButtonClassDyn = Text.intercalate " " <$> sequenceA [dropdownButtonOpenClosedDyn, dropdownFilledInClassDyn]
     (buttonEl, (selectE, hoverDyn)) <- elDynClass' "button" dropdownButtonClassDyn $ mdo
       dynText $ fmap (fromMaybe "...") selectedDyn
 
@@ -396,7 +424,7 @@ customDropdownEntryWidget entry = do
   -- Create a button.
   let buttonText = fromMaybe "-- clear selection --" $ fmap (view #label) entry
       enabled = fmap (view #enabled) entry /= Just False
-      classes = "dropdown-entry" <> if enabled then "" else " disabled"
+      classes = Text.intercalate " " $ catMaybes [Just "dropdown-entry" , ["disabled"  | not enabled]]
   (buttonEl, _) <- elClass' "button" classes (text buttonText)
 
   -- When the button is clicked, fire an event carring the entry's label.
