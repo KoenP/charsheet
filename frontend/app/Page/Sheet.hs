@@ -115,7 +115,7 @@ hitDiceSectionWidget hitDice = do
   divcl "hit-dice" $ mapM_ hitDiceWidget $ sortOn (view #d) $ hitDice
   where
     hitDiceWidget (HitDice n d) = replicateM n
-      $ elAttr "img" ("src" |-> "/static/icons/d" <> showText d <> ".svg") blank
+      $ elAttr "img" ("src" |-> ("/static/icons/d" <> showText d <> ".svg")) blank
 
 -- Second page
 -- -----------

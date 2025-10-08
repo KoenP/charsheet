@@ -3,12 +3,19 @@ module Page.Cards where
 --------------------------------------------------------------------------------
 import Control.Monad
 import Control.Monad.Fix
+import Control.Monad.Reader
+import Data.Bool
 import Data.Either
 import Data.Maybe
-import Reflex.Dom
+import GHC.Generics (Generic)
+import Reflex.Dom hiding ((.~))
+import qualified Reflex.Dom
 import Reflex.Host.Class
+import Data.List
 import Data.Map (Map)
 import qualified Data.Map as Map
+import Data.Set (Set)
+import qualified Data.Set as Set
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Text.Lazy (toStrict)
@@ -33,24 +40,137 @@ load Nothing      = do
   (initE, _) <- loadWidget (xhrRequest "GET" ("/api/character/" <> charName <> "/sheet") def) (\sheet -> page Nothing sheet >> return never)
   return (set #sheet . Just <$> initE)
 
-type CardPageM t m = (DomBuilder t m)
--- type CardPageM t m = ( DomBuilder t m, MonadJSM m, MonadJSM (Performable m), DomBuilderSpace m ~ GhcjsDomSpace
---                      , Ref m ~ Ref IO, Ref (Performable m) ~ GHC.Internal.IORef.IORef, MonadRef m, MonadRef (Performable m)
---                      , HasDocument m, TriggerEvent t m, PerformEvent t m, PostBuild t m
---                      , MonadReflexCreateTrigger t m, MonadHold t m, MonadSample t (Performable m), MonadFix m
---                      )
+type CardPageM t m = (DomBuilder t m, MonadHold t m, MonadFix m, PostBuild t m)
+type WithCardConfigM t m = (CardPageM t m, MonadReader CardConfig m)
 
-page :: CardPageM t m => Maybe CharacterSheet -> CharacterSheet -> m ()
-page maybeOldSheet sheet = do
-  gotoCardSelectPageE <- button "Configure"
+page :: forall t m. CardPageM t m => Maybe CharacterSheet -> CharacterSheet -> m ()
+page maybeOldSheet sheet = mdo
+  let
+    cardsWidgetDyn, configWidgetDyn :: Dynamic t (m (Event t (CardConfig -> CardConfig)))
+    cardsWidgetDyn  = (never <$) . cardsWidget maybeOldSheet sheet <$> cardConfigDyn
+    configWidgetDyn = cardConfigPageWidget sheet <$> cardConfigDyn
 
-  let (traitCategories, spellcastingSections) = (sheet ^. #notable_traits, sheet ^. #spellcasting_sections)
 
-  divcl "cards"
-    $ sequence $ concat $ chunks 8
-    $ concatMap notableTraitCategoryWidgets traitCategories <> concatMap spellcastingSectionCardWidgets spellcastingSections
+  updateCardConfigE :: Event t (CardConfig -> CardConfig) <- switchHold never
+    =<< toggleWidget "Configure" "Show cards" cardsWidgetDyn configWidgetDyn
+
+  cardConfigDyn <- foldDyn ($) defaultCardConfig updateCardConfigE
+
 
   return ()
+
+toggleWidget :: forall t m a. CardPageM t m => Text -> Text -> Dynamic t (m a) -> Dynamic t (m a) -> m (Event t a)
+toggleWidget label0 label1 w0 w1 = mdo
+  toggleE <- switchHold never =<< dyn (button . bool label0 label1 <$> toggleDyn)
+  toggleDyn <- toggle False toggleE
+  dyn $ bool w0 w1 =<< toggleDyn
+
+--------------------------------------------------------------------------------
+-- Card config sub-page
+--------------------------------------------------------------------------------
+
+type Category = Text
+data ColorScheme = ColorScheme { bg :: Text, fg :: Text, name :: Text} deriving (Show, Generic)
+data CardConfig = CardConfig
+  { showSpells           :: Bool
+  , showTraits           :: Bool
+  , onlyShowChanges      :: Bool
+  , excludedCategories   :: Set Category
+  , categoryColorSchemes :: Map Category ColorScheme
+  } deriving (Show, Generic)
+defaultCardConfig :: CardConfig
+defaultCardConfig = CardConfig
+  { showSpells           = True
+  , showTraits           = True
+  , onlyShowChanges      = False
+  , excludedCategories   = Set.empty
+  , categoryColorSchemes = Map.empty
+  }
+type CardConfigE t = Event t (CardConfig -> CardConfig)
+
+categoryIncludedLens ::  Text -> Optic' A_Lens NoIx CardConfig Bool
+categoryIncludedLens category = #excludedCategories % contains category % iso not not
+
+cardConfigPageWidget :: CardPageM t m => CharacterSheet -> CardConfig -> m (CardConfigE t)
+cardConfigPageWidget sheet cardConfig = flip runReaderT cardConfig $ do
+  e <- globalCardConfigWidget cardConfig
+  e' <- mapM categoryConfigWidget $ mergeTraitAndSpellCategories (sheet ^. #notable_traits) (sheet ^. #spellcasting_sections)
+
+  return (leftmost $ e : e')
+
+  where
+    mergeTraitAndSpellCategories :: [NotableTraitCategory] -> [SpellcastingSection]
+                                 -> [(Category, [Trait], [Spell])]
+    mergeTraitAndSpellCategories traitCategories spellcastingSections =
+      mergeCategories [(category, traits) | NotableTraitCategory {category, traits} <- traitCategories]
+                      [(origin  , spells) | SpellcastingSection  {origin  , spells} <- spellcastingSections]
+
+    mergeCategories :: Ord k => [(k, [a])] -> [(k, [b])] -> [(k, [a], [b])]
+    mergeCategories left right = go (sortOn fst left) (sortOn fst right)
+      where
+        go l                    []                   = [(xcat, xs, []) | (xcat, xs) <- l]
+        go []                   r                    = [(ycat, [], ys) | (ycat, ys) <- r]
+        go l@((xcat,xs) : lrem) r@((ycat,ys) : rrem) = case compare xcat ycat of
+          EQ -> (xcat, xs, ys) : go lrem rrem
+          LT -> (xcat, xs, []) : go lrem r
+          GT -> (ycat, [], ys) : go l    rrem
+
+globalCardConfigWidget :: forall t m. WithCardConfigM t m => CardConfig -> m (CardConfigE t)
+globalCardConfigWidget cardConfig0 = el "div" $ fmap leftmost $ sequenceA
+  [ checkboxWidget #showTraits "show-traits-checkbox" "Include features"
+  , checkboxWidget #showSpells "show-spells-checkbox" "Include spells"
+  , checkboxWidget #onlyShowChanges "only-show-changes" "Only show changes w.r.t. previous level"
+  ]
+
+
+categoryConfigWidget :: WithCardConfigM t m => (Category, [Trait], [Spell]) -> m (CardConfigE t)
+categoryConfigWidget (category, traits, spells) = do
+  CardConfig{excludedCategories} <- ask
+  let
+    categoryIncluded = category `Set.notMember` excludedCategories
+    categoryHeaderClass = if categoryIncluded then "" else "omitted"
+
+  elClass "h2" categoryHeaderClass $ checkboxWidget
+    (categoryIncludedLens category)
+    ("show-category-" <> category <> "-checkbox")
+    ("From " <> category <> ":")
+
+  -- el "div" $ el "h4" $ text "Features"
+  -- return never
+
+checkboxWidget :: (Is k A_Getter, Is k A_Setter, WithCardConfigM t m)
+                => Optic' k is CardConfig Bool -> Text -> Text -> m (CardConfigE t)
+checkboxWidget optic identifier label = do
+  cardConfig0 <- ask
+  inputEl <- inputElement $ def
+    & inputElementConfig_initialChecked Reflex.Dom..~ (cardConfig0 ^. optic)
+    & inputElementConfig_elementConfig.elementConfig_initialAttributes
+        Reflex.Dom..~ ("type" |-> "checkbox" <> "id" |-> identifier)
+  elAttr "label" ("for" |-> identifier) (text label)
+  return $ (optic .~) <$> _inputElement_checkedChange inputEl
+
+
+--------------------------------------------------------------------------------
+-- Cards sub-page
+--------------------------------------------------------------------------------
+
+
+cardsWidget :: CardPageM t m => Maybe CharacterSheet -> CharacterSheet -> CardConfig -> m ()
+cardsWidget maybeOldSheet sheet config = flip runReaderT config $ divcl "cards"
+  $ void $ sequence $ concat $ chunks 8
+  $ concatMap notableTraitCategoryWidgets traitCategories <> concatMap spellcastingSectionCardWidgets spellcastingSections
+
+  where
+    traitCategories      | config ^. #showTraits = sheet
+                                                   ^. #notable_traits
+                                                   %  to (filter $ \NotableTraitCategory{category}
+                                                           -> config ^. categoryIncludedLens category)
+                         | otherwise             = []
+    spellcastingSections | config ^. #showSpells = sheet
+                                                   ^. #spellcasting_sections
+                                                   %  to (filter $ \SpellcastingSection{origin}
+                                                           -> config ^. categoryIncludedLens origin)
+                         | otherwise             = []
 
 chunks :: Int -> [a] -> [[a]]
 chunks _ [] = []
@@ -66,10 +186,10 @@ getCardSections (Just oldSheet) sheet =
     diffTraitCategories = undefined
     diffSpellcastingSections = undefined
 
-notableTraitCategoryWidgets :: CardPageM t m => NotableTraitCategory -> [m ()]
+notableTraitCategoryWidgets :: WithCardConfigM t m => NotableTraitCategory -> [m ()]
 notableTraitCategoryWidgets NotableTraitCategory{ category, traits } = concatMap (notableTraitCardsWidget category) traits
 
-notableTraitCardsWidget :: CardPageM t m => Text -> Trait -> [m ()]
+notableTraitCardsWidget :: WithCardConfigM t m => Text -> Trait -> [m ()]
 notableTraitCardsWidget category Trait{name, desc, ref, seminotable}
   = zipWith (\i page -> notableTraitCardWidget (mkCardTitle name i) ref page) [1..] pages
   where
@@ -77,7 +197,7 @@ notableTraitCardsWidget category Trait{name, desc, ref, seminotable}
     mkCardTitle name i | [_] <- pages = name
                        | otherwise    = name <> " (" <> showText i <> "/" <> showText (length pages) <> ")"
 
-notableTraitCardWidget :: CardPageM t m => Text -> Maybe Text -> Text -> m ()
+notableTraitCardWidget :: WithCardConfigM t m => Text -> Maybe Text -> Text -> m ()
 notableTraitCardWidget title ref page = divcl "card" $ do
   divcl "card-title-section" $ divcl "card-title" $ text title
   divcl "card-flexgrow" blank

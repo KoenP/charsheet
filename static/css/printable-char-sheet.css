@@ -2,6 +2,8 @@
     --side-nav-width: 260px;
     --tab-bar-height: 42px;
     --ability-table-height: 187px;
+    --card-fg: black;
+    --card-bg: #e8e8e8;
 }
 
 @media print {
@@ -654,19 +656,6 @@ input:checked {
     filter: invert(50%);
 }
 
-.card-description p {
-    margin-bottom: 4pt;
-    margin-top: 4pt;
-}
-
-.card-description ul {
-    padding-inline-start: 2.5mm;
-}
-
-.card-description ol {
-    padding-inline-start: 2.5mm;
-}
-
 .side-nav {
     height: 100%;
     width: var(--side-nav-width);
@@ -738,16 +727,28 @@ input:checked {
     cursor: pointer;
 }
 
-.dropdown-button-closed {
+.dropdown-button-closed.dropdown-blank {
     background-color: #3498db;
 }
 
-.dropdown-button-open {
+.dropdown-enabled > .dropdown-blank:hover {
     background-color: #2989b9;
 }
 
-.dropdown-enabled > button:hover {
+.dropdown-blank.dropdown-button-open {
     background-color: #2989b9;
+}
+
+.dropdown-button-closed.dropdown-filled-in {
+    background-color: #00b400;
+}
+
+.dropdown-button-open.dropdown-filled-in {
+    background-color: #009600;
+}
+
+.dropdown-enabled > .dropdown-filled-in:hover {
+    background-color: #009600;
 }
 
 .dropdown-disabled > button {
@@ -814,4 +815,121 @@ input:checked {
     text-align: left;
 }
 
+.cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    break-inside: avoid;
+}
 
+
+.card {
+  position: relative;
+  border: 1px solid rgb(0, 0, 0);
+
+  /* MTG size */
+  width: 63mm;
+  min-width: 63mm;
+  height: 88mm;
+  min-height: 88mm;
+
+  box-sizing: border-box;
+
+  background-color: var(--card-bg) !important;
+  border-color: var(--card-fg) !important;
+  print-color-adjust: exact;
+  font-family: Verdana, Dosis;
+  padding: 4px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title-section {
+  text-align: center;
+  background-color: #ffffff !important;
+  color: var(--card-fg) !important;
+  print-color-adjust: exact;
+  border-color: var(--card-fg) !important;
+  border-radius: 8px;
+  border: 2px solid rgb(0, 0, 0);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 4.2mm;
+  text-transform: capitalize;
+}
+
+.card-subtitle {
+  text-transform: uppercase;
+  font-size: 7px;
+  font-weight: bold;
+}
+
+.card-boxes-section {
+  margin-top: 1.5mm;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6mm;
+}
+
+.card-box {
+  background-color: #ffffff !important;
+  color: var(--card-fg) !important;
+  print-color-adjust: exact;
+  border-radius: 6px;
+  font-size: 8px;
+  text-align: center;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  padding: 0.7mm;
+  border-color: var(--card-fg);
+  border-style: solid;
+  border-width: 1px;
+}
+
+.card-box > img {
+    width: 10px;
+    margin-left: 1mm;
+    background-color: var(--card-fg);
+}
+
+.card-flexgrow {
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.card-description {
+  font-size: var(--description-font-size);
+  line-height: var(--description-font-size);
+  text-align: justify;
+  background-color: #ffffff;
+  color: var(--card-fg);
+  print-color-adjust: exact;
+  border-radius: 8px;
+  padding: 0 1mm 0 1mm;
+  margin-bottom: 2mm;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.card-description p {
+    margin-bottom: 4pt;
+    margin-top: 4pt;
+}
+
+.card-description ul {
+    padding-inline-start: 2.5mm;
+}
+
+.card-description ol {
+    padding-inline-start: 2.5mm;
+}
+
+.omitted {
+    color: #aaaaaa;
+    text-decoration: line-through;
+}

@@ -68,6 +68,7 @@ executable charsheet-frontend
                       Page.EditChar,
                       Page.Sheet,
                       Widget,
+                      Widget.Dropdown,
                       Constants,
                       Text.Parser,
                       Text.Markdown,

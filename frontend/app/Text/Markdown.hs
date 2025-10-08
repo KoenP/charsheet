@@ -41,7 +41,7 @@ runMarkdownParser' :: ReaderT Int (Parser [MarkdownLine]) a -> [MarkdownLine] ->
 runMarkdownParser' p md = fst $ runMarkdownParser p 0 md
 
 markdownP :: MonadMarkdownParser m => m Markdown
-markdownP = many (blockP <* many (char BlankLine))
+markdownP = many (many (char BlankLine) *> blockP <* many (char BlankLine))
 
 blockP :: MonadMarkdownParser m => m Block
 blockP = blockAtIndentationP

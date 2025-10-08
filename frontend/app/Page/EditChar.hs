@@ -24,6 +24,7 @@ import Language.Javascript.JSaddle.Types
 import Optics
 
 import Widget
+import Widget.Dropdown
 import Constants (charName)
 import Types
 import Types.Ability
@@ -68,7 +69,7 @@ page charOpts0 = mdo
     let selectedLevelOptsDyn = ffor2 charOptsDyn selectedLevelDyn $ \(CharacterOptions _ opts _) lvl ->
           fromJust $ lvl `Map.lookup` opts
     let abilityTableDyn = fmap (view #ability_table) charOptsDyn
-    let env = MainSectionEnv lockDyn clickOutE
+    let env = DropdownContext lockDyn clickOutE
     (pageLoadEE, hoverDynE) <- fmap unzip $ dyn $ fmap (flip runReaderT env) $ fmap mainSection $
       liftA3 (,,) selectedLevelDyn abilityTableDyn selectedLevelOptsDyn
     pageLoadE <- switchHold never pageLoadEE
@@ -164,13 +165,8 @@ sideNavButton selectedLevelDyn charLevel level = do
 
 -- Main section
 -- ------------
-data MainSectionEnv t = MainSectionEnv { lockDyn   :: Dynamic t Bool
-                                       , clickOutE :: Event t ()
-                                       }
-  deriving Generic
-
-type MainSectionIOM t m = (ReactiveIOM t m, MonadReader (MainSectionEnv t) m)
-type MainSectionM t m = (ReactiveM t m, MonadReader (MainSectionEnv t) m)
+type MainSectionIOM t m = (ReactiveIOM t m, MonadReader (DropdownContext t) m)
+type MainSectionM t m = (ReactiveM t m, MonadReader (DropdownContext t) m)
 
 mainSection :: MainSectionIOM t m
             => (Level, AbilityTable, [Option])
@@ -379,63 +375,3 @@ choiceEditFunctions choices = case choices of
       SubmitListChoice $ case newChoice of
                            Just x  -> Zipper.toList (Zipper ls x rs)
                            Nothing -> reverse ls <> rs
-
-data DropdownEntry = DropdownEntry
-  { label   :: Text
-  , desc    :: [Text]
-  , enabled :: Bool
-  }
-  deriving Generic
-
-customDropdownWidget :: forall t m. MainSectionM t m
-                     => [DropdownEntry]
-                     -> Maybe Text
-                     -> m (Dynamic t (Maybe Text), Dynamic t (Maybe [Text]))
-customDropdownWidget entries selected0 = do
-  MainSectionEnv{ lockDyn, clickOutE } <- ask
-  let classAttrDyn = lockDyn <&> \locked -> ("class", if locked then "dropdown dropdown-disabled" else "dropdown dropdown-enabled")
-      attrDyn = Map.fromList . (: [("onclick", "event.stopPropagation();")]) <$> classAttrDyn
-  elDynAttr "div" attrDyn $ mdo
-    selectedDyn <- holdDyn selected0 $ selectE
-    openDyn <- foldDyn ($) False $ leftmost [not <$ toggleE, const False <$ closeE]
-    let dropdownButtonOpenClosedDyn = ("dropdown-button-open" ? "dropdown-button-closed") <$> openDyn
-        dropdownFilledInClassDyn = ("dropdown-filled-in" ? "dropdown-blank") . isJust <$> selectedDyn
-        dropdownButtonClassDyn = Text.intercalate " " <$> sequenceA [dropdownButtonOpenClosedDyn, dropdownFilledInClassDyn]
-    (buttonEl, (selectE, hoverDyn)) <- elDynClass' "button" dropdownButtonClassDyn $ mdo
-      dynText $ fmap (fromMaybe "...") selectedDyn
-
-      let divStyleDyn = openDyn <&> \open ->
-            "style" |-> ("visibility: " <> if open then "visible" else "hidden")
-      elDynAttr "div" (Map.insert "class" "dropdown-content" <$> divStyleDyn)
-        $ fmap mconcat
-        $ sequence
-        $ customDropdownEntryWidget Nothing : map (customDropdownEntryWidget . Just) entries
-
-        -- $ (<>) <$> customDropdownEntryWidget Nothing <*> foldM (\acc entry -> acc <> customDropdownEntryWidget (Just entry)) entries
-
-    let toggleE = filterEventWithBh (not <$> current lockDyn) $ domEvent Click buttonEl
-    let closeE = leftmost [void selectE, clickOutE `difference` toggleE]
-
-    return (selectedDyn, hoverDyn)
-
-customDropdownEntryWidget :: MainSectionM t m
-                          => Maybe DropdownEntry -> m (Event t (Maybe Text), Dynamic t (Maybe [Text]))
-customDropdownEntryWidget entry = do
-  -- Create a button.
-  let buttonText = fromMaybe "-- clear selection --" $ fmap (view #label) entry
-      enabled = fmap (view #enabled) entry /= Just False
-      classes = Text.intercalate " " $ catMaybes [Just "dropdown-entry" , ["disabled"  | not enabled]]
-  (buttonEl, _) <- elClass' "button" classes (text buttonText)
-
-  -- When the button is clicked, fire an event carring the entry's label.
-  let clickE = fmap (view #label) entry <$ domEvent Click buttonEl
-
-  -- While hovering over the button, produce the event's description.
-  hoverDyn <- holdDyn Nothing $ leftmost [ fmap (\DropdownEntry{label, desc} -> label : desc) entry <$ domEvent Mouseenter buttonEl
-                                         , Nothing                                                  <$ domEvent Mouseleave buttonEl
-                                         , Nothing                                                  <$ domEvent Click buttonEl
-                                         ]
-
-  -- If the entry is disabled, the click event shouldn't fire, but the hover effect should still behave as normal.
-  return (if enabled then clickE else never, hoverDyn)
-
