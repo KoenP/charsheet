@@ -25,18 +25,27 @@ data DropdownEntry = DropdownEntry
   }
   deriving Generic
 
-data DropdownContext t = DropdownContext
-  { lockDyn   :: Dynamic t Bool
-  , clickOutE :: Event t ()
-  }
-  deriving Generic
+-- data DropdownContext t = DropdownContext
+--   { lockDyn   :: Dynamic t Bool
+--   , clickOutE :: Event t ()
+--   }
+--   deriving Generic
 
-customDropdownWidget :: forall t m. (ReactiveM t m, MonadReader (DropdownContext t) m)
+class DropdownCtx ctx t | ctx -> t where
+  getLockDyn   :: ctx -> Dynamic t Bool
+  getClickOutE :: ctx -> Event t ()
+
+instance DropdownCtx (Dynamic t Bool, Event t ()) t where
+  getLockDyn   = fst
+  getClickOutE = snd
+
+customDropdownWidget :: forall ctx t m. (ReactiveM t m, MonadReader ctx m, DropdownCtx ctx t)
                      => [DropdownEntry]
                      -> Maybe Text
                      -> m (Dynamic t (Maybe Text), Dynamic t (Maybe [Text]))
 customDropdownWidget entries selected0 = do
-  DropdownContext{ lockDyn, clickOutE } <- ask
+  lockDyn   <- asks getLockDyn
+  clickOutE <- asks getClickOutE
   let
     -- The dropdown is greyed out and not clickable if it is locked.
     classAttrDyn = lockDyn <&> \locked -> ("class", if locked then "dropdown dropdown-disabled" else "dropdown dropdown-enabled")
@@ -79,7 +88,7 @@ customDropdownWidget entries selected0 = do
 
     return (selectedDyn, hoverDyn)
 
-customDropdownEntryWidget :: (ReactiveM t m, MonadReader (DropdownContext t) m)
+customDropdownEntryWidget :: (ReactiveM t m, MonadReader ctx m, DropdownCtx ctx t)
                           => Maybe DropdownEntry -> m (Event t (Maybe Text), Dynamic t (Maybe [Text]))
 customDropdownEntryWidget entry = do
   -- Create a button.

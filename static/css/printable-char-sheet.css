@@ -933,3 +933,15 @@ input:checked {
     color: #aaaaaa;
     text-decoration: line-through;
 }
+
+/******************************************************************************/
+/* Color schemes */
+.colorscheme-blue {
+    bg: #ddddff;
+    fg: #000096;
+}
+
+.colorscheme-red {
+    bg: #ffdddd;
+    fg: #960000;
+}

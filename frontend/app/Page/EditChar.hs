@@ -66,11 +66,13 @@ page charOpts0 = mdo
     selectedLevelDyn <- sideNav charOptsDyn hoverDyn
 
     -- Render the main section, which displays character options for the currently selected level.
-    let selectedLevelOptsDyn = ffor2 charOptsDyn selectedLevelDyn $ \(CharacterOptions _ opts _) lvl ->
-          fromJust $ lvl `Map.lookup` opts
-    let abilityTableDyn = fmap (view #ability_table) charOptsDyn
-    let env = DropdownContext lockDyn clickOutE
-    (pageLoadEE, hoverDynE) <- fmap unzip $ dyn $ fmap (flip runReaderT env) $ fmap mainSection $
+    let
+      selectedLevelOptsDyn = ffor2 charOptsDyn selectedLevelDyn $ \(CharacterOptions _ opts _) lvl ->
+        fromJust $ lvl `Map.lookup` opts
+      abilityTableDyn = fmap (view #ability_table) charOptsDyn
+      runWithDropdownCtx = flip runReaderT (lockDyn, clickOutE)
+
+    (pageLoadEE, hoverDynE) <- fmap unzip $ dyn $ fmap runWithDropdownCtx $ fmap mainSection $
       liftA3 (,,) selectedLevelDyn abilityTableDyn selectedLevelOptsDyn
     pageLoadE <- switchHold never pageLoadEE
 
@@ -165,8 +167,8 @@ sideNavButton selectedLevelDyn charLevel level = do
 
 -- Main section
 -- ------------
-type MainSectionIOM t m = (ReactiveIOM t m, MonadReader (DropdownContext t) m)
-type MainSectionM t m = (ReactiveM t m, MonadReader (DropdownContext t) m)
+type MainSectionIOM t m = (ReactiveIOM t m, MonadReader (Dynamic t Bool, Event t ()) m)
+type MainSectionM t m = (ReactiveM t m, MonadReader (Dynamic t Bool, Event t ()) m)
 
 mainSection :: MainSectionIOM t m
             => (Level, AbilityTable, [Option])
@@ -241,7 +243,7 @@ baseAbilityScoreSetterWidget (ability, AbilityTableEntry{base}) = mdo
   -- TODO: at the moment, after the user changes the value in these setters, the
   -- value jumps back to the unchanged value when the page is locked, until the
   -- new character data is received. I should fix that at some point.
-  lockDyn <- view #lockDyn <$> ask
+  lockDyn <- asks getLockDyn
   lock0 <- sample (current lockDyn)
   join <$> widgetHold (mkWidget lock0) (mkWidget <$> updated lockDyn)
   where

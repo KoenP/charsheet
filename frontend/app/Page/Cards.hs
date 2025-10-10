@@ -16,6 +16,7 @@ import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Set (Set)
 import qualified Data.Set as Set
+import Data.Semigroup
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Text.Lazy (toStrict)
@@ -31,6 +32,7 @@ import Types.Ability
 import Types.Cache
 import Util
 import Widget
+import Widget.Dropdown
 import Text.Markdown
 --------------------------------------------------------------------------------
 
@@ -41,25 +43,41 @@ load Nothing      = do
   return (set #sheet . Just <$> initE)
 
 type CardPageM t m = (DomBuilder t m, MonadHold t m, MonadFix m, PostBuild t m)
+
 type WithCardConfigM t m = (CardPageM t m, MonadReader CardConfig m)
 
-page :: forall t m. CardPageM t m => Maybe CharacterSheet -> CharacterSheet -> m ()
+type EditCardConfigM t m = (ReactiveM t m, MonadReader (CardConfigCtx t) m , EventWriter t (Endo CardConfig) m)
+
+data CardConfigCtx t = CardConfigCtx { cardConfig :: CardConfig
+                                     , clickOutE  :: Event t ()
+                                     }
+  deriving Generic
+
+instance Reflex t => DropdownCtx (CardConfigCtx t) t where
+  getLockDyn _ = constDyn False
+  getClickOutE = view #clickOutE
+
+
+page :: forall t m. ReactiveM t m => Maybe CharacterSheet -> CharacterSheet -> m ()
 page maybeOldSheet sheet = mdo
-  let
-    cardsWidgetDyn, configWidgetDyn :: Dynamic t (m (Event t (CardConfig -> CardConfig)))
-    cardsWidgetDyn  = (never <$) . cardsWidget maybeOldSheet sheet <$> cardConfigDyn
-    configWidgetDyn = cardConfigPageWidget sheet <$> cardConfigDyn
+  let clickOutE = domEvent Click topLevel
+  (topLevel, _) <- el' "div" $ mdo
 
+    let
+      cardsWidgetDyn, configWidgetDyn :: Dynamic t (m (Event t (CardConfig -> CardConfig)))
+      cardsWidgetDyn  = (never <$) . cardsWidget maybeOldSheet sheet <$> cardConfigDyn
+      configWidgetDyn = cardConfigPageWidget clickOutE sheet <$> cardConfigDyn
 
-  updateCardConfigE :: Event t (CardConfig -> CardConfig) <- switchHold never
-    =<< toggleWidget "Configure" "Show cards" cardsWidgetDyn configWidgetDyn
+    updateCardConfigE :: Event t (CardConfig -> CardConfig) <- switchHold never
+      =<< toggleWidget "Configure" "Show cards" cardsWidgetDyn configWidgetDyn
 
-  cardConfigDyn <- foldDyn ($) defaultCardConfig updateCardConfigE
+    cardConfigDyn <- foldDyn ($) defaultCardConfig updateCardConfigE
 
+    return ()
 
   return ()
 
-toggleWidget :: forall t m a. CardPageM t m => Text -> Text -> Dynamic t (m a) -> Dynamic t (m a) -> m (Event t a)
+toggleWidget :: forall t m a. ReactiveM t m => Text -> Text -> Dynamic t (m a) -> Dynamic t (m a) -> m (Event t a)
 toggleWidget label0 label1 w0 w1 = mdo
   toggleE <- switchHold never =<< dyn (button . bool label0 label1 <$> toggleDyn)
   toggleDyn <- toggle False toggleE
@@ -70,39 +88,63 @@ toggleWidget label0 label1 w0 w1 = mdo
 --------------------------------------------------------------------------------
 
 type Category = Text
-data ColorScheme = ColorScheme { bg :: Text, fg :: Text, name :: Text} deriving (Show, Generic)
+
+-- | Defined as a class in CSS.
+type ColorScheme = Text
+
+colorSchemeToClass :: Text -> Text
+colorSchemeToClass scheme = "colorscheme-" <> scheme
+
+colorSchemeDropdownEntries :: [DropdownEntry]
+colorSchemeDropdownEntries = [DropdownEntry scheme [] True | scheme <- ["blue", "red"]]
+
 data CardConfig = CardConfig
-  { showSpells           :: Bool
-  , showTraits           :: Bool
-  , onlyShowChanges      :: Bool
-  , excludedCategories   :: Set Category
-  , categoryColorSchemes :: Map Category ColorScheme
+  { showSpells               :: Bool
+  , showTraits               :: Bool
+  , onlyShowChanges          :: Bool
+  , excludedCategories       :: Set Category
+  , explicitlyExcludedTraits :: Set (Category, Text)
+  , explicitlyExcludedSpells :: Set (Category, Text)
+
+  , categoryColorSchemes     :: Map Category ColorScheme
   } deriving (Show, Generic)
 defaultCardConfig :: CardConfig
 defaultCardConfig = CardConfig
-  { showSpells           = True
-  , showTraits           = True
-  , onlyShowChanges      = False
-  , excludedCategories   = Set.empty
-  , categoryColorSchemes = Map.empty
-  }
-type CardConfigE t = Event t (CardConfig -> CardConfig)
+  { showSpells               = True
+  , showTraits               = True
+  , onlyShowChanges          = False
+  , excludedCategories       = Set.empty
+  , explicitlyExcludedTraits = Set.empty
+  , explicitlyExcludedSpells = Set.empty
 
-categoryIncludedLens ::  Text -> Optic' A_Lens NoIx CardConfig Bool
+  , categoryColorSchemes     = Map.empty
+  }
+
+categoryIncludedLens :: Category -> Lens' CardConfig Bool
 categoryIncludedLens category = #excludedCategories % contains category % iso not not
 
-cardConfigPageWidget :: CardPageM t m => CharacterSheet -> CardConfig -> m (CardConfigE t)
-cardConfigPageWidget sheet cardConfig = flip runReaderT cardConfig $ do
-  e <- globalCardConfigWidget cardConfig
-  e' <- mapM categoryConfigWidget $ mergeTraitAndSpellCategories (sheet ^. #notable_traits) (sheet ^. #spellcasting_sections)
+traitIncludedLens :: Category -> Text -> Lens' CardConfig Bool
+traitIncludedLens category trait = #explicitlyExcludedTraits % contains (category, trait) % iso not not
 
-  return (leftmost $ e : e')
+spellIncludedLens :: Category -> Text -> Lens' CardConfig Bool
+spellIncludedLens category spell = #explicitlyExcludedSpells % contains (category, spell) % iso not not
+
+categoryColorSchemeLens :: Category -> Lens' CardConfig (Maybe ColorScheme)
+categoryColorSchemeLens category = #categoryColorSchemes % at category
+
+cardConfigPageWidget :: ReactiveM t m => Event t () -> CharacterSheet -> CardConfig
+                     -> m (Event t (CardConfig -> CardConfig))
+cardConfigPageWidget clickOutE sheet cardConfig = runCardConfigWriterT $ flip runReaderT (CardConfigCtx cardConfig clickOutE) $ do
+  globalCardConfigWidget
+  mapM_ categoryConfigWidget $ mergeTraitAndSpellCategories (sheet ^. #notable_traits) (sheet ^. #spellcasting_sections)
 
   where
+    runCardConfigWriterT = fmap (fmap appEndo . snd) . runEventWriterT
+
     mergeTraitAndSpellCategories :: [NotableTraitCategory] -> [SpellcastingSection]
                                  -> [(Category, [Trait], [Spell])]
     mergeTraitAndSpellCategories traitCategories spellcastingSections =
-      mergeCategories [(category, traits) | NotableTraitCategory {category, traits} <- traitCategories]
+      mergeCategories [(category, traits) | NotableTraitCategory {category, traits} <- traitCategories     ]
                       [(origin  , spells) | SpellcastingSection  {origin  , spells} <- spellcastingSections]
 
     mergeCategories :: Ord k => [(k, [a])] -> [(k, [b])] -> [(k, [a], [b])]
@@ -115,46 +157,63 @@ cardConfigPageWidget sheet cardConfig = flip runReaderT cardConfig $ do
           LT -> (xcat, xs, []) : go lrem r
           GT -> (ycat, [], ys) : go l    rrem
 
-globalCardConfigWidget :: forall t m. WithCardConfigM t m => CardConfig -> m (CardConfigE t)
-globalCardConfigWidget cardConfig0 = el "div" $ fmap leftmost $ sequenceA
-  [ checkboxWidget #showTraits "show-traits-checkbox" "Include features"
-  , checkboxWidget #showSpells "show-spells-checkbox" "Include spells"
-  , checkboxWidget #onlyShowChanges "only-show-changes" "Only show changes w.r.t. previous level"
-  ]
+globalCardConfigWidget :: forall t m. EditCardConfigM t m => m ()
+globalCardConfigWidget = el "div" $ do
+  checkboxWidget #showTraits "show-traits-checkbox" "Include features"
+  checkboxWidget #showSpells "show-spells-checkbox" "Include spells"
+  checkboxWidget #onlyShowChanges "only-show-changes" "Only show changes w.r.t. previous level"
 
-
-categoryConfigWidget :: WithCardConfigM t m => (Category, [Trait], [Spell]) -> m (CardConfigE t)
+categoryConfigWidget :: EditCardConfigM t m => (Category, [Trait], [Spell]) -> m ()
 categoryConfigWidget (category, traits, spells) = do
-  CardConfig{excludedCategories} <- ask
+  config <- asks (^. #cardConfig)
   let
-    categoryIncluded = category `Set.notMember` excludedCategories
+    categoryIncluded = config ^. categoryIncludedLens category
     categoryHeaderClass = if categoryIncluded then "" else "omitted"
 
-  elClass "h2" categoryHeaderClass $ checkboxWidget
-    (categoryIncludedLens category)
-    ("show-category-" <> category <> "-checkbox")
-    ("From " <> category <> ":")
+  elClass "h2" categoryHeaderClass $ do
+    checkboxWidget (categoryIncludedLens category) ("show-category-" <> category <> "-checkbox") ("From " <> category <> ":")
+    colorDropdownWidget (categoryColorSchemeLens category)
 
-  -- el "div" $ el "h4" $ text "Features"
-  -- return never
+  when categoryIncluded $ do
+    when (config ^. #showTraits && not (null traits)) $ do
+      el "h4" (text "Features:")
+      el "ul" $ mapM_ (traitConfigWidget category) $ filter (^. #desc % to isJust) traits
 
-checkboxWidget :: (Is k A_Getter, Is k A_Setter, WithCardConfigM t m)
-                => Optic' k is CardConfig Bool -> Text -> Text -> m (CardConfigE t)
+    when (config ^. #showSpells && not (null spells)) $ do
+      el "h4" (text "Spells:")
+      el "ul" $ mapM_ (spellConfigWidget category) spells
+
+traitConfigWidget :: EditCardConfigM t m => Text -> Trait -> m ()
+traitConfigWidget category Trait{name} = el "li" $ checkboxWidget (traitIncludedLens category name) identifier name
+  where
+    identifier = category <> "-trait-" <> name <> "-checkbox"
+
+spellConfigWidget :: EditCardConfigM t m => Text -> Spell -> m ()
+spellConfigWidget category Spell{name} = el "li" $ checkboxWidget (spellIncludedLens category name) identifier name
+  where
+    identifier = category <> "-spell-" <> name <> "-checkbox"
+
+checkboxWidget :: forall k is t m. (Is k A_Getter, Is k A_Setter, EditCardConfigM t m)
+                => Optic' k is CardConfig Bool -> Text -> Text -> m ()
 checkboxWidget optic identifier label = do
-  cardConfig0 <- ask
+  cardConfig0 <- asks (^. #cardConfig)
   inputEl <- inputElement $ def
     & inputElementConfig_initialChecked Reflex.Dom..~ (cardConfig0 ^. optic)
     & inputElementConfig_elementConfig.elementConfig_initialAttributes
         Reflex.Dom..~ ("type" |-> "checkbox" <> "id" |-> identifier)
   elAttr "label" ("for" |-> identifier) (text label)
-  return $ (optic .~) <$> _inputElement_checkedChange inputEl
+  tellEvent $ Endo . set optic <$> _inputElement_checkedChange inputEl
 
+
+colorDropdownWidget :: EditCardConfigM t m => Lens' CardConfig (Maybe ColorScheme) -> m ()
+colorDropdownWidget lens = do
+  cardConfig <- asks (^. #cardConfig)
+  (selectedDyn, _) <- customDropdownWidget colorSchemeDropdownEntries (cardConfig ^. lens)
+  tellEvent $ Endo . set lens <$> updated selectedDyn
 
 --------------------------------------------------------------------------------
 -- Cards sub-page
 --------------------------------------------------------------------------------
-
-
 cardsWidget :: CardPageM t m => Maybe CharacterSheet -> CharacterSheet -> CardConfig -> m ()
 cardsWidget maybeOldSheet sheet config = flip runReaderT config $ divcl "cards"
   $ void $ sequence $ concat $ chunks 8
@@ -191,17 +250,19 @@ notableTraitCategoryWidgets NotableTraitCategory{ category, traits } = concatMap
 
 notableTraitCardsWidget :: WithCardConfigM t m => Text -> Trait -> [m ()]
 notableTraitCardsWidget category Trait{name, desc, ref, seminotable}
-  = zipWith (\i page -> notableTraitCardWidget (mkCardTitle name i) ref page) [1..] pages
+  = zipWith (\i page -> notableTraitCardWidget category name (mkCardTitle name i) ref page) [1..] pages
   where
     pages = fromMaybe [] desc
     mkCardTitle name i | [_] <- pages = name
                        | otherwise    = name <> " (" <> showText i <> "/" <> showText (length pages) <> ")"
 
-notableTraitCardWidget :: WithCardConfigM t m => Text -> Maybe Text -> Text -> m ()
-notableTraitCardWidget title ref page = divcl "card" $ do
-  divcl "card-title-section" $ divcl "card-title" $ text title
-  divcl "card-flexgrow" blank
-  traitDescriptionWidget page
+notableTraitCardWidget :: WithCardConfigM t m => Text -> Text -> Text -> Maybe Text -> Text -> m ()
+notableTraitCardWidget category name title ref page = do
+  included <- asks (^. traitIncludedLens category name)
+  when included $ divcl "card" $ do
+    divcl "card-title-section" $ divcl "card-title" $ text title
+    divcl "card-flexgrow" blank
+    traitDescriptionWidget page
 
 traitDescriptionWidget :: CardPageM t m => Text -> m ()
 traitDescriptionWidget desc =
@@ -213,26 +274,27 @@ traitDescriptionWidget desc =
              | otherwise = estimateFontSize (Text.length desc)
     descriptionContainsTable = "|---|" `Text.isInfixOf` desc
 
-spellcastingSectionCardWidgets :: CardPageM t m => SpellcastingSection -> [m ()]
+spellcastingSectionCardWidgets :: WithCardConfigM t m => SpellcastingSection -> [m ()]
 spellcastingSectionCardWidgets SpellcastingSection{origin, spells} = map (spellCardWidget origin) spells
 
-spellCardWidget :: CardPageM t m => Origin -> Spell -> m ()
+spellCardWidget :: WithCardConfigM t m => Origin -> Spell -> m ()
 spellCardWidget origin spell@Spell{ name, ref, casting_time, components, duration, range, rolls, aoe
                                   , description, shortdesc, higher_level, bonuses, resources, level
-                                  }
-  = divcl "card" $ do
-      divcl "card-title-section" $ do
-        divcl "card-title" $ text name
-        divcl "card-subtitle" $ text (cardSubtitle spell <> fromMaybe "" (fmap (" · " <>) ref))
-      divcl "card-boxes-section" $ do
-        cardBoxWidget "action-cost-inverted" casting_time
-        cardBoxWidget "components-inverted" (showComponents components)
-        cardBoxWidget "rolls-inverted" (fromMaybe "-" rolls)
-        cardBoxWidget "hourglass-inverted" duration
-        cardBoxWidget "range-inverted" range
-        cardBoxWidget "aoe-inverted" (fromMaybe "-" aoe)
-      divcl "card-flexgrow" blank
-      spellDescriptionWidget spellDescriptionText higher_level bonuses resources level
+                                  } = do
+  included <- asks (^. spellIncludedLens origin name)
+  when included $ divcl "card" $ do
+    divcl "card-title-section" $ do
+      divcl "card-title" $ text name
+      divcl "card-subtitle" $ text (cardSubtitle spell <> fromMaybe "" (fmap (" · " <>) ref))
+    divcl "card-boxes-section" $ do
+      cardBoxWidget "action-cost-inverted" casting_time
+      cardBoxWidget "components-inverted" (showComponents components)
+      cardBoxWidget "rolls-inverted" (fromMaybe "-" rolls)
+      cardBoxWidget "hourglass-inverted" duration
+      cardBoxWidget "range-inverted" range
+      cardBoxWidget "aoe-inverted" (fromMaybe "-" aoe)
+    divcl "card-flexgrow" blank
+    spellDescriptionWidget spellDescriptionText higher_level bonuses resources level
 
   where
     spellDescriptionText = fromMaybe description $ fmap ("(Summary:)" <>) shortdesc
