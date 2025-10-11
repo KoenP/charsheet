@@ -22,6 +22,7 @@ data DropdownEntry = DropdownEntry
   { label   :: Text
   , desc    :: [Text]
   , enabled :: Bool
+  , classes :: [Text]
   }
   deriving Generic
 
@@ -59,16 +60,17 @@ customDropdownWidget entries selected0 = do
     selectedDyn <- holdDyn selected0 selectE
 
     -- Keep track of whether the dropdown menu is open or closed.
+    -- Toggle events switch the menu between the two states; close events always close it.
     openDyn <- foldDyn ($) False $ leftmost [not <$ toggleE, const False <$ closeE]
 
     let dropdownButtonOpenClosedDyn = ("dropdown-button-open" ? "dropdown-button-closed") <$> openDyn
         dropdownFilledInClassDyn = ("dropdown-filled-in" ? "dropdown-blank") . isJust <$> selectedDyn
         dropdownButtonClassDyn = Text.intercalate " " <$> sequenceA [dropdownButtonOpenClosedDyn, dropdownFilledInClassDyn]
 
-    -- Render the "button", and conditionally, the dropdown menu.
+    -- Render the button, and conditionally, the dropdown menu.
     (buttonEl, (selectE, hoverDyn)) <- elDynClass' "button" dropdownButtonClassDyn $ mdo
       -- Render button text.
-      dynText $ fmap (fromMaybe "...") selectedDyn
+      el "span" $ dynText $ fmap (fromMaybe "...") selectedDyn
 
       -- Render the menu (setting its visibility to "hidden" if it's not open).
       let divStyleDyn = openDyn <&> \open ->
@@ -79,7 +81,7 @@ customDropdownWidget entries selected0 = do
         $ customDropdownEntryWidget Nothing -- Add a blank entry which allows for undoing the selection.
         : map (customDropdownEntryWidget . Just) entries
 
-    -- Clicking the "button" toggles the menu between its open and closed state (unless the button is locked).
+    -- Clicking the button toggles the menu between its open and closed state (unless the button is locked).
     let toggleE = gate (not <$> current lockDyn) $ domEvent Click buttonEl
 
     -- The menu is supposed to close if either an entry was selected, or if a
@@ -94,7 +96,8 @@ customDropdownEntryWidget entry = do
   -- Create a button.
   let buttonText = fromMaybe "-- clear selection --" $ fmap (view #label) entry
       enabled = fmap (view #enabled) entry /= Just False
-      classes = Text.intercalate " " $ catMaybes [Just "dropdown-entry" , ["disabled"  | not enabled]]
+      entryClasses = fromMaybe [] $ entry <&> (^. #classes)
+      classes = Text.intercalate " " $ entryClasses <> catMaybes [Just "dropdown-entry" , ["disabled"  | not enabled]]
   (buttonEl, _) <- elClass' "button" classes (text buttonText)
 
   -- When the button is clicked, fire an event carring the entry's label.

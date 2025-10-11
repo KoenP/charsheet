@@ -40,8 +40,8 @@ loadWidget req k = do
 domShow :: (DomBuilder t m, Show a) => a -> m ()
 domShow = text . pack . show
 
-divcl :: DomBuilder t m => Text -> m a -> m a
-divcl = elClass "div"
+divcl :: DomBuilder t m => [Text] -> m a -> m a
+divcl classes = elClass "div" (intercalate " " classes)
 
 {-
 x :: XhrRequest x

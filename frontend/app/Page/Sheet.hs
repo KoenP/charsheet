@@ -35,23 +35,23 @@ page sheet@CharacterSheet
   } = do
   -- First page: name, class, race, abilities, skills, attacks, hit dice, other
   -- stats.
-  divcl "page" $ do
-    divcl "abilities" (abilityTableWidget ability_table skill_table)
-    divcl "main-body" (mainBodyWidget sheet)
-    divcl "hit-dice-section" (hitDiceSectionWidget hit_dice)
-  divcl "page-break" blank
+  divcl ["page"] $ do
+    divcl ["abilities"] (abilityTableWidget ability_table skill_table)
+    divcl ["main-body"] (mainBodyWidget sheet)
+    divcl ["hit-dice-section"] (hitDiceSectionWidget hit_dice)
+  divcl ["page-break"] blank
 
   -- Second page: notable traits, non-skill proficiencies, resistances,
   -- spellcasting stats, spell slots, other finite resources.
-  divcl "page" $ do
-    divcl "column" $ do
+  divcl ["page"] $ do
+    divcl ["column"] $ do
       notableTraitsWidget notable_traits
       otherProficienciesWidget weapons armor languages tools resistances
-    divcl "column" $ do
+    divcl ["column"] $ do
       spellcastingTableWidget spellcasting_sections
       spellSlotsWidget spell_slots
       pactMagicWidget pact_magic
-    divcl "column" $ do
+    divcl ["column"] $ do
       resourcesWidget resources
 
 -- First page
@@ -63,12 +63,12 @@ abilityTableWidget abilityTable skillTable = el "table" $ do
     abilityRowWidget (ability, skills) = case ability `Map.lookup` abilityTable of
       Nothing -> error $ "ability table does not contain key " <> Text.unpack ability
       Just AbilityTableEntry{base, total_bonus, score, mod, st, st_prof} -> do
-        el "td" $ divcl "ability" $ do
-          divcl "ability-name" (text ability)
-          divcl "ability-modifier" $ do
+        el "td" $ divcl ["ability"] $ do
+          divcl ["ability-name"] (text ability)
+          divcl ["ability-modifier"] $ do
             text (formatModifier mod)
             el "hr" blank
-            divcl "ability-score" (showWidget score)
+            divcl ["ability-score"] (showWidget score)
 
         elClass "td" "skill-td" $ el "table" $ do
           stRowWidget "saving throw" (formatModifier st) st_prof
@@ -90,18 +90,18 @@ mainBodyWidget :: DomBuilder t m => CharacterSheet -> m ()
 mainBodyWidget CharacterSheet{name, summary, ac_formulas, attacks} =
   let CharacterSummary{classes, race, level, maxhp} = summary
   in do
-    divcl "charname" $ do
+    divcl ["charname"] $ do
       el "h1" (text name)
-      divcl "race-and-classes" (text $ race <>  " — " <> classes)
-      divcl "charlevel" (domShow level)
+      divcl ["race-and-classes"] (text $ race <>  " — " <> classes)
+      divcl ["charlevel"] (domShow level)
 
-    divcl "badges" $ do
+    divcl ["badges"] $ do
       badgeWidget "hit points" "hp" (hitpointsBadgeContentWidget maxhp)
       badgeWidget "armor class" "ac" (armorClassContentWidget ac_formulas)
       badgeWidget "stats" "stat-table" (statTableContentWidget summary)
 
-    divcl "attacks attacks-positioning" $ do
-      divcl "badge-title" (text "attacks")
+    divcl ["attacks attacks-positioning"] $ do
+      divcl ["badge-title"] (text "attacks")
       el "table" $ do
         el "tr" $ mapM_ (el "th" . text) ["Attack", "To Hit/DC", "Damage", "Range", "Notes"]
         mapM_ (el "tr" . attackTableRowWidget) (take 5 attacks)
@@ -111,8 +111,8 @@ mainBodyWidget CharacterSheet{name, summary, ac_formulas, attacks} =
 
 hitDiceSectionWidget :: DomBuilder t m => [HitDice] -> m ()
 hitDiceSectionWidget hitDice = do
-  divcl "badge-title" (text "hd")
-  divcl "hit-dice" $ mapM_ hitDiceWidget $ sortOn (view #d) $ hitDice
+  divcl ["badge-title"] (text "hd")
+  divcl ["hit-dice"] $ mapM_ hitDiceWidget $ sortOn (view #d) $ hitDice
   where
     hitDiceWidget (HitDice n d) = replicateM n
       $ elAttr "img" ("src" |-> ("/static/icons/d" <> showText d <> ".svg")) blank
@@ -147,7 +147,7 @@ otherProficienciesWidget weapons armor languages tools resistances =
   where
     profListWidget (category, list) = do
       el "h3" (text category)
-      divcl "details" $ text (showProfList list)
+      divcl ["details"] $ text (showProfList list)
 
     showProfList [] = "-"
     showProfList items =  Text.intercalate ", " items
@@ -214,10 +214,10 @@ resourcesWidget resources =
 resourceWidget :: DomBuilder t m => Resource -> m ()
 resourceWidget Resource{name, number, restore} = el "div" $ do
   el "h3" (text name)
-  divcl "resource-details" (slotsWidget >> restoreInfoWidget)
+  divcl ["resource-details"] (slotsWidget >> restoreInfoWidget)
   where
     slotsWidget | number <= 8 = replicateM_ number slotWidget
-                | otherwise       = divcl "row" $ do
+                | otherwise       = divcl ["row"] $ do
                     smallBlankWidget
                     text (nbsp <> "/" <> nbsp <> showText number)
 
@@ -228,39 +228,39 @@ resourceWidget Resource{name, number, restore} = el "div" $ do
       el "td" $ text restoreInfo
 
 smallBlankWidget :: DomBuilder t m => m ()
-smallBlankWidget = divcl "small-blank" blank
+smallBlankWidget = divcl ["small-blank"] blank
 
 -- Badges
 -- ------
 hitpointsBadgeContentWidget :: DomBuilder t m => Int -> m ()
 hitpointsBadgeContentWidget maxHp = do
-  divcl "row" $ do
-    labeledFlexTopWidget "current" (divcl "blank" blank)
+  divcl ["row"] $ do
+    labeledFlexTopWidget "current" (divcl ["blank"] blank)
     plusWidget
-    labeledFlexTopWidget "temp" (divcl "blank" blank)
+    labeledFlexTopWidget "temp" (divcl ["blank"] blank)
 
   el "hr" blank
 
-  divcl "row" $ do
-    labeledFlexBotWidget "max hp" $ divcl "filled-in" (showWidget maxHp)
+  divcl ["row"] $ do
+    labeledFlexBotWidget "max hp" $ divcl ["filled-in"] (showWidget maxHp)
     plusWidget
-    labeledFlexBotWidget "bonus max hp" (divcl "blank" blank)
+    labeledFlexBotWidget "bonus max hp" (divcl ["blank"] blank)
 
 armorClassContentWidget :: DomBuilder t m => [AcFormula] -> m ()
-armorClassContentWidget = divcl "column" . mapM_ acFormulaWidget
+armorClassContentWidget = divcl ["column"] . mapM_ acFormulaWidget
   where
-    acFormulaWidget AcFormula{name, ac, shield} = divcl "ac-formula" $ do
-      divcl "ac-formula-name" $ text $ "▢ " <> name
-      divcl "row" $ do
-        divcl "labeled-flex" $ do
-          divcl "filled-in" $ el "div" $ showWidget ac
+    acFormulaWidget AcFormula{name, ac, shield} = divcl ["ac-formula"] $ do
+      divcl ["ac-formula-name"] $ text $ "▢ " <> name
+      divcl ["row"] $ do
+        divcl ["labeled-flex"] $ do
+          divcl ["filled-in"] $ el "div" $ showWidget ac
           el "div" $ text "base"
         case shield of
           Nothing -> blank
           Just shieldAc -> do
             plusWidget
-            divcl "labeled-flex" $ do
-              divcl "filed-in" $ showWidget shieldAc
+            divcl ["labeled-flex"] $ do
+              divcl ["filed-in"] $ showWidget shieldAc
               el "div" $ text "shield"
 
 statTableContentWidget :: DomBuilder t m => CharacterSummary -> m ()
@@ -287,14 +287,14 @@ nbsp :: Text
 nbsp = Text.singleton (chr 160)
 
 labeledFlexTopWidget, labeledFlexBotWidget :: DomBuilder t m => Text -> m () -> m ()
-labeledFlexTopWidget label widget = divcl "labeled-flex" $ do
+labeledFlexTopWidget label widget = divcl ["labeled-flex"] $ do
   el "div" (text label)
   widget
-labeledFlexBotWidget label widget = divcl "labeled-flex" $ do
+labeledFlexBotWidget label widget = divcl ["labeled-flex"] $ do
   widget
   el "div" (text label)
 
 badgeWidget :: DomBuilder t m => Text -> Text -> m () -> m ()
-badgeWidget title contentClass contentWidget = divcl "badge" $ do
-  divcl "badge-title" (text title)
-  divcl contentClass contentWidget
+badgeWidget title contentClass contentWidget = divcl ["badge"] $ do
+  divcl ["badge-title"] (text title)
+  divcl [contentClass] contentWidget

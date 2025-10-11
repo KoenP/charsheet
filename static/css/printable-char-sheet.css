@@ -708,47 +708,78 @@ input:checked {
     border-radius: 10px;
 }
 
+/******************************************************************************/
+/* Dropdown styling. */
+/******************************************************************************/
+:root {
+    --dropdown-enabled-textcol: #ffffff;
+    --dropdown-blank-bgcol: #3498db;
+    --dropdown-hover-bgcol: #2989b9;
+    --dropdown-open-bgcol: #2989b9;
+    --dropdown-closed-filled-in-bgcol: #00b400;
+    --dropdown-open-filled-in-bgcol: #009600;
+    --dropdown-filled-in-hover-bgcol: #009600;
+    --dropdown-padding: 0 8px 0 8px;
+    --dropdown-font-size: 16px;
+    --dropdown-min-width: 120px;
+    --dropdown-min-height: 32px;
+
+    --dropdown-entry-bgcol: #f1f1f1;
+    --dropdown-entry-textcol: black;
+}
+
+.card-config-page {
+    --dropdown-padding: 0 8px 0 8px;
+    --dropdown-font-size: 16px;
+    --dropdown-min-width: 0;
+    --dropdown-min-height: 0;
+    --dropdown-enabled-textcol: black;
+    --dropdown-blank-bgcol: #cccccc;
+    --dropdown-hover-bgcol: #aaaaaa;
+    --dropdown-open-bgcol: #aaaaaa;
+}
+
 .dropdown {
     position: relative;
     display: inline-block;
 }
 
 .dropdown > button {
-    padding: 0 8px 0 8px;
-    font-size: 16px;
+    padding: var(--dropdown-padding);
+    font-size: var(--dropdown-font-size);
     border: 0;
     border-radius: 10px;
-    min-width: 120px;
-    min-height: 32px;
+    min-width: var(--dropdown-min-width);
+    min-height: var(--dropdown-min-height);
 }
 
 .dropdown-enabled > button {
-    color: #ffffff;
+    color: var(--dropdown-enabled-textcol);
     cursor: pointer;
 }
 
 .dropdown-button-closed.dropdown-blank {
-    background-color: #3498db;
+    background-color: var(--dropdown-blank-bgcol);
 }
 
-.dropdown-enabled > .dropdown-blank:hover {
-    background-color: #2989b9;
+.dropdown-enabled > button:hover {
+    background-color: var(--dropdown-hover-bgcol);
 }
 
 .dropdown-blank.dropdown-button-open {
-    background-color: #2989b9;
+    background-color: var(--dropdown-open-bgcol);
 }
 
 .dropdown-button-closed.dropdown-filled-in {
-    background-color: #00b400;
+    background-color: var(--dropdown-closed-filled-in-bgcol);
 }
 
 .dropdown-button-open.dropdown-filled-in {
-    background-color: #009600;
+    background-color: var(--dropdown-open-filled-in-bgcol);
 }
 
 .dropdown-enabled > .dropdown-filled-in:hover {
-    background-color: #009600;
+    background-color: var(--dropdown-filled-in-hover-bgcol);
 }
 
 .dropdown-disabled > button {
@@ -766,10 +797,12 @@ input:checked {
 }
 
 .dropdown-entry {
+    font-size: var(--dropdown-font-size);
     text-decoration: none;
     display: block;
     border: 0;
-    background-color: transparent;
+    color: var(--dropdown-entry-textcol);
+    background-color: var(--dropdown-entry-bgcol);
     min-width: 160px;
 }
 
@@ -778,8 +811,13 @@ input:checked {
 }
 
 .dropdown-entry:hover:not(.disabled) {
-    background-color: #dddddd;
+    /* background-color: #dddddd; */
+    filter: brightness(90%);
     cursor: pointer;
+}
+
+.card-config-page li .dropdown {
+    --dropdown-font-size: 7pt;
 }
 
 .ability-edit {
@@ -825,7 +863,7 @@ input:checked {
 
 .card {
   position: relative;
-  border: 1px solid rgb(0, 0, 0);
+  border: 1px solid;
 
   /* MTG size */
   width: 63mm;
@@ -835,6 +873,7 @@ input:checked {
 
   box-sizing: border-box;
 
+  color: var(--card-fg) !important;
   background-color: var(--card-bg) !important;
   border-color: var(--card-fg) !important;
   print-color-adjust: exact;
@@ -852,7 +891,7 @@ input:checked {
   print-color-adjust: exact;
   border-color: var(--card-fg) !important;
   border-radius: 8px;
-  border: 2px solid rgb(0, 0, 0);
+  border: 2px solid;
   display: flex;
   flex-direction: column;
 }
@@ -877,7 +916,6 @@ input:checked {
 
 .card-box {
   background-color: #ffffff !important;
-  color: var(--card-fg) !important;
   print-color-adjust: exact;
   border-radius: 6px;
   font-size: 8px;
@@ -907,7 +945,6 @@ input:checked {
   line-height: var(--description-font-size);
   text-align: justify;
   background-color: #ffffff;
-  color: var(--card-fg);
   print-color-adjust: exact;
   border-radius: 8px;
   padding: 0 1mm 0 1mm;
@@ -936,12 +973,73 @@ input:checked {
 
 /******************************************************************************/
 /* Color schemes */
+
+/* .use-color-scheme { */
+/*     color: var(--card-fg); */
+/*     background-color: var(--card-bg); */
+/* } */
+
 .colorscheme-blue {
-    bg: #ddddff;
-    fg: #000096;
+    --card-fg: #000096 !important;
+    --card-bg: #ddddff;
+    --dropdown-enabled-textcol: var(--card-fg);
+    --dropdown-closed-filled-in-bgcol: var(--card-bg);
+    --dropdown-open-filled-in-bgcol: var(--card-bg);
+    --dropdown-filled-in-hover-bgcol: var(--card-bg);
+    --dropdown-entry-textcol: var(--card-fg);
+    --dropdown-entry-bgcol: var(--card-bg);
+    color: var(--card-fg);
+    accent-color: var(--card-fg);
 }
 
 .colorscheme-red {
-    bg: #ffdddd;
-    fg: #960000;
+    --card-fg: #960000 !important;
+    --card-bg: #ffdddd;
+    --dropdown-enabled-textcol: var(--card-fg);
+    --dropdown-closed-filled-in-bgcol: var(--card-bg);
+    --dropdown-open-filled-in-bgcol: var(--card-bg);
+    --dropdown-filled-in-hover-bgcol: var(--card-bg);
+    --dropdown-entry-textcol: var(--card-fg);
+    --dropdown-entry-bgcol: var(--card-bg);
+    color: var(--card-fg);
+    accent-color: var(--card-fg);
+}
+
+.colorscheme-green {
+    --card-fg: #009600 !important;
+    --card-bg: #ddffdd;
+    --dropdown-enabled-textcol: var(--card-fg);
+    --dropdown-closed-filled-in-bgcol: var(--card-bg);
+    --dropdown-open-filled-in-bgcol: var(--card-bg);
+    --dropdown-filled-in-hover-bgcol: var(--card-bg);
+    --dropdown-entry-textcol: var(--card-fg);
+    --dropdown-entry-bgcol: var(--card-bg);
+    color: var(--card-fg);
+    accent-color: var(--card-fg);
+}
+
+.colorscheme-yellow {
+    --card-fg: #909000 !important;
+    --card-bg: #eeeedd;
+    --dropdown-enabled-textcol: var(--card-fg);
+    --dropdown-closed-filled-in-bgcol: var(--card-bg);
+    --dropdown-open-filled-in-bgcol: var(--card-bg);
+    --dropdown-filled-in-hover-bgcol: var(--card-bg);
+    --dropdown-entry-textcol: var(--card-fg);
+    --dropdown-entry-bgcol: var(--card-bg);
+    color: var(--card-fg);
+    accent-color: var(--card-fg);
+}
+
+.colorscheme-purple {
+    --card-fg: #900090 !important;
+    --card-bg: #eeddee;
+    --dropdown-enabled-textcol: var(--card-fg);
+    --dropdown-closed-filled-in-bgcol: var(--card-bg);
+    --dropdown-open-filled-in-bgcol: var(--card-bg);
+    --dropdown-filled-in-hover-bgcol: var(--card-bg);
+    --dropdown-entry-textcol: var(--card-fg);
+    --dropdown-entry-bgcol: var(--card-bg);
+    color: var(--card-fg);
+    accent-color: var(--card-fg);
 }

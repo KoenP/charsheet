@@ -180,7 +180,7 @@ mainSection (level, abilityTable, options) = elClass "div" "main-section" $ do
   setAbilityE <- abilityTableWidget baseAbilitiesEditable abilityTable
 
   -- Show all character options.
-  (choiceE, hoverDyn) <- divcl "character-options" $ do
+  (choiceE, hoverDyn) <- divcl ["character-options"] $ do
     fmap mconcat $ mapM (uncurry originCategoryWidget) originCategories
 
   return $ (leftmost [setAbilityE, choiceE], hoverDyn)
@@ -196,7 +196,7 @@ mainSection (level, abilityTable, options) = elClass "div" "main-section" $ do
 -- Ability table
 -- -------------
 abilityTableWidget :: MainSectionIOM t m => Bool -> AbilityTable -> m (Event t Req)
-abilityTableWidget baseAbilitiesEditable abilityTable = divcl "ability-edit" $ el "table" $ do
+abilityTableWidget baseAbilitiesEditable abilityTable = divcl ["ability-edit"] $ el "table" $ do
   el "tr" $ el "th" blank >> mapM_ (el "th" . text) abilities
 
   let taggedEntries = [(abi, fromJust $ abi `Map.lookup` abilityTable) | abi <- abilities]
@@ -302,7 +302,7 @@ listSpecWidget :: MainSectionM t m => OptionId -> [ListSpecEntry] -> Maybe Text
                -> m (Event t Req, Dynamic t (Maybe [Text]))
 listSpecWidget optionId entries choice = do
   (selectE, hoverDyn) <- customDropdownWidget
-      [DropdownEntry opt desc (Just opt /= choice) | ListSpecEntry desc opt <- entries]
+      [DropdownEntry opt desc (Just opt /= choice) [] | ListSpecEntry desc opt <- entries]
       choice
   return (updated $ fmap inform selectE, hoverDyn)
   where
@@ -363,7 +363,7 @@ fromSpecWidget optionId unique limit entries choices = mdo
   return (reqE, mconcat (hoverDyns1 <> hoverDyns2))
 
     where mkDropdownWidget = customDropdownWidget
-            [DropdownEntry opt desc (not (opt `elem` choices))| ListSpecEntry desc opt <- entries]
+            [DropdownEntry opt desc (not (opt `elem` choices)) [] | ListSpecEntry desc opt <- entries]
 
 choiceEditFunctions :: [Text] -> [Maybe Text -> SubmitChoice]
 choiceEditFunctions choices = case choices of
