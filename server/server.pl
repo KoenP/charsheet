@@ -222,7 +222,7 @@ h_post_unequip_item(CharId, Request) :-
                            reply_json_dict(Items))).
 
 h_store(get, CharId, Field, _Request) :-
-    with_loaded_character(CharId, store(Field, Data)),
+    with_loaded_character(CharId, default_on_fail(null, store(Field), Data)),
     format('Content-type: text/text~n~n'),
     format(Data).
 
@@ -231,7 +231,8 @@ h_store(get, CharId, Field, _Request) :-
 h_store(post, CharId, Field, Request) :-
     http_read_data(Request, Data, [to(string)]),
     withdraw_character_fact_without_resolving(CharId, store(Field, _)),
-    record_character_fact(CharId, store(Field, Data)).
+    record_character_fact(CharId, store(Field, Data)),
+    reply_json(_{}, [status(200)]).
 
 handle_with_char_snapshot(Handler, CharId, Request) :-
     with_loaded_character(CharId, (call(Handler, Request), abolish_private_tables)).

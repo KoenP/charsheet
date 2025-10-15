@@ -27,7 +27,7 @@ type TabDef = (Tab, Text, Text)
 tabPage :: ReactiveIOM t m => Tab -> (Cache -> m (Event t (Cache -> Cache)))
 tabPage EditCharTab = Page.EditChar.load . view #options
 tabPage SheetTab    = Page.Sheet.load . view #sheet
-tabPage CardsTab    = Page.Cards.load . view #sheet
+tabPage CardsTab    = Page.Cards.load <$> view #sheet <*> view #cardConfig
 
 tabs :: [TabDef]
 tabs = [ (EditCharTab, "Edit", "edit.png")

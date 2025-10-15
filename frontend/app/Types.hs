@@ -1,10 +1,15 @@
 module Types where
 
 --------------------------------------------------------------------------------
+import Control.Applicative
 import Control.Monad.IO.Class
 import Control.Monad.Fix
 import Data.Char
 import Data.Map (Map)
+import qualified Data.Map as Map
+import Data.Maybe
+import Data.Set (Set)
+import qualified Data.Set as Set
 import qualified Data.Vector as Vector
 import GHC.Generics
 import Data.Text (Text)
@@ -12,6 +17,7 @@ import Language.Javascript.JSaddle.Monad (MonadJSM)
 
 import Data.Aeson
 import Data.Aeson.Types
+import Optics
 import Reflex.Dom
 
 import Types.Ability
@@ -320,3 +326,68 @@ camelToSnakeCase (c:cs) = toLower c
 --   back, so the frontend can send an "unstructured" choice back.
 data SubmitChoice = SubmitListChoice [Text] | SubmitSingletonChoice Text | RetractChoice
   deriving Show
+
+--------------------------------------------------------------------------------
+-- CARD CONFIG PAGE
+--------------------------------------------------------------------------------
+data CardConfig = CardConfig
+  { showSpells               :: Bool
+  , showTraits               :: Bool
+  , onlyShowChanges          :: Bool
+  , excludedCategories       :: Set Category
+  , explicitlyExcludedTraits :: Set (Category, Text)
+  , explicitlyExcludedSpells :: Set (Category, Text)
+
+  , categoryColorSchemes     :: Map Category ColorScheme
+  , traitColorSchemes        :: Map (Category, Text) ColorScheme
+  , spellColorSchemes        :: Map (Category, Text) ColorScheme
+  } deriving (Show, Generic)
+instance FromJSON CardConfig
+instance ToJSON CardConfig
+
+defaultCardConfig :: CardConfig
+defaultCardConfig = CardConfig
+  { showSpells               = True
+  , showTraits               = True
+  , onlyShowChanges          = False
+  , excludedCategories       = Set.empty
+  , explicitlyExcludedTraits = Set.empty
+  , explicitlyExcludedSpells = Set.empty
+
+  , categoryColorSchemes     = Map.empty
+  , traitColorSchemes        = Map.empty
+  , spellColorSchemes        = Map.empty
+  }
+
+
+type Category = Text
+
+-- | Defined as a class in CSS.
+type ColorScheme = Text
+
+maybeColorSchemeToClass :: Maybe ColorScheme -> [Text]
+maybeColorSchemeToClass = map ("colorscheme-" <>) . maybeToList
+
+categoryIncludedLens :: Category -> Lens' CardConfig Bool
+categoryIncludedLens category = #excludedCategories % contains category % iso not not
+
+traitIncludedLens :: Category -> Text -> Lens' CardConfig Bool
+traitIncludedLens category trait = #explicitlyExcludedTraits % contains (category, trait) % iso not not
+
+spellIncludedLens :: Category -> Text -> Lens' CardConfig Bool
+spellIncludedLens category spell = #explicitlyExcludedSpells % contains (category, spell) % iso not not
+
+categoryColorSchemeLens :: Category -> Lens' CardConfig (Maybe ColorScheme)
+categoryColorSchemeLens category = #categoryColorSchemes % at category
+
+traitCardColorScheme :: Category -> Text -> CardConfig -> Maybe ColorScheme
+traitCardColorScheme category trait config = directScheme <|> indirectScheme
+  where
+    directScheme = config ^. #traitColorSchemes % at (category, trait)
+    indirectScheme = config ^. #categoryColorSchemes % at category
+
+spellCardColorScheme :: Category -> Text -> CardConfig -> Maybe ColorScheme
+spellCardColorScheme category spell config = directScheme <|> indirectScheme
+  where
+    directScheme = config ^. #spellColorSchemes % at (category, spell)
+    indirectScheme = config ^. #categoryColorSchemes % at category

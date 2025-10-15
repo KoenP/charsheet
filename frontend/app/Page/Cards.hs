@@ -6,6 +6,8 @@ import Control.Monad
 import Control.Monad.Fix
 import Control.Monad.Reader
 import Data.Bool
+import qualified Data.ByteString
+-- import Data.ByteString.Lazy.Internal (unpackChars)
 import Data.Either
 import Data.Maybe
 import GHC.Generics (Generic)
@@ -20,13 +22,15 @@ import qualified Data.Set as Set
 import Data.Semigroup
 import Data.Text (Text)
 import qualified Data.Text as Text
+import qualified Data.Text.Encoding as Text
 import Data.Text.Lazy (toStrict)
+import Data.Tuple
 import Optics
--- import Commonmark
--- import Commonmark.Pandoc
--- import Text.Pandoc.Builder hiding (text)
 import Language.Javascript.JSaddle.Monad (MonadJSM)
 
+import Data.Aeson
+
+import Debug.Trace
 import Constants (charName)
 import Types
 import Types.Ability
@@ -37,11 +41,42 @@ import Widget.Dropdown
 import Text.Markdown
 --------------------------------------------------------------------------------
 
-load :: ReactiveIOM t m => Maybe CharacterSheet -> m (Event t (Cache -> Cache))
-load (Just sheet) = page Nothing sheet >> return never
-load Nothing      = do
-  (initE, _) <- loadWidget (xhrRequest "GET" ("/api/character/" <> charName <> "/sheet") def) (\sheet -> page Nothing sheet >> return never)
-  return (set #sheet . Just <$> initE)
+load :: ReactiveIOM t m => Maybe CharacterSheet -> Maybe CardConfig -> m (Event t (Cache -> Cache))
+load (Just sheet) (Just config) = page Nothing sheet config
+load maybeSheet   maybeConfig   = do
+
+  -- TODO replace with performRequestsAsync
+  -- TODO error handling
+  let performReqs = do
+
+        sheetReqE  :: Event t CharacterSheet <- case maybeSheet  of
+          Just sheet  -> (sheet <$) <$> now
+          Nothing     -> performReq $ xhrRequest "GET" ("/api/character/" <> charName <> "/sheet") def
+
+        configReqE :: Event t CardConfig <- fmap (fromMaybe defaultCardConfig) <$> case maybeConfig of
+          Just config -> (Just config <$) <$> now
+          Nothing     -> performReq $ xhrRequest "GET" ("/api/character/" <> charName <> "/store/card-config") def
+
+        combineLatest sheetReqE configReqE
+
+  (initE, cacheE) <- loadWidget' performReqs (\(sheet, config) -> page Nothing sheet config)
+  
+  return $ leftmost
+    [ (\(sheet, config) cache -> cache{sheet = Just sheet, cardConfig = Just config}) <$> initE
+    , cacheE
+    ]
+
+
+-- TODO this doesn't work if both events fire at the same time.
+--      I think aBh and bBh are one frame behind aE and bE
+combineLatest :: ReactiveM t m => Event t a -> Event t b -> m (Event t (a, b))
+combineLatest aE bE = do
+  aBh <- hold Nothing (Just <$> aE)
+  bBh <- hold Nothing (Just <$> bE)
+  return $ leftmost [ attachWithMaybe (\mb a -> fmap (a,) mb) bBh aE
+                    , attachWithMaybe (\ma b -> fmap (,b) ma) aBh bE
+                    ]
+
 
 type CardPageM t m = (DomBuilder t m, MonadHold t m, MonadFix m, PostBuild t m)
 
@@ -57,10 +92,10 @@ instance Reflex t => DropdownCtx (CardConfigCtx t) t where
   getClickOutE = view #clickOutE
 
 
-page :: forall t m. ReactiveM t m => Maybe CharacterSheet -> CharacterSheet -> m ()
-page maybeOldSheet sheet = mdo
+page :: forall t m. ReactiveIOM t m => Maybe CharacterSheet -> CharacterSheet -> CardConfig -> m (Event t (Cache -> Cache))
+page maybeOldSheet sheet cardConfig0 = mdo
   let clickOutE = domEvent Click topLevel
-  (topLevel, _) <- elClass' "div" "card-page" $ mdo
+  (topLevel, cardConfigDyn) <- elClass' "div" "card-page" $ mdo
 
     let
       cardsWidgetDyn, configWidgetDyn :: Dynamic t (m (Event t (CardConfig -> CardConfig)))
@@ -68,15 +103,25 @@ page maybeOldSheet sheet = mdo
       configWidgetDyn = cardConfigPageWidget clickOutE sheet <$> cardConfigDyn
 
     updateCardConfigE :: Event t (CardConfig -> CardConfig) <- switchHold never
-      =<< toggleWidget "Show cards" "Configure" configWidgetDyn cardsWidgetDyn
-      -- =<< toggleWidget "Configure" "Show cards" cardsWidgetDyn configWidgetDyn
+      =<< toggleWidget "Configure" "Show cards" cardsWidgetDyn configWidgetDyn
 
-    cardConfigDyn <- foldDyn ($) defaultCardConfig updateCardConfigE
+    cardConfigDyn <- foldDyn ($) cardConfig0 updateCardConfigE
 
-    return ()
+    return cardConfigDyn
 
-  return ()
+  let
+    postConfigUrl = "/api/character/" <> charName <> "/store/card-config"
+    postConfigRequest conf = XhrRequest "POST" postConfigUrl $ def
+      & xhrRequestConfig_sendData Reflex.Dom..~ Text.decodeUtf8 (Data.ByteString.toStrict $ encode conf)
+      & xhrRequestConfig_responseType Reflex.Dom..~ Just XhrResponseType_Text
 
+  -- TODO inform user if the request goes wrong.
+  _ <- performRequestAsync (postConfigRequest <$> updated cardConfigDyn)
+
+  return $ set #cardConfig . Just <$> updated cardConfigDyn
+
+-- | Render a button that switches between two dynamic sources of widgets.
+--   Returns an event 
 toggleWidget :: forall t m a. ReactiveM t m => Text -> Text -> Dynamic t (m a) -> Dynamic t (m a) -> m (Event t a)
 toggleWidget label0 label1 w0 w1 = mdo
   toggleE <- switchHold never =<< dyn (button . bool label0 label1 <$> toggleDyn)
@@ -86,69 +131,10 @@ toggleWidget label0 label1 w0 w1 = mdo
 --------------------------------------------------------------------------------
 -- Card config sub-page
 --------------------------------------------------------------------------------
-
-type Category = Text
-
--- | Defined as a class in CSS.
-type ColorScheme = Text
-
-maybeColorSchemeToClass :: Maybe ColorScheme -> [Text]
-maybeColorSchemeToClass = map ("colorscheme-" <>) . maybeToList
-
 colorSchemeDropdownEntries :: [DropdownEntry]
 colorSchemeDropdownEntries = [ DropdownEntry scheme [] True ["colorscheme-" <> scheme]
                              | scheme <- ["blue", "red", "green", "yellow", "purple"]
                              ]
-
-data CardConfig = CardConfig
-  { showSpells               :: Bool
-  , showTraits               :: Bool
-  , onlyShowChanges          :: Bool
-  , excludedCategories       :: Set Category
-  , explicitlyExcludedTraits :: Set (Category, Text)
-  , explicitlyExcludedSpells :: Set (Category, Text)
-
-  , categoryColorSchemes     :: Map Category ColorScheme
-  , traitColorSchemes        :: Map (Category, Text) ColorScheme
-  , spellColorSchemes        :: Map (Category, Text) ColorScheme
-  } deriving (Show, Generic)
-defaultCardConfig :: CardConfig
-defaultCardConfig = CardConfig
-  { showSpells               = True
-  , showTraits               = True
-  , onlyShowChanges          = False
-  , excludedCategories       = Set.empty
-  , explicitlyExcludedTraits = Set.empty
-  , explicitlyExcludedSpells = Set.empty
-
-  , categoryColorSchemes     = Map.empty
-  , traitColorSchemes        = Map.empty
-  , spellColorSchemes        = Map.empty
-  }
-
-categoryIncludedLens :: Category -> Lens' CardConfig Bool
-categoryIncludedLens category = #excludedCategories % contains category % iso not not
-
-traitIncludedLens :: Category -> Text -> Lens' CardConfig Bool
-traitIncludedLens category trait = #explicitlyExcludedTraits % contains (category, trait) % iso not not
-
-spellIncludedLens :: Category -> Text -> Lens' CardConfig Bool
-spellIncludedLens category spell = #explicitlyExcludedSpells % contains (category, spell) % iso not not
-
-categoryColorSchemeLens :: Category -> Lens' CardConfig (Maybe ColorScheme)
-categoryColorSchemeLens category = #categoryColorSchemes % at category
-
-traitCardColorScheme :: Category -> Text -> CardConfig -> Maybe ColorScheme
-traitCardColorScheme category trait config = directScheme <|> indirectScheme
-  where
-    directScheme = config ^. #traitColorSchemes % at (category, trait)
-    indirectScheme = config ^. #categoryColorSchemes % at category
-
-spellCardColorScheme :: Category -> Text -> CardConfig -> Maybe ColorScheme
-spellCardColorScheme category spell config = directScheme <|> indirectScheme
-  where
-    directScheme = config ^. #spellColorSchemes % at (category, spell)
-    indirectScheme = config ^. #categoryColorSchemes % at category
 
 cardConfigPageWidget :: ReactiveM t m => Event t () -> CharacterSheet -> CardConfig
                      -> m (Event t (CardConfig -> CardConfig))
