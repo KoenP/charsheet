@@ -1,0 +1,15 @@
+.git
+.gitignore
+trash
+draft
+notes
+pl-resources
+Archive.zip
+elm/elm-stuff
+elm/build
+static/js/charsheet.js
+run_daemon
+storage
+*.pdf
+*.swp
+*~

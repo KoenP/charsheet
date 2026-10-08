@@ -5,3 +5,17 @@ Currently hosted at https://koen.vosjes.cloud
 The core of the program is an inference engine written in Prolog (rooted at `server/server.pl`). The user can interact with the inference engine directly through a Prolog interpreter (such as SWI-Prolog), or through a web interface.
 
 To run the inference engine, install SWI-Prolog (swi-prolog.org/)
+
+## Running with Podman or Docker
+
+Build the image:
+
+    podman build -t charsheet .
+
+Run a container:
+
+    podman run --rm -p 8000:8000 -v charsheet-data:/app/storage charsheet
+
+Then browse to <http://localhost:8000/>.
+
+Character data lives in `/app/storage`, so mount a persistent volume at that path. The Elm frontend is compiled during the image build, so the committed `elm/build/charsheet.js` is not used.
