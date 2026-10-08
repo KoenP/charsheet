@@ -1,6 +1,9 @@
 :- [inference/main].
 :- [storage].
+:- [accounts].
+:- [mcaptcha].
 :- [pages/login].
+:- [pages/register].
 :- [pages/select_character].
 :- [pages/character_editor].
 
@@ -21,6 +24,15 @@
 :- use_module(library(http/http_client)).
 :- use_module(library(sgml)).
 :- use_module(library(settings)).
+
+% Harden session cookies. Set CHARSHEET_SECURE_COOKIES=false for plain-HTTP
+% local development; otherwise cookies are marked Secure.
+:- (   getenv('CHARSHEET_SECURE_COOKIES', Val),
+       member(Val, [false, 'false', '0', no, 'no'])
+   ->  Secure = false
+   ;   Secure = true
+   ),
+   http_set_session_options([http_only(true), secure(Secure)]).
 
 user:file_search_path(html, 'client/dist').
 user:file_search_path(css, 'client/dist/css').
@@ -62,15 +74,53 @@ serve_page_if_logged_in(Html, Request) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % User account management.
+:- http_handler(root(register), serve_register_page, [method(get), id(register_page)]).
+
+serve_register_page(Request) :-
+    serve_page(register_page, Request).
+
 :- http_handler(root(api / login), h_login, [method(post)]).
 
-%h_register(Request) :-
-%    http_write_password_file('storage/passwords', [passwd(User, Hash, )])
-
 h_login(Request) :-
-    http_parameters(Request, [username(Name,[])]),
-    http_session_assert(logged_in_as(Name)),
-    http_redirect(see_other, location_by_id(select_character_page), Request).
+    http_parameters(Request,
+                    [ username(Name, [default('')]),
+                      password(Password, [default('')])
+                    ]),
+    (   verify_credentials(Name, Password)
+    ->  http_session_assert(logged_in_as(Name)),
+        http_redirect(see_other, location_by_id(select_character_page), Request)
+    ;   serve_page(login_page(['Invalid user name or password.']), Request)
+    ).
+
+:- http_handler(root(api / register), h_register, [method(post)]).
+
+h_register(Request) :-
+    http_parameters(Request,
+                    [ username(Name, [default('')]),
+                      password(Password, [default('')]),
+                      password_confirm(PasswordConfirm, [default('')]),
+                      mcaptcha__token(Token, [default('')])
+                    ]),
+    (   \+ valid_username(Name)
+    ->  serve_page(register_page(['Invalid user name.']), Request)
+    ;   \+ valid_password(Password)
+    ->  serve_page(register_page(['Invalid password.']), Request)
+    ;   Password \== PasswordConfirm
+    ->  serve_page(register_page(['Passwords do not match.']), Request)
+    ;   captcha_required
+    ->  (   verify_captcha_token(Token)
+        ->  h_register_create(Name, Password, Request)
+        ;   serve_page(register_page(['CAPTCHA verification failed. Please try again.']), Request)
+        )
+    ;   h_register_create(Name, Password, Request)
+    ).
+
+h_register_create(Name, Password, Request) :-
+    (   create_account(Name, Password)
+    ->  http_session_assert(logged_in_as(Name)),
+        http_redirect(see_other, location_by_id(select_character_page), Request)
+    ;   serve_page(register_page(['Could not create account.']), Request)
+    ).
 
 :- http_handler(root(api / logout), h_logout, [method(post)]).
 

@@ -1,16 +1,12 @@
-login_page -->
-    page(
-        title('Character sheet generator: login'),
-        body(
-            [h3('Proceed without logging in'),
-             form(
-                 [action='/api/new_character', method=post],
-                 [input([type=text, name=name, placeholder='New character name', required=true]),
-                  input([type=submit, value='Create public character']),
-                  p('(everyone with the link can edit a public character)')]),
+login_page --> login_page([]).
 
-             h3('or log into your account'),
-             form([action='/api/login', method=post],
-                  [input([type=text, name=username, placeholder='User name', required=true]),
-                  input([type=submit, value='Log in'])
-                  ])])).
+login_page(Errors) -->
+    { findall(p(class=error, E), member(E, Errors), ErrorHtml) },
+    page(title('Character sheet generator: login'),
+         body([h3('Log in'),
+               form([action='/api/login', method=post],
+                    [input([type=text, name=username, placeholder='User name', required=true]),
+                     input([type=password, name=password, placeholder='Password', required=true]),
+                     input([type=submit, value='Log in'])]),
+               p(a(href='/register', 'Create an account'))
+               | ErrorHtml])).

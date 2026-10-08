@@ -10,17 +10,14 @@ character_editor_page(CharName) -->
          ],
          body([div([id=app], []),
                \js_script({|javascript(CharName)||
-                            function getCharName() {
-                                return CharName;
-                            }
-                          |})
+                              function getCharName() {
+                                  return CharName;
+                              }
+
+                              var app = Elm.Main.init({
+                                  node: document.getElementById("app"),
+                                  flags: CharName
+                              });
+                            |})
               ]
              )).
-
-
-%\js_script({|javascript(CharName)||
-          %            var app = Elm.Main.init( {
-          %                node: document.getElementById("app"),
-          %                flags: CharName
-          %            });
-          %           |})

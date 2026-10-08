@@ -19,3 +19,67 @@ Run a container:
 Then browse to <http://localhost:8000/>.
 
 Character data lives in `/app/storage`, so mount a persistent volume at that path. The Elm frontend is compiled during the image build, so the committed `elm/build/charsheet.js` is not used.
+
+## Accounts and registration
+
+The site requires an account. Registration is open to the public and protected by
+an [mCaptcha](https://mcaptcha.org/) proof-of-work challenge; logging in uses the
+account's password.
+
+- Passwords are hashed with PBKDF2-SHA512 (`crypto_password_hash/3` from SWI's
+  `crypto` library, 131072 iterations) and stored in `storage/accounts.pl`
+  alongside the character data. There is no plain-text password anywhere.
+- Verification uses the semidet form `crypto_password_hash/2`. There is no
+  `crypto_password_verify/2` in SWI-Prolog — do not "fix" that call.
+- Logins are tracked in the SWI HTTP session (`logged_in_as/1`); each account
+  gets its own character namespace derived from its name, so accounts cannot see
+  each other's characters.
+- The captcha widget is embedded from `static/js/mcaptcha-glue.js`, which is
+  vendored in this repository (no CDN at run time). It is
+  `@mcaptcha/vanilla-glue@0.1.0-rc2`, sha256
+  `7e4136a97b924f39b858ca3c29b9b826d66d08fc128ee5188530ba3318836b0e`, MIT OR
+  Apache-2.0.
+
+### Configuration
+
+| Variable | Meaning |
+|---|---|
+| `MCAPTCHA_URL` | mCaptcha instance base URL, e.g. `https://mcaptcha.example.org` |
+| `MCAPTCHA_SITEKEY` | site key of this app's site in the mCaptcha instance |
+| `MCAPTCHA_SECRET` | secret of that same site (server-side only) |
+| `CHARSHEET_REQUIRE_CAPTCHA` | set to `false` to disable the captcha (local development only) |
+| `CHARSHEET_SECURE_COOKIES` | set to `false` to drop the `Secure` flag from the session cookie (needed for plain-HTTP local development) |
+| `CHARSHEET_ACCOUNTS_FILE` | account database path, default `storage/accounts.pl` |
+
+Captcha verification **fails closed**: if the captcha is required but the
+instance is unreachable or rejects the token, registration is refused. When the
+three `MCAPTCHA_*` variables are unset, the registration form renders without a
+captcha and registration is refused unless `CHARSHEET_REQUIRE_CAPTCHA=false` is
+set explicitly.
+
+Example with a captcha:
+
+    podman run --rm -p 8000:8000 -v charsheet-data:/app/storage \
+      -e MCAPTCHA_URL=https://mcaptcha.example.org \
+      -e MCAPTCHA_SITEKEY=<sitekey> \
+      -e MCAPTCHA_SECRET=<secret> \
+      charsheet
+
+### Resetting a password (manual)
+
+`tools/reset-password.pl` administers accounts without the web interface. It must
+be run from the application root:
+
+    # list accounts
+    podman exec charsheet swipl --quiet tools/reset-password.pl --list
+
+    # set a new password (prints a generated one when --password is omitted)
+    podman exec charsheet swipl --quiet tools/reset-password.pl --reset <username>
+
+    # create an account directly (useful while captcha is enabled)
+    podman exec charsheet swipl --quiet tools/reset-password.pl --create <username>
+
+It exits non-zero on failure (unknown user, invalid name or password, bad
+arguments). Run it while the service is idle: the tool and the server both
+rewrite `storage/accounts.pl` wholesale, so a concurrent change can be lost.
+
