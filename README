@@ -8,11 +8,7 @@ To run the inference engine, install SWI-Prolog (swi-prolog.org/)
 
 ## Running with Podman or Docker
 
-Build the image:
-
-    podman build -t charsheet .
-
-A prebuilt image is published to the GitHub Container Registry by GitHub Actions on every push, so building locally is optional:
+Pull the published image. It is built by GitHub Actions and pushed to the GitHub Container Registry on every push:
 
     podman pull ghcr.io/koenp/charsheet:latest
     podman tag ghcr.io/koenp/charsheet:latest charsheet
