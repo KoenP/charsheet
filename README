@@ -12,6 +12,11 @@ Build the image:
 
     podman build -t charsheet .
 
+A prebuilt image is published to the GitHub Container Registry by GitHub Actions on every push, so building locally is optional:
+
+    podman pull ghcr.io/koenp/charsheet:latest
+    podman tag ghcr.io/koenp/charsheet:latest charsheet
+
 Run a container:
 
     podman run --rm -p 8000:8000 -v charsheet-data:/app/storage charsheet
