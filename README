@@ -26,16 +26,14 @@ The site requires an account. Registration is open to the public and protected b
 an [mCaptcha](https://mcaptcha.org/) proof-of-work challenge; logging in uses the
 account's password.
 
-- Passwords are hashed with PBKDF2-SHA512 (`crypto_password_hash/3` from SWI's
-  `crypto` library, 131072 iterations) and stored in `storage/accounts.pl`
+- Passwords are hashed with PBKDF2-SHA512 (crypto_password_hash/3 from SWI's
+  crypto library, 131072 iterations) and stored in storage/accounts.pl
   alongside the character data. There is no plain-text password anywhere.
-- Verification uses the semidet form `crypto_password_hash/2`. There is no
-  `crypto_password_verify/2` in SWI-Prolog — do not "fix" that call.
+- Verification uses the semidet form crypto_password_hash/2.
 - Logins are tracked in the SWI HTTP session (`logged_in_as/1`); each account
   gets its own character namespace derived from its name, so accounts cannot see
   each other's characters.
-- The captcha widget is embedded from `static/js/mcaptcha-glue.js`, which is
-  vendored in this repository (no CDN at run time). It is
+- The captcha widget is embedded from `static/js/mcaptcha-glue.js`. It is
   `@mcaptcha/vanilla-glue@0.1.0-rc2`, sha256
   `7e4136a97b924f39b858ca3c29b9b826d66d08fc128ee5188530ba3318836b0e`, MIT OR
   Apache-2.0.
