@@ -12,5 +12,6 @@ theme_toggle -->
                   title='Switch theme',
                   'aria-label'='Switch theme',
                   'aria-pressed'='false'],
-                 ['🌙']),
+                 [span([class='theme-toggle-icon'], ['🌙']),
+                  span([class='theme-toggle-label'], ['Dark'])]),
           script([type='text/javascript', src='/static/js/theme.js'], [])]).

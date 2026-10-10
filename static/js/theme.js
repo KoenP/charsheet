@@ -7,7 +7,16 @@
 
   function updateButton() {
     var isDark = document.documentElement.getAttribute('data-theme') === DARK_THEME;
-    btn.textContent = isDark ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    var icon = isDark ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    var label = isDark ? 'Light' : 'Dark';
+    var iconSpan = btn.querySelector('.theme-toggle-icon');
+    var labelSpan = btn.querySelector('.theme-toggle-label');
+    if (iconSpan && labelSpan) {
+      iconSpan.textContent = icon;
+      labelSpan.textContent = label;
+    } else {
+      btn.textContent = icon;
+    }
     btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
     btn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
     btn.setAttribute('title', isDark ? 'Switch to light theme' : 'Switch to dark theme');

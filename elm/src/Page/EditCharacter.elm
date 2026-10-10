@@ -624,7 +624,8 @@ sideNavStyle =
   , Css.zIndex (Css.int 1)
   , Css.top (Css.px tabBarHeight)
   , Css.left Css.zero
-  , Css.property "background-color" "var(--rp-surface)"
+  , Css.property "background-color" "var(--rp-overlay)"
+  , Css.property "border-right" "1px solid var(--rp-highlight-high)"
   , Css.overflowX Css.hidden
   ]
 
@@ -634,12 +635,16 @@ sideNavButtonStyle highlighted =
   , Css.border Css.zero
   , Css.marginLeft (Css.px 20)
   , Css.marginTop (Css.px 15)
-  , Css.padding Css.zero
-  , Css.property "color" (if highlighted then "var(--rp-text)" else "var(--rp-muted)")
+  , Css.property "color" (if highlighted then "var(--rp-iris)" else "var(--rp-subtle)")
   , Css.cursor Css.pointer
   , Css.fontSize (Css.px 25)
   , Css.display Css.block
-  , Css.hover [Css.property "color" "var(--rp-text)"]
+  , Css.property "font-weight" (if highlighted then "700" else "400")
+  , Css.padding2 (Css.px 2) (Css.px 10)
+  , Css.borderRadius (Css.px 6)
+  , Css.hover [ Css.property "color" "var(--rp-text)"
+              , Css.property "background-color" "var(--rp-highlight-low)"
+              ]
   -- , Css.fontFamilies [ "Dosis" ]
   ]
 

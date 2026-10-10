@@ -651,7 +651,8 @@ input:checked {
     z-index: 1;
     top: var(--tab-bar-height);
     left: 0;
-    background-color: var(--rp-surface);
+    background-color: var(--rp-overlay);
+    border-right: 1px solid var(--rp-highlight-high);
     overflow-x: hidden;
     color: var(--rp-muted);
 }
@@ -661,16 +662,18 @@ input:checked {
     border: 0;
     margin-left: 20px;
     margin-top: 15px;
-    padding: 0;
+    padding: 2px 10px;
     cursor: pointer;
     font-size: 25px;
     display: block;
+    border-radius: 6px;
     color: inherit;
     /* font-family: 'Dosis'; */ /* uncomment if you're using this font */
 }
 
 .side-nav button:hover {
     color: var(--rp-text);
+    background-color: var(--rp-highlight-low);
 }
 
 .edit-page .main-section {
