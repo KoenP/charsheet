@@ -6,6 +6,7 @@ character_editor_page(CharName) -->
     page([title(CharName),
           script([type='text/javascript', src='/static/js/charsheet.js'], []),
           link([rel=stylesheet, href='/static/css/printable-char-sheet.css'], []),
+          \theme_head_extras,
           link([rel=stylesheet, href='https://fonts.googleapis.com/css2?family=Dosis:wght@400;700&display=swap'], [])
          ],
          body([div([id=app], []),
@@ -18,6 +19,7 @@ character_editor_page(CharName) -->
                                   node: document.getElementById("app"),
                                   flags: CharName
                               });
-                            |})
+                            |}),
+               \theme_toggle
               ]
              )).

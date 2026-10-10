@@ -359,7 +359,7 @@ viewTab : TabCfg -> Html Msg
 viewTab { name, iconPath, msg, selected } =
   button
     [ onClick msg
-    , Attr.css [Css.color (Css.hex <| if selected then "#ffffff" else "#cccccc")]
+    , Attr.css [Css.property "color" (if selected then "var(--rp-iris)" else "var(--rp-muted)")]
     , Attr.class "tab"
     ]
     [ img [ Attr.src ("/static/icons/" ++ iconPath)

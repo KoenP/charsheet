@@ -34,7 +34,7 @@ tooltip width dir trigger content =
                       [ Css.visibility Css.visible ]
                   ]
               ]
-          , Css.borderBottom3 (Css.px 1) Css.dotted (Css.hex "000000")
+          , Css.property "border-bottom" "1px dotted var(--rp-highlight-high)"
           ]
       ]
       [ trigger
@@ -43,9 +43,9 @@ tooltip width dir trigger content =
           , css <|
               [ Css.visibility Css.hidden
               , Css.position Css.absolute
-              , Css.backgroundColor <| Css.hex "000000"
+              , Css.property "background-color" "var(--rp-overlay)"
               , Css.width <| Css.mm width
-              , Css.color <| Css.hex "ffffff"
+              , Css.property "color" "var(--rp-text)"
               , Css.fontFamilies [ "Dosis", .value Css.sansSerif ]
               , Css.zIndex (Css.int 1)
               , Css.textAlign Css.center

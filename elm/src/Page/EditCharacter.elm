@@ -178,7 +178,7 @@ viewSideNav { desc, optionsPerLevel, selectedLevel, charLevel } =
 
 descStyle : List Style
 descStyle =
-  [ Css.color (Css.hex "ffffff")
+  [ Css.property "color" "var(--rp-text)"
   , Css.padding2 (Css.px 0) (Css.px 10)
   ]
 
@@ -624,7 +624,7 @@ sideNavStyle =
   , Css.zIndex (Css.int 1)
   , Css.top (Css.px tabBarHeight)
   , Css.left Css.zero
-  , Css.backgroundColor (Css.hex "010101")
+  , Css.property "background-color" "var(--rp-surface)"
   , Css.overflowX Css.hidden
   ]
 
@@ -635,11 +635,11 @@ sideNavButtonStyle highlighted =
   , Css.marginLeft (Css.px 20)
   , Css.marginTop (Css.px 15)
   , Css.padding Css.zero
-  , Css.color <| Css.hex <| if highlighted then "ffffff" else "818181"
+  , Css.property "color" (if highlighted then "var(--rp-text)" else "var(--rp-muted)")
   , Css.cursor Css.pointer
   , Css.fontSize (Css.px 25)
   , Css.display Css.block
-  , Css.hover [Css.color (Css.hex "ffffff")]
+  , Css.hover [Css.property "color" "var(--rp-text)"]
   -- , Css.fontFamilies [ "Dosis" ]
   ]
 
@@ -652,7 +652,7 @@ mainSectionStyle =
 
 originCategoryStyle : List Style
 originCategoryStyle =
-  [ Css.backgroundColor (Css.hex "eeeeee")
+  [ Css.property "background-color" "var(--rp-overlay)"
   , Css.borderRadius (Css.px 10)
   , Css.padding4 (Css.px 8) (Css.px 0) (Css.px 16) (Css.px 20) -- top right bot left
   , Css.marginTop (Css.px 8)
@@ -665,7 +665,7 @@ effectCategoryStyle =
 
 optionsSectionStyle : List Style
 optionsSectionStyle =
-  [ Css.backgroundColor (Css.hex "dddddd")
+  [ Css.property "background-color" "var(--rp-highlight-med)"
   , Css.padding4 (Css.px 1) (Css.px 0) (Css.px 16) (Css.px 20) -- top right bot left
   , Css.marginTop (Css.px 4)
   , Css.marginRight (Css.px 16)
@@ -678,8 +678,8 @@ topBarStyle =
   , Css.width (Css.pct 100)
   , Css.overflow Css.hidden
   , Css.zIndex (Css.int 2)
-  , Css.backgroundColor (Css.hex "#ffffff")
-  , Css.borderBottom3 (Css.px 2) (Css.solid) (Css.hex "#000000")
+  , Css.property "background-color" "var(--rp-surface)"
+  , Css.property "border-bottom" "2px solid var(--rp-highlight-med)"
   , Css.padding4 Css.zero (Css.px 10) (Css.px 10) (Css.px 10)
   , Css.marginTop Css.zero
   ]

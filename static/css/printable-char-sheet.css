@@ -25,6 +25,10 @@
     position: relative;
     /*background-color: #e8e8e8 !important;*/
     background-color: white !important;
+    /* The sheet is a white page in both themes, so its text must stay dark:
+       without this, uncoloured text would inherit the dark theme's light
+       --rp-text and become invisible on the white background. */
+    color: black;
     print-color-adjust: exact;
 
     display: flex;
@@ -578,7 +582,8 @@ input:checked {
 .tab-bar {
     display: flex;
     justify-content: space-between;
-    background-color: #000;
+    background-color: var(--rp-surface);
+    border-bottom: 1px solid var(--rp-highlight-med);
     position: fixed;
     margin-bottom: 0;
     top: 0;
@@ -590,7 +595,7 @@ input:checked {
 
 .tab {
     background-color: inherit;
-    color: "#ffffff";
+    color: var(--rp-text);
     margin-right: 10px;
     border: none;
     outline: none;
@@ -600,28 +605,30 @@ input:checked {
 }
 
 .tab-bar button:hover {
-    color: "#ffffff";
+    color: var(--rp-text);
 }
 
 .tab-bar button:hover > img {
-    filter: invert(100%);
+    opacity: 1;
 }
 
 .tab-bar img {
     width: 16px;
-    margin-right: 2pt; 
+    margin-right: 2pt;
+}
+
+.full-invert {
+    filter: var(--rp-icon-filter, none);
+    opacity: 1;
+}
+
+.partial-invert {
+    filter: var(--rp-icon-filter, none);
+    opacity: var(--rp-icon-opacity, 0.55);
 }
 
 .below-tabs {
     margin-top: 43px;
-}
-
-.full-invert {
-    filter: invert(100%);
-}
-
-.partial-invert {
-    filter: invert(50%);
 }
 
 .card-description p {
@@ -644,9 +651,9 @@ input:checked {
     z-index: 1;
     top: var(--tab-bar-height);
     left: 0;
-    background-color: #010101;
+    background-color: var(--rp-surface);
     overflow-x: hidden;
-    color: #818181;
+    color: var(--rp-muted);
 }
 
 .side-nav button {
@@ -663,7 +670,7 @@ input:checked {
 }
 
 .side-nav button:hover {
-    color: #ffffff;
+    color: var(--rp-text);
 }
 
 .edit-page .main-section {
@@ -672,7 +679,8 @@ input:checked {
 }
 
 .origin-category {
-    background-color: #eeeeee;
+    background-color: var(--rp-overlay);
+    color: var(--rp-text);
     border-radius: 10px;
     padding: 8px 0px 16px 20px;
     margin-top: 8px;

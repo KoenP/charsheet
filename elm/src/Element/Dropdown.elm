@@ -69,25 +69,25 @@ customStyleDropdown customStyle isDisabled id currentlySelected entries open =
              (filterEntries entries))
       ]
 
--- buttonColor : Bool -> Bool -> 
+-- buttonColor : Bool -> Bool -> String
 buttonColor isDisabled isOptionSelected isOpen =
   case (isDisabled, isOptionSelected, isOpen ) of
-    (True, _    , _    ) -> rgb 150 150 150
-    (_   , True , False) -> rgb 0 180 0
-    (_   , True , True ) -> rgb 0 150 0
-    (_   , False, True ) -> hex "2989b9"
-    (_   , False, False) -> hex "3498db"
+    (True, _    , _    ) -> "var(--rp-muted)"
+    (_   , True , False) -> "var(--rp-pine)"
+    (_   , True , True ) -> "var(--rp-foam)"
+    (_   , False, True ) -> "var(--rp-iris)"
+    (_   , False, False) -> "var(--rp-rose)"
 
 -- Dropdown button.
 buttonStyle : Bool -> Bool -> Bool -> List Style
 buttonStyle isDisabled optionSelected open =
-  [ backgroundColor <| buttonColor isDisabled optionSelected open
-  , color (hex "ffffff")
+  [ Css.property "background-color" (buttonColor isDisabled optionSelected open)
+  , Css.property "color" "var(--rp-base)"
   , padding4 (px 0) (px 8) (px 0) (px 8) -- top right bot left
   , fontSize (px 16)
   , border zero
   , cursor pointer
-  , hover <| if isDisabled then [] else [ backgroundColor (buttonColor False optionSelected True) ]
+  , hover <| if isDisabled then [] else [ Css.property "background-color" (buttonColor False optionSelected True) ]
   , borderRadius (px 10)
   , minWidth (px 120)
   , minHeight (px 32)
@@ -105,25 +105,26 @@ contentStyle : List Style
 contentStyle =
   [ display block
   , Css.position Css.absolute
-  , Css.backgroundColor (Css.hex "f1f1f1")
+  , Css.property "background-color" "var(--rp-surface)"
+  , Css.property "color" "var(--rp-text)"
   , Css.minWidth (Css.px 160)
-  , Css.boxShadow5 zero (px 8) (px 8) (px 0) (rgba 0 0 0 0.2)
+  , Css.property "box-shadow" "0 8px 8px 0 var(--rp-shadow)"
   , Css.zIndex (Css.int 1)
   ]
 
 -- Links inside the dropdown
 hrefStyle : Bool -> List Style
 hrefStyle enabled =
-  [ color (if enabled then rgb 0 0 0 else rgb 150 150 150)
+  [ Css.property "color" (if enabled then "var(--rp-text)" else "var(--rp-muted)")
   --, padding2 (px 12) (px 16)
   , textDecoration none
   , display block
   , border zero
-  , backgroundColor transparent
+  , Css.property "background-color" "transparent"
   , minWidth (px 160)
   ]
   ++ if enabled
-     then [ hover [ backgroundColor (hex "dddddd") ]
+     then [ hover [ Css.property "background-color" "var(--rp-highlight-med)" ]
           , cursor pointer
           ]
      else []

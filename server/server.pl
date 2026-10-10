@@ -2,6 +2,7 @@
 :- [storage].
 :- [accounts].
 :- [mcaptcha].
+:- [pages/theme].
 :- [pages/login].
 :- [pages/register].
 :- [pages/select_character].
